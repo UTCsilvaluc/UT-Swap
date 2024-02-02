@@ -162,8 +162,9 @@ for (var i = 0; i < liste.length; i++) {
 
     var pourcentageHeight = calculPourcentage(tempsCours);
 
-    cours.addEventListener("mouseenter" , function (event) {
+    document.getElementById("emploi_du_temps").addEventListener("mousemove" , function (event) {
         if (event.target.className == "cours"){
+            console.log("test");
             hoverCours = document.getElementsByClassName("hoverCours")[0];
             hoverCours.style.display = "flex";
             //hoverCours.getElementById("goswap").style.height = event.target.style.height;
