@@ -124,7 +124,17 @@ nav button img, #menu_pannel button img{
     margin-top: 13px;
 }
 
+div.creneau{
+    transition: background-color 0.3s linear; /* Transition de couleur de fond */
+    cursor: pointer; /* Curseur par défaut */
+    opacity: 1;
+}
 
+div.creneau:hover {
+    background-color: #95a5a6; /* Nouvelle couleur de fond au survol */
+    transform: scaleY(2); /* Doubler la hauteur */
+    cursor: pointer; /* Nouveau curseur au survol */
+}
 #nouveau_pannel{
     display: none;
     flex-direction: column;
@@ -146,6 +156,9 @@ nav button img, #menu_pannel button img{
     background-color: #fff;
 }
 
+.formAddCreneau{
+    display: inherit;
+}
 #nouveau_pannel #form_debut_nouveau{
     display: flex;
     align-items: center;
@@ -432,7 +445,7 @@ nav button img, #menu_pannel button img{
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    z-index: 200;
+    z-index: 2;
     position: absolute;
     background-color: red;
     width: 100%;
@@ -443,12 +456,6 @@ nav button img, #menu_pannel button img{
 #emploi_du_temps .jour .cours h2,#emploi_du_temps .jour .cours p{
     margin: 0;
 }
-
-
-
-
-
-
 
 
 
