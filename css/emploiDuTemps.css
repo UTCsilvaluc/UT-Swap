@@ -1,0 +1,117 @@
+@font-face {
+    font-family: 'Jost';
+    src: url('../fonts/Jost-Medium.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: Jost, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+div.divHeure{
+    transition: background-color 0.3s linear; /* Transition de couleur de fond */
+    cursor: pointer; /* Curseur par défaut */
+    opacity: 1;
+}
+
+div.divHeure:hover {
+    background-color: #95a5a6; /* Nouvelle couleur de fond au survol */
+    cursor: pointer; /* Nouveau curseur au survol */
+}
+.formAddCreneau{
+    display: inherit;
+}
+
+.hoverCoursIcon{
+    fill: black; /* Remplacez 'blanc' par votre couleur de remplissage initiale */
+    transition: transform 0.3s ease; /* Ajoute une transition de 0.5 seconde avec une accélération douce */
+}
+
+/* Styles lorsqu'on survole l'élément SVG */
+.hoverCoursIcon:hover{
+    transform: scale(140%);
+    cursor: pointer;
+}
+
+.dash {
+    height: 1px;
+    box-sizing: border-box;
+    border-bottom: 1px dashed black;
+    margin: 0;
+    padding: 0;
+}
+
+
+.conteneurHours{
+    display: flex;
+    flex-direction: column;
+    margin-top: 40px;
+    margin-right: 10px;
+}
+
+.conteneurHours h4{
+    margin: 0;
+    height: 40px;
+}
+
+
+#emploi_du_temps{
+    display: flex;
+    flex-direction: row;    
+    align-items: center;
+    justify-content: center;
+}
+
+#emploi_du_temps .jour{
+    width:200px;
+    height: 100%;
+    border: 1px solid black;
+    border-left: 0;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#emploi_du_temps .jour:first-child{
+    border-left: 1px solid black;
+}
+
+#emploi_du_temps .jour h1{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid black;
+    margin: 0;
+    background-color:lightgrey;
+    height: 50px;
+    font-size: 20px;
+}
+
+#emploi_du_temps .jour .endroit_cours{
+    position: relative;
+    height: calc(100% - 50px);
+    width: 100%;
+    overflow: hidden;
+}
+
+#emploi_du_temps .jour .cours{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 2;
+    position: absolute;
+    background-color: red;
+    width: 100%;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+#emploi_du_temps .jour .cours h2,#emploi_du_temps .jour .cours p{
+    margin: 0;
+}

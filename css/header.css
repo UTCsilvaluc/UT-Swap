@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'Jost';
-    src: url('../fonts/Jost-Medium.ttf');
+    src: url('Jost-Medium.ttf');
     font-weight: normal;
     font-style: normal;
 }
@@ -124,16 +124,7 @@ nav button img, #menu_pannel button img{
     margin-top: 13px;
 }
 
-div.divHeure{
-    transition: background-color 0.3s linear; /* Transition de couleur de fond */
-    cursor: pointer; /* Curseur par défaut */
-    opacity: 1;
-}
 
-div.divHeure:hover {
-    background-color: #95a5a6; /* Nouvelle couleur de fond au survol */
-    cursor: pointer; /* Nouveau curseur au survol */
-}
 #nouveau_pannel{
     display: none;
     flex-direction: column;
@@ -155,28 +146,13 @@ div.divHeure:hover {
     background-color: #fff;
 }
 
-.formAddCreneau{
-    display: inherit;
-}
-#swap:hover{
-}
-.hoverCoursIcon{
-    fill: black; /* Remplacez 'blanc' par votre couleur de remplissage initiale */
-    transition: transform 0.3s ease; /* Ajoute une transition de 0.5 seconde avec une accélération douce */
-}
-
-/* Styles lorsqu'on survole l'élément SVG */
-.hoverCoursIcon:hover{
-    transform: scale(140%);
-    cursor: pointer;
-}
 #nouveau_pannel #form_debut_nouveau{
     display: flex;
     align-items: center;
     flex-direction: column;
 }
 
-#titre_nouveau, #form_fin_nouveau{
+#titre_nouveau, #div_fin_nouveau{
     width: 100%;
 }
 
@@ -185,8 +161,16 @@ div.divHeure:hover {
 
 }
 
+#div_fin_nouveau{
+    text-align: center;
+    width: 100%;
+}
 
-#nouveau_pannel form{
+
+#nouveau_pannel #div_debut_nouveau{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: center;
     width: 100%;
 }
@@ -195,7 +179,6 @@ div.divHeure:hover {
     text-align:left;
     list-style: none;
     padding: 0;
-    margin:0 50px  0 50px;
 }
 
 #nouveau_pannel li:not(.double-input):not(.basique){
@@ -231,6 +214,14 @@ div.divHeure:hover {
     box-sizing: border-box;
 }
 
+#nouveau_pannel .double-input div label{
+    display: flex;
+    flex-direction: row;
+}
+
+#nouveau_pannel .double-input div label p{
+    margin-left: 4px;
+}
 
 #nouveau_pannel input,#nouveau_pannel select{
     box-sizing: content-box;
@@ -240,6 +231,7 @@ div.divHeure:hover {
     background-color: #E9E9E9;
     padding:8px;
     transition: background-color 0.4s ease, padding 0.4s ease;
+    padding-left:10px;
 }
 
 #nouveau_pannel input:not(input[type="checkbox"]):not(input[type="radio"]),#nouveau_pannel select:not(input[type="checkbox"]):not(input[type="radio"]){
@@ -250,7 +242,7 @@ div.divHeure:hover {
 
 #nouveau_pannel input:focus,#nouveau_pannel select:focus{
     background-color: #f3f3f3;
-    padding-left: 10px;
+    padding-left: 13px;
 }
 
 
@@ -270,7 +262,7 @@ div.divHeure:hover {
 }
 
 #nouveau_pannel input[type="submit"]{
-    padding: 8px 25px 8px 25px;
+    padding: 0;
     border-radius: 10px;
     color: white;
     background-color: #32373B;
@@ -280,8 +272,11 @@ div.divHeure:hover {
 
 #nouveau_pannel input[type="checkbox"]{
     margin: 0;
-    border: 10px;
-    border-color: red;
+    margin-top: 10px;
+}
+
+#nouveau_pannel input[type="radio"]{
+    margin-top: 10px;
 }
 
 #nouveau_pannel select{
@@ -301,6 +296,62 @@ div.divHeure:hover {
 .basique{
     text-align: center;
 }
+
+#boutons_message{
+    display: flex;
+    align-items: center;
+    justify-content:center;
+}
+
+#nouveau_pannel button{
+    padding: 0;
+    border-radius: 10px;
+    color: white;
+    border: 0;
+    background-color: #32373B;
+    margin-top:calc(var(--margin) / 2);
+    margin-bottom:calc(var(--margin) / 2);
+    box-sizing: content-box;
+    cursor: pointer;
+    height: 31px;
+    width: 13vw;
+    min-width: 100px;
+    white-space: nowrap;
+}
+
+#nouveau_pannel #bouton_retour{
+    margin-right: var(--margin);
+}
+
+#boutons_message button{
+    color: #32373B;
+    border: 1px solid #32373B;
+    background-color: white;
+}
+
+#boutons_message input{
+    width: 13vw;
+}
+
+#boutons_message.hidden{
+    display:none;
+}
+
+#nouveau_pannel p{
+    margin:0;
+    color: red;
+}
+
+#message_field{
+    position: absolute;
+    top:81%;
+}
+
+#nouveau_pannel #message_pression{
+    margin: 50px
+}
+
+
 
 .hidden{
     display:none;
@@ -389,84 +440,6 @@ div.divHeure:hover {
     height: 3vh;
 }
 
-.dash {
-    height: 1px;
-    box-sizing: border-box;
-    border-bottom: 1px dashed black;
-    margin: 0;
-    padding: 0;
-}
-
-
-.conteneurHours{
-    display: flex;
-    flex-direction: column;
-    margin-top: 40px;
-    margin-right: 10px;
-}
-
-.conteneurHours h4{
-    margin: 0;
-    height: 40px;
-}
-
-
-#emploi_du_temps{
-    display: flex;
-    flex-direction: row;    
-    align-items: center;
-    justify-content: center;
-}
-
-#emploi_du_temps .jour{
-    width:200px;
-    height: 100%;
-    border: 1px solid black;
-    border-left: 0;
-    text-align: center;
-    vertical-align: middle;
-}
-
-#emploi_du_temps .jour:first-child{
-    border-left: 1px solid black;
-}
-
-#emploi_du_temps .jour h1{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 1px solid black;
-    margin: 0;
-    background-color:lightgrey;
-    height: 50px;
-    font-size: 20px;
-}
-
-#emploi_du_temps .jour .endroit_cours{
-    position: relative;
-    height: calc(100% - 50px);
-    width: 100%;
-    overflow: hidden;
-}
-
-#emploi_du_temps .jour .cours{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    z-index: 2;
-    position: absolute;
-    background-color: red;
-    width: 100%;
-    border-radius: 8px;
-    box-sizing: border-box;
-}
-
-#emploi_du_temps .jour .cours h2,#emploi_du_temps .jour .cours p{
-    margin: 0;
-}
-
-
 
 @media screen and (max-width: 1300px) {
     #nouveau_pannel{
@@ -479,6 +452,14 @@ div.divHeure:hover {
     
     #nouveau_pannel input:not(input[type="checkbox"]):not(input[type="radio"]),#nouveau_pannel select:not(input[type="checkbox"]):not(input[type="radio"]){
         width: 20vw;
+    }
+
+    #nouveau_pannel input[type="submit"]{
+        width:20vw;
+    }
+
+    #nouveau_pannel button{
+        width:20vw;
     }
 }
 
@@ -513,6 +494,13 @@ div.divHeure:hover {
     #nouveau_pannel input:not(input[type="checkbox"]):not(input[type="radio"]),#nouveau_pannel select:not(input[type="checkbox"]):not(input[type="radio"]){
         width: 30vw;
     }
+    #nouveau_pannel input[type="submit"]{
+        width:40vw;
+    }
+
+    #nouveau_pannel button{
+        width:40vw;
+    }
 }
 
 @media screen and (max-height: 800px) {
@@ -544,4 +532,16 @@ div.divHeure:hover {
         height: 30px;
     }
     
+}
+
+@keyframes shake {
+    0% { transform: translateX(0) rotate(0); }
+    25% { transform: translateX(-1px) rotate(-1deg); }
+    50% { transform: translateX(1px) rotate(1deg); }
+    75% { transform: translateX(-1px) rotate(-1deg); }
+    100% { transform: translateX(0) rotate(0); }
+}
+
+.shake-element {
+    animation: shake 0.2s ease-in-out infinite; /* Ajustez la durée et l'accélération selon votre besoin */
 }
