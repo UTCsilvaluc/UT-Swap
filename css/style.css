@@ -124,15 +124,14 @@ nav button img, #menu_pannel button img{
     margin-top: 13px;
 }
 
-div.creneau{
+div.divHeure{
     transition: background-color 0.3s linear; /* Transition de couleur de fond */
     cursor: pointer; /* Curseur par défaut */
     opacity: 1;
 }
 
-div.creneau:hover {
+div.divHeure:hover {
     background-color: #95a5a6; /* Nouvelle couleur de fond au survol */
-    transform: scaleY(2); /* Doubler la hauteur */
     cursor: pointer; /* Nouveau curseur au survol */
 }
 #nouveau_pannel{
@@ -158,6 +157,18 @@ div.creneau:hover {
 
 .formAddCreneau{
     display: inherit;
+}
+#swap:hover{
+}
+.hoverCoursIcon{
+    fill: black; /* Remplacez 'blanc' par votre couleur de remplissage initiale */
+    transition: transform 0.3s ease; /* Ajoute une transition de 0.5 seconde avec une accélération douce */
+}
+
+/* Styles lorsqu'on survole l'élément SVG */
+.hoverCoursIcon:hover{
+    transform: scale(140%);
+    cursor: pointer;
 }
 #nouveau_pannel #form_debut_nouveau{
     display: flex;
@@ -378,9 +389,7 @@ div.creneau:hover {
     height: 3vh;
 }
 
-
-
-.dash:not(:last-child) {
+.dash {
     height: 1px;
     box-sizing: border-box;
     border-bottom: 1px dashed black;
@@ -388,10 +397,10 @@ div.creneau:hover {
     padding: 0;
 }
 
+
 .conteneurHours{
     display: flex;
     flex-direction: column;
-    align-items: top;
     margin-top: 40px;
     margin-right: 10px;
 }
