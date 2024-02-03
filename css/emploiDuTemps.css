@@ -104,7 +104,6 @@ div.divHeure:hover {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    z-index: 2;
     position: absolute;
     background-color: red;
     width: 100%;

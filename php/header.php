@@ -47,7 +47,7 @@
 </head>
 <body>
     <header>
-        <img class="logo" src="logo.png">
+        <img class="logo" src="../img/logo.png">
         <nav>
             <ul id="menu_liste_grand">
                 <li><a href="#">Home</a></li>
@@ -55,12 +55,12 @@
                 <li><a href="#">Demandes</a></li>
                 <li><a href="#">Profil</a></li>
                 <li><a href="#">Informations</a></li>
-                <li><img class="notification" src="notif.svg"></li>
-                <li><button class="bouton_nouveau"><img src="plus.svg">Nouveau</button></li>
+                <li><img class="notification" src="../svg/notif.svg"></li>
+                <li><button class="bouton_nouveau"><img src="../svg/plus.svg">Nouveau</button></li>
             </ul>
             <ul id="menu_liste_petit">
-                <li><img class="notification" src="notif.svg"></li>
-                <li><img src="menu.svg" id="bouton_menu"></li>
+                <li><img class="notification" src="../svg/notif.svg"></li>
+                <li><img src="../svg/menu.svg" id="bouton_menu"></li>
             </ul>
         </nav>
     </header>
@@ -79,10 +79,10 @@
         </ul>
         <hr>
         <a href="#">
-            <img class="profil" src="profil.svg">
+            <img class="profil" src="../svg/profil.svg">
             <h2>Nom Prénom</h2>
         </a>
-        <button class="bouton_nouveau"><img src="plus.svg">Nouveau</button>
+        <button class="bouton_nouveau"><img src="../svg/plus.svg">Nouveau</button>
     </div>
     <div id="ecran"></div>
     
