@@ -8,7 +8,6 @@
     <title>Header avec Notification</title>
 </head>
 <body>
-    biteas
     <header>
         <img class="logo" src="../img/logo.png">
         <nav>
