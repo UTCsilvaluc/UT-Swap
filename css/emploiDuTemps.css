@@ -121,15 +121,21 @@ div.divHeure:hover {
 #emploi_du_temps .jour .cours h2,#emploi_du_temps .jour .cours p{
     margin: 0;
 }
-.addCreneau{
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translate(-80%, -38%);
+
+#addCreneau{
     display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content:space-between;
+    padding:0;
+    position: absolute;
+    top: calc(50% + calc(var(--taille-header) / 2)); /* La moitié de la hauteur de l'en-tête + ajustement */
+    left: 50%;
+    transform: translate(-50%, -50%);
     border: 1px solid rgb(219, 219, 219);
-    width: 38%;
+    width: 35%;
     min-width: 275px;
+    height: 50%;
     z-index: 2;
     -webkit-box-shadow: 0px 0px 15px 8px #C4C4C4;
     box-shadow: 0px 0px 15px 8px #C4C4C4;
@@ -137,73 +143,165 @@ div.divHeure:hover {
     background-color: #fff;
 }
 
-.firstLine , .secondLine , .thirdLine , .fourLine{
+#addCreneau #form_debut_nouveau{
     display: flex;
-}
-.addCreneau .titre h1{
-    font-size: 30px;
-    text-align: center;
-}
-.addCreneau .firstLine{
-    margin-top: 40px;
+    align-items: center;
+    flex-direction: column;
 }
 
-.addCreneau label{
-    text-align: left;
+#titre_nouveau, #div_fin_nouveau{
+    width: 100%;
+}
+
+#addCreneau label{
+    white-space: nowrap;
+
+}
+
+#div_fin_nouveau{
+    text-align: center;
+    width: 100%;
+}
+
+
+#addCreneau #div_debut_nouveau{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+
+#addCreneau ul{
+    text-align:left;
+    list-style: none;
+    padding: 0;
+}
+
+#addCreneau li:not(.double-input):not(.basique){
+    display: flex;
+    flex-direction: column;
+}
+
+#addCreneau li:not(.basique){
+    margin-bottom: 10px;
+}
+
+#addCreneau .double-input li {
+    flex: 1;
+}
+
+#addCreneau .double-input{
+    display: flex;
+}
+
+#addCreneau .double-input div:first-child {
+    margin-right: 25px;
+}
+
+#addCreneau .double-input div{
+    width: 100%;
+}
+
+#addCreneau .double-input div label,
+#addCreneau .double-input div input,
+#addCreneau .double-input div select {
     display: block;
     width: 100%;
     box-sizing: border-box;
 }
 
-.addCreneau .titre{
-    text-align: center;
-}
-
-.addCreneau .formulaire{
-    align-items: center;
-    text-align: center;
+#addCreneau .double-input div label{
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    flex-direction: row;
 }
 
-.addCreneau .formulaire input[type='checkbox']{
-    margin: 0;
-    padding: 0;
-}
-.addCreneau .divInput{
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    margin-right: 30px;
+#addCreneau .double-input div label p{
+    margin-left: 4px;
 }
 
-
-.addCreneau .formulaire input[type='text'],.formulaire input[type='time'] ,  .formulaire select{
+#addCreneau input,#addCreneau select{
     box-sizing: content-box;
     cursor: pointer;
     border: 0;
     border-radius: 5px;
     background-color: #E9E9E9;
+    padding:8px;
     transition: background-color 0.4s ease, padding 0.4s ease;
-    padding: 5px 5px 5px 10px;
+    padding-left:10px;
+}
+
+#addCreneau input:not(input[type="checkbox"]):not(input[type="radio"]),#addCreneau select:not(input[type="checkbox"]):not(input[type="radio"]){
     height:31px;
-    width: 288px;
+    width: 15vw;
     min-width: 100px;
 }
 
-.addCreneau .divSemaine{
-    margin: 10px;
-    display: flex;
-    gap: 5px;
+#addCreneau input:focus,#addCreneau select:focus{
+    background-color: #f3f3f3;
+    padding-left: 13px;
 }
 
-.addCreneau hr{
-    background: #95a5a6;
+
+#addCreneau h1{
+    font-size: 1.5vw;
+    text-align: center;
+    margin: 0;
+    padding: var(--margin) 0 var(--margin) 0;
+}
+
+#addCreneau hr{
+    border-top: 1px solid #C4C4C4;
+    margin: 0;
+    padding: 0;
+    display: block;
     width: 100%;
 }
 
-.addCreneau button{
+#addCreneau input[type="submit"]{
+    padding: 0;
+    border-radius: 10px;
+    color: white;
+    background-color: #32373B;
+    margin-top:calc(var(--margin) / 2);
+    margin-bottom:calc(var(--margin) / 2);
+}
+
+#addCreneau input[type="checkbox"]{
+    margin: 0;
+    margin-top: 10px;
+}
+
+#addCreneau input[type="radio"]{
+    margin-top: 10px;
+}
+
+#addCreneau select{
+    background: url("data:image/svg+xml,<svg height='10px' width='10px' viewBox='0 0 16 16' fill='%23000000' xmlns='http://www.w3.org/2000/svg'><path d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/></svg>") no-repeat;
+    background-position: calc(100% - 0.75rem) center !important;
+    -moz-appearance:none !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    padding-right: 2rem !important;
+    background-color: #E9E9E9;
+}
+
+#addCreneau select:focus, #addCreneau input:focus{
+    outline: none;
+}
+
+.basique{
+    text-align: center;
+}
+
+#boutons_message{
+    display: flex;
+    align-items: center;
+    justify-content:center;
+}
+
+#addCreneau button{
+    padding: 0;
     border-radius: 10px;
     color: white;
     border: 0;
@@ -216,4 +314,231 @@ div.divHeure:hover {
     width: 13vw;
     min-width: 100px;
     white-space: nowrap;
+}
+
+#addCreneau #bouton_retour{
+    margin-right: var(--margin);
+}
+
+#boutons_message button{
+    color: #32373B;
+    border: 1px solid #32373B;
+    background-color: white;
+}
+
+#boutons_message input{
+    width: 13vw;
+}
+
+#boutons_message.hidden{
+    display:none;
+}
+
+#addCreneau p{
+    margin:0;
+    color: red;
+}
+
+#message_field{
+    position: absolute;
+    top:81%;
+}
+
+#addCreneau #message_pression{
+    margin: 50px
+}
+
+
+
+.hidden{
+    display:none;
+}
+
+#ecran{
+    display: none;
+    position: fixed; /* Position par rapport à la fenêtre du navigateur */
+    top: var(--taille-header); /* Espacement par rapport au header */
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    overflow: hidden;
+}
+
+/* Mise en forme de la page du menu pour téléphone */
+
+#menu_pannel{
+    display: none;
+    position: absolute;
+    top: var(--taille-header);
+    left: -65%;
+    border-left: 1px solid rgb(219, 219, 219);
+    width: 60%;
+    height: calc(100vh - var(--taille-header));
+    z-index: 2;
+    -webkit-box-shadow: -5px 0px 10px 5px #C4C4C4;
+    box-shadow: 5px 0px 10px 5px #C4C4C4;
+    background-color: #fff;
+    text-align: center;
+    transition: left 0.7s ease;
+}
+
+
+#menu_pannel ul{
+    list-style-type: none;
+    padding: 0;
+    margin:var(--margin-menu) 0 var(--margin-menu) 0;
+    text-align: left;
+}
+
+#menu_pannel li {
+    padding-top:  calc(var(--margin-menu) / 2);
+    padding-bottom:  calc(var(--margin-menu) / 2);
+    padding-left: 30px;
+    transition: background-color 0.2s ease-in-out, border 0.15s ease;
+}
+
+#menu_pannel li:hover {
+    background-color: #ededed;
+    border-left: 4px solid grey;
+}
+
+#menu_pannel a {
+    text-decoration: none;
+    color: black;
+    font-size: large;
+}
+
+#menu_pannel .profil {
+    width: 15vh;
+    margin-top:  var(--margin-menu);
+}
+
+#menu_pannel h2 {
+    margin-top:  0;
+    font-size: 4vh;
+}
+
+#menu_pannel button {
+    position: absolute;
+    bottom: var(--margin);
+    left: 50%; /* Aligner au centre horizontalement */
+    transform: translateX(-50%);
+}
+
+#menu_liste_petit{
+    display: none;
+    height: 100%;
+}
+
+#bouton_menu{
+    vertical-align: middle;
+    cursor: pointer;
+    height: 3vh;
+}
+
+
+@media screen and (max-width: 1300px) {
+    #addCreneau{
+        width: 50%;
+    }
+
+    #addCreneau h1{
+        font-size: 20px;
+    }
+
+    #addCreneau input:not(input[type="checkbox"]):not(input[type="radio"]),#addCreneau select:not(input[type="checkbox"]):not(input[type="radio"]){
+        width: 20vw;
+    }
+
+    #addCreneau input[type="submit"]{
+        width:20vw;
+    }
+
+    #addCreneau button{
+        width:20vw;
+    }
+}
+
+
+@media screen and (max-width: 750px) {
+    #menu_liste_grand{
+        display: none;
+    }
+    #menu_liste_petit{
+        display:flex;
+    }
+    #menu_pannel{
+        display: block;
+    }
+
+    #notification_pannel{
+        display: block;
+        right: -90%;
+        width: 85%;
+        margin: 0;
+        height: calc(100vh - var(--taille-header));
+        -webkit-box-shadow: -5px 0px 10px 5px #C4C4C4;
+        box-shadow: 5px 0px 10px 5px #C4C4C4;
+        border-radius: 0px;
+        border: 0;
+        border-left: 1px solid rgb(219, 219, 219);
+    }
+
+    #addCreneau{
+        width: 80%;
+    }
+    #addCreneau input:not(input[type="checkbox"]):not(input[type="radio"]),#addCreneau select:not(input[type="checkbox"]):not(input[type="radio"]){
+        width: 30vw;
+    }
+    #addCreneau input[type="submit"]{
+        width:40vw;
+    }
+
+    #addCreneau button{
+        width:40vw;
+    }
+}
+
+@media screen and (max-height: 800px) {
+
+    #addCreneau{
+        height: 60%;
+    }
+}
+
+
+@media screen and (max-height: 650px) {
+
+    #addCreneau{
+        height: 70%;
+        min-height: 400px;
+    }
+}
+
+@media screen and (max-height: 500px) {
+    header{
+        height: 70px;
+    }
+
+    #bouton_menu{
+        height: 17px;
+    }
+
+    .notification{
+        height: 30px;
+    }
+
+}
+
+@keyframes shake {
+    0% { transform: translateX(0) rotate(0); }
+    25% { transform: translateX(-1px) rotate(-1deg); }
+    50% { transform: translateX(1px) rotate(1deg); }
+    75% { transform: translateX(-1px) rotate(-1deg); }
+    100% { transform: translateX(0) rotate(0); }
+}
+
+.shake-element {
+    animation: shake 0.2s ease-in-out infinite; /* Ajustez la durée et l'accélération selon votre besoin */
 }

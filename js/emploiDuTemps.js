@@ -60,8 +60,103 @@ document.getElementById("emploi_du_temps").addEventListener("mouseout" , functio
         hoverCours = document.getElementsByClassName("hoverCours")[0];
         hoverCours.style.display = "none";
     }
+
 });
 
+function addCreneau(event) {
+    // Empêcher la propagation du clic à l'extérieur du formulaire
+    event.stopPropagation();
+    formulaire = document.getElementById("addCreneau");
+
+    // Vérifier si le formulaire est actuellement caché
+    if (formulaire.style.display !== "block") {
+        // Afficher le formulaire
+        formulaire.style.display = "block";
+    } else {
+        // Le formulaire est déjà affiché, vérifier si le clic est à l'extérieur du formulaire
+        var isInsideFormulaire = formulaire.contains(event.target);
+        if (!isInsideFormulaire) {
+            // Masquer le formulaire
+            formulaire.style.display = 'none';
+            formulaire.reset();
+        }
+    }
+}
+
+formAddCreneau = document.getElementById('addCreneau');
+formAddCreneau.querySelector('#input-hfin').addEventListener('change', function() {
+    var [heures, minutes] = roundMinutes(this.value);
+    this.value = heures.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0');
+});
+
+formAddCreneau.querySelector('#input-hdebut').addEventListener('change', function() {
+    var [heures, minutes] = roundMinutes(this.value);
+    this.value = heures.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0');
+});
+
+var formulaire = document.getElementById('addCreneau');
+
+// Ajouter un gestionnaire d'événements pour le clic sur le document
+document.addEventListener('click', function (event) {
+    // Vérifier si l'élément cliqué n'appartient pas au formulaire ni à ses enfants
+    if (!formulaire.contains(event.target)) {
+        // Masquer le formulaire
+        formulaire.style.display = 'none';
+    }
+});
+
+// Empêcher la propagation du clic à l'intérieur du formulaire
+formulaire.addEventListener('click', function (event) {
+    event.stopPropagation();
+});
+
+// Ajouter un gestionnaire d'événements pour le clic sur le bouton "Poster la demande"
+var boutonPoster = document.getElementById('bouton_non_submit');
+boutonPoster.addEventListener('click', function () {
+    // Afficher le formulaire
+    formulaire.style.display = 'block';
+});
+
+// Empêcher la propagation du clic à l'intérieur du formulaire
+formulaire.addEventListener('click', function (event) {
+    event.stopPropagation();
+});
+function roundMinutes(valeur){
+    var heureActuelle = valeur;
+
+    var [heures, minutes] = heureActuelle.split(':');
+
+    minutes = Math.round(minutes / 15) * 15;
+
+    if (minutes === 60) {
+        heures = parseInt(heures, 10) + 1;
+        minutes = 0;
+    }
+    return [heures , minutes]
+}
+document.getElementById('addCreneau').addEventListener('submit', function (event) {
+    /* Penser à vérifier les valeurs entrées !!!!!*/
+    // Empêcher le rechargement de la page par défaut
+    event.preventDefault();
+    form = document.getElementById('addCreneau');
+
+    // Récupérer les valeurs des champs du formulaire
+    var uv = form.querySelector('#input-uv').value;
+    var creneau = form.querySelector('#input-creneau').value;
+    var hdebut = form.querySelector('#input-hdebut').value;
+    var hfin = form.querySelector('#input-hfin').value;
+    var salle = form.querySelector('#input-salle').value;
+    var type = form.querySelector('#input-type').value;
+    var semaine = form.querySelector('#input-semaine').checked;
+    var semainechoix = form.querySelector('input[name="semainechoix"]:checked') ? form.querySelector('input[name="semainechoix"]:checked').value : null;
+
+    hdebut = hdebut.replace(":" , "h");
+    hfin = hfin.replace(":" , "h");
+    let cours = new Cours(uv, hdebut, hfin, creneau, salle , semainechoix , type);
+    createCours(cours);
+    form.reset();
+    form.style.display = "none";
+});
 
 var lundi = document.getElementById("lundi").getElementsByClassName("endroit_cours")[0];
 var mardi = document.getElementById("mardi").getElementsByClassName("endroit_cours")[0];
@@ -89,13 +184,14 @@ for (var heure = debutEDT ; heure <= finEDT ; heure++){
 }
 
 class Cours {
-    constructor(codeUV, horaireDebut, horaireFin, jour, salle, semaine = null, couleur = null) {
+    constructor(codeUV, horaireDebut, horaireFin, jour, salle, semaine = null, couleur = null , type = null) {
         this.codeUV = codeUV;
         this.horaireDebut = horaireDebut;
         this.horaireFin = horaireFin;
         this.jour = jour;
         this.salle = salle;
         this.semaine = semaine;
+        this.type = type;
         this.couleur = couleur;
     }
 
@@ -140,11 +236,6 @@ for (var i of listeJour) {
     }
 }
 
-
-function addCreneau(event){
-    document.getElementById("addCreneau").style.display = "block";
-}
-
 function calculDecimal(nombre) {
     var heuresMinutesDebut = nombre.split('h');
     var heuresDebut = parseInt(heuresMinutesDebut[0], 10);
@@ -153,7 +244,7 @@ function calculDecimal(nombre) {
     return heuresDebut + minutesDebut / 60;
 }
 
-function calculPourcentage(nombre) {
+function calculPourcentage(nombre , nbHeureEDT , tailleEDT) {
 
     var pixel = nombre * tailleEDT / nbHeureEDT;
     return pixel * 100 / tailleEDT;
@@ -176,81 +267,75 @@ function getRandomColor(listOfColors) {
     // Retourner la couleur sélectionnée
     return randomColor;
 }
-
-var compteur=0;
-var lundiListe = [];
-var mardiListe = [];
-var mercrediListe = [];
-var jeudiListe = [];
-var vendrediListe = [];
 for (var i = 0; i < liste.length; i++) {
+    createCours(liste[i]);
+};
 
-    if(liste[i].jour == "lundi"){
+function createCours(cours){
+    if(cours.jour == "lundi"){
         endroit_cours = lundi;
     }
-    if(liste[i].jour == "mardi"){
+    if(cours.jour == "mardi"){
         endroit_cours = mardi;
     }
-    if(liste[i].jour == "mercredi"){
+    if(cours.jour == "mercredi"){
         endroit_cours = mercredi;
     }
-    if(liste[i].jour == "jeudi"){
+    if(cours.jour == "jeudi"){
         endroit_cours = jeudi;
     }
-    if(liste[i].jour == "vendredi"){
+    if(cours.jour == "vendredi"){
         endroit_cours = vendredi;
     }
-    if(liste[i].jour == "samedi"){
+    if(cours.jour == "samedi"){
         endroit_cours = samedi;
     }
 
-    if (!(liste[i].codeUV in coursColors)) {
-        coursColors[liste[i].codeUV] = getRandomColor(colorList);
+    if (!(cours.codeUV in coursColors)) {
+        coursColors[cours.codeUV] = getRandomColor(colorList);
     }
-    liste[i].couleur = coursColors[liste[i].codeUV];
+    cours.couleur = coursColors[cours.codeUV];
 
-    endroit_cours.innerHTML += '<div class="cours"><h2 class="UV">' + '</h2><p>' + liste[i].horaireDebut + '-' + liste[i].horaireFin + '</p><p>' + liste[i].salle + '</p></div>'
-    cours = endroit_cours.getElementsByClassName("cours")[endroit_cours.getElementsByClassName("cours").length -1];
+    endroit_cours.innerHTML += '<div class="cours"><h2 class="UV">' + '</h2><p>' + cours.horaireDebut + '-' + cours.horaireFin + '</p><p>' + cours.salle + '</p></div>'
+    coursElement = endroit_cours.getElementsByClassName("cours")[endroit_cours.getElementsByClassName("cours").length -1];
 
     var tailleEDT = endroit_cours.offsetHeight;
     var nbHeureEDT = 12;
     var heureDebutEDT = 8;
-    var heuresDecimalesDebut = calculDecimal(liste[i].horaireDebut);
+    var heuresDecimalesDebut = calculDecimal(cours.horaireDebut);
 
-    var heuresDecimalesFin = calculDecimal(liste[i].horaireFin);
+    var heuresDecimalesFin = calculDecimal(cours.horaireFin);
 
     var tempsCours = heuresDecimalesFin - heuresDecimalesDebut;
 
-    var pourcentageTop = calculPourcentage(heuresDecimalesDebut - heureDebutEDT);
+    var pourcentageTop = calculPourcentage(heuresDecimalesDebut - heureDebutEDT , nbHeureEDT , tailleEDT);
 
-    var pourcentageHeight = calculPourcentage(tempsCours);
+    var pourcentageHeight = calculPourcentage(tempsCours , nbHeureEDT , tailleEDT);
 
-    cours.style.height = pourcentageHeight + "%";
-    cours.style.overflow = "hidden";
+    coursElement.style.height = pourcentageHeight + "%";
+    coursElement.style.overflow = "hidden";
 
-    cours.style.top = pourcentageTop + "%";
+    coursElement.style.top = pourcentageTop + "%";
     if (pourcentageHeight < 10){
-        cours.style.flexDirection = "row";
-        cours.style.fontSize = pourcentageHeight * 8 + '%';
-        cours.style.gap = "4px";
-        for (element of cours.children){
+        coursElement.style.flexDirection = "row";
+        coursElement.style.fontSize = pourcentageHeight * 8 + '%';
+        coursElement.style.gap = "4px";
+        for (element of coursElement.children){
             element.style.fontSize = "12px";
         }
     } else {
-        cours.style.fontSize = pourcentageHeight * 5 + '%';
+        coursElement.style.fontSize = pourcentageHeight * 5 + '%';
     }
 
-    cours.style.background = liste[i].couleur;
+    coursElement.style.background = cours.couleur;
 
-    if (liste[i].semaine == null){
-        cours.getElementsByClassName("UV")[0].innerHTML = liste[i].codeUV;
+    if (cours.semaine == null){
+        coursElement.getElementsByClassName("UV")[0].innerHTML = cours.codeUV;
     } else {
-        if (liste[i].semaine === "B"){
-            cours.style.left = "50%";
+        if (cours.semaine === "B"){
+            coursElement.style.left = "50%";
         }
-        cours.style.width = "50%";
-        cours.getElementsByClassName("UV")[0].innerHTML = liste[i].codeUV + ' - ' + liste[i].semaine;
+        coursElement.style.width = "50%";
+        coursElement.getElementsByClassName("UV")[0].innerHTML = liste[i].codeUV + ' - ' + liste[i].semaine;
     }
-
-};
-
+}
