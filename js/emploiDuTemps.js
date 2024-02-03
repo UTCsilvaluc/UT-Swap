@@ -142,7 +142,7 @@ for (var i of listeJour) {
 
 
 function addCreneau(event){
-    console.log(document.getElementById("addCreneau"))
+    document.getElementById("addCreneau").style.display = "block";
 }
 
 function calculDecimal(nombre) {

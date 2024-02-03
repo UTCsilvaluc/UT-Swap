@@ -58,69 +58,62 @@
     <img class="hoverCoursIcon" id="trash" src="../svg/trash.svg" alt="" style="width: 30px ; height: 30px" onmouseenter="svgpTrasheEnter(event)" onmouseleave="svgTrashLeave(event)">
 </div>
 
-<div id="addCreneau" style="display: none;">
-    <div id="titre_nouveau">
-        <h1>Nouvelle demande de Swap</h1>
+<div class="addCreneau" id="addCreneau">
+    <div class="titre"><h1>Ajouter un nouveau créneau</h1></div>
+
+    <hr>
+    <div class="formulaire">
+        <div class="firstLine">
+            <div class="divInput">
+                <label for="codeUV">Code d'UV</label> <input type="text" name="" id="codeUV" placeholder="Veuillez entrer le code de l'UV">
+            </div>
+            <div class="divInput">
+                <label for="creneau">Créneau:</label>
+                <select id="creneau" name="jourSemaine" required>
+                    <option value="" disabled selected>Sélectionnez un créneau</option>
+                    <option value="lundi">Lundi</option>
+                    <option value="mardi">Mardi</option>
+                    <option value="mercredi">Mercredi</option>
+                    <option value="jeudi">Jeudi</option>
+                    <option value="vendredi">Vendredi</option>
+                    <option value="samedi">Samedi</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="secondLine">
+            <div class="divInput">
+                <label for="input-hdebut">Heure début:</label>
+                <input type="time" id="input-hdebut" name="hdebut">
+            </div>
+            <div class="divInput">
+                <label for="input-hfin">Heure fin:</label>
+                <input type="time" id="input-hfin" name="hfin">
+            </div>
+        </div>
+
+        <div class="thirdLine">
+            <div class="divInput">
+                <label for="salle">Salle:</label>
+                <input type="text" id="salle" name="salle" placeholder="Veuillez entrer la salle">
+            </div>
+            <div class="divInput">
+                <label for="type">Type:</label>
+                <select id="type" name="type" required>
+                    <option value="" disabled selected>Sélectionnez un type</option>
+                    <option value="CM">CM</option>
+                    <option value="TP">TP</option>
+                    <option value="TD">TD</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="fourLine">
+            <div class="divSemaine"><input type="checkbox" name="semaine" id="semaine"><label for="semaine">Créneau une semaine sur deux</label></div>
+        </div>
+
         <hr>
+        <button type="button" onclick="alert('send')">Ajouter le créneau</button>
     </div>
-    <form action="#" method="post" id="form_debut_nouveau">
-        <ul>
-            <li class="double-input">
-                <div>
-                    <label for="input-uv">Code d'UV:</label>
-                    <input type="text" id="input-uv" list="uvs" name="uv" placeholder="Veuillez entrer le code de l'UV">
-                    <datalist id="uvs">
-                        <option value="UV1">
-                        </option><option value="UV2">
-                        </option><option value="UV3">
-                        </option></datalist>
-                </div>
-                <div>
-                    <label for="input-creneau">Créneau:</label>
-                    <input type="date" id="input-creneau" name="creneau" placeholder="Veuillez entrer le créneau">
-                </div>
-            </li>
-            <li class="double-input">
-                <div>
-                    <label for="input-hdebut">Heure début:</label>
-                    <input type="time" id="input-hdebut" name="hdebut">
-                </div>
-                <div>
-                    <label for="input-hfin">Heure fin:</label>
-                    <input type="time" id="input-hfin" name="hfin">
-                </div>
-            </li>
-            <li class="double-input">
-                <div>
-                    <label for="input-salle">Salle:</label>
-                    <input type="text" id="input-salle" name="salle" placeholder="Veuillez entrer votre salle">
-                </div>
-                <div>
-                    <label for="input-type">Type:</label>
-                    <select id="input-type" name="type">
-                        <option value="td">TD</option>
-                        <option value="tp">TP</option>
-                        <option value="cm">Cours</option>
-                    </select>
-                </div>
-            </li>
-            <li class="basique">
-                <input type="checkbox" id="input-semaine">
-                <label for="input-semaine">Créneau une semaine sur deux</label>
-            </li>
-            <li class="basique hidden" id="choix-semaine">
-                <input type="radio" name="semainechoix" value="sA" id="sA-choix">
-                <label for="sA-choix">Semaine A</label>
-                <input type="radio" name="semainechoix" value="sB" id="sB-choix">
-                <label for="sB-choix">Semaine B</label>
-
-            </li>
-        </ul>
-    </form>
-    <form id="form_fin_nouveau" action="#" method="post">
-        <hr>
-        <input type="submit" value="Poster la demande">
-    </form>
 </div>
-
 </html>
