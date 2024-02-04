@@ -1,22 +1,37 @@
 function svgSwapEnter(event){
-    event.target.style.height = "8%";
-    event.target.style.width = "8%";
+    if (event.target.closest(".hoverCours").style.flexDirection === "row"){
+        event.target.style.height = "15%";
+        event.target.style.width = "15%";
+    } else {
+        event.target.style.height = "8%";
+        event.target.style.width = "8%";
+    }
     event.target.src = "../svg/poster_swap.svg";
     event.target.style.cursor = "pointer";
 
 }
 
 function svgpDisplaceEnter(event){
-    event.target.style.height = "20%";
-    event.target.style.width = "20%";
+    if (event.target.closest(".hoverCours").style.flexDirection === "row"){
+        event.target.style.height = "15%";
+        event.target.style.width = "15%";
+    } else {
+        event.target.style.height = "20%";
+        event.target.style.width = "20%";
+    }
     event.target.src = "../svg/displace_cours.svg";
     event.target.style.cursor = "pointer";
 
 }
 
 function svgpTrasheEnter(event){
-    event.target.style.height = "25%";
-    event.target.style.width = "25%";
+    if (event.target.closest(".hoverCours").style.flexDirection === "row"){
+        event.target.style.height = "15%";
+        event.target.style.width = "15%";
+    } else {
+        event.target.style.height = "25%";
+        event.target.style.width = "25%";
+    }
     event.target.src = "../svg/supprimer.svg";
     event.target.style.cursor = "pointer";
 
@@ -45,24 +60,35 @@ function svgTrashLeave(event){
 
 function posterSwap(event){
     var codeUV = localStorage.getItem("codeUV");
-    console.log(codeUV);
+    var creneau = localStorage.getItem("creneau");
+    var heureDebut = localStorage.getItem("heureDebut");
+    var heureFin = localStorage.getItem("heureFin");
+    var salle = localStorage.getItem("salle");
+    var type = localStorage.getItem("type");
+
+    formulaire = document.getElementById("nouveau_pannel");
+    formulaire.querySelector("#input-uv").value = codeUV;
+    formulaire.querySelector("#input-creneau").value = creneau;
+    formulaire.querySelector("#input-hdebut").value = heureDebut.replace("h" , ":");
+    formulaire.querySelector("#input-hfin").value = heureFin.replace("h" , ":");
+    formulaire.querySelector("#input-salle").value = salle;
+    //formulaire.getElementById("addCreneau-input-type").value = type;
 }
 
 document.getElementById("emploi_du_temps").addEventListener("mousemove" , function (event) {
     if (event.target.className === "cours"){
-// Récupérer l'élément sur lequel l'événement a eu lieu
+    // Récupérer l'élément sur lequel l'événement a eu lieu
         var coursElement = event.target;
         var jour = coursElement.closest('.jour').id;
 
-
-// Récupérer le texte de la balise h2
+    // Récupérer le texte de la balise h2
         var h2Text = coursElement.querySelector('h2.UV').textContent;
 
-// Initialiser les variables
+    // Initialiser les variables
         var codeUV = null;
         var semaine = null;
 
-// Vérifier si le texte de h2 contient un "-"
+    // Vérifier si le texte de h2 contient un "-"
         if (h2Text.includes('-')) {
             var segments = h2Text.split('-');
             codeUV = segments[0].trim();
@@ -71,23 +97,24 @@ document.getElementById("emploi_du_temps").addEventListener("mousemove" , functi
             codeUV = h2Text.trim();
         }
 
-// Récupérer le texte de la balise <p> contenant l'heure
+    // Récupérer le texte de la balise <p> contenant l'heure
         var heuresText = coursElement.querySelector('p').textContent.trim();
 
-// Diviser le texte des heures en heureDebut et heureFin
+    // Diviser le texte des heures en heureDebut et heureFin
         var heuresSegments = heuresText.split('-');
         var heureDebut = heuresSegments[0].trim();
         var heureFin = heuresSegments[1].trim();
 
-// Récupérer le texte de la balise <p> contenant la salle
+    // Récupérer le texte de la balise <p> contenant la salle
         var salle = coursElement.querySelector('p:nth-of-type(2)').textContent.trim();
 
+        // Mise en cache des données pour les réutiliser si besoin de swap.
         localStorage.setItem("codeUV",codeUV);
         localStorage.setItem("creneau",jour);
         localStorage.setItem("heureDebut",heureDebut);
         localStorage.setItem("heureFin",heureFin);
         localStorage.setItem("salle",salle);
-        localStorage.setItem("type", "type");
+
         hoverCours = document.getElementsByClassName("hoverCours")[0];
         hoverCours.style.display = "flex";
         if (parseFloat(event.target.style.height) < 15){
@@ -103,8 +130,14 @@ document.getElementById("emploi_du_temps").addEventListener("mousemove" , functi
         if (event.target.style.width == "50%"){
             hoverCours.style.left = `${event.target.getBoundingClientRect().x + 95}px`
             hoverCours.style.top = `${event.target.getBoundingClientRect().y - 10}px`
+            if (event.target.style.left == "50%"){
+                localStorage.setItem("type", "B");
+            } else{
+                localStorage.setItem("type", "A");
+            }
         }
         else{
+            localStorage.setItem("type", null);
             hoverCours.style.left = `${event.target.getBoundingClientRect().x + 190}px`
             hoverCours.style.top = `${event.target.getBoundingClientRect().y - 10}px`
         }
@@ -140,14 +173,28 @@ function addCreneau(event) {
         }
     }
 }
+checkbox = document.getElementById("addCreneau").querySelector("#addCreneau-input-semaine");
+checkbox.addEventListener('change', function () {
+    var nouveau_pannel = document.getElementById("addCreneau")
+    var choix_semaine = nouveau_pannel.querySelector("#addCreneau-choix-semaine");
+    // Modifiez la visibilité de l'élément en fonction de l'état de la checkbox
+    if (checkbox.checked) {
+        choix_semaine.style.display = "block";
+        lastHeight= nouveau_pannel.scrollHeight;
+        nouveau_pannel.style.height = nouveau_pannel.scrollHeight + 10 + "px";
+    } else {
+        nouveau_pannel.style.height = lastHeight + "px"; // Ajustez ici la hauteur minimale souhaitée
+        choix_semaine.style.display = "none";
+    }
+});
 
 formAddCreneau = document.getElementById('addCreneau');
-formAddCreneau.querySelector('#input-hfin').addEventListener('change', function() {
+formAddCreneau.querySelector('#addCreneau-input-hfin').addEventListener('change', function() {
     var [heures, minutes] = roundMinutes(this.value);
     this.value = heures.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0');
 });
 
-formAddCreneau.querySelector('#input-hdebut').addEventListener('change', function() {
+formAddCreneau.querySelector('#addCreneau-input-hdebut').addEventListener('change', function() {
     var [heures, minutes] = roundMinutes(this.value);
     this.value = heures.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0');
 });
@@ -156,10 +203,13 @@ var formulaire = document.getElementById('addCreneau');
 
 // Ajouter un gestionnaire d'événements pour le clic sur le document
 document.addEventListener('click', function (event) {
+    var formulaire = document.getElementById('addCreneau');
     // Vérifier si l'élément cliqué n'appartient pas au formulaire ni à ses enfants
     if (!formulaire.contains(event.target)) {
         // Masquer le formulaire
         formulaire.style.display = 'none';
+        formulaire.reset();
+        formulaire.querySelector("#addCreneau-choix-semaine").style.display = "none";
     }
 });
 
@@ -199,13 +249,13 @@ document.getElementById('addCreneau').addEventListener('submit', function (event
     form = document.getElementById('addCreneau');
 
     // Récupérer les valeurs des champs du formulaire
-    var uv = form.querySelector('#input-uv').value;
-    var creneau = form.querySelector('#input-creneau').value;
-    var hdebut = form.querySelector('#input-hdebut').value;
-    var hfin = form.querySelector('#input-hfin').value;
-    var salle = form.querySelector('#input-salle').value;
-    var type = form.querySelector('#input-type').value;
-    var semaine = form.querySelector('#input-semaine').checked;
+    var uv = form.querySelector('#addCreneau-input-uv').value;
+    var creneau = form.querySelector('#addCreneau-input-creneau').value;
+    var hdebut = form.querySelector('#addCreneau-input-hdebut').value;
+    var hfin = form.querySelector('#addCreneau-input-hfin').value;
+    var salle = form.querySelector('#addCreneau-input-salle').value;
+    var type = form.querySelector('#addCreneau-input-type').value;
+    var semaine = form.querySelector('#addCreneau-input-semaine').checked;
     var semainechoix = form.querySelector('input[name="semainechoix"]:checked') ? form.querySelector('input[name="semainechoix"]:checked').value : null;
 
     hdebut = hdebut.replace(":" , "h");
@@ -213,6 +263,7 @@ document.getElementById('addCreneau').addEventListener('submit', function (event
     let cours = new Cours(uv, hdebut, hfin, creneau, salle , semainechoix , type);
     createCours(cours);
     form.reset();
+    form.querySelector("#addCreneau-choix-semaine").style.display = "none";
     form.style.display = "none";
 });
 
@@ -374,6 +425,21 @@ function createCours(cours){
     coursElement.style.overflow = "hidden";
 
     coursElement.style.top = pourcentageTop + "%";
+
+    coursElement.style.background = cours.couleur;
+
+    if (cours.semaine == null){
+        coursElement.getElementsByClassName("UV")[0].innerHTML = cours.codeUV;
+    } else {
+
+        if (cours.semaine === "B"){
+            coursElement.style.left = "50%";
+            coursElement.getElementsByClassName("UV")[0].innerHTML = cours.codeUV + " - B";
+        } else {
+            coursElement.getElementsByClassName("UV")[0].innerHTML = cours.codeUV + " - A";
+        }
+        coursElement.style.width = "50%";
+    }
     if (pourcentageHeight < 10){
         coursElement.style.flexDirection = "row";
         coursElement.style.fontSize = pourcentageHeight * 8 + '%';
@@ -383,17 +449,5 @@ function createCours(cours){
         }
     } else {
         coursElement.style.fontSize = pourcentageHeight * 5 + '%';
-    }
-
-    coursElement.style.background = cours.couleur;
-
-    if (cours.semaine == null){
-        coursElement.getElementsByClassName("UV")[0].innerHTML = cours.codeUV;
-    } else {
-        if (cours.semaine === "B"){
-            coursElement.style.left = "50%";
-        }
-        coursElement.style.width = "50%";
-        coursElement.getElementsByClassName("UV")[0].innerHTML = liste[i].codeUV + ' - ' + liste[i].semaine;
     }
 }

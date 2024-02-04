@@ -57,8 +57,8 @@
             <ul id="ul_nouveau">
                 <li class="double-input">
                     <div>
-                        <label for="input-uv">Code d'UV:<p class="hidden" id="require_uv">*</p></label>
-                        <input type="text" id="input-uv" list="uvs" name="uv" placeholder="Veuillez entrer le code de l'UV" required>
+                        <label for="addCreneau-input-uv">Code d'UV:<p class="hidden" id="require_uv">*</p></label>
+                        <input type="text" id="addCreneau-input-uv" list="uvs" name="uv" placeholder="Veuillez entrer le code de l'UV" required>
                         <p class="hidden">UV non valide</p>
                         <datalist id="uvs">
                             <option value="UV1">
@@ -67,8 +67,8 @@
                         </datalist>
                     </div>
                     <div>
-                        <label for="input-creneau">Créneau:<p class="hidden" id="require_creneau">*</p></label>
-                        <select id="input-creneau" name="creneau" required>
+                        <label for="addCreneau-input-creneau">Créneau:<p class="hidden" id="require_creneau">*</p></label>
+                        <select id="addCreneau-input-creneau" name="creneau" required>
                             <option value="" disabled selected>Sélectionnez un créneau</option>
                             <option value="lundi">Lundi</option>
                             <option value="mardi">Mardi</option>
@@ -82,24 +82,24 @@
                 </li>
                 <li class="double-input">
                     <div>
-                        <label for="input-hdebut">Heure début:<p class="hidden" id="require_hdebut">*</p></label>
-                        <input type="time" id="input-hdebut" name="hdebut" required>
+                        <label for="addCreneau-input-hdebut">Heure début:<p class="hidden" id="require_hdebut">*</p></label>
+                        <input type="time" id="addCreneau-input-hdebut" name="hdebut" required>
                         <p class="hidden">Heures non valide</p>
                     </div>
                     <div>
-                        <label for="input-hfin">Heure fin:<p class="hidden" id="require_hfin">*</p></label>
-                        <input type="time" id="input-hfin" name="hfin" required>
+                        <label for="addCreneau-input-hfin">Heure fin:<p class="hidden" id="require_hfin">*</p></label>
+                        <input type="time" id="addCreneau-input-hfin" name="hfin" required>
                     </div>
                 </li>
                 <li class="double-input">
                     <div>
-                        <label for="input-salle">Salle:<p class="hidden" id="require_salle">*</p></label>
-                        <input type="text" id="input-salle" name="salle" placeholder="Veuillez entrer votre salle" required>
+                        <label for="addCreneau-input-salle">Salle:<p class="hidden" id="require_salle">*</p></label>
+                        <input type="text" id="addCreneau-input-salle" name="salle" placeholder="Veuillez entrer votre salle" required>
                         <p class="hidden">Salle non valide</p>
                     </div>
                     <div>
-                        <label for="input-type">Type:<p class="hidden" id="require_type">*</p></label>
-                        <select id="input-type" name="type" required>
+                        <label for="addCreneau-input-type">Type:<p class="hidden" id="require_type">*</p></label>
+                        <select id="addCreneau-input-type" name="type" required>
                             <option value="" disabled selected>Sélectionnez un type</option>
                             <option value="TD">TD</option>
                             <option value="TP">TP</option>
@@ -109,15 +109,14 @@
                     </div>
                 </li>
                 <li class="basique">
-                    <input type="checkbox" id="input-semaine" name="semaine">
-                    <label for="input-semaine">Créneau une semaine sur deux</label>
+                    <input type="checkbox" id="addCreneau-input-semaine" name="semaine">
+                    <label for="addCreneau-input-semaine">Créneau une semaine sur deux</label>
                 </li>
-                <li class="basique hidden" id="choix-semaine">
-                    <input type="radio" name="semainechoix" value="A" id="sA-choix">
-                    <label for="sA-choix">Semaine A</label>
-                    <input type="radio" name="semainechoix" value="B" id="sB-choix">
-                    <label for="sB-choix">Semaine B</label>
-
+                <li class="basique hidden" id="addCreneau-choix-semaine" hidden="hidden">
+                    <input type="radio" name="semainechoix" value="A" id="addCreneau-sA-choix">
+                    <label for="addCreneau-sA-choix">Semaine A</label>
+                    <input type="radio" name="semainechoix" value="B" id="addCreneau-sB-choix">
+                    <label for="addCreneau-sB-choix">Semaine B</label>
                 </li>
             </ul>
             <p id="message_pression" class="hidden">Assurez-vous de la validité ainsi que de la possession du créneau renseigné. Des incohérences répétées pourraient entraîner des sanctions, y compris le bannissement.</p>
@@ -126,7 +125,7 @@
         <div id="div_fin_nouveau">
             <hr>
             <button class="bouton_nouveau hidden" id="bouton_ok">OK !</button></li>
-            <button id="bouton_non_submit">Poster la demande</button>
+            <button id="bouton_non_submit">Ajouter le créneau</button>
             <div id="boutons_message" class="hidden">
                 <button id="bouton_retour">Retour</button>
                 <input type="submit" value="Poster la demande" id="submit_fin_nouveau">

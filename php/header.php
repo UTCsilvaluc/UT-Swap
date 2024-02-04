@@ -310,7 +310,7 @@
                 if(nouveau_pannel.style.display!="flex" && menu_pannel.style.left!="0"){
                     ecran.style.display = (ecran.style.display === "none" || ecran.style.display === "") ? "block" : "none";
                 }
-                nouveau_pannel.style.display = "none"
+                //nouveau_pannel.style.display = "none"
                 largeurEcran = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 
                 //Si la largeur est inférieur à 750px alors il faut slide l'écran sinon il faux juste l'afficher 
@@ -347,26 +347,26 @@
                 if(notification_pannel.style.display != "block" && menu_pannel.style.left!="0"){
                     ecran.style.display = (ecran.style.display === "none" || ecran.style.display === "") ? "block" : "none";
                 }
-                nouveau_pannel.style.display = (nouveau_pannel.style.display === "none" || nouveau_pannel.style.display === "") ? "flex" : "none";                
+                nouveau_pannel.style.display = (nouveau_pannel.style.display === "none" || nouveau_pannel.style.display === "") ? "flex" : "none";
                 menu_pannel.style.left = '-65%';
                 if (largeurEcran <= 750) {
                     notification_pannel.style.right = "-90%";
                 } else {
                     notification_pannel.style.display = "none";
                     notification_pannel.style.right = 0;
-                }                
+                }
             });
         };
         
 
         //Lorsqu'on clique en dehors du menu notif/navbar et en dehors du header ça ferme le menu
         ecran.addEventListener("click", function() {
-            nouveau_pannel.style.display = "none"
+            //nouveau_pannel.style.display = "none"
             largeurEcran = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
             ecran.style.display = "none";
             menu_pannel.style.left = '-65%';
             if (largeurEcran <= 750) {
-                notification_pannel.style.right = "-90%";                    
+                notification_pannel.style.right = "-90%";
             } else {
                 notification_pannel.style.display = "none";
                 notification_pannel.style.right = 0;
@@ -379,10 +379,10 @@
                 ecran.style.display = (ecran.style.display === "none" || ecran.style.display === "") ? "block" : "none";
             }
 
-            nouveau_pannel.style.display = "none"
-            
+            //nouveau_pannel.style.display = "none"
+
             menu_pannel.style.left = (menu_pannel.style.left <= '0' || menu_pannel.style.left === "") ? "0" : '-65%';
-            
+
             largeurEcran = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
             if (largeurEcran <= 750) {
                 notification_pannel.style.right = "-90%";
