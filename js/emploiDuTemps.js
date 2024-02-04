@@ -1,18 +1,22 @@
 function svgSwapEnter(event){
-    event.target.style.height = "10%";
-    event.target.style.width = "10%";
+    event.target.style.height = "8%";
+    event.target.style.width = "8%";
     event.target.src = "../svg/poster_swap.svg";
     event.target.style.cursor = "pointer";
 
 }
 
 function svgpDisplaceEnter(event){
+    event.target.style.height = "20%";
+    event.target.style.width = "20%";
     event.target.src = "../svg/displace_cours.svg";
     event.target.style.cursor = "pointer";
 
 }
 
 function svgpTrasheEnter(event){
+    event.target.style.height = "25%";
+    event.target.style.width = "25%";
     event.target.src = "../svg/supprimer.svg";
     event.target.style.cursor = "pointer";
 
@@ -26,17 +30,64 @@ function svgSwapLeave(event){
 }
 
 function svgDisplaceLeave(event){
+    event.target.style.height = "30px";
+    event.target.style.width = "30px";
     event.target.src = "../svg/displace.svg";
     event.target.style.cursor = "default";
 }
 
 function svgTrashLeave(event){
+    event.target.style.height = "30px";
+    event.target.style.width = "30px";
     event.target.src = "../svg/trash.svg";
     event.target.style.cursor = "default";
 }
 
+function posterSwap(event){
+    var codeUV = localStorage.getItem("codeUV");
+    console.log(codeUV);
+}
+
 document.getElementById("emploi_du_temps").addEventListener("mousemove" , function (event) {
     if (event.target.className === "cours"){
+// Récupérer l'élément sur lequel l'événement a eu lieu
+        var coursElement = event.target;
+        var jour = coursElement.closest('.jour').id;
+
+
+// Récupérer le texte de la balise h2
+        var h2Text = coursElement.querySelector('h2.UV').textContent;
+
+// Initialiser les variables
+        var codeUV = null;
+        var semaine = null;
+
+// Vérifier si le texte de h2 contient un "-"
+        if (h2Text.includes('-')) {
+            var segments = h2Text.split('-');
+            codeUV = segments[0].trim();
+            semaine = segments[1].trim();
+        } else {
+            codeUV = h2Text.trim();
+        }
+
+// Récupérer le texte de la balise <p> contenant l'heure
+        var heuresText = coursElement.querySelector('p').textContent.trim();
+
+// Diviser le texte des heures en heureDebut et heureFin
+        var heuresSegments = heuresText.split('-');
+        var heureDebut = heuresSegments[0].trim();
+        var heureFin = heuresSegments[1].trim();
+
+// Récupérer le texte de la balise <p> contenant la salle
+        var salle = coursElement.querySelector('p:nth-of-type(2)').textContent.trim();
+
+        localStorage.setItem("codeUV",codeUV);
+        localStorage.setItem("creneau",jour);
+        localStorage.setItem("heureDebut",heureDebut);
+        localStorage.setItem("heureFin",heureFin);
+        localStorage.setItem("salle",salle);
+        localStorage.setItem("type", "type");
         hoverCours = document.getElementsByClassName("hoverCours")[0];
         hoverCours.style.display = "flex";
         if (parseFloat(event.target.style.height) < 15){
@@ -49,8 +100,15 @@ document.getElementById("emploi_du_temps").addEventListener("mousemove" , functi
             hoverCours.style.height = "auto";
             hoverCours.style.width = "auto";
         }
-        hoverCours.style.left = `${event.target.getBoundingClientRect().x }px`
-        hoverCours.style.top = `${event.target.getBoundingClientRect().y + 5}px`
+        if (event.target.style.width == "50%"){
+            hoverCours.style.left = `${event.target.getBoundingClientRect().x + 95}px`
+            hoverCours.style.top = `${event.target.getBoundingClientRect().y - 10}px`
+        }
+        else{
+            hoverCours.style.left = `${event.target.getBoundingClientRect().x + 190}px`
+            hoverCours.style.top = `${event.target.getBoundingClientRect().y - 10}px`
+        }
+
     }
 
 });
@@ -177,7 +235,7 @@ for (var heure = debutEDT ; heure <= finEDT ; heure++){
 
     let textHour = document.createElement("h4");
     textHour.innerHTML = `${heure}h00`;
-    textHour.style.height = "5.8vh";
+    textHour.style.height = "5.55vh";
     textHour.id = `h${heure}`;
 
     conteneurHours.appendChild(textHour);
