@@ -73,6 +73,8 @@ function posterSwap(event){
     formulaire.querySelector("#input-hfin").value = heureFin.replace("h" , ":");
     formulaire.querySelector("#input-salle").value = salle;
     //formulaire.getElementById("addCreneau-input-type").value = type;
+
+    formulaire.style.display = "block";
 }
 
 document.getElementById("emploi_du_temps").addEventListener("mousemove" , function (event) {
@@ -173,6 +175,7 @@ function addCreneau(event) {
         }
     }
 }
+/* ici le bug nouveau_pannel afficher semaine ne fonctionne pas*/
 checkbox = document.getElementById("addCreneau").querySelector("#addCreneau-input-semaine");
 checkbox.addEventListener('change', function () {
     var nouveau_pannel = document.getElementById("addCreneau")
