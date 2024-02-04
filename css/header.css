@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'Jost';
-    src: url('../fonts/Jost-Medium.ttf');
+    src: url('Jost-Medium.ttf');
     font-weight: normal;
     font-style: normal;
 }
@@ -20,7 +20,7 @@ body {
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 /* Mise du header au premier plan et d'une telle sorte que chaque élément soit de son côté de l'écran */
@@ -32,8 +32,9 @@ header {
     background-color: #32373B;
     color: white;
     font-size: 18px;
+    width: 100%;
     height: var(--taille-header);
-    position: relative;
+    position: fixed;
     z-index: 3;
 }
 
@@ -105,7 +106,7 @@ nav button img, #menu_pannel button img{
     border: 1px solid rgb(219, 219, 219);
     width: 45%;
     height: 75%;
-    z-index: 10;
+    z-index: 2;
     -webkit-box-shadow: 5px 5px 10px 5px #C4C4C4; 
     box-shadow: 5px 5px 10px 5px #C4C4C4;
     border-radius: var(--border-radius);
@@ -127,18 +128,19 @@ nav button img, #menu_pannel button img{
 
 #nouveau_pannel{
     display: none;
+    overflow: hidden;
     flex-direction: column;
     align-items: center;
     justify-content:space-between;
     padding:0;
     position: absolute;
-    top: calc(50% + calc(var(--taille-header) / 2)); /* La moitié de la hauteur de l'en-tête + ajustement */
+    top: calc(50vh + calc(var(--taille-header)/2)); /* La moitié de la hauteur de l'en-tête + ajustement */
     left: 50%;
     transform: translate(-50%, -50%);
     border: 1px solid rgb(219, 219, 219);
     width: 35%;
     min-width: 275px;
-    height: 50%;
+    height: 60%;
     z-index: 2;
     -webkit-box-shadow: 0px 0px 15px 8px #C4C4C4; 
     box-shadow: 0px 0px 15px 8px #C4C4C4;
@@ -152,13 +154,18 @@ nav button img, #menu_pannel button img{
     flex-direction: column;
 }
 
-#titre_nouveau, #div_fin_nouveau{
+#titre_nouveau{
+    height: 79px;
+    width: 100%;
+} 
+
+#div_fin_nouveau{
+    height: 56px;
     width: 100%;
 }
 
 #nouveau_pannel label{
     white-space: nowrap;
-
 }
 
 #div_fin_nouveau{
@@ -206,9 +213,9 @@ nav button img, #menu_pannel button img{
     width: 100%;
 }
 
-#nouveau_pannel .double-input div label,
-#nouveau_pannel .double-input div input,
-#nouveau_pannel .double-input div select {
+#nouveau_pannel li div label,
+#nouveau_pannel li div input,
+#nouveau_pannel li div select {
     display: block;
     width: 100%;
     box-sizing: border-box;
@@ -223,6 +230,14 @@ nav button img, #menu_pannel button img{
     margin-left: 4px;
 }
 
+#nouveau_pannel #nouveau_heure_double{
+    display: flex;
+}
+
+#nouveau_pannel .nouveau_heure_triple{
+    display: none;
+}
+
 #nouveau_pannel input,#nouveau_pannel select{
     box-sizing: content-box;
     cursor: pointer;
@@ -234,10 +249,14 @@ nav button img, #menu_pannel button img{
     padding-left:10px;
 }
 
-#nouveau_pannel input:not(input[type="checkbox"]):not(input[type="radio"]),#nouveau_pannel select:not(input[type="checkbox"]):not(input[type="radio"]){
+#nouveau_pannel .double-input input,#nouveau_pannel .double-input select{
     height:31px;
     width: 15vw;
     min-width: 100px;
+}
+#nouveau_pannel li:not(.double-input) div input:not(input[type="checkbox"]):not(input[type="radio"]){
+    height:31px;
+    min-width: 150px;
 }
 
 #nouveau_pannel input:focus,#nouveau_pannel select:focus{
@@ -262,7 +281,6 @@ nav button img, #menu_pannel button img{
 }
 
 #nouveau_pannel input[type="submit"]{
-    padding: 0;
     border-radius: 10px;
     color: white;
     background-color: #32373B;
@@ -304,7 +322,6 @@ nav button img, #menu_pannel button img{
 }
 
 #nouveau_pannel button{
-    padding: 0;
     border-radius: 10px;
     color: white;
     border: 0;
@@ -450,7 +467,7 @@ nav button img, #menu_pannel button img{
         font-size: 20px;
     }
     
-    #nouveau_pannel input:not(input[type="checkbox"]):not(input[type="radio"]),#nouveau_pannel select:not(input[type="checkbox"]):not(input[type="radio"]){
+    #nouveau_pannel .double-input input,#nouveau_pannel .double-input select{
         width: 20vw;
     }
 
@@ -491,7 +508,7 @@ nav button img, #menu_pannel button img{
     #nouveau_pannel{
         width: 80%;
     }
-    #nouveau_pannel input:not(input[type="checkbox"]):not(input[type="radio"]),#nouveau_pannel select:not(input[type="checkbox"]):not(input[type="radio"]){
+    #nouveau_pannel .double-input input,#nouveau_pannel .double-input select{
         width: 30vw;
     }
     #nouveau_pannel input[type="submit"]{
@@ -506,7 +523,7 @@ nav button img, #menu_pannel button img{
 @media screen and (max-height: 800px) {
 
     #nouveau_pannel{
-        height: 60%;
+        height: 70%;
     }
 }
 
@@ -514,14 +531,37 @@ nav button img, #menu_pannel button img{
 @media screen and (max-height: 650px) {
 
     #nouveau_pannel{
-        height: 70%;
-        min-height: 400px;
+        height: 80%;
     }
 }
 
-@media screen and (max-height: 500px) {
+@media screen and (max-height: 550px) {
     header{
         height: 70px;
+    }
+    
+    #nouveau_pannel #nouveau_heure_double{
+        display: none;
+    }
+
+    #nouveau_pannel .nouveau_heure_triple{
+        display: block;
+    }
+
+    #nouveau_pannel .double-input div:first-child {
+        margin-right: 0;
+    }
+
+    #nouveau_pannel{
+        width: 70%;
+    }
+
+    #nouveau_heure_double{
+        margin: 0;
+    }
+
+    #nouveau_pannel .double-input div:not(:last-child) {
+        margin-right: 25px;
     }
 
     #bouton_menu{
@@ -532,6 +572,16 @@ nav button img, #menu_pannel button img{
         height: 30px;
     }
     
+}
+
+@media screen and (max-height: 550px) and (max-width: 750px) {
+    
+    #nouveau_pannel{
+        width: 90%;
+    }
+    #nouveau_pannel .double-input input,#nouveau_pannel .double-input select{
+        width: 22vw;
+    }
 }
 
 @keyframes shake {
