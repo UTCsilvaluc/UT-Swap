@@ -157,30 +157,34 @@ checkbox.addEventListener('change', function () {
 // Il y a le notification du menu PC et celui du menu téléphone donc on boucle pour tous les deux les selectionner
 for (var i = 0; i < notifications.length; i++) {
     notifications[i].addEventListener("click", function() {
+        var xhr = new XMLHttpRequest();
+
+        // Configurer la requête
+        xhr.open("POST", "", true);
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        // Envoyer la requête avec les données
+        xhr.send("view=" + "1");
+
+        var notifs = document.getElementsByClassName("notif");
+        if(notification_pannel.style.display !== ""){
+            document.getElementsByTagName("nav")[0].getElementsByClassName("cercle")[0].classList.toggle('hidden', true);
+            for(var j of notifs){
+                if(!j.classList.contains("type_1")){
+                    j.classList.toggle('viewed', true);
+                }
+            }
+        }
+        
+        
         if(nouveau_pannel.style.display!="flex" && menu_pannel.style.left!="0"){
             ecran.style.display = (ecran.style.display === "none" || ecran.style.display === "") ? "block" : "none";
         }
         nouveau_pannel.style.display = "none"
         largeurEcran = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 
-        //Si la largeur est inférieur à 750px alors il faut slide l'écran sinon il faux juste l'afficher 
-        if (largeurEcran <= 750) {
-            notification_pannel.style.display = "block";
-            notification_pannel.style.right = (notification_pannel.style.right === "-90%" || notification_pannel.style.right === "") ? "0" : "-90%";                    
-        } else {
-            //Tests pour contourner les bugs
-            if(notification_pannel.style.right != "-90%"){
-                notification_pannel.style.display = (notification_pannel.style.display === "none" || notification_pannel.style.display === "") ? "block" : "none";
-            }else{
-                notification_pannel.style.right = 0;
-            }
-        }
+        notification_pannel.style.display = (notification_pannel.style.display === "none" || notification_pannel.style.display === "") ? "flex" : "none";
         
-        //Parfois il y a un bug avec les transitions lorsqu'on passe du format téléphone au format PC alors c'est pour vérifier
-        if(ecran.style.display === "block"){
-            notification_pannel.style.right = "0";
-            notification_pannel.style.display = "block";
-        }
         menu_pannel.style.left = '-65%';
     });
 };
@@ -195,17 +199,22 @@ for (var i = 0; i < bouton_nouveau.length; i++) {
         boutons_message.classList.toggle('hidden', true);
         message_pression.classList.toggle('hidden', true);
         largeurEcran = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-        if(notification_pannel.style.display != "block" && menu_pannel.style.left!="0"){
+        if(notification_pannel.style.display != "flex" && menu_pannel.style.left!="0"){
             ecran.style.display = (ecran.style.display === "none" || ecran.style.display === "") ? "block" : "none";
         }
         nouveau_pannel.style.display = (nouveau_pannel.style.display === "none" || nouveau_pannel.style.display === "") ? "flex" : "none";                
         menu_pannel.style.left = '-65%';
-        if (largeurEcran <= 750) {
-            notification_pannel.style.right = "-90%";
-        } else {
-            notification_pannel.style.display = "none";
-            notification_pannel.style.right = 0;
-        }                
+
+        notification_pannel.style.display = "none";      
+        input_hdebut[0].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+        input_hdebut[1].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+        input_creneau.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+        input_type.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+        input_uv.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+        for(var element of list_input){
+            var pElement = element.parentNode.querySelector("p");
+            pElement.classList.toggle('hidden', true);
+        }        
     });
 };
 
@@ -216,17 +225,12 @@ ecran.addEventListener("click", function() {
     largeurEcran = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
     ecran.style.display = "none";
     menu_pannel.style.left = '-65%';
-    if (largeurEcran <= 750) {
-        notification_pannel.style.right = "-90%";                    
-    } else {
-        notification_pannel.style.display = "none";
-        notification_pannel.style.right = 0;
-    }
+    notification_pannel.style.display = "none";
 });
 
 //Pareil qu'au dessus mais pour navbar
 bouton_menu.addEventListener("click", function() {
-    if(notification_pannel.style.display != "block" && menu_pannel.style.left!="0"){
+    if(notification_pannel.style.display != "flex" && menu_pannel.style.left!="0"){
         ecran.style.display = (ecran.style.display === "none" || ecran.style.display === "") ? "block" : "none";
     }
 
@@ -235,12 +239,16 @@ bouton_menu.addEventListener("click", function() {
     menu_pannel.style.left = (menu_pannel.style.left <= '0' || menu_pannel.style.left === "") ? "0" : '-65%';
     
     largeurEcran = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-    if (largeurEcran <= 750) {
-        notification_pannel.style.right = "-90%";
-    } else {
-        notification_pannel.style.display = "none";
-        notification_pannel.style.right = 0;
-    }
+    notification_pannel.style.display = "none";
     ecran.style.display = (ecran.style.display === "none" || ecran.style.display === "") ? "block" : "none";
 });
 
+var bouton_accepter_notif = document.getElementsByClassName("bouton_accepter_notif");
+
+for (let i = 0; i < bouton_accepter_notif.length; i++) {
+    bouton_accepter_notif[i].addEventListener("click", function () {
+        event.preventDefault();
+        bouton_accepter_notif[i].parentNode.parentNode.getElementsByClassName("choix_notification")[0].value = 1;
+        bouton_accepter_notif[i].parentNode.parentNode.submit();
+    });
+}

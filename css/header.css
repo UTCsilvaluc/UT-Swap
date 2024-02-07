@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'Jost';
-    src: url('Jost-Medium.ttf');
+    src: url('../Jost-Medium.ttf');
     font-weight: normal;
     font-style: normal;
 }
@@ -63,6 +63,7 @@ nav li {
     display: flex;
     align-items: center;
     margin-right: var(--margin);
+    position: relative;
 }
 
 nav a {
@@ -95,11 +96,27 @@ nav button img, #menu_pannel button img{
     width: 15px;
 }
 
+nav .cercle{
+    position: absolute;
+    top:-10%;
+    right: 10%;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #3eff61;
+}
+
+nav .important{
+    background-color: #ffab3e;
+}
+
 /* Mise en forme de la page de notif */
 
 #notification_pannel{
     display: none;
     position: absolute;
+    flex-direction: column;
+    justify-content: space-between;
     top: var(--taille-header);
     margin: 10px;
     right: 0;
@@ -111,10 +128,11 @@ nav button img, #menu_pannel button img{
     box-shadow: 5px 5px 10px 5px #C4C4C4;
     border-radius: var(--border-radius);
     background-color: #fff;
-    transition: right 0.7s ease;
+    padding-bottom: 0.5em;
+    padding-right: 5px;
 }
 
-#notification_pannel h2{
+#notification_pannel #titre_notification h2{
     margin-left: 40px;
     margin-top: var(--margin);
     margin-bottom: 0;
@@ -122,8 +140,173 @@ nav button img, #menu_pannel button img{
 
 #notification_pannel hr{
     border-top: 1px solid #C4C4C4;
+}
+
+#notification_pannel #titre_notification hr{
     margin-top: 13px;
 }
+
+#notification_pannel #endroit_notification{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    box-sizing: border-box; /* Ajout de box-sizing */
+    margin-right: 5px;
+}
+
+#notification_pannel #endroit_notification::-webkit-scrollbar-track
+{
+	border: 1px solid #d1d1d1;
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+
+#notification_pannel #endroit_notification::-webkit-scrollbar
+{
+	width: 12px;
+	background-color: #F5F5F5;
+}
+
+#notification_pannel #endroit_notification::-webkit-scrollbar-thumb
+{
+	border: 1px solid #d1d1d1;
+	border-radius: 10px;
+	background-color: #dfdfdf;
+}
+
+#notification_pannel #endroit_notification .notif{
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding-right: 5px;
+}
+
+
+
+#notification_pannel #endroit_notification .notif hr{
+    width: 100%;
+}
+
+
+#notification_pannel #endroit_notification .notif .endroit_texte_notif{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-evenly;
+    position: relative;
+    width: 100%;
+    margin: 0;
+    height: 10vh;
+}
+
+#notification_pannel #endroit_notification .type_1:not(.viewed) .endroit_texte_notif{
+    height: 13vh;
+}
+
+#notification_pannel #endroit_notification .viewed .endroit_texte_notif .texte_notification div button{
+    display: none;
+}
+
+
+
+#notification_pannel #endroit_notification .notif .endroit_texte_notif .user_importance_notification{
+    display: flex;
+    flex-direction: column;
+    justify-content:center;
+    align-items: center;
+    margin: 0 20px 0 20px;
+    height: 100%;
+}
+
+#notification_pannel #endroit_notification .notif .endroit_texte_notif .user_importance_notification .image_profil_notification{
+    height: 10vh;
+    position: relative;
+}
+
+#notification_pannel #endroit_notification .notif .endroit_texte_notif .user_importance_notification .image_profil_notification img{
+    height: 100%;
+}
+
+#notification_pannel #endroit_notification .notif .endroit_texte_notif .user_importance_notification .image_profil_notification div{
+    position: absolute;
+    top:0%;
+    right: 0%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+#notification_pannel #endroit_notification .type_1:not(.viewed) .endroit_texte_notif .user_importance_notification .image_profil_notification .cercle{
+    background-color: #3eff61;
+}
+
+#notification_pannel #endroit_notification .type_2:not(.viewed) .endroit_texte_notif .user_importance_notification .image_profil_notification .cercle{
+    background-color: #ffab3e;
+}
+
+
+
+#notification_pannel #endroit_notification .notif .endroit_texte_notif .texte_notification{
+    display: flex;
+    flex-direction: column;
+    justify-content:center;
+    width: 100%;
+}
+
+#notification_pannel #endroit_notification .notif .endroit_texte_notif .texte_notification h1{
+    margin: 0;
+    font-size: 1.75vh;
+}
+#notification_pannel #endroit_notification .notif .endroit_texte_notif .texte_notification p{
+    margin: 0;
+    font-size: 1.50vh;
+    width: 85%;
+}
+
+#notification_pannel #endroit_notification .notif .endroit_texte_notif .texte_notification div{
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#notification_pannel #endroit_notification .notif:not(.viewed) .endroit_texte_notif .texte_notification div button{
+    cursor: pointer;
+    padding: 7px 15px 7px 15px;
+    border-radius: 8px;
+    border: 0;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+#notification_pannel #endroit_notification .notif .endroit_texte_notif .texte_notification div button:first-child{
+    margin-right: 25px;
+    border: 1px solid #32373B;
+    background-color: white;
+    color: #32373B
+}
+
+#notification_pannel #endroit_notification .notif .endroit_texte_notif .texte_notification div button:last-child{
+    background-color: #32373B;
+    color: white;
+}
+
+#notification_pannel #endroit_notification .notif .endroit_texte_notif .time_notification{
+    margin: 0;
+    white-space: nowrap;
+    position: absolute;
+    top:10px;
+    right: 5%;
+    font-size: 1.5vh;
+}
+
+#notification_pannel #endroit_notification .notif .endroit_texte_notif .time_notification p{
+    margin: 0;
+}
+
 
 
 #nouveau_pannel{
@@ -478,6 +661,10 @@ nav button img, #menu_pannel button img{
     #nouveau_pannel button{
         width:20vw;
     }
+
+    #notification_pannel{
+        width:55%;
+    }
 }
 
 
@@ -493,11 +680,9 @@ nav button img, #menu_pannel button img{
     }
 
     #notification_pannel{
-        display: block;
-        right: -90%;
-        width: 85%;
+        width: 90%;
         margin: 0;
-        height: calc(100vh - var(--taille-header));
+        height: calc(100vh - var(--taille-header) - 0.5em);
         -webkit-box-shadow: -5px 0px 10px 5px #C4C4C4; 
         box-shadow: 5px 0px 10px 5px #C4C4C4;
         border-radius: 0px;
@@ -520,10 +705,44 @@ nav button img, #menu_pannel button img{
     }
 }
 
+@media screen and (max-width: 550px) {
+
+    #notification_pannel{
+        width: 100%;
+    }
+    #notification_pannel #endroit_notification .notif .endroit_texte_notif .texte_notification h1{
+        font-size: 1.5vh;
+    }
+
+    #notification_pannel #endroit_notification .notif .endroit_texte_notif .texte_notification p{
+        font-size: 1.25vh;
+    }
+
+    #notification_pannel #endroit_notification .notif .endroit_texte_notif .time_notification p{
+        display: none;
+    }
+}
+
+@media screen and (max-width: 400px) {
+
+    #notification_pannel #endroit_notification .notif .endroit_texte_notif{
+        height: 15vh;
+    }
+}
+
+
 @media screen and (max-height: 800px) {
 
     #nouveau_pannel{
         height: 70%;
+    }
+
+    #notification_pannel #endroit_notification .notif .endroit_texte_notif .texte_notification h1{
+        font-size: 2vh;
+    }
+
+    #notification_pannel #endroit_notification .notif .endroit_texte_notif .texte_notification p{
+        font-size: 1.75vh;
     }
 }
 
