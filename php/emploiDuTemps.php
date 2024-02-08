@@ -7,40 +7,42 @@
     <title>Header avec Notification</title>
 </head>
 <body>
-    <?php
-    include "header.php";
-    ?>
     <div class="conteneur">
         <div class="edt" style="display:flex ; width: 70%">
             <div class="conteneurHours"></div>
             <div>
                 <div id="emploi_du_temps">
-                    <div id="lundi" class="jour"><h1>Lundi</h1>
+                    <div id="lundi" class="jour"><h1 class="titleday">Lundi</h1>
                         <div class="endroit_cours">
                         </div>
                     </div>
 
-                    <div id="mardi" class="jour"><h1>Mardi</h1>
+                    <div id="mardi" class="jour"><h1 class="titleday">Mardi</h1>
                         <div class="endroit_cours">
                         </div>
                     </div>
 
-                    <div id="mercredi" class="jour"><h1>Mercredi</h1>
+                    <div id="mercredi" class="jour"><h1 class="titleday">Mercredi</h1>
                         <div class="endroit_cours">
                         </div>
                     </div>
 
-                    <div id="jeudi" class="jour"><h1>Jeudi</h1>
+                    <div id="jeudi" class="jour"><h1 class="titleday">Jeudi</h1>
                         <div class="endroit_cours">
                         </div>
                     </div>
 
-                    <div id="vendredi" class="jour"><h1>Vendredi</h1>
+                    <div id="vendredi" class="jour"><h1 class="titleday">Vendredi</h1>
                         <div class="endroit_cours">
                         </div>
                     </div>
 
-                    <div id="samedi" class="jour"><h1>Samedi</h1>
+                    <div id="samedi" class="jour"><h1 class="titleday">Samedi</h1>
+                        <div class="endroit_cours">
+                        </div>
+                    </div>
+
+                    <div id="Dimanche" class="jour" style="display: none"><h1 class="titleday">Dimanche</h1>
                         <div class="endroit_cours">
                         </div>
                     </div>
@@ -48,13 +50,25 @@
                 </div>
             </div>
         </div>
-        <div class="filtres" style="background: gray ; width: 400px ; height: 500px">
-            <div class="divFiltre" id="police"><h1 class="filtre_entete">Police</h1> <span><h3>Arial</h3> <h3>Times New Roman</h3></span></div>
-            <div class="divFiltre" id="jours"></div>
-            <div class="divFiltre" id="couleurs"></div>
-            <div class="divFiltre" id="couleur_entete"></div>
-            <div class="divFiltre" id="langue"></div>
-            <div class="divFiltre" id="heures"></div>
+        <div class="filtres"">
+            <div class="filtre_titre"> <h1>Filtrer par</h1> <div class="vertical_ligne" style="height: 70px; width: 2px ; background: #ACACAC "></div></div>
+            <div class="divFiltre" id="police"><h1 class="filtre_entete">Police</h1> <span class="policeSpan"><h3>Arial</h3> <h3>Times New Roman</h3> <h3>Comic Sans MS</h3></span></div>
+            <div class="divFiltre" id="jours"><h1 class="filtre_entete">Jour</h1> <span class="policeSpan" id="spanJour"><h3>Lundi</h3><h3>Mardi</h3><h3>Mercredi</h3><h3>Jeudi</h3><h3>Vendredi</h3><h3>Samedi</h3><h3>Dimanche</h3></div>
+            <div class="divFiltre" id="couleurs"><h1 class="filtre_entete">Couleurs</h1> <span> <span class="policeSpan" id="couleurSpan"></span></div>
+            <div class="divFiltre" id="couleur_entete"><h1 class="filtre_entete">Couleur entête</h1> <span class="policeSpan">
+                    <div class="inputCouleur" id="inputCouleur"> </div>
+                    <span style="margin-left: 20px"><input type="color" id="choix-couleur" name="choix-couleur" style="position: absolute; display: none; ; width: 2px ; height: 2px"></span>
+                </span></div>
+            <div class="divFiltre" id="langue"><h1>Langue</h1><span class="policeSpan"><h3>Anglais</h3> <h3>Français</h3> <h3>Espagnol</h3></span></div>
+            <div class="divFiltre" id="heures">
+                <h1>Horaires</h1> <span class="policeSpan">                <div>
+                    <input type="time" id="addCreneau-input-hdebut" name="hdebut" value="08:00" required>
+                </div>
+                <div>
+                    <input type="time" id="addCreneau-input-hfin" name="hfin" value="20:00" required>
+                </div></span>
+            </div>
+            <div class="buttonFiltres"><button>Supprimer les filtres</button> <button style="background: #E6E6E6 ; color: black">Appliquer les filtres</button></div>
         </div>
     </div>
 

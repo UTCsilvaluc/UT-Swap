@@ -570,3 +570,99 @@ div.divHeure:hover {
     cursor: pointer;
 
 }
+
+.filtres{
+    flex-direction: column;
+    display: flex;
+}
+
+.filtre_titre{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    background: white;
+}
+
+.filtres h1 , .filtres h3 , .filtres h4 {
+    margin: 0;
+    padding: 0;
+}
+
+.divFiltre{
+    margin-top: 0;
+    background: white;
+    margin-bottom: 10px;
+    border-bottom: 10px #EBEBEB solid;
+}
+.filtre_titre h1{
+    text-align: center;
+    margin-left: 50px;
+}
+
+.filtre_titre .vertical_ligne{
+    vertical-align: center;
+}
+
+.policeSpan{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 15px;
+    flex-direction: row;
+    transform: translateX(5%);
+    width: 400px;
+    padding-bottom: 15px;
+
+}
+
+#spanJour{
+    margin-bottom: 2px;
+}
+.policeSpan h3{
+    margin-top: 5px;
+    background: white;
+    color: black;
+    border: 1px black solid;
+    border-radius: 5px;
+}
+
+.policeSpan .inputCouleur{
+    width: 50px;
+    height: 50px;
+    background-color: grey; /* Couleur de fond par défaut */
+    cursor: pointer; /* Curseur indiquant que la div est cliquable */
+    border: none;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    border-radius: 100%; /
+}
+
+.policeSpan input{
+    box-sizing: content-box;
+    border: 1px black solid;
+    cursor: pointer;
+    background-color: #ffffff;
+    padding:8px;
+    border-radius: 5px;
+}
+
+.buttonFiltres{
+    text-align: center;
+}
+
+.buttonFiltres button{
+    text-align: center;
+    border-radius: 10px;
+    color: white;
+    border: none;
+    background-color: #32373B;
+    box-sizing: content-box;
+    cursor: pointer;
+    height: 31px;
+    width: 10vw;
+    white-space: nowrap;
+}
+
+
+

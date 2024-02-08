@@ -492,6 +492,8 @@ function createCours(cours){
     } else {
         coursElement.style.fontSize = pourcentageHeight * 5 + '%';
     }
+    var spanColor = document.getElementById("couleurSpan");
+    spanColor.innerHTML += "<span style='display: flex ; margin: 0 ; padding: 0 ; align-items: center ; gap: 10px'><h4> " + cours.codeUV + ": </h4> <div style='width: 40px ; height: 10px ; border: 1px black solid ; background: " + cours.couleur + "'></div></span>"
 }
 var suivreLaSouris = false;
 function suivreSouris(element) {
@@ -527,3 +529,28 @@ document.getElementById("displace").addEventListener("click" , function () {
     var coursID = localStorage.getItem("IDcours")
     suivreSouris(document.getElementById(coursID));
 })
+// Sélection de la div
+// Sélection de la div
+var inputCouleur = document.getElementById('inputCouleur');
+var couleurInput = document.getElementById('choix-couleur');
+
+// Écouteur d'événement pour le clic sur la div
+inputCouleur.addEventListener('click', function(event) {
+    // Afficher l'interface de couleur
+    couleurInput.style.display = 'block';
+    // Positionner l'interface de couleur au-dessus de la div
+    console.log((inputCouleur.offsetTop + inputCouleur.offsetHeight) + 300 + 'px');
+    couleurInput.click();
+});
+
+// Écouteur d'événement pour détecter le changement de couleur dans la palette
+couleurInput.addEventListener('change', function(event) {
+    // Mettre à jour la couleur de fond de la div avec la couleur sélectionnée
+    inputCouleur.style.backgroundColor = event.target.value;
+    // Cacher à nouveau l'interface de couleur
+    couleurInput.style.display = 'none';
+    var days = document.getElementsByClassName("titleday");
+    for (let day of days){
+        day.style.background = event.target.value;
+    }
+});
