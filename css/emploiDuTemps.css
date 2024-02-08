@@ -20,6 +20,10 @@ body {
     overflow: hidden;
 }
 
+.conteneur{
+    display: flex;
+    flex-direction: row;
+}
 
 div.divHeure{
     transition: background-color 0.3s linear; /* Transition de couleur de fond */
@@ -541,4 +545,28 @@ div.divHeure:hover {
 
 .shake-element {
     animation: shake 0.2s ease-in-out infinite; /* Ajustez la durée et l'accélération selon votre besoin */
+}
+
+#deleteCours .coursCancel , #deleteCours .coursDelete{
+    border-radius: 20px;
+}
+#deleteCours .coursCancel{
+    transition: background-color 0.3s linear; /* Transition de couleur de fond */
+    background: #628662;
+    font-family: Jost;
+}
+#deleteCours .coursDelete{
+     transition: background-color 0.3s linear; /* Transition de couleur de fond */
+     background: #c9282d;
+     font-family: Jost;
+ }
+#deleteCours .coursCancel:hover{
+    background: #a4c085;
+    cursor: pointer;
+
+}
+#deleteCours .coursDelete:hover{
+    background: #cc6666;
+    cursor: pointer;
+
 }

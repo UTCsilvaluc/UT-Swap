@@ -58,6 +58,25 @@ function svgTrashLeave(event){
     event.target.style.cursor = "default";
 }
 
+function trashClick(event){
+    var coursID = localStorage.getItem("idCours");
+    document.getElementById("trash").style.display = "none";
+    document.getElementById("deleteCours");
+    document.getElementById("deleteCours").style.display = "flex";
+    console.log(coursID);
+}
+
+function deleteCours(event){
+    var coursID = localStorage.getItem("idCours");
+    document.getElementById(coursID).remove();
+    document.getElementsByClassName("hoverCours")[0].style.display = "none";
+}
+
+function cancelDelete(event){
+    document.getElementById("deleteCours").style.display = "none";
+    document.getElementById("trash").style.display = "flex";
+}
+
 function posterSwap(event){
     var codeUV = localStorage.getItem("codeUV");
     var creneau = localStorage.getItem("creneau");
@@ -65,6 +84,7 @@ function posterSwap(event){
     var heureFin = localStorage.getItem("heureFin");
     var salle = localStorage.getItem("salle");
     var type = localStorage.getItem("type");
+    var semaine = localStorage.getItem("semaine");
 
     formulaire = document.getElementById("nouveau_pannel");
     formulaire.querySelector("#input-uv").value = codeUV;
@@ -72,8 +92,26 @@ function posterSwap(event){
     formulaire.querySelector("#input-hdebut").value = heureDebut.replace("h" , ":");
     formulaire.querySelector("#input-hfin").value = heureFin.replace("h" , ":");
     formulaire.querySelector("#input-salle").value = salle;
-    //formulaire.getElementById("addCreneau-input-type").value = type;
-
+    formulaire.querySelector("#input-type").value = type;
+    console.log({
+        "semaine":semaine
+    })
+    if (semaine !== 'null'){
+        console.log("testif");
+        checkbox = document.getElementById("input-semaine");
+        checkbox.checked = true;
+        document.getElementById("choix-semaine").className = "basique";
+        if (semaine == "A"){
+            document.getElementById("sA-choix").checked = true;
+        } else {
+            document.getElementById("sB-choix").checked = true;
+        }
+        nouveau_pannel = document.getElementById("nouveau_pannel");
+        nouveau_pannel.style.height += "450px";
+    } else {
+        console.log("testelse");
+        document.getElementById("choix-semaine").className = "basique hidden";
+    }
     formulaire.style.display = "block";
 }
 
@@ -84,22 +122,23 @@ document.getElementById("emploi_du_temps").addEventListener("mousemove" , functi
         var jour = coursElement.closest('.jour').id;
 
     // Récupérer le texte de la balise h2
-        var h2Text = coursElement.querySelector('h2.UV').textContent;
+        var texte = coursElement.querySelector('h2.UV').textContent;
 
-    // Initialiser les variables
-        var codeUV = null;
-        var semaine = null;
+// Expression régulière pour extraire les informations
+        var regex = /^([A-Z0-9]+) - (TD|TP|CM)(A|B)?$/;
 
-    // Vérifier si le texte de h2 contient un "-"
-        if (h2Text.includes('-')) {
-            var segments = h2Text.split('-');
-            codeUV = segments[0].trim();
-            semaine = segments[1].trim();
-        } else {
-            codeUV = h2Text.trim();
-        }
+// Correspondance avec l'expression régulière
+        var match = texte.match(regex);
+        // Le code UV est dans match[1]
+        var codeUV = match[1];
 
-    // Récupérer le texte de la balise <p> contenant l'heure
+        // Le type de matière est dans match[2]
+        var typeMatiere = match[2];
+
+        // La semaine est dans match[3], si elle existe
+        var semaine = match[3] ? match[3] : null;
+
+        // Récupérer le texte de la balise <p> contenant l'heure
         var heuresText = coursElement.querySelector('p').textContent.trim();
 
     // Diviser le texte des heures en heureDebut et heureFin
@@ -116,6 +155,9 @@ document.getElementById("emploi_du_temps").addEventListener("mousemove" , functi
         localStorage.setItem("heureDebut",heureDebut);
         localStorage.setItem("heureFin",heureFin);
         localStorage.setItem("salle",salle);
+        localStorage.setItem("type",typeMatiere);
+        localStorage.setItem("semaine",semaine);
+        localStorage.setItem("idCours" , coursElement.id)
 
         hoverCours = document.getElementsByClassName("hoverCours")[0];
         hoverCours.style.display = "flex";
@@ -132,14 +174,8 @@ document.getElementById("emploi_du_temps").addEventListener("mousemove" , functi
         if (event.target.style.width == "50%"){
             hoverCours.style.left = `${event.target.getBoundingClientRect().x + 95}px`
             hoverCours.style.top = `${event.target.getBoundingClientRect().y - 10}px`
-            if (event.target.style.left == "50%"){
-                localStorage.setItem("type", "B");
-            } else{
-                localStorage.setItem("type", "A");
-            }
         }
         else{
-            localStorage.setItem("type", null);
             hoverCours.style.left = `${event.target.getBoundingClientRect().x + 190}px`
             hoverCours.style.top = `${event.target.getBoundingClientRect().y - 10}px`
         }
@@ -152,6 +188,8 @@ document.getElementById("emploi_du_temps").addEventListener("mouseout" , functio
     if (event.target.className !== "cours" && event.target.className !== "hoverCours" && event.target.parentElement.className !== "cours") {
         hoverCours = document.getElementsByClassName("hoverCours")[0];
         hoverCours.style.display = "none";
+        document.getElementById("trash").style.display = "block";
+        document.getElementById("deleteCours").style.display = "none";
     }
 
 });
@@ -176,12 +214,12 @@ function addCreneau(event) {
     }
 }
 /* ici le bug nouveau_pannel afficher semaine ne fonctionne pas*/
-checkbox = document.getElementById("addCreneau").querySelector("#addCreneau-input-semaine");
-checkbox.addEventListener('change', function () {
+creneauCheckbox = document.getElementById("addCreneau").querySelector("#addCreneau-input-semaine");
+creneauCheckbox.addEventListener('change', function () {
     var nouveau_pannel = document.getElementById("addCreneau")
     var choix_semaine = nouveau_pannel.querySelector("#addCreneau-choix-semaine");
-    // Modifiez la visibilité de l'élément en fonction de l'état de la checkbox
-    if (checkbox.checked) {
+    // Modifiez la visibilité de l'élément en fonction de l'état de la creneauCheckbox
+    if (creneauCheckbox.checked) {
         choix_semaine.style.display = "block";
         lastHeight= nouveau_pannel.scrollHeight;
         nouveau_pannel.style.height = nouveau_pannel.scrollHeight + 10 + "px";
@@ -316,12 +354,12 @@ class Cours {
     }
 }
 
-let cours1 = new Cours("MT23", "10h15", "12h15", "lundi", "FA104" , "B");
-let cours2 = new Cours("IC05", "12h30", "13h00", "mardi", "FA104");
-let cours3 = new Cours("MT02", "10h15", "11h15", "mardi", "FA104");
-let cours4 = new Cours("PS21", "14h15", "16h15", "vendredi", "FA104");
-let cours5 = new Cours("CACA", "08h00", "10h00", "mercredi", "FA104");
-let cours6 = new Cours("MT23", "11h00", "13h00", "lundi", "FA104" , "A");
+let cours1 = new Cours("MT23", "10h15", "12h15", "lundi", "FA104" , "B" , null , "TD");
+let cours2 = new Cours("IC05", "12h30", "13h00", "mardi", "FA104" , null , null , "TD");
+let cours3 = new Cours("MT02", "10h15", "11h15", "mardi", "FA104" , null , null , "TD");
+let cours4 = new Cours("PS21", "14h15", "16h15", "vendredi", "FA104" , null , null , "TD");
+let cours5 = new Cours("CACA", "08h00", "10h00", "mercredi", "FA104", null , null , "TP");
+let cours6 = new Cours("MT23", "11h00", "13h00", "lundi", "FA104" , "A" , null , "CM");
 var colorList = [
     "#A7C4BC", "#D0C4B0", "#B0C4C4", "#C4A4B0", "#C4B8A4",
     "#B0C4B3", "#B0A4C4", "#C4B0A4", "#A4B0C4", "#C4B0B0",
@@ -407,8 +445,8 @@ function createCours(cours){
         coursColors[cours.codeUV] = getRandomColor(colorList);
     }
     cours.couleur = coursColors[cours.codeUV];
-
-    endroit_cours.innerHTML += '<div class="cours"><h2 class="UV">' + '</h2><p>' + cours.horaireDebut + '-' + cours.horaireFin + '</p><p>' + cours.salle + '</p></div>'
+    var nbCours = document.getElementsByClassName("cours").length;
+    endroit_cours.innerHTML += '<div class="cours" id= ' + parseInt(nbCours + 1) + '><h2 class="UV">' + '</h2><p>' + cours.horaireDebut + '-' + cours.horaireFin + '</p><p>' + cours.salle + '</p></div>'
     coursElement = endroit_cours.getElementsByClassName("cours")[endroit_cours.getElementsByClassName("cours").length -1];
 
     var tailleEDT = endroit_cours.offsetHeight;
@@ -432,16 +470,17 @@ function createCours(cours){
     coursElement.style.background = cours.couleur;
 
     if (cours.semaine == null){
-        coursElement.getElementsByClassName("UV")[0].innerHTML = cours.codeUV;
+        coursElement.getElementsByClassName("UV")[0].innerHTML = cours.codeUV + " - " + cours.type
     } else {
 
         if (cours.semaine === "B"){
             coursElement.style.left = "50%";
-            coursElement.getElementsByClassName("UV")[0].innerHTML = cours.codeUV + " - B";
+            coursElement.getElementsByClassName("UV")[0].innerHTML = cours.codeUV + " - " + cours.type +"B";
         } else {
-            coursElement.getElementsByClassName("UV")[0].innerHTML = cours.codeUV + " - A";
+            coursElement.getElementsByClassName("UV")[0].innerHTML = cours.codeUV + " - " + cours.type + "A";
         }
         coursElement.style.width = "50%";
+        coursElement.getElementsByClassName("UV")[0].style.fontSize = "1.2em"
     }
     if (pourcentageHeight < 10){
         coursElement.style.flexDirection = "row";
@@ -454,3 +493,37 @@ function createCours(cours){
         coursElement.style.fontSize = pourcentageHeight * 5 + '%';
     }
 }
+var suivreLaSouris = false;
+function suivreSouris(element) {
+    suivreLaSouris = !suivreLaSouris;
+    if(!suivreLaSouris){
+        event.stopPropagation();
+        document.removeEventListener("mousemove", suivreLaSouris);
+    }
+    document.addEventListener("mousemove", function(event) {
+        //faire le changement de jour
+        if (suivreLaSouris) {
+            coursEnDeplacement = element;
+            var newPosition = event.clientY - coursEnDeplacement.parentElement.clientHeight / 2 + coursEnDeplacement.clientHeight / 2;
+            var roundedPosition = Math.round(newPosition / 10) * 10
+            coursEnDeplacement.style.top = Math.min(Math.max(roundedPosition, 0), coursEnDeplacement.parentElement.clientHeight - coursEnDeplacement.clientHeight) + "px";
+
+            var jours = document.querySelectorAll(".jour");
+            jours.forEach(function(jour) {
+                var rect = jour.getBoundingClientRect();
+                if (
+                    event.clientX >= rect.left &&
+                    event.clientX <= rect.right) {
+                    // Ajoutez le cours au jour survolé
+                    var endroitCours = jour.querySelector(".endroit_cours");
+                    endroitCours.appendChild(coursEnDeplacement);
+                }
+            });
+        }
+    });
+}
+console.log(document.getElementById("displace"));
+document.getElementById("displace").addEventListener("click" , function () {
+    var coursID = localStorage.getItem("IDcours")
+    suivreSouris(document.getElementById(coursID));
+})

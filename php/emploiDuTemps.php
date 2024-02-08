@@ -10,41 +10,51 @@
     <?php
     include "header.php";
     ?>
-    <div style="display:flex">
-        <div class="conteneurHours"></div>
-        <div>
-            <div id="emploi_du_temps">
-                <div id="lundi" class="jour"><h1>Lundi</h1>
-                    <div class="endroit_cours">
+    <div class="conteneur">
+        <div class="edt" style="display:flex ; width: 70%">
+            <div class="conteneurHours"></div>
+            <div>
+                <div id="emploi_du_temps">
+                    <div id="lundi" class="jour"><h1>Lundi</h1>
+                        <div class="endroit_cours">
+                        </div>
                     </div>
-                </div>
-    
-                <div id="mardi" class="jour"><h1>Mardi</h1>
-                    <div class="endroit_cours">
+
+                    <div id="mardi" class="jour"><h1>Mardi</h1>
+                        <div class="endroit_cours">
+                        </div>
                     </div>
-                </div>
-    
-                <div id="mercredi" class="jour"><h1>Mercredi</h1>
-                    <div class="endroit_cours">
+
+                    <div id="mercredi" class="jour"><h1>Mercredi</h1>
+                        <div class="endroit_cours">
+                        </div>
                     </div>
-                </div>
-    
-                <div id="jeudi" class="jour"><h1>Jeudi</h1>
-                    <div class="endroit_cours">
+
+                    <div id="jeudi" class="jour"><h1>Jeudi</h1>
+                        <div class="endroit_cours">
+                        </div>
                     </div>
-                </div>
-    
-                <div id="vendredi" class="jour"><h1>Vendredi</h1>
-                    <div class="endroit_cours">
+
+                    <div id="vendredi" class="jour"><h1>Vendredi</h1>
+                        <div class="endroit_cours">
+                        </div>
                     </div>
-                </div>
-    
-                <div id="samedi" class="jour"><h1>Samedi</h1>
-                    <div class="endroit_cours">
+
+                    <div id="samedi" class="jour"><h1>Samedi</h1>
+                        <div class="endroit_cours">
+                        </div>
                     </div>
+
                 </div>
-                
             </div>
+        </div>
+        <div class="filtres" style="background: gray ; width: 400px ; height: 500px">
+            <div class="divFiltre" id="police"><h1 class="filtre_entete">Police</h1> <span><h3>Arial</h3> <h3>Times New Roman</h3></span></div>
+            <div class="divFiltre" id="jours"></div>
+            <div class="divFiltre" id="couleurs"></div>
+            <div class="divFiltre" id="couleur_entete"></div>
+            <div class="divFiltre" id="langue"></div>
+            <div class="divFiltre" id="heures"></div>
         </div>
     </div>
 
@@ -132,16 +142,17 @@
             </div>
         </div>
     </form>
-
+    <div class="hoverCours" style="display: none ; flex-direction: column ; position: absolute">
+        <img class="hoverCoursIcon" id="swap" src="../svg/swap.svg" alt="" style="width: 30px ; height: 30px" onmouseenter="svgSwapEnter(event)" onmouseleave="svgSwapLeave(event)" onclick="posterSwap(event)">
+        <img class="hoverCoursIcon" id="displace" src="../svg/displace.svg" alt="" style="width: 30px ; height: 30px" onmouseenter="svgpDisplaceEnter(event)" onmouseleave="svgDisplaceLeave(event)">
+        <img class="hoverCoursIcon" id="trash" src="../svg/trash.svg" alt="" style="width: 30px ; height: 30px" onmouseenter="svgpTrasheEnter(event)" onmouseleave="svgTrashLeave(event)" onclick="trashClick(event)">
+        <div style="display: none" id="deleteCours"><button name="oui" class="coursDelete" onclick="deleteCours(event)">Supprimer</button><button name="oui" class="coursCancel" onclick="cancelDelete(event)">Annuler</button></div>
+    </div>
     <script src="../js/emploiDuTemps.js">
     </script>
 
 </body>
-<div class="hoverCours" style="display: none ; flex-direction: column ; position: absolute">
-    <img class="hoverCoursIcon" id="swap" src="../svg/swap.svg" alt="" style="width: 30px ; height: 30px" onmouseenter="svgSwapEnter(event)" onmouseleave="svgSwapLeave(event)" onclick="posterSwap(event)">
-    <img class="hoverCoursIcon" id="displace" src="../svg/displace.svg" alt="" style="width: 30px ; height: 30px" onmouseenter="svgpDisplaceEnter(event)" onmouseleave="svgDisplaceLeave(event)">
-    <img class="hoverCoursIcon" id="trash" src="../svg/trash.svg" alt="" style="width: 30px ; height: 30px" onmouseenter="svgpTrasheEnter(event)" onmouseleave="svgTrashLeave(event)">
-</div>
+
 
 
 
