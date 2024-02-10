@@ -63,7 +63,10 @@ function trashClick(event){
     document.getElementById("trash").style.display = "none";
     document.getElementById("deleteCours");
     document.getElementById("deleteCours").style.display = "flex";
-    console.log(coursID);
+    if (parseFloat(document.getElementById(coursID).style.height) <= 10){
+        document.getElementById("deleteCours").style.height = "10%";
+    }
+
 }
 
 function deleteCours(event){

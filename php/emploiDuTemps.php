@@ -6,6 +6,9 @@
     <link rel="stylesheet" href="../css/emploiDuTemps.css">
     <title>Header avec Notification</title>
 </head>
+<?php
+include 'header.php';
+?>
 <body>
     <div class="conteneur">
         <div class="edt" style="display:flex ; width: 70%">

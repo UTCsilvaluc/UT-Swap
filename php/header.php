@@ -2,12 +2,24 @@
     function DBCredential(){
         $dbhost = 'localhost';
         $dbuser = 'root';
+        $dbpass = '';
+        $dbname = 'ut_swap';
+        $connect = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to mysql');
+        mysqli_set_charset($connect, 'utf8');
+        return $connect;
+    }
+
+    /*
+    function DBCredential(){
+        $dbhost = 'localhost';
+        $dbuser = 'root';
         $dbpass = 'root';
         $dbname = 'ut_swap';
         $connect = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to mysql');
         mysqli_set_charset($connect, 'utf8');
         return $connect;
     }
+     */
 
     function validateInput($input, $connect) {
         $input = trim($input); // Supprime les espaces en début et fin de chaîne
