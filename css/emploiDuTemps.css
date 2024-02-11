@@ -17,12 +17,12 @@ body {
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: hidden;
 }
 
 .conteneur{
     display: flex;
     flex-direction: row;
+    align-items: center;
 }
 
 div.divHeure{
@@ -580,6 +580,7 @@ div.divHeure:hover {
     display: flex;
     align-items: center;
     flex-direction: row;
+    justify-content: center;
     background: white;
 }
 
@@ -595,8 +596,7 @@ div.divHeure:hover {
     border-bottom: 10px #EBEBEB solid;
 }
 .filtre_titre h1{
-    text-align: center;
-    margin-left: 50px;
+    margin-right: 50px;
 }
 
 .filtre_titre .vertical_ligne{
@@ -620,10 +620,10 @@ div.divHeure:hover {
 }
 .policeSpan h3{
     margin-top: 5px;
-    background: white;
     color: black;
     border: 1px black solid;
     border-radius: 5px;
+    padding: 2px;
 }
 
 .policeSpan .inputCouleur{
@@ -664,5 +664,38 @@ div.divHeure:hover {
     white-space: nowrap;
 }
 
+.check , .checkPolice{
+    background: #807d7d;
+    transition: background-color 0.3s linear; /* Transition de couleur de fond */
+}
 
+.uncheck , .uncheckPolice{
+    transition: background-color 0.3s linear; /* Transition de couleur de fond */
+}
+
+.check:hover , .checkPolice:hover{
+    background: #ffffff;
+    cursor: pointer;
+}
+
+.uncheck:hover , .uncheckPolice:hover{
+    background: #807d7d;
+    cursor: pointer;
+}
+
+.colorChoice{
+    position: absolute; /* Positionnement absolu pour placer l'input par rapport à la div parente */
+    top: 0; /* Positionnement par rapport au haut de la div parente */
+    left: 0; /* Positionnement par rapport à la gauche de la div parente */
+    width: 100%; /* Largeur de l'input égale à la largeur de la div parente */
+    height: 100%; /* Hauteur de l'input égale à la hauteur de la div parente */
+    opacity: 0; /* Rend l'input complètement transparent */
+    pointer-events: none; /* Désactive les événements de pointage sur l'input */
+}
+
+span input[type='color']{
+    padding: 0;
+    margin: 0;
+    border: none;
+}
 

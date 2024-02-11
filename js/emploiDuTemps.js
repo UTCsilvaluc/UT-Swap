@@ -81,6 +81,7 @@ function cancelDelete(event){
 }
 
 function posterSwap(event){
+    event.stopPropagation();
     var codeUV = localStorage.getItem("codeUV");
     var creneau = localStorage.getItem("creneau");
     var heureDebut = localStorage.getItem("heureDebut");
@@ -92,15 +93,11 @@ function posterSwap(event){
     formulaire = document.getElementById("nouveau_pannel");
     formulaire.querySelector("#input-uv").value = codeUV;
     formulaire.querySelector("#input-creneau").value = creneau;
-    formulaire.querySelector("#input-hdebut").value = heureDebut.replace("h" , ":");
-    formulaire.querySelector("#input-hfin").value = heureFin.replace("h" , ":");
+    formulaire.querySelector("#input-hdebut1").value = heureDebut.replace("h" , ":");
+    formulaire.querySelector("#input-hfin1").value = heureFin.replace("h" , ":");
     formulaire.querySelector("#input-salle").value = salle;
     formulaire.querySelector("#input-type").value = type;
-    console.log({
-        "semaine":semaine
-    })
     if (semaine !== 'null'){
-        console.log("testif");
         checkbox = document.getElementById("input-semaine");
         checkbox.checked = true;
         document.getElementById("choix-semaine").className = "basique";
@@ -109,10 +106,8 @@ function posterSwap(event){
         } else {
             document.getElementById("sB-choix").checked = true;
         }
-        nouveau_pannel = document.getElementById("nouveau_pannel");
-        nouveau_pannel.style.height += "450px";
     } else {
-        console.log("testelse");
+        checkbox.checked = false;
         document.getElementById("choix-semaine").className = "basique hidden";
     }
     formulaire.style.display = "block";
@@ -176,11 +171,11 @@ document.getElementById("emploi_du_temps").addEventListener("mousemove" , functi
         }
         if (event.target.style.width == "50%"){
             hoverCours.style.left = `${event.target.getBoundingClientRect().x + 95}px`
-            hoverCours.style.top = `${event.target.getBoundingClientRect().y - 10}px`
+            hoverCours.style.top = `${event.target.getBoundingClientRect().y}px`
         }
         else{
             hoverCours.style.left = `${event.target.getBoundingClientRect().x + 190}px`
-            hoverCours.style.top = `${event.target.getBoundingClientRect().y - 10}px`
+            hoverCours.style.top = `${event.target.getBoundingClientRect().y}px`
         }
 
     }
@@ -304,7 +299,7 @@ document.getElementById('addCreneau').addEventListener('submit', function (event
 
     hdebut = hdebut.replace(":" , "h");
     hfin = hfin.replace(":" , "h");
-    let cours = new Cours(uv, hdebut, hfin, creneau, salle , semainechoix , type);
+    let cours = new Cours(uv, hdebut, hfin, creneau, salle , semainechoix , null , type);
     createCours(cours);
     form.reset();
     form.querySelector("#addCreneau-choix-semaine").style.display = "none";
@@ -317,6 +312,7 @@ var mercredi = document.getElementById("mercredi").getElementsByClassName("endro
 var jeudi = document.getElementById("jeudi").getElementsByClassName("endroit_cours")[0];
 var vendredi = document.getElementById("vendredi").getElementsByClassName("endroit_cours")[0];
 var samedi = document.getElementById("samedi").getElementsByClassName("endroit_cours")[0];
+var dimanche = document.getElementById("dimanche").getElementsByClassName("endroit_cours")[0];
 
 
 
@@ -331,8 +327,14 @@ for (var heure = debutEDT ; heure <= finEDT ; heure++){
     let textHour = document.createElement("h4");
     textHour.innerHTML = `${heure}h00`;
     textHour.style.height = "5.55vh";
-    textHour.id = `h${heure}`;
-
+    if (heure == parseInt(debutEDT)){
+        textHour.id = `hdebut`;
+    }
+    else if (heure == parseInt(finEDT)){
+        textHour.id = `hfin`;
+    } else {
+        textHour.id = `h${heure}`;
+    }
     conteneurHours.appendChild(textHour);
 }
 
@@ -374,18 +376,17 @@ var liste = [cours1, cours2, cours3, cours4, cours5 , cours6]
 var endroit_cours;
 var cours;
 
-var listeJour = [lundi, mardi, mercredi, jeudi, vendredi, samedi];
+var listeJour = [lundi, mardi, mercredi, jeudi, vendredi, samedi, dimanche];
 for (var i of listeJour) {
-    for(var j=0; j<=48 ; j++){
-        if(j%4 === 0 & j !== 0){
-            if (j !== 48){
-                i.innerHTML += "<div class='divHeure' onclick=\"addCreneau(event)\"> <div class=\"creneau\" style=\"height:1.5vh\" div=\"\"></div> <div class=\"creneau\" style=\"height:1.5vh\" div=\"\"></div> <div class=\"creneau\" style=\"height:1.5vh\" div=\"\"></div> <div class='dash' style='height:10px'></div> </div>";
-            }
-            else{
-                i.innerHTML += "<div class='divHeure' onclick=\"addCreneau(event)\"> <div class=\"creneau\" style=\"height:1.5vh\" div=\"\"></div> <div class=\"creneau\" style=\"height:1.5vh\" div=\"\"></div> <div class=\"creneau\" style=\"height:1.5vh\" div=\"\"></div> <div class='nondash' style='height:10px'></div> </div>";
-
-            }
+    for(var j=0; j<12 ; j++){
+        if (j !== 12){
+            i.innerHTML += "<div class='divHeure' onclick=\"addCreneau(event)\" > <div class=\"creneau\" style=\"height:1.5vh\" div=\"\"></div> <div class=\"creneau\" style=\"height:1.5vh\" div=\"\"></div> <div class=\"creneau\" style=\"height:1.5vh\" div=\"\"></div> <div class='dash' style='height:10px'></div> </div>";
         }
+        else{
+            i.innerHTML += "<div class='divHeure' onclick=\"addCreneau(event)\"> <div class=\"creneau\" style=\"height:1.5vh\" div=\"\"></div> <div class=\"creneau\" style=\"height:1.5vh\" div=\"\"></div> <div class=\"creneau\" style=\"height:1.5vh\" div=\"\"></div> <div class='nondash' style='height:10px'></div> </div>";
+
+        }
+
     }
 }
 
@@ -443,9 +444,14 @@ function createCours(cours){
     if(cours.jour == "samedi"){
         endroit_cours = samedi;
     }
+    if(cours.jour == "dimanche"){
+        endroit_cours = dimanche;
+    }
 
     if (!(cours.codeUV in coursColors)) {
         coursColors[cours.codeUV] = getRandomColor(colorList);
+        var spanColor = document.getElementById("couleurSpan");
+        spanColor.innerHTML += "<span style='display: flex ; margin: 0 ; padding: 0 ; align-items: center ; gap: 10px'><h4> " + cours.codeUV + ": </h4> <input id='color" + cours.codeUV +"' value= "+ coursColors[cours.codeUV] +"  type='color' onchange='colorChange(event)'></span>"
     }
     cours.couleur = coursColors[cours.codeUV];
     var nbCours = document.getElementsByClassName("cours").length;
@@ -453,11 +459,14 @@ function createCours(cours){
     coursElement = endroit_cours.getElementsByClassName("cours")[endroit_cours.getElementsByClassName("cours").length -1];
 
     var tailleEDT = endroit_cours.offsetHeight;
-    var nbHeureEDT = 12;
-    var heureDebutEDT = 8;
+    var heureDebutEDT = parseInt(document.getElementById("hdebut").innerHTML.split("h")[0]);
+    var heureFinEDT = parseInt(document.getElementById("hfin").innerHTML.split("h")[0]);
+    var nbHeureEDT = heureFinEDT - heureDebutEDT;
     var heuresDecimalesDebut = calculDecimal(cours.horaireDebut);
 
     var heuresDecimalesFin = calculDecimal(cours.horaireFin);
+
+    console.log({"debut" : heureDebutEDT , "fin":heureFinEDT , "nbheure":nbHeureEDT});
 
     var tempsCours = heuresDecimalesFin - heuresDecimalesDebut;
 
@@ -495,8 +504,23 @@ function createCours(cours){
     } else {
         coursElement.style.fontSize = pourcentageHeight * 5 + '%';
     }
-    var spanColor = document.getElementById("couleurSpan");
-    spanColor.innerHTML += "<span style='display: flex ; margin: 0 ; padding: 0 ; align-items: center ; gap: 10px'><h4> " + cours.codeUV + ": </h4> <div style='width: 40px ; height: 10px ; border: 1px black solid ; background: " + cours.couleur + "'></div></span>"
+
+}
+
+function colorChange(event){
+    var UV = event.target.id.split("color")[1];
+    var Liste_cours = document.getElementsByClassName("cours");
+    for (var cours of Liste_cours){
+        var texte = cours.querySelector('h2.UV').textContent;
+        var regex = /^([A-Z0-9]+) - (TD|TP|CM)(A|B)?$/;
+        var match = texte.match(regex);
+        var currentCode = match[1];
+        if (currentCode == UV){
+            cours.style.background = event.target.value;
+            coursColors[UV] = event.target.value;
+        }
+
+    }
 }
 var suivreLaSouris = false;
 function suivreSouris(element) {
@@ -527,7 +551,6 @@ function suivreSouris(element) {
         }
     });
 }
-console.log(document.getElementById("displace"));
 document.getElementById("displace").addEventListener("click" , function () {
     var coursID = localStorage.getItem("IDcours")
     suivreSouris(document.getElementById(coursID));
@@ -542,7 +565,6 @@ inputCouleur.addEventListener('click', function(event) {
     // Afficher l'interface de couleur
     couleurInput.style.display = 'block';
     // Positionner l'interface de couleur au-dessus de la div
-    console.log((inputCouleur.offsetTop + inputCouleur.offsetHeight) + 300 + 'px');
     couleurInput.click();
 });
 
@@ -551,9 +573,127 @@ couleurInput.addEventListener('change', function(event) {
     // Mettre à jour la couleur de fond de la div avec la couleur sélectionnée
     inputCouleur.style.backgroundColor = event.target.value;
     // Cacher à nouveau l'interface de couleur
-    couleurInput.style.display = 'none';
     var days = document.getElementsByClassName("titleday");
     for (let day of days){
         day.style.background = event.target.value;
     }
 });
+
+function filtreTime(event) {
+    var liste_Cours = document.getElementsByClassName("cours");
+    var cours = [];
+
+    /* Informations du formulaire : heure début & fin*/
+
+    var debut = parseInt(document.getElementById("filtre-input-hdebut").value);
+    var fin = parseInt(document.getElementById("filtre-input-hfin").value);
+
+    let conteneurHours = document.getElementsByClassName("conteneurHours")[0];
+    conteneurHours.className = "conteneurHours";
+    conteneurHours.innerHTML = "";
+
+    for (var heure = parseInt(debut) ; heure <= parseInt(fin) ; heure++){
+
+
+        let textHour = document.createElement("h4");
+        textHour.innerHTML = `${heure}h00`;
+        textHour.style.height = "5.55vh";
+        console.log(heure);
+        console.log(debut);
+        if (heure == parseInt(debut)){
+            textHour.id = `hdebut`;
+        }
+        else if (heure == parseInt(fin)){
+            textHour.id = `hfin`;
+        } else {
+            textHour.id = `h${heure}`;
+        }
+
+        conteneurHours.appendChild(textHour);
+    }
+
+    for (var element of liste_Cours){
+
+        /* Informations sur un cours */
+        var coursElement = element;
+        var jour = coursElement.closest('.jour').id;
+
+        var texte = coursElement.querySelector('h2.UV').textContent;
+
+        var regex = /^([A-Z0-9]+) - (TD|TP|CM)(A|B)?$/;
+
+        var match = texte.match(regex);
+        var codeUV = match[1];
+        var typeMatiere = match[2];
+        var semaine = match[3] ? match[3] : null;
+        var heuresText = coursElement.querySelector('p').textContent.trim();
+        var heuresSegments = heuresText.split('-');
+        var heureDebut = heuresSegments[0].trim();
+        var heureFin = heuresSegments[1].trim();
+        var salle = coursElement.querySelector('p:nth-of-type(2)').textContent.trim();
+
+        if (parseInt(debut) <= parseInt(heureDebut) && parseInt(fin) >= parseInt(heureFin)){
+            var currentCours = new Cours(codeUV , heureDebut , heureFin , jour , salle , semaine , null , typeMatiere);
+            cours.push(currentCours);
+        }
+    }
+    var listeJour = document.getElementsByClassName("check");
+
+    for (var jour of listeJour) {
+        i = document.getElementById(jour.innerHTML.toLowerCase()).querySelector(".endroit_cours");
+        i.innerHTML = "";
+        var nbHeures = parseInt(fin) - parseInt(debut);
+        for (var j = 0; j < nbHeures; j++) {
+            if (j !== nbHeures) {
+                i.innerHTML += "<div class='divHeure' onclick=\"addCreneau(event)\" > <div class=\"creneau\" style=\"height:1.5vh\" div=\"\"></div> <div class=\"creneau\" style=\"height:1.5vh\" div=\"\"></div> <div class=\"creneau\" style=\"height:1.5vh\" div=\"\"></div> <div class='dash' style='height:10px'></div> </div>";
+            } else {
+                i.innerHTML += "<div class='divHeure' onclick=\"addCreneau(event)\"> <div class=\"creneau\" style=\"height:1.5vh\" div=\"\"></div> <div class=\"creneau\" style=\"height:1.5vh\" div=\"\"></div> <div class=\"creneau\" style=\"height:1.5vh\" div=\"\"></div> <div class='nondash' style='height:10px'></div> </div>";
+
+            }
+
+        }
+    }
+    for (var i = 0; i < cours.length; i++) {
+
+        createCours(cours[i]);
+    }
+
+
+}
+
+function changeJour(event){
+    var jour = event.target.innerHTML.toLowerCase();
+    document.getElementById(jour).style.display = "none";
+    var listeJour = document.getElementsByClassName("jour");
+    var taille = listeJour.length;
+    if (event.target.className == "check"){
+        event.target.className = "uncheck"
+        for (var jour of listeJour){
+            if (jour.style.display != "none"){
+                jour.style.borderLeft = "1px black solid";
+                break;
+            }
+        }
+    } else {
+        event.target.className = "check"
+        document.getElementById(jour).style.display = "block";
+    }
+
+    var firstDay = false;
+    for (var jour of listeJour){
+        if (jour.style.display != "none"){
+            jour.style.borderLeft = "0";
+        }
+        if (firstDay === false && jour.style.display != "none"){
+            jour.style.borderLeft = "1px black solid";
+            firstDay = true;
+        }
+    }
+}
+
+function changePolice(event){
+    var police = event.target.innerHTML;
+    document.getElementsByClassName("checkPolice")[0].className = "uncheckPolice";
+    event.target.className = "checkPolice";
+    document.body.style.fontFamily = `${police} , sans-serif`;
+}
