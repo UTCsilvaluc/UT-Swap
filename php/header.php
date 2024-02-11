@@ -1,63 +1,66 @@
-<?php
-session_start();
-function DBCredential(){
-    $dbhost = 'localhost';
-    $dbuser = 'root';
-    $dbpass = 'root';
-    $dbname = 'ut_swap';
-    $connect = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to mysql');
-    mysqli_set_charset($connect, 'utf8');
-    return $connect;
-}
-function validateInput($input, $connect) {
-    $input = trim($input); // Supprime les espaces en début et fin de chaîne
-    $input = stripslashes($input); // Supprime les antislashs ajoutés par addslashes
-    $input = htmlspecialchars($input); // Convertit les caractères spéciaux en entités HTML
-    $input = $connect->real_escape_string($input);
-    return $input;
-}
-function jourEnNombre($jour) {
-    $jours = array(
-        'lundi' => 1,
-        'mardi' => 2,
-        'mercredi' => 3,
-        'jeudi' => 4,
-        'vendredi' => 5,
-        'samedi' => 6
-    );
-
-    // Convertir le jour en minuscules pour éviter les problèmes de casse
-    $jour = strtolower($jour);
-
-    // Vérifier si le jour existe dans le tableau
-    if (array_key_exists($jour, $jours)) {
-        return $jours[$jour];
-    } else {
-        // Retourner une valeur par défaut ou gérer l'erreur selon vos besoins
-        return null;
+<?php    
+    function DBCredential(){
+        $dbhost = 'localhost';
+        $dbuser = 'root';
+        $dbpass = 'root';
+        $dbname = 'ut_swap';
+        $connect = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to mysql');
+        mysqli_set_charset($connect, 'utf8');
+        return $connect;
     }
-}
-function convertirTemps($timestamp) {
-    date_default_timezone_set('Europe/Paris');
-    $maintenant = time();
-    $difference = $maintenant - strtotime($timestamp);
 
-    if ($difference < 60) {
-        return $difference . "s";
-    } elseif ($difference < 3600) {
-        $minutes = floor($difference / 60);
-        return $minutes . "min";
-    } elseif ($difference < 86400) {
-        $heures = floor($difference / 3600);
-        return $heures . "h";
-    } else {
-        $jours = floor($difference / 86400);
-        return $jours . "j";
+    function validateInput($input, $connect) {
+        $input = trim($input); // Supprime les espaces en début et fin de chaîne
+        $input = stripslashes($input); // Supprime les antislashs ajoutés par addslashes
+        $input = htmlspecialchars($input); // Convertit les caractères spéciaux en entités HTML
+        $input = $connect->real_escape_string($input);
+        return $input;
     }
-}
-function nombreEnJour($chiffre){
-    // Tableau de jours de la semaine à partir de lundi
-    $joursSemaine = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi');
+
+    function jourEnNombre($jour) {
+        $jours = array(
+            'lundi' => 1,
+            'mardi' => 2,
+            'mercredi' => 3,
+            'jeudi' => 4,
+            'vendredi' => 5,
+            'samedi' => 6
+        );
+    
+        // Convertir le jour en minuscules pour éviter les problèmes de casse
+        $jour = strtolower($jour);
+    
+        // Vérifier si le jour existe dans le tableau
+        if (array_key_exists($jour, $jours)) {
+            return $jours[$jour];
+        } else {
+            // Retourner une valeur par défaut ou gérer l'erreur selon vos besoins
+            return null;
+        }
+    }
+    function convertirTemps($timestamp) {
+        date_default_timezone_set('Europe/Paris');
+        $maintenant = time();
+        $difference = $maintenant - strtotime($timestamp);
+    
+        if ($difference < 60) {
+            return $difference . "s";
+        } elseif ($difference < 3600) {
+            $minutes = floor($difference / 60);
+            return $minutes . "min";
+        } elseif ($difference < 86400) {
+            $heures = floor($difference / 3600);
+            return $heures . "h";
+        } else {
+            $jours = floor($difference / 86400);
+            return $jours . "j";
+        }
+    }
+
+    
+    function nombreEnJour($chiffre){
+        // Tableau de jours de la semaine à partir de lundi
+        $joursSemaine = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi');
 
     // Vérifier si le chiffre est valide
     if ($chiffre >= 0 && $chiffre <= 4) {

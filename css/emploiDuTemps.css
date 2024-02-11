@@ -17,9 +17,13 @@ body {
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: hidden;
 }
 
+.conteneur{
+    display: flex;
+    flex-direction: row;
+    gap: 5%;
+}
 
 div.divHeure{
     transition: background-color 0.3s linear; /* Transition de couleur de fond */
@@ -542,3 +546,169 @@ div.divHeure:hover {
 .shake-element {
     animation: shake 0.2s ease-in-out infinite; /* Ajustez la durée et l'accélération selon votre besoin */
 }
+
+#deleteCours .coursCancel , #deleteCours .coursDelete{
+    border-radius: 20px;
+}
+#deleteCours .coursCancel{
+    transition: background-color 0.3s linear; /* Transition de couleur de fond */
+    background: #628662;
+}
+#deleteCours .coursDelete{
+     transition: background-color 0.3s linear; /* Transition de couleur de fond */
+     background: #c9282d;
+ }
+#deleteCours .coursCancel:hover{
+    background: #a4c085;
+    cursor: pointer;
+
+}
+#deleteCours .coursDelete:hover{
+    background: #cc6666;
+    cursor: pointer;
+
+}
+.filtres{
+    flex-direction: column;
+    display: flex;
+}
+
+.filtre_titre{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+    background: white;
+}
+
+.filtre_titre img{
+    padding: 0;
+    height: 30px;
+    width: 30px;
+    margin-left: 30px;
+    transition: opacity 0.3s linear , scale 0.3s ease-in-out;
+}
+
+.filtre_titre img:hover{
+    opacity: 0.7;
+    scale: 110%;
+    cursor: pointer;
+
+}
+
+
+.filtres h1 , .filtres h3 , .filtres h4 {
+    margin: 0;
+    padding: 0;
+}
+
+.divFiltre{
+    margin-top: 0;
+    background: white;
+    margin-bottom: 10px;
+    border-bottom: 10px #EBEBEB solid;
+}
+.filtre_titre h1{
+    margin-right: 20px;
+}
+
+.filtre_titre .vertical_ligne{
+    vertical-align: center;
+}
+
+.policeSpan{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 15px;
+    flex-direction: row;
+    transform: translateX(5%);
+    width: 400px;
+    padding-bottom: 15px;
+
+}
+
+#spanJour{
+    margin-bottom: 2px;
+}
+.policeSpan h3{
+    margin-top: 5px;
+    color: black;
+    border: 1px black solid;
+    border-radius: 5px;
+    padding: 2px;
+}
+
+.policeSpan .inputCouleur{
+    width: 50px;
+    height: 50px;
+    background-color: grey; /* Couleur de fond par défaut */
+    cursor: pointer; /* Curseur indiquant que la div est cliquable */
+    border: none;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    border-radius: 100%; /
+}
+
+.policeSpan input{
+    box-sizing: content-box;
+    border: 1px black solid;
+    cursor: pointer;
+    background-color: #ffffff;
+    padding:8px;
+    border-radius: 5px;
+}
+
+.buttonFiltres{
+    text-align: center;
+}
+
+.buttonFiltres button{
+    text-align: center;
+    border-radius: 10px;
+    color: white;
+    border: none;
+    background-color: #32373B;
+    box-sizing: content-box;
+    cursor: pointer;
+    height: 31px;
+    width: 10vw;
+    white-space: nowrap;
+}
+
+.check , .checkPolice{
+    background: #807d7d;
+    transition: background-color 0.3s linear; /* Transition de couleur de fond */
+}
+
+.uncheck , .uncheckPolice{
+    transition: background-color 0.3s linear; /* Transition de couleur de fond */
+}
+
+.check:hover , .checkPolice:hover{
+    background: #ffffff;
+    cursor: pointer;
+}
+
+.uncheck:hover , .uncheckPolice:hover{
+    background: #807d7d;
+    cursor: pointer;
+}
+
+.colorChoice{
+    position: absolute; /* Positionnement absolu pour placer l'input par rapport à la div parente */
+    top: 0; /* Positionnement par rapport au haut de la div parente */
+    left: 0; /* Positionnement par rapport à la gauche de la div parente */
+    width: 100%; /* Largeur de l'input égale à la largeur de la div parente */
+    height: 100%; /* Hauteur de l'input égale à la hauteur de la div parente */
+    opacity: 0; /* Rend l'input complètement transparent */
+    pointer-events: none; /* Désactive les événements de pointage sur l'input */
+}
+
+span input[type='color']{
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+
