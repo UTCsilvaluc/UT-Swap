@@ -22,7 +22,7 @@ body {
 .conteneur{
     display: flex;
     flex-direction: row;
-    align-items: center;
+    gap: 5%;
 }
 
 div.divHeure{
@@ -553,12 +553,10 @@ div.divHeure:hover {
 #deleteCours .coursCancel{
     transition: background-color 0.3s linear; /* Transition de couleur de fond */
     background: #628662;
-    font-family: Jost;
 }
 #deleteCours .coursDelete{
      transition: background-color 0.3s linear; /* Transition de couleur de fond */
      background: #c9282d;
-     font-family: Jost;
  }
 #deleteCours .coursCancel:hover{
     background: #a4c085;
@@ -570,7 +568,6 @@ div.divHeure:hover {
     cursor: pointer;
 
 }
-
 .filtres{
     flex-direction: column;
     display: flex;
@@ -584,6 +581,22 @@ div.divHeure:hover {
     background: white;
 }
 
+.filtre_titre img{
+    padding: 0;
+    height: 30px;
+    width: 30px;
+    margin-left: 30px;
+    transition: opacity 0.3s linear , scale 0.3s ease-in-out;
+}
+
+.filtre_titre img:hover{
+    opacity: 0.7;
+    scale: 110%;
+    cursor: pointer;
+
+}
+
+
 .filtres h1 , .filtres h3 , .filtres h4 {
     margin: 0;
     padding: 0;
@@ -596,7 +609,7 @@ div.divHeure:hover {
     border-bottom: 10px #EBEBEB solid;
 }
 .filtre_titre h1{
-    margin-right: 50px;
+    margin-right: 20px;
 }
 
 .filtre_titre .vertical_ligne{

@@ -21,6 +21,7 @@ body {
     padding: 0;
     height: 100%;
     overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 /* Mise du header au premier plan et d'une telle sorte que chaque élément soit de son côté de l'écran */
