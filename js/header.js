@@ -5,15 +5,19 @@ var bouton_nouveau = document.getElementsByClassName("bouton_nouveau");
 var nouveau_pannel = document.getElementById("nouveau_pannel");
 var ul_nouveau = document.getElementById("ul_nouveau");
 
+var largeurEcran = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
 var bouton_non_submit = document.getElementById("bouton_non_submit");
 var boutons_message = document.getElementById("boutons_message");
 var bouton_retour = document.getElementById("bouton_retour");
 var bouton_ok = document.getElementById('bouton_ok');
 var bouton_impossible_uv = document.getElementById("bouton_impossible_uv");
+var bouton_remplacer = document.getElementById("bouton_remplacer");
 
 var message_pression = document.getElementById("message_pression");
 var message_insertion = document.getElementById('message_insertion');
 var message_impossible_uv = document.getElementById("message_impossible_uv");
+var message_uv_type = document.getElementById("message_uv_type");
 
 var input_type = document.getElementById("input-type");
 var input_salle = document.getElementById("input-salle");
@@ -148,9 +152,9 @@ checkbox.addEventListener('change', function () {
     choix_semaine.classList.toggle('hidden', !checkbox.checked);
     if (checkbox.checked) {
         lastHeight= nouveau_pannel.scrollHeight;
-        nouveau_pannel.style.height = nouveau_pannel.scrollHeight + 10 + "px";
+        document.getElementById("div_debut_nouveau").style.height = nouveau_pannel.scrollHeight + 10 + "px";
     } else {
-        nouveau_pannel.style.height = lastHeight + "px"; // Ajustez ici la hauteur minimale souhaitée
+        document.getElementById("div_debut_nouveau").style.height = ""; // Ajustez ici la hauteur minimale souhaitée
     }
 });
 
@@ -167,8 +171,7 @@ for (var i = 0; i < notifications.length; i++) {
         xhr.send("view=" + "1");
 
         var notifs = document.getElementsByClassName("notif");
-        if(notification_pannel.style.display !== ""){
-            document.getElementsByTagName("nav")[0].getElementsByClassName("cercle")[0].classList.toggle('hidden', true);
+        if(notification_pannel.style.right !== "" && notification_pannel.style.display !== ""){
             for(var j of notifs){
                 if(!j.classList.contains("type_1")){
                     j.classList.toggle('viewed', true);
@@ -176,12 +179,10 @@ for (var i = 0; i < notifications.length; i++) {
             }
         }
         
-        
         if(nouveau_pannel.style.display!="flex" && menu_pannel.style.left!="0"){
             ecran.style.display = (ecran.style.display === "none" || ecran.style.display === "") ? "block" : "none";
         }
         nouveau_pannel.style.display = "none"
-        largeurEcran = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 
         notification_pannel.style.display = (notification_pannel.style.display === "none" || notification_pannel.style.display === "") ? "flex" : "none";
         
@@ -189,16 +190,36 @@ for (var i = 0; i < notifications.length; i++) {
     });
 };
 
+document.getElementById("croix_nouveau").addEventListener("click", function() {
+    
+    if(notification_pannel.style.display != "flex" && menu_pannel.style.left!="0"){
+        ecran.style.display = (ecran.style.display === "none" || ecran.style.display === "") ? "block" : "none";
+    }
+    nouveau_pannel.style.display = "none";
+    menu_pannel.style.left = '-65%';
+    
+    choix_semaine.classList.toggle('hidden', true);
+    document.getElementById("div_debut_nouveau").style.height = "";
+
+    notification_pannel.style.display = "none";      
+    
+});
+
 for (var i = 0; i < bouton_nouveau.length; i++) {
     bouton_nouveau[i].addEventListener("click", function() {
+        choix_semaine.classList.toggle('hidden', true);
+        document.getElementById("div_debut_nouveau").style.height = "";
+
         nouveau_pannel.reset();
+        input_salle.disabled = false
+        input_uv.disabled = false
+        input_type.disabled = false
         bouton_ok.classList.toggle('hidden', true);
         message_insertion.classList.toggle('hidden', true);
         bouton_non_submit.classList.toggle('hidden', false);
         ul_nouveau.classList.toggle('hidden', false);
         boutons_message.classList.toggle('hidden', true);
         message_pression.classList.toggle('hidden', true);
-        largeurEcran = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
         if(notification_pannel.style.display != "flex" && menu_pannel.style.left!="0"){
             ecran.style.display = (ecran.style.display === "none" || ecran.style.display === "") ? "block" : "none";
         }
@@ -222,7 +243,6 @@ for (var i = 0; i < bouton_nouveau.length; i++) {
 //Lorsqu'on clique en dehors du menu notif/navbar et en dehors du header ça ferme le menu
 ecran.addEventListener("click", function() {
     nouveau_pannel.style.display = "none"
-    largeurEcran = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
     ecran.style.display = "none";
     menu_pannel.style.left = '-65%';
     notification_pannel.style.display = "none";
@@ -238,7 +258,6 @@ bouton_menu.addEventListener("click", function() {
     
     menu_pannel.style.left = (menu_pannel.style.left <= '0' || menu_pannel.style.left === "") ? "0" : '-65%';
     
-    largeurEcran = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
     notification_pannel.style.display = "none";
     ecran.style.display = (ecran.style.display === "none" || ecran.style.display === "") ? "block" : "none";
 });
@@ -251,4 +270,9 @@ for (let i = 0; i < bouton_accepter_notif.length; i++) {
         bouton_accepter_notif[i].parentNode.parentNode.getElementsByClassName("choix_notification")[0].value = 1;
         bouton_accepter_notif[i].parentNode.parentNode.submit();
     });
+}
+
+function reloadPage(){
+    event.preventDefault();
+    location.reload();
 }
