@@ -507,8 +507,8 @@ function createCours(cours){
         suivreLaSouris = !suivreLaSouris;
         if(!suivreLaSouris){
             event.stopPropagation();
+            document.removeEventListener("mousemove" , suivreLaSouris);
         }
-
     });
 
 }
@@ -533,6 +533,7 @@ function suivreSouris(element) {
     suivreLaSouris = !suivreLaSouris;
     if(!suivreLaSouris){
         event.stopPropagation();
+        document.removeEventListener("mousemove" , suivreLaSouris);
     }
     document.addEventListener("mousemove", function(event) {
         //faire le changement de jour
@@ -702,14 +703,76 @@ function changePolice(event){
 }
 
 function openFiltre(event){
-    var conteneurFiltre = document.getElementById("filterContainer1");
-    var img = document.getElementById("CloseOpenFiltreMenu");
-    if (conteneurFiltre.style.display === "none"){
-        conteneurFiltre.style.display = "block";
-        img.src = "../svg/black_cross.svg";
+    var conteneurFiltre = document.getElementById("menuFiltre");
+    conteneurFiltre.style.display = "flex";
+}
+
+function closeFiltre(event){
+    var conteneurFiltre = document.getElementById("menuFiltre");
+    conteneurFiltre.style.display = "none";
+}
+
+function supprimerFiltre(){
+    var couleurSpan = document.getElementById("couleurSpan").innerHTML;
+    document.getElementById("filterContainer1").innerHTML = "                <div class=\"conteneurFiltre\" id=\"filterContainer1\">\n" +
+        "                    <div class=\"divFiltre\" id=\"police\"><h1 class=\"filtre_entete\">Police</h1> <span class=\"policeSpan\"><h3 class=\"checkPolice\" onclick=\"changePolice(event)\">Jost</h3> <h3 class=\"uncheckPolice\" onclick=\"changePolice(event)\">Times New Roman</h3> <h3 class=\"uncheckPolice\" onclick=\"changePolice(event)\">Comic Sans MS</h3></span></div>\n" +
+        "                    <div class=\"divFiltre\" id=\"jours\"><h1 class=\"filtre_entete\">Jour</h1> <span class=\"policeSpan\" id=\"spanJour\"><h3 class=\"check\" onclick=\"changeJour(event)\">Lundi</h3><h3 class=\"check\" onclick=\"changeJour(event)\">Mardi</h3><h3 class=\"check\" onclick=\"changeJour(event)\">Mercredi</h3><h3 class=\"check\" onclick=\"changeJour(event)\">Jeudi</h3><h3 class=\"check\" onclick=\"changeJour(event)\">Vendredi</h3><h3 class=\"check\" onclick=\"changeJour(event)\">Samedi</h3><h3 class=\"uncheck\" onclick=\"changeJour(event)\">Dimanche</h3></div>\n" +
+        "                    <div class=\"divFiltre\" id=\"couleurs\"><h1 class=\"filtre_entete\">Couleurs</h1> <span> <span class=\"policeSpan\" id=\"couleurSpan\"></span></div>\n" +
+        "                    <div class=\"divFiltre\" id=\"couleur_entete\"><h1 class=\"filtre_entete\">Couleur entête</h1> <span class=\"policeSpan\">\n" +
+        "                    <div class=\"inputCouleur\" id=\"inputCouleur\" style=\"\"> <span style=\"margin-left: 20px\"><input class=\"colorChoice\" type=\"color\" id=\"choix-couleur\" name=\"choix-couleur\" style=\"position: absolute; ; width: 2px ; height: 2px\"></span> </div>\n" +
+        "\n" +
+        "                </span></div>\n" +
+        "                    <div class=\"divFiltre\" id=\"langue\"><h1>Langue</h1><span class=\"policeSpan\"><h3>Anglais</h3> <h3>Français</h3> <h3>Espagnol</h3></span></div>\n" +
+        "                    <div class=\"divFiltre\" id=\"heures\">\n" +
+        "                        <h1>Horaires</h1> <span class=\"policeSpan\">                <div>\n" +
+        "                    <input type=\"time\" id=\"filtre-input-hdebut\" name=\"hdebut\" value=\"08:00\" required onchange=\"filtreTime(event)\">\n" +
+        "                </div>\n" +
+        "                <div>\n" +
+        "                    <input type=\"time\" id=\"filtre-input-hfin\" name=\"hfin\" value=\"20:00\" required onchange=\"filtreTime(event)\">\n" +
+        "                </div></span>\n" +
+        "                    </div>\n" +
+        "                    <div class=\"buttonFiltres\"><button class=\"filtreButton\" id=\"appliquerFiltre\" onclick=\"supprimerFiltre(event)\">Supprimer les filtres</button></div>\n" +
+        "                </div>\n" +
+        "            </div>";
+    document.body.style.fontFamily = `Jost , sans-serif`;
+    document.getElementById("spanJour").querySelectorAll("h3").forEach(function (jour){
+        var elementJour = document.getElementById(jour.innerHTML.toLowerCase());
+        if (jour.innerHTML != "Dimanche"){
+            jour.className = "check";
+            elementJour.style.display = "block";
+            if (jour.innerHTML.toLowerCase() !== "lundi"){
+                elementJour.style.borderLeft = "0";
+            }
+        }
+        else{
+            jour.className = "uncheck";
+            elementJour.style.display = "none";
+        }
+    })
+    document.getElementById("filtre-input-hfin").value = "20:00";
+    var input = document.getElementById("filtre-input-hdebut");
+    input.value = "08:00";
+    var event = new Event('change');
+    input.dispatchEvent(event);
+
+    document.getElementById("couleurSpan").innerHTML = couleurSpan;
+
+
+}
+
+function menuimportEDT(event){
+    document.getElementById("importEDTID").style.display = "block";
+    event.stopPropagation();
+    document.getElementById("emploi_du_temps").style.background = "#333333";
+}
+
+document.addEventListener("click" , function (event){
+    var importElement = document.getElementById("importEDTID")
+    if (!(event.target.closest(".importEDT")) && importElement.style.display != "none") {
+        importElement.style.display = "none";
+        document.getElementById("emploi_du_temps").style.background = "none";
     }
-    else{
-        conteneurFiltre.style.display = "none";
-        img.src = "../svg/black_menu.svg";
-    }
+})
+function importEDT(event){
+    console.log(document.getElementById("textUV").value);
 }

@@ -11,18 +11,39 @@
     --margin-menu: 2vh;
     --border-radius: 20px;
 }
-
 body {
     font-family: Jost, sans-serif;
     margin: 0;
     padding: 0;
     height: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 .conteneur{
     display: flex;
     flex-direction: row;
+    width: 1266px;
     gap: 5%;
+}
+
+.svgFiltre{
+    height: 50px;
+    width: 50px;
+    transition: scale 0.3s linear;
+}
+
+.svgFiltre:hover{
+    scale: 110%;
+    cursor: pointer;
+}
+.conteneurEDT{
+    width: 1800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centre les éléments verticalement */
+    height: 100vh; /* Utilise toute la hauteur de la fenêtre */
+    margin: 0; /* Supprime les marges par défaut */
 }
 
 div.divHeure{
@@ -568,9 +589,16 @@ div.divHeure:hover {
     cursor: pointer;
 
 }
+
+.conteneurFiltre{
+    padding-bottom: 100px;
+}
 .filtres{
+    display: none;
+    position: absolute;
     flex-direction: column;
-    display: flex;
+    max-height: 80vh; /* Vous pouvez ajuster cette valeur selon vos besoins */
+    overflow-y: auto;
 }
 
 .filtre_titre{
@@ -607,6 +635,9 @@ div.divHeure:hover {
     background: white;
     margin-bottom: 10px;
     border-bottom: 10px #EBEBEB solid;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 .filtre_titre h1{
     margin-right: 20px;
@@ -625,6 +656,7 @@ div.divHeure:hover {
     transform: translateX(5%);
     width: 400px;
     padding-bottom: 15px;
+    margin-left: 15px;
 
 }
 
@@ -633,10 +665,9 @@ div.divHeure:hover {
 }
 .policeSpan h3{
     margin-top: 5px;
-    color: black;
     border: 1px black solid;
-    border-radius: 5px;
-    padding: 2px;
+    border-radius: 10px;
+    padding: 5px 30px;
 }
 
 .policeSpan .inputCouleur{
@@ -677,8 +708,17 @@ div.divHeure:hover {
     white-space: nowrap;
 }
 
+.divFiltre input[type='time']{
+    font-family: Jost;
+    font-style: oblique;
+    padding: 10px;
+    border: 2px black solid;
+    border-radius: 8px;
+    margin-right: 20px;
+}
 .check , .checkPolice{
-    background: #807d7d;
+    background: #32373B;
+    color: white;
     transition: background-color 0.3s linear; /* Transition de couleur de fond */
 }
 
@@ -687,19 +727,17 @@ div.divHeure:hover {
 }
 
 .check:hover , .checkPolice:hover{
-    background: #ffffff;
+    background: #444a4f;
     cursor: pointer;
 }
 
 .uncheck:hover , .uncheckPolice:hover{
-    background: #807d7d;
+    background: #e3dfdf;
     cursor: pointer;
 }
 
 .colorChoice{
     position: absolute; /* Positionnement absolu pour placer l'input par rapport à la div parente */
-    top: 0; /* Positionnement par rapport au haut de la div parente */
-    left: 0; /* Positionnement par rapport à la gauche de la div parente */
     width: 100%; /* Largeur de l'input égale à la largeur de la div parente */
     height: 100%; /* Hauteur de l'input égale à la hauteur de la div parente */
     opacity: 0; /* Rend l'input complètement transparent */
@@ -710,5 +748,79 @@ span input[type='color']{
     padding: 0;
     margin: 0;
     border: none;
+}
+
+.inputCouleur{
+    transform: translateX(100%);
+}
+.buttonFiltres{
+    margin-top: 50px;
+}
+.filtreButton{
+    padding: 5px 10px;
+    transition: background-color 0.3s ease-in-out;
+}
+#appliquerFiltre:hover{
+    background: #595e5e;
+}
+#supprimerFiltre{
+    background :#E6E6E6;
+    color: black;
+}
+
+#supprimerFiltre:hover{
+    background: #c7c4c4;
+}
+
+.importEDT{
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    background: white;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50% , -50%);
+    z-index: 50;
+}
+
+div .elemContainer{
+    padding: 0;
+    margin: 0;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 10px;
+}
+
+div .elemContainer h1{
+    background: #E9E9E9;
+    padding: 30px 50px;
+    border-radius: 10px;
+    margin: 0;
+}
+
+div .elemContainer textarea{
+    background: #E9E9E9;
+    width: 400px;
+    border: 1px grey solid;
+    resize: none;
+    border-radius: 10px;
+}
+
+div .elemContainer button{
+    border-radius: 10px;
+    font-family: Jost;
+    font-size: 15px;
+    font-style: oblique;
+    color: black;
+    border: 0;
+    background-color: #E2E2E2;
+    margin-top:calc(var(--margin) / 2);
+    box-sizing: content-box;
+    cursor: pointer;
+    height: 31px;
+    min-width: 100px;
+    white-space: nowrap;
 }
 

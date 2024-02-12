@@ -6,58 +6,75 @@
     <link rel="stylesheet" href="../css/emploiDuTemps.css">
     <title>Header avec Notification</title>
 </head>
-<?php
-include 'header.php';
-?>
 <body>
-    <div class="conteneur">
-        <div class="edt" style="display:flex ; width: 70%">
-            <div class="conteneurHours"></div>
-            <div>
-                <div id="emploi_du_temps">
-                    <div id="lundi" class="jour"><h1 class="titleday">Lundi</h1>
-                        <div class="endroit_cours">
-                        </div>
-                    </div>
+    <?php
+    include "header.php";
+    ?>
 
-                    <div id="mardi" class="jour"><h1 class="titleday">Mardi</h1>
-                        <div class="endroit_cours">
-                        </div>
-                    </div>
+    <div class="importEDT" style="display: none" id="importEDTID">
+        <div class="elemContainer">
+            <h1>Ajouter mon emploi du temps</h1>
 
-                    <div id="mercredi" class="jour"><h1 class="titleday">Mercredi</h1>
-                        <div class="endroit_cours">
-                        </div>
-                    </div>
+            <textarea name="texteUV" id="textUV" cols="30" rows="10" placeholder="Veuillez renseigner le mail reçu comprenant la liste des inscriptions aux UVS"></textarea>
 
-                    <div id="jeudi" class="jour"><h1 class="titleday">Jeudi</h1>
-                        <div class="endroit_cours">
-                        </div>
-                    </div>
+            <button onclick="importEDT(event)">Ajouter</button>
+        </div>
+    </div>
+    <div class="conteneurEDT">
+        <div class="dessusEDT" style="display: flex ; flex-direction: row ; gap: 88% ; margin-bottom: 10px ; margin-top: 10px ; width: 1150px">
+            <div class="controlEDT" style="display: flex ; flex-direction: row ; gap: 10px"><img class="svgFiltre" src="../svg/IMPORT_FILTRE.svg" alt="" onclick="menuimportEDT(event)"> <img class="svgFiltre" src="../svg/TRASH_FILTRE.svg" onclick="" alt="">
+                <img class="svgFiltre" src="../svg/EXPORT_FILTRE.svg" alt=""></div>
+            <div class="filtreEDT"><img class="svgFiltre" src="../svg/FILTRE_FILTRE.svg" alt="" onclick="openFiltre(event)"></div>
+        </div>
+        <div class="conteneur">
 
-                    <div id="vendredi" class="jour"><h1 class="titleday">Vendredi</h1>
-                        <div class="endroit_cours">
+            <div class="edt" style="display:flex ; width: 70%">
+                <div class="conteneurHours"></div>
+                <div>
+                    <div id="emploi_du_temps">
+                        <div id="lundi" class="jour"><h1 class="titleday">Lundi</h1>
+                            <div class="endroit_cours">
+                            </div>
                         </div>
-                    </div>
 
-                    <div id="samedi" class="jour"><h1 class="titleday">Samedi</h1>
-                        <div class="endroit_cours">
+                        <div id="mardi" class="jour"><h1 class="titleday">Mardi</h1>
+                            <div class="endroit_cours">
+                            </div>
                         </div>
-                    </div>
 
-                    <div id="dimanche" class="jour" style="display: none"><h1 class="titleday">Dimanche</h1>
-                        <div class="endroit_cours">
+                        <div id="mercredi" class="jour"><h1 class="titleday">Mercredi</h1>
+                            <div class="endroit_cours">
+                            </div>
                         </div>
-                    </div>
 
+                        <div id="jeudi" class="jour"><h1 class="titleday">Jeudi</h1>
+                            <div class="endroit_cours">
+                            </div>
+                        </div>
+
+                        <div id="vendredi" class="jour"><h1 class="titleday">Vendredi</h1>
+                            <div class="endroit_cours">
+                            </div>
+                        </div>
+
+                        <div id="samedi" class="jour"><h1 class="titleday">Samedi</h1>
+                            <div class="endroit_cours">
+                            </div>
+                        </div>
+
+                        <div id="dimanche" class="jour" style="display: none"><h1 class="titleday">Dimanche</h1>
+                            <div class="endroit_cours">
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="filtres"">
-            <div><div class="filtre_titre"> <h1>Filtrer par</h1> <div class="vertical_ligne" style="height: 70px; width: 2px ; background: #ACACAC "></div>
-                    <img src="../svg/black_menu.svg" alt="" onclick="openFiltre(event)" id="CloseOpenFiltreMenu"></div></div>
-                <div class="conteneurFiltre" id="filterContainer1" style="display: none">
-                    <div class="divFiltre" id="police"><h1 class="filtre_entete">Police</h1> <span class="policeSpan"><h3 class="checkPolice" onclick="changePolice(event)">Jost</h3> <h3 class="uncheckPolice" onclick="changePolice(event)">Times New Roman</h3> <h3 class="uncheckPolice" onclick="changePolice(event)">Comic Sans MS</h3></span></div>
+            <div class="filtres" id="menuFiltre" style="margin-left: 1300px;">
+                <div><div class="filtre_titre"> <h1>Filtrer par</h1> <div class="vertical_ligne" style="height: 70px; width: 2px ; background: #ACACAC "></div>
+                        <img src="../svg/black_cross.svg" alt="" id="CloseOpenFiltreMenu" onclick="closeFiltre(event)"></div></div>
+                <div class="conteneurFiltre" id="filterContainer1">
+                    <div class="divFiltre" id="police"><h1 class="filtre_entete">Police</h1> <span class="policeSpan"><h3 class="checkPolice" onclick="changePolice(event)" id="mainPolice">Jost</h3> <h3 class="uncheckPolice" onclick="changePolice(event)">Times New Roman</h3> <h3 class="uncheckPolice" onclick="changePolice(event)">Comic Sans MS</h3></span></div>
                     <div class="divFiltre" id="jours"><h1 class="filtre_entete">Jour</h1> <span class="policeSpan" id="spanJour"><h3 class="check" onclick="changeJour(event)">Lundi</h3><h3 class="check" onclick="changeJour(event)">Mardi</h3><h3 class="check" onclick="changeJour(event)">Mercredi</h3><h3 class="check" onclick="changeJour(event)">Jeudi</h3><h3 class="check" onclick="changeJour(event)">Vendredi</h3><h3 class="check" onclick="changeJour(event)">Samedi</h3><h3 class="uncheck" onclick="changeJour(event)">Dimanche</h3></div>
                     <div class="divFiltre" id="couleurs"><h1 class="filtre_entete">Couleurs</h1> <span> <span class="policeSpan" id="couleurSpan"></span></div>
                     <div class="divFiltre" id="couleur_entete"><h1 class="filtre_entete">Couleur entête</h1> <span class="policeSpan">
@@ -73,9 +90,10 @@ include 'header.php';
                     <input type="time" id="filtre-input-hfin" name="hfin" value="20:00" required onchange="filtreTime(event)">
                 </div></span>
                     </div>
-                    <div class="buttonFiltres"><button>Supprimer les filtres</button> <button style="background: #E6E6E6 ; color: black">Appliquer les filtres</button></div>
+                    <div class="buttonFiltres"><button class="filtreButton" id="appliquerFiltre" onclick="supprimerFiltre(event)">Supprimer les filtres</button></div>
                 </div>
-                </div>
+            </div>
+        </div>
     </div>
 
     <form action="#" method="post" id="addCreneau">
