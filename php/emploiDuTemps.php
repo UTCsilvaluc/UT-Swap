@@ -66,7 +66,6 @@
                             <div class="endroit_cours">
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
