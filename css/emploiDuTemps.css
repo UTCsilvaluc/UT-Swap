@@ -598,6 +598,7 @@ div.divHeure:hover {
     position: absolute;
     flex-direction: column;
     max-height: 80vh; /* Vous pouvez ajuster cette valeur selon vos besoins */
+    min-width: 450px;
     overflow-y: auto;
 }
 
