@@ -83,6 +83,7 @@ function deleteCours(event){
     }
     if (!(isExisting)){
         document.getElementById(`colorSpan${coursName}`).remove();
+        delete coursColors[coursName];
     }
 }
 
