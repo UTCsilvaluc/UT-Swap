@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'Jost';
-    src: url('../fonts/Jost-Medium.ttf');
+    src: url('../Jost-Medium.ttf');
     font-weight: normal;
     font-style: normal;
 }
@@ -21,6 +21,37 @@ body {
     padding: 0;
     height: 100%;
     overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+main {
+    padding-top: var(--taille-header);
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    align-items: center;
+    overflow-y: auto;
+}
+
+main::-webkit-scrollbar-track
+{
+    margin-top: var(--taille-header);
+	border: 1px solid #d1d1d1;
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+
+main::-webkit-scrollbar
+{
+	width: 12px;
+	background-color: #F5F5F5;
+}
+
+main::-webkit-scrollbar-thumb
+{
+	border: 1px solid #d1d1d1;
+	border-radius: 10px;
+	background-color: #dfdfdf;
 }
 
 /* Mise du header au premier plan et d'une telle sorte que chaque élément soit de son côté de l'écran */
@@ -31,11 +62,11 @@ header {
     align-items: center;
     background-color: #32373B;
     color: white;
+    position: fixed;
     font-size: 18px;
     width: 100%;
     height: var(--taille-header);
     z-index: 3;
-    margin-bottom: 10px;
 }
 
 header .logo{
@@ -403,7 +434,7 @@ nav .important{
     padding: 0;
 }
 
-#nouveau_pannel li:not(.double-input):not(.basique){
+#nouveau_pannel li:not(.double-input):not(.basique):not(.hidden){
     display: flex;
     flex-direction: column;
 }
@@ -613,6 +644,7 @@ nav .important{
     height: 100%;
     z-index: 1;
     overflow: hidden;
+    background-color: red;
 }
 
 /* Mise en forme de la page du menu pour téléphone */

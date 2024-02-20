@@ -13,6 +13,7 @@ var bouton_retour = document.getElementById("bouton_retour");
 var bouton_ok = document.getElementById('bouton_ok');
 var bouton_impossible_uv = document.getElementById("bouton_impossible_uv");
 var bouton_remplacer = document.getElementById("bouton_remplacer");
+var bouton_ajouter_creneau = document.getElementById("bouton_ajouter_creneau");
 
 var message_pression = document.getElementById("message_pression");
 var message_insertion = document.getElementById('message_insertion');
@@ -25,6 +26,8 @@ var input_hfin = document.getElementsByClassName("input-hfin");
 var input_hdebut = document.getElementsByClassName("input-hdebut");
 var input_creneau = document.getElementById("input-creneau");
 var input_uv = document.getElementById("input-uv");
+var motivation = document.getElementById("li_motivation");
+var texte_nouveau = document.getElementById("titre_nouveau").getElementsByTagName("h1")[0];
 var checkbox = document.getElementById('input-semaine');
 var choix_semaine = document.getElementById('choix-semaine');
 
@@ -93,8 +96,17 @@ bouton_non_submit.addEventListener("click", function() {
     var salle = encodeURIComponent(input_salle.value);
     var creneau = encodeURIComponent(input_creneau.value);
     var uv = encodeURIComponent(input_uv.value);
+    if (window.innerWidth <= 550 && window.innerHeight <= 550) {
+        input_hfin[0].value = input_hfin[1].value;
+        input_hdebut[1].value = input_hdebut[0].value;
+    } else {
+        input_hfin[1].value = input_hfin[0].value;
+        input_hdebut[0].value = input_hdebut[1].value;
+    }
     var hfin = encodeURIComponent(input_hfin[1].value);
     var hdebut = encodeURIComponent(input_hdebut[1].value);
+
+
     
     if(type === "" || salle === "" || hfin === "" || hdebut === "" || creneau === "" || uv === ""){
         for(var element of list_input){
@@ -170,6 +182,8 @@ for (var i = 0; i < notifications.length; i++) {
         // Envoyer la requête avec les données
         xhr.send("view=" + "1");
 
+        var conteneurFiltre = document.getElementById("menuFiltre");
+        
         var notifs = document.getElementsByClassName("notif");
         if(notification_pannel.style.right !== "" && notification_pannel.style.display !== ""){
             for(var j of notifs){
@@ -179,9 +193,10 @@ for (var i = 0; i < notifications.length; i++) {
             }
         }
         
-        if(nouveau_pannel.style.display!="flex" && menu_pannel.style.left!="0"){
-            ecran.style.display = (ecran.style.display === "none" || ecran.style.display === "") ? "block" : "none";
+        if(conteneurFiltre !== null && typeof conteneurFiltre !== 'undefined'){
+            conteneurFiltre.style.display = "none";
         }
+
         nouveau_pannel.style.display = "none"
 
         notification_pannel.style.display = (notification_pannel.style.display === "none" || notification_pannel.style.display === "") ? "flex" : "none";
@@ -192,9 +207,6 @@ for (var i = 0; i < notifications.length; i++) {
 
 document.getElementById("croix_nouveau").addEventListener("click", function() {
     
-    if(notification_pannel.style.display != "flex" && menu_pannel.style.left!="0"){
-        ecran.style.display = (ecran.style.display === "none" || ecran.style.display === "") ? "block" : "none";
-    }
     nouveau_pannel.style.display = "none";
     menu_pannel.style.left = '-65%';
     
@@ -205,61 +217,70 @@ document.getElementById("croix_nouveau").addEventListener("click", function() {
     
 });
 
-for (var i = 0; i < bouton_nouveau.length; i++) {
-    bouton_nouveau[i].addEventListener("click", function() {
-        choix_semaine.classList.toggle('hidden', true);
-        document.getElementById("div_debut_nouveau").style.height = "";
+document.addEventListener("click" , function (event) {
 
-        nouveau_pannel.reset();
-        input_salle.disabled = false
-        input_uv.disabled = false
-        input_type.disabled = false
-        bouton_ok.classList.toggle('hidden', true);
-        message_insertion.classList.toggle('hidden', true);
-        bouton_non_submit.classList.toggle('hidden', false);
-        ul_nouveau.classList.toggle('hidden', false);
-        boutons_message.classList.toggle('hidden', true);
-        message_pression.classList.toggle('hidden', true);
-        if(notification_pannel.style.display != "flex" && menu_pannel.style.left!="0"){
-            ecran.style.display = (ecran.style.display === "none" || ecran.style.display === "") ? "block" : "none";
-        }
-        nouveau_pannel.style.display = (nouveau_pannel.style.display === "none" || nouveau_pannel.style.display === "") ? "flex" : "none";                
-        menu_pannel.style.left = '-65%';
+    if (!(event.target.closest("#nouveau_pannel")) && document.getElementById("nouveau_pannel") != "none" && event.target.className != "bouton_nouveau" && event.target.className !== "dash" && event.target.id !== "displace"){
+        document.getElementById("nouveau_pannel").style.display = "none";
+    }
 
-        notification_pannel.style.display = "none";      
-        input_hdebut[0].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
-        input_hdebut[1].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
-        input_creneau.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
-        input_type.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
-        input_uv.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
-        for(var element of list_input){
-            var pElement = element.parentNode.querySelector("p");
-            pElement.classList.toggle('hidden', true);
-        }        
-    });
+    if (!(event.target.closest("#notification_pannel")) && document.getElementById("notification_pannel") != "none" && event.target.className != "notification"){
+        document.getElementById("notification_pannel").style.display = "none";
+    }
+
+    if (!(event.target.closest("#menu_pannel")) && document.getElementById("menu_pannel") != "none" && event.target.id != "bouton_menu"){
+        document.getElementById("menu_pannel").style.left = '-65%';
+    }
+
+});
+function nouveauClick() {
+    choix_semaine.classList.toggle('hidden', true);
+    document.getElementById("div_debut_nouveau").style.height = "";
+    texte_nouveau.innerHTML = "Nouvelle demande de Swap";
+
+    nouveau_pannel.reset();
+    bouton_ajouter_creneau.classList.toggle('hidden', true);
+    motivation.classList.toggle('hidden', false);
+    input_salle.disabled = false
+    input_uv.disabled = false
+    input_type.disabled = false
+    bouton_ok.classList.toggle('hidden', true);
+    message_insertion.classList.toggle('hidden', true);
+    bouton_non_submit.classList.toggle('hidden', false);
+    ul_nouveau.classList.toggle('hidden', false);
+    boutons_message.classList.toggle('hidden', true);
+    message_pression.classList.toggle('hidden', true);
+    var conteneurFiltre = document.getElementById("menuFiltre");
+    
+    if(conteneurFiltre !== null && typeof conteneurFiltre !== 'undefined'){
+        conteneurFiltre.style.display = "none";
+    }
+    nouveau_pannel.style.display = (nouveau_pannel.style.display === "none" || nouveau_pannel.style.display === "") ? "flex" : "none";
+    menu_pannel.style.left = '-65%';
+
+    notification_pannel.style.display = "none";      
+    input_hdebut[0].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+    input_hdebut[1].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+    input_creneau.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+    input_type.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+    input_uv.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+    for(var element of list_input){
+        var pElement = element.parentNode.querySelector("p");
+        pElement.classList.toggle('hidden', true);
+    }
 };
 
 
-//Lorsqu'on clique en dehors du menu notif/navbar et en dehors du header ça ferme le menu
-ecran.addEventListener("click", function() {
-    nouveau_pannel.style.display = "none"
-    ecran.style.display = "none";
-    menu_pannel.style.left = '-65%';
-    notification_pannel.style.display = "none";
-});
-
-//Pareil qu'au dessus mais pour navbar
 bouton_menu.addEventListener("click", function() {
-    if(notification_pannel.style.display != "flex" && menu_pannel.style.left!="0"){
-        ecran.style.display = (ecran.style.display === "none" || ecran.style.display === "") ? "block" : "none";
+    var conteneurFiltre = document.getElementById("menuFiltre");
+    
+    if(conteneurFiltre !== null && typeof conteneurFiltre !== 'undefined'){
+        conteneurFiltre.style.display = "none";
     }
-
     nouveau_pannel.style.display = "none"
     
     menu_pannel.style.left = (menu_pannel.style.left <= '0' || menu_pannel.style.left === "") ? "0" : '-65%';
     
     notification_pannel.style.display = "none";
-    ecran.style.display = (ecran.style.display === "none" || ecran.style.display === "") ? "block" : "none";
 });
 
 var bouton_accepter_notif = document.getElementsByClassName("bouton_accepter_notif");

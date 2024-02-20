@@ -1,66 +1,63 @@
-<?php    
-    function DBCredential(){
-        $dbhost = 'localhost';
-        $dbuser = 'root';
-        $dbpass = 'root';
-        $dbname = 'ut_swap';
-        $connect = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to mysql');
-        mysqli_set_charset($connect, 'utf8');
-        return $connect;
-    }
+<?php
+session_start();
+function DBCredential(){
+    $dbhost = 'localhost';
+    $dbuser = 'root';
+    $dbpass = 'root';
+    $dbname = 'ut_swap';
+    $connect = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to mysql');
+    mysqli_set_charset($connect, 'utf8');
+    return $connect;
+}
+function validateInput($input, $connect) {
+    $input = trim($input); // Supprime les espaces en début et fin de chaîne
+    $input = stripslashes($input); // Supprime les antislashs ajoutés par addslashes
+    $input = htmlspecialchars($input); // Convertit les caractères spéciaux en entités HTML
+    $input = $connect->real_escape_string($input);
+    return $input;
+}
+function jourEnNombre($jour) {
+    $jours = array(
+        'lundi' => 1,
+        'mardi' => 2,
+        'mercredi' => 3,
+        'jeudi' => 4,
+        'vendredi' => 5,
+        'samedi' => 6
+    );
 
-    function validateInput($input, $connect) {
-        $input = trim($input); // Supprime les espaces en début et fin de chaîne
-        $input = stripslashes($input); // Supprime les antislashs ajoutés par addslashes
-        $input = htmlspecialchars($input); // Convertit les caractères spéciaux en entités HTML
-        $input = $connect->real_escape_string($input);
-        return $input;
-    }
+    // Convertir le jour en minuscules pour éviter les problèmes de casse
+    $jour = strtolower($jour);
 
-    function jourEnNombre($jour) {
-        $jours = array(
-            'lundi' => 1,
-            'mardi' => 2,
-            'mercredi' => 3,
-            'jeudi' => 4,
-            'vendredi' => 5,
-            'samedi' => 6
-        );
-    
-        // Convertir le jour en minuscules pour éviter les problèmes de casse
-        $jour = strtolower($jour);
-    
-        // Vérifier si le jour existe dans le tableau
-        if (array_key_exists($jour, $jours)) {
-            return $jours[$jour];
-        } else {
-            // Retourner une valeur par défaut ou gérer l'erreur selon vos besoins
-            return null;
-        }
+    // Vérifier si le jour existe dans le tableau
+    if (array_key_exists($jour, $jours)) {
+        return $jours[$jour];
+    } else {
+        // Retourner une valeur par défaut ou gérer l'erreur selon vos besoins
+        return null;
     }
-    function convertirTemps($timestamp) {
-        date_default_timezone_set('Europe/Paris');
-        $maintenant = time();
-        $difference = $maintenant - strtotime($timestamp);
-    
-        if ($difference < 60) {
-            return $difference . "s";
-        } elseif ($difference < 3600) {
-            $minutes = floor($difference / 60);
-            return $minutes . "min";
-        } elseif ($difference < 86400) {
-            $heures = floor($difference / 3600);
-            return $heures . "h";
-        } else {
-            $jours = floor($difference / 86400);
-            return $jours . "j";
-        }
-    }
+}
+function convertirTemps($timestamp) {
+    date_default_timezone_set('Europe/Paris');
+    $maintenant = time();
+    $difference = $maintenant - strtotime($timestamp);
 
-    
-    function nombreEnJour($chiffre){
-        // Tableau de jours de la semaine à partir de lundi
-        $joursSemaine = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi');
+    if ($difference < 60) {
+        return $difference . "s";
+    } elseif ($difference < 3600) {
+        $minutes = floor($difference / 60);
+        return $minutes . "min";
+    } elseif ($difference < 86400) {
+        $heures = floor($difference / 3600);
+        return $heures . "h";
+    } else {
+        $jours = floor($difference / 86400);
+        return $jours . "j";
+    }
+}
+function nombreEnJour($chiffre){
+    // Tableau de jours de la semaine à partir de lundi
+    $joursSemaine = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi');
 
     // Vérifier si le chiffre est valide
     if ($chiffre >= 0 && $chiffre <= 4) {
@@ -143,7 +140,7 @@ if (isset($_SESSION['idDemande']) && isset($_SESSION['hDeb']) && isset($_SESSION
     $stmtCheckInsertion = $connect->prepare($sqlCheckInsertion);
     $stmtCheckInsertion->bind_param("issssi", $_SESSION['jour'], $_SESSION['hDeb'], $_SESSION['hFin'], $_SESSION['salle'], $_SESSION['semaine'], $_SESSION['idDemande']);
     if ($stmtCheckInsertion->execute()) {
-        echo "<script>ecran.style.display = 'block';nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
+        echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
     }else {
         echo "Erreur lors de l'insertion des données : " . $stmtCheckInsertion->error;
     }
@@ -228,7 +225,7 @@ if (
         <nav>
             <ul id="menu_liste_grand">
                 <li><a href="#">Home</a></li>
-                <li><a href="#">Swap</a></li>
+                <li><a href="emploiDuTemps.php">Swap</a></li>
                 <li><a href="demandes.php">Demandes</a></li>
                 <li><a href="#">Profil</a></li>
                 <li><a href="#">Informations</a></li>
@@ -250,7 +247,7 @@ if ($resultat->num_rows > 0 || $resultat2->num_rows > 0) {
 }
 ?>
                 </li>
-                <li><button class="bouton_nouveau"><img src="../svg/plus.svg">Nouveau</button></li>
+                <li><button onclick="nouveauClick()" class="bouton_nouveau"><img src="../svg/plus.svg">Nouveau</button></li>
             </ul>
             <ul id="menu_liste_petit">
                 <li><img class="notification" src="../svg/notif.svg">
@@ -353,7 +350,7 @@ if ($resultat->num_rows > 0) {
                 <h2>Nom Prénom</h2>
             </a>
         </div>
-        <button class="bouton_nouveau"><img src="../svg/plus.svg">Nouveau</button>
+        <button onclick="nouveauClick()" class="bouton_nouveau"><img src="../svg/plus.svg">Nouveau</button>
     </div>
     <div id="ecran"></div>
     
@@ -437,7 +434,7 @@ if ($resultat->num_rows > 0) {
                         <input type="time" class="input-hfin" name="hfin" id="input-hfin2" >
                     </div>
                 </li>
-                <li>
+                <li id="li_motivation">
                     <div>
                         <label for="input-motivation">Motivation: (facultatif)</label>
                         <input type="text" id="input-motivation" name="motivation" placeholder="Veuillez entrer votre motivation">
@@ -448,7 +445,7 @@ if ($resultat->num_rows > 0) {
                     <label for="input-semaine">Créneau une semaine sur deux</label>
                 </li>
                 <li class="basique hidden" id="choix-semaine">
-                    <input type="radio" name="semainechoix" value="A" id="sA-choix">
+                    <input type="radio" name="semainechoix" value="A" id="sA-choix" selected>
                     <label for="sA-choix">Semaine A</label>
                     <input type="radio" name="semainechoix" value="B" id="sB-choix">
                     <label for="sB-choix">Semaine B</label>
@@ -468,10 +465,11 @@ if ($resultat->num_rows > 0) {
         </div>
         <div id="div_fin_nouveau">
             <hr>
-            <button class="bouton_nouveau hidden" id="bouton_ok">OK !</button>
+            <button id="bouton_ajouter_creneau" class="hidden" id="bouton_ok">Ajouter</button>
+            <button onclick="nouveauClick()" class="bouton_nouveau hidden" id="bouton_ok">OK !</button>
             <button id="bouton_non_submit">Poster</button>
             <div id="boutons_uv" >
-                <button id="bouton_impossible_uv" class="bouton_nouveau hidden">Abandonner</button>
+                <button id="bouton_impossible_uv" onclick="nouveauClick()" class="bouton_nouveau hidden">Abandonner</button>
                 <button id="bouton_remplacer" onclick="reloadPage()" class="hidden">Remplacer</button>
             </div>
             <div id="boutons_message" class="hidden">
@@ -567,7 +565,7 @@ if (
             $stmtCheckUV->bind_result($swap_uv);
             $stmtCheckUV->fetch();
             if($swap_uv === 0){
-                echo "<script>ecran.style.display = 'block';nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_impossible_uv.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);</script>";
+                echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_impossible_uv.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);</script>";
                 
             }
         }
@@ -592,7 +590,7 @@ if (
                 $insertion->bind_param("sssisssssi", $login, $uv, $type, $jour, $hdebut, $hfin, $salle, $semaineChoix, $raison, $demande);
                 // Exécutez la requête
                 if ($insertion->execute()) {
-                    echo "<script>ecran.style.display = 'block';nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
+                    echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
                 }else {
                     echo "Erreur lors de l'insertion des données : " . $insertion->error;
                 }
@@ -601,7 +599,7 @@ if (
             }else{
                 $stmtCheckInsertion->bind_result($idDemande);
                 $stmtCheckInsertion->fetch();
-                echo "<script>ecran.style.display = 'block';nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_uv_type.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);bouton_remplacer.classList.toggle('hidden', false);</script>";
+                echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_uv_type.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);bouton_remplacer.classList.toggle('hidden', false);</script>";
                 $_SESSION["idDemande"] = $idDemande;
                 $_SESSION["hDeb"] = $hdebut;
                 $_SESSION["hFin"] = $hfin;

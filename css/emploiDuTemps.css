@@ -5,31 +5,52 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'Kantumruy';
+    src: url('../KantumruyPro-SemiBold.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
 :root {
     --taille-header: 13vh;
     --margin: 25px;
     --margin-menu: 2vh;
     --border-radius: 20px;
-}
-body {
-    font-family: Jost, sans-serif;
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow-x: hidden;
-    overflow-y: hidden;
+    --taille-edt:12vw;
+    --taille-conteneur-hours:50px;
 }
 
-.conteneur{
-    display: flex;
+main{
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#parent_edt{
+    width: fit-content;
+    height: calc(100vh - var(--taille-header)); /* Utilise toute la hauteur de la fenêtre */
+    margin: 0; /* Supprime les marges par défaut */
+}
+
+
+
+#dessus_edt{
+    display: flex ;
     flex-direction: row;
-    width: 1266px;
-    gap: 5%;
+    justify-content: space-between;
+    margin: 10px;
+    width: calc(100% - 20px);
+}
+
+#control_edt{
+    display: flex ;
+    flex-direction: row;
+    gap: 10px
 }
 
 .svgFiltre{
-    height: 50px;
-    width: 50px;
+    height: 30px;
+    width: 30px;
     transition: scale 0.3s linear;
 }
 
@@ -37,54 +58,15 @@ body {
     scale: 110%;
     cursor: pointer;
 }
-.conteneurEDT{
-    width: 1800px;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centre les éléments verticalement */
-    height: 100vh; /* Utilise toute la hauteur de la fenêtre */
-    margin: 0; /* Supprime les marges par défaut */
-}
 
-div.divHeure{
-    transition: background-color 0.3s linear; /* Transition de couleur de fond */
-    cursor: pointer; /* Curseur par défaut */
-    opacity: 1;
-}
-
-div.divHeure:hover {
-    background-color: #95a5a6; /* Nouvelle couleur de fond au survol */
-    cursor: pointer; /* Nouveau curseur au survol */
-}
-.formAddCreneau{
-    display: inherit;
-}
-
-.hoverCoursIcon{
-    fill: black; /* Remplacez 'blanc' par votre couleur de remplissage initiale */
-    transition: transform 0.3s ease; /* Ajoute une transition de 0.5 seconde avec une accélération douce */
-}
-
-/* Styles lorsqu'on survole l'élément SVG */
-.hoverCoursIcon:hover{
-    transform: scale(140%);
-    cursor: pointer;
-}
-
-.dash {
-    height: 1px;
-    box-sizing: border-box;
-    border-bottom: 1px dashed black;
-    margin: 0;
-    padding: 0;
-}
 
 
 .conteneurHours{
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
     margin-top: 40px;
-    margin-right: 10px;
+    width: var(--taille-conteneur-hours);
 }
 
 .conteneurHours h4{
@@ -92,17 +74,101 @@ div.divHeure:hover {
     height: 40px;
 }
 
-
-#emploi_du_temps{
+#conteneur_edt{
     display: flex;
-    flex-direction: row;    
     align-items: center;
     justify-content: center;
+    width: 100%;
+}
+
+.importEDT{
+    display: flex;
+    position: absolute;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    height:40vh;
+    width:40vw;
+    border-radius: 20px;
+    padding: 0;
+    margin: 0;
+    background: white;
+    z-index: 2;
+}
+
+#titre_import, #button_import{
+    width: 100%;
+}
+
+#titre_import h1{
+    font-size: 1.5vw;
+    text-align: center;
+    margin: 0;
+    padding: 3.5vh 0 3.5vh 0;
+}
+
+#titre_import hr, #button_import hr{
+    border-top: 1px solid #C4C4C4;
+    margin: 0;
+}
+
+#button_import{
+    text-align: center;
+}
+
+#content_import{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+    width: 100%;
+}
+
+#button_import button{
+    width: 200px;
+    border-radius: 10px;
+    font-size: 15px;
+    color: white;
+    border: none;
+    background-color: #32373B;
+    margin-top:calc(var(--margin) / 2);
+    margin-bottom:calc(var(--margin) / 2);
+    box-sizing: content-box;
+    cursor: pointer;
+    height: 31px;
+    min-width: 100px;
+    white-space: nowrap;
+}
+
+.importEDT textarea{
+    overflow: hidden;
+    background: #E9E9E9;
+    width: 80%;
+    height: 80%;
+    outline: none;
+    padding: 5px;
+    border: 1px grey solid;
+    resize: none;
+    border-radius: 10px;
+}
+
+#ecran_edt{
+    display: none;
+    position: absolute;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.434);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
 #emploi_du_temps .jour{
-    width:200px;
-    height: 100%;
+    width: var(--taille-edt);
+    min-width: 170px;
+    height:fit-content;
     border: 1px solid black;
     border-left: 0;
     text-align: center;
@@ -118,6 +184,7 @@ div.divHeure:hover {
     align-items: center;
     justify-content: center;
     border-bottom: 1px solid black;
+    box-sizing: border-box;
     margin: 0;
     background-color:lightgrey;
     height: 50px;
@@ -126,7 +193,6 @@ div.divHeure:hover {
 
 #emploi_du_temps .jour .endroit_cours{
     position: relative;
-    height: calc(100% - 50px);
     width: 100%;
     overflow: hidden;
 }
@@ -147,508 +213,129 @@ div.divHeure:hover {
     margin: 0;
 }
 
-#addCreneau{
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content:space-between;
-    padding:0;
-    position: absolute;
-    top: calc(50% + calc(var(--taille-header) / 2)); /* La moitié de la hauteur de l'en-tête + ajustement */
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border: 1px solid rgb(219, 219, 219);
-    width: 35%;
-    min-width: 275px;
-    height: 50%;
-    z-index: 2;
-    -webkit-box-shadow: 0px 0px 15px 8px #C4C4C4;
-    box-shadow: 0px 0px 15px 8px #C4C4C4;
-    border-radius: var(--border-radius);
-    background-color: #fff;
-}
-
-#addCreneau #form_debut_nouveau{
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-}
-
-#titre_nouveau, #div_fin_nouveau{
-    width: 100%;
-}
-
-#addCreneau label{
-    white-space: nowrap;
-
-}
-
-#div_fin_nouveau{
-    text-align: center;
-    width: 100%;
-}
-
-
-#addCreneau #div_debut_nouveau{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    width: 100%;
-}
-
-#addCreneau ul{
-    text-align:left;
-    list-style: none;
-    padding: 0;
-}
-
-#addCreneau li:not(.double-input):not(.basique){
-    display: flex;
-    flex-direction: column;
-}
-
-#addCreneau li:not(.basique){
-    margin-bottom: 10px;
-}
-
-#addCreneau .double-input li {
-    flex: 1;
-}
-
-#addCreneau .double-input{
-    display: flex;
-}
-
-#addCreneau .double-input div:first-child {
-    margin-right: 25px;
-}
-
-#addCreneau .double-input div{
-    width: 100%;
-}
-
-#addCreneau .double-input div label,
-#addCreneau .double-input div input,
-#addCreneau .double-input div select {
-    display: block;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-#addCreneau .double-input div label{
-    display: flex;
-    flex-direction: row;
-}
-
-#addCreneau .double-input div label p{
-    margin-left: 4px;
-}
-
-#addCreneau input,#addCreneau select{
-    box-sizing: content-box;
-    cursor: pointer;
-    border: 0;
-    border-radius: 5px;
-    background-color: #E9E9E9;
-    padding:8px;
-    transition: background-color 0.4s ease, padding 0.4s ease;
-    padding-left:10px;
-}
-
-#addCreneau input:not(input[type="checkbox"]):not(input[type="radio"]),#addCreneau select:not(input[type="checkbox"]):not(input[type="radio"]){
-    height:31px;
-    width: 15vw;
-    min-width: 100px;
-}
-
-#addCreneau input:focus,#addCreneau select:focus{
-    background-color: #f3f3f3;
-    padding-left: 13px;
-}
-
-
-#addCreneau h1{
-    font-size: 1.5vw;
-    text-align: center;
-    margin: 0;
-    padding: var(--margin) 0 var(--margin) 0;
-}
-
-#addCreneau hr{
-    border-top: 1px solid #C4C4C4;
-    margin: 0;
-    padding: 0;
-    display: block;
-    width: 100%;
-}
-
-#addCreneau input[type="submit"]{
-    padding: 0;
-    border-radius: 10px;
-    color: white;
-    background-color: #32373B;
-    margin-top:calc(var(--margin) / 2);
-    margin-bottom:calc(var(--margin) / 2);
-}
-
-#addCreneau input[type="checkbox"]{
-    margin: 0;
-    margin-top: 10px;
-}
-
-#addCreneau input[type="radio"]{
-    margin-top: 10px;
-}
-
-#addCreneau select{
-    background: url("data:image/svg+xml,<svg height='10px' width='10px' viewBox='0 0 16 16' fill='%23000000' xmlns='http://www.w3.org/2000/svg'><path d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/></svg>") no-repeat;
-    background-position: calc(100% - 0.75rem) center !important;
-    -moz-appearance:none !important;
-    -webkit-appearance: none !important;
-    appearance: none !important;
-    padding-right: 2rem !important;
-    background-color: #E9E9E9;
-}
-
-#addCreneau select:focus, #addCreneau input:focus{
-    outline: none;
-}
-
-.basique{
-    text-align: center;
-}
-
-#boutons_message{
-    display: flex;
-    align-items: center;
-    justify-content:center;
-}
-
-#addCreneau button{
-    padding: 0;
-    border-radius: 10px;
-    color: white;
-    border: 0;
-    background-color: #32373B;
-    margin-top:calc(var(--margin) / 2);
-    margin-bottom:calc(var(--margin) / 2);
-    box-sizing: content-box;
-    cursor: pointer;
-    height: 31px;
-    width: 13vw;
-    min-width: 100px;
-    white-space: nowrap;
-}
-
-#addCreneau #bouton_retour{
-    margin-right: var(--margin);
-}
-
-#boutons_message button{
-    color: #32373B;
-    border: 1px solid #32373B;
-    background-color: white;
-}
-
-#boutons_message input{
-    width: 13vw;
-}
-
-#boutons_message.hidden{
-    display:none;
-}
-
-#addCreneau p{
-    margin:0;
-    color: red;
-}
-
-#message_field{
-    position: absolute;
-    top:81%;
-}
-
-#addCreneau #message_pression{
-    margin: 50px
-}
-
-
-
-.hidden{
-    display:none;
-}
-
-#ecran{
-    display: none;
-    position: fixed; /* Position par rapport à la fenêtre du navigateur */
-    top: var(--taille-header); /* Espacement par rapport au header */
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    overflow: hidden;
-}
-
-/* Mise en forme de la page du menu pour téléphone */
-
-#menu_pannel{
-    display: none;
-    position: absolute;
-    top: var(--taille-header);
-    left: -65%;
-    border-left: 1px solid rgb(219, 219, 219);
-    width: 60%;
-    height: calc(100vh - var(--taille-header));
-    z-index: 2;
-    -webkit-box-shadow: -5px 0px 10px 5px #C4C4C4;
-    box-shadow: 5px 0px 10px 5px #C4C4C4;
-    background-color: #fff;
-    text-align: center;
-    transition: left 0.7s ease;
-}
-
-
-#menu_pannel ul{
-    list-style-type: none;
-    padding: 0;
-    margin:var(--margin-menu) 0 var(--margin-menu) 0;
-    text-align: left;
-}
-
-#menu_pannel li {
-    padding-top:  calc(var(--margin-menu) / 2);
-    padding-bottom:  calc(var(--margin-menu) / 2);
-    padding-left: 30px;
-    transition: background-color 0.2s ease-in-out, border 0.15s ease;
-}
-
-#menu_pannel li:hover {
-    background-color: #ededed;
-    border-left: 4px solid grey;
-}
-
-#menu_pannel a {
-    text-decoration: none;
-    color: black;
-    font-size: large;
-}
-
-#menu_pannel .profil {
-    width: 15vh;
-    margin-top:  var(--margin-menu);
-}
-
-#menu_pannel h2 {
-    margin-top:  0;
-    font-size: 4vh;
-}
-
-#menu_pannel button {
-    position: absolute;
-    bottom: var(--margin);
-    left: 50%; /* Aligner au centre horizontalement */
-    transform: translateX(-50%);
-}
-
-#menu_liste_petit{
-    display: none;
-    height: 100%;
-}
-
-#bouton_menu{
-    vertical-align: middle;
-    cursor: pointer;
-    height: 3vh;
-}
-
-
-@media screen and (max-width: 1300px) {
-    #addCreneau{
-        width: 50%;
-    }
-
-    #addCreneau h1{
-        font-size: 20px;
-    }
-
-    #addCreneau input:not(input[type="checkbox"]):not(input[type="radio"]),#addCreneau select:not(input[type="checkbox"]):not(input[type="radio"]){
-        width: 20vw;
-    }
-
-    #addCreneau input[type="submit"]{
-        width:20vw;
-    }
-
-    #addCreneau button{
-        width:20vw;
-    }
-}
-
-
-@media screen and (max-width: 750px) {
-    #menu_liste_grand{
-        display: none;
-    }
-    #menu_liste_petit{
-        display:flex;
-    }
-    #menu_pannel{
-        display: block;
-    }
-
-    #notification_pannel{
-        display: block;
-        right: -90%;
-        width: 85%;
-        margin: 0;
-        height: calc(100vh - var(--taille-header));
-        -webkit-box-shadow: -5px 0px 10px 5px #C4C4C4;
-        box-shadow: 5px 0px 10px 5px #C4C4C4;
-        border-radius: 0px;
-        border: 0;
-        border-left: 1px solid rgb(219, 219, 219);
-    }
-
-    #addCreneau{
-        width: 80%;
-    }
-    #addCreneau input:not(input[type="checkbox"]):not(input[type="radio"]),#addCreneau select:not(input[type="checkbox"]):not(input[type="radio"]){
-        width: 30vw;
-    }
-    #addCreneau input[type="submit"]{
-        width:40vw;
-    }
-
-    #addCreneau button{
-        width:40vw;
-    }
-}
-
-@media screen and (max-height: 800px) {
-
-    #addCreneau{
-        height: 60%;
-    }
-}
-
-
-@media screen and (max-height: 650px) {
-
-    #addCreneau{
-        height: 70%;
-        min-height: 400px;
-    }
-}
-
-@media screen and (max-height: 500px) {
-    header{
-        height: 70px;
-    }
-
-    #bouton_menu{
-        height: 17px;
-    }
-
-    .notification{
-        height: 30px;
-    }
-
-}
-
-@keyframes shake {
-    0% { transform: translateX(0) rotate(0); }
-    25% { transform: translateX(-1px) rotate(-1deg); }
-    50% { transform: translateX(1px) rotate(1deg); }
-    75% { transform: translateX(-1px) rotate(-1deg); }
-    100% { transform: translateX(0) rotate(0); }
-}
-
-.shake-element {
-    animation: shake 0.2s ease-in-out infinite; /* Ajustez la durée et l'accélération selon votre besoin */
-}
-
-#deleteCours .coursCancel , #deleteCours .coursDelete{
-    border-radius: 20px;
-}
-#deleteCours .coursCancel{
+div.divHeure{
     transition: background-color 0.3s linear; /* Transition de couleur de fond */
-    background: #628662;
+    cursor: pointer; /* Curseur par défaut */
+    opacity: 1;
 }
-#deleteCours .coursDelete{
-     transition: background-color 0.3s linear; /* Transition de couleur de fond */
-     background: #c9282d;
- }
-#deleteCours .coursCancel:hover{
-    background: #a4c085;
+
+div.divHeure:hover {
+    background-color: #b1c5c8; /* Nouvelle couleur de fond au survol */
+    cursor: pointer; /* Nouveau curseur au survol */
+}
+
+.hoverCours{
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: auto;
+}
+
+.hoverCoursIcon{
+    transition: transform 0.3s ease;  /*Ajoute une transition de 0.5 seconde avec une accélération douce */
+    height:40px;
+    width: 40px;
+}
+
+/* Styles lorsqu'on survole l'élément SVG */
+.hoverCoursIcon:hover{
+    transform: scale(120%) translateX(10px);
     cursor: pointer;
-
-}
-#deleteCours .coursDelete:hover{
-    background: #cc6666;
-    cursor: pointer;
-
 }
 
-.conteneurFiltre{
-    padding-bottom: 100px;
+
+.divHeure:not(:last-child) .dash{
+    box-sizing: border-box;
+    border-bottom: 1px dashed black;
+    margin: 0;
+    padding: 0;
 }
+
+
+
 .filtres{
     display: none;
+    z-index: 2;
     position: absolute;
+    right: 0;
+    top:var(--taille-header);
     flex-direction: column;
-    max-height: 80vh; /* Vous pouvez ajuster cette valeur selon vos besoins */
-    min-width: 450px;
-    overflow-y: auto;
+    justify-content: space-between;
+    height: calc(100% - var(--taille-header));
+    width: 500px;
+    overflow-x: hidden;
+    background-color: white;
 }
-
-.filtre_titre{
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-    justify-content: center;
-    background: white;
-}
-
-.filtre_titre img{
-    padding: 0;
-    height: 30px;
-    width: 30px;
-    margin-left: 30px;
-    transition: opacity 0.3s linear , scale 0.3s ease-in-out;
-}
-
-.filtre_titre img:hover{
-    opacity: 0.7;
-    scale: 110%;
-    cursor: pointer;
-
-}
-
 
 .filtres h1 , .filtres h3 , .filtres h4 {
     margin: 0;
     padding: 0;
 }
+.filtre_titre{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+    background: white;
+    height: 10vh;
+    border-bottom: 10px #EBEBEB solid;
+    gap: 15px;
+}
 
-.divFiltre{
+.filtre_titre h1{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    padding: 15px;
+    font-size: 25px;
+    height:100%;
+}
+
+
+.filtre_titre #filtre_croix {
+    width: 20%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-left: 2px solid #d7d7d7;
+    box-sizing: border-box;
+}
+
+.filtre_titre #filtre_croix img{
+    padding: 0;
+    height: 15px;
+    width: 15px;
+    transition: scale 0.3s ease-in-out;
+}
+
+.filtre_titre #filtre_croix img:hover{
+    scale: 110%;
+    cursor: pointer;
+}
+
+.conteneur_filtre{
+    overflow-y: auto;
+}
+
+.conteneur_filtre .filtre_parent:first-child{
+    margin-top: 15px;
+}
+
+.conteneur_filtre .filtre_parent{
     margin-top: 0;
     background: white;
     margin-bottom: 10px;
+    padding-left: 15px;
     border-bottom: 10px #EBEBEB solid;
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
-.filtre_titre h1{
-    margin-right: 20px;
-}
 
-.filtre_titre .vertical_ligne{
-    vertical-align: center;
-}
 
-.policeSpan{
+.conteneur_filtre .filtre_span{
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
@@ -664,17 +351,18 @@ div.divHeure:hover {
 #spanJour{
     margin-bottom: 2px;
 }
-.policeSpan h3{
+.filtre_span h3{
     margin-top: 5px;
+    font-size: 16px;
     border: 1px black solid;
     border-radius: 10px;
     padding: 5px 30px;
 }
 
-.policeSpan .inputCouleur{
-    width: 50px;
-    height: 50px;
-    background-color: grey; /* Couleur de fond par défaut */
+.filtre_span .inputCouleur{
+    width: 75px;
+    height: 75px;
+    background-color: lightgrey; /* Couleur de fond par défaut */
     cursor: pointer; /* Curseur indiquant que la div est cliquable */
     border: none;
     padding: 0;
@@ -683,7 +371,7 @@ div.divHeure:hover {
     border-radius: 100%; /
 }
 
-.policeSpan input{
+.filtre_span input{
     box-sizing: content-box;
     border: 1px black solid;
     cursor: pointer;
@@ -694,6 +382,8 @@ div.divHeure:hover {
 
 .buttonFiltres{
     text-align: center;
+    margin-bottom: 25px;
+    margin-top: 25px;
 }
 
 .buttonFiltres button{
@@ -717,22 +407,22 @@ div.divHeure:hover {
     border-radius: 8px;
     margin-right: 20px;
 }
-.check , .checkPolice{
+.check , .checkElement{
     background: #32373B;
     color: white;
     transition: background-color 0.3s linear; /* Transition de couleur de fond */
 }
 
-.uncheck , .uncheckPolice{
+.uncheck , .uncheckElement{
     transition: background-color 0.3s linear; /* Transition de couleur de fond */
 }
 
-.check:hover , .checkPolice:hover{
+.check:hover , .checkElement:hover{
     background: #444a4f;
     cursor: pointer;
 }
 
-.uncheck:hover , .uncheckPolice:hover{
+.uncheck:hover , .uncheckElement:hover{
     background: #e3dfdf;
     cursor: pointer;
 }
@@ -754,9 +444,6 @@ span input[type='color']{
 .inputCouleur{
     transform: translateX(100%);
 }
-.buttonFiltres{
-    margin-top: 50px;
-}
 .filtreButton{
     padding: 5px 10px;
     transition: background-color 0.3s ease-in-out;
@@ -773,55 +460,179 @@ span input[type='color']{
     background: #c7c4c4;
 }
 
-.importEDT{
-    padding: 0;
-    margin: 0;
-    position: absolute;
-    background: white;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50% , -50%);
-    z-index: 50;
-}
-
-div .elemContainer{
-    padding: 0;
-    margin: 0;
-    align-items: center;
-    display: flex;
+.edt{
     flex-direction: column;
-    gap: 10px;
-    padding-bottom: 10px;
+    align-items: center;
+    justify-content: center;
 }
 
-div .elemContainer h1{
-    background: #E9E9E9;
-    padding: 30px 50px;
-    border-radius: 10px;
+#menu_jour_edt{
     margin: 0;
+    padding: 0;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    list-style-type: none;
+    border-bottom: 1px solid black;
+    height: 50px;
 }
 
-div .elemContainer textarea{
-    background: #E9E9E9;
-    width: 400px;
-    border: 1px grey solid;
-    resize: none;
-    border-radius: 10px;
+#menu_jour_edt li{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0 10px 0 10px;
 }
 
-div .elemContainer button{
-    border-radius: 10px;
-    font-family: Jost;
-    font-size: 15px;
-    font-style: oblique;
+
+#menu_jour_edt a{
     color: black;
-    border: 0;
-    background-color: #E2E2E2;
-    margin-top:calc(var(--margin) / 2);
-    box-sizing: content-box;
-    cursor: pointer;
-    height: 31px;
-    min-width: 100px;
-    white-space: nowrap;
+    text-decoration: none;
 }
+
+#menu_jour_edt li.jour_select{
+    border-bottom: 2px solid black;
+    box-sizing: border-box;
+}
+
+#conteneur_edt > div:nth-child(3){
+    display: inline-flex;
+    justify-content: center;
+    width: 100vw;
+    height: calc(100% - 100px);
+    margin-left: 20px;
+}
+
+#emploi_du_temps{
+    display: flex;
+    flex-direction: row;
+}
+@media screen and (max-width: 1100px) {
+    #conteneur_edt > div:nth-child(3){
+        justify-content:unset;
+    }
+
+    #dessus_edt{
+        width: 95%;
+    }
+
+}
+
+@media screen and (max-width: 600px) {
+
+    #conteneur_edt > div:nth-child(3){
+        margin-left: 20px;
+    }
+
+    div.divHeure:hover {
+        background-color: white;
+    }
+
+    .jour:not(div.jour_select){
+        display: none;
+    }
+
+
+    #emploi_du_temps .jour:first-child{
+        border-left: 0;
+    }
+
+    #parent_edt, .edt{
+        width:100%;
+    }
+
+    #menu_jour_edt{
+        display: inline-flex;
+    }
+
+    #dessus_edt{
+        width: calc(100% - 20px);
+    }
+
+    .conteneurHours{
+        margin: 0;
+        border-right: 1px solid black;
+    }
+
+    .conteneurHours h4:last-child{
+        height:20px
+    }
+
+    #emploi_du_temps{
+        margin-top:10px;
+        width: 100%;
+    }
+
+    .divHeure:first-child .dash{
+        border-top: 1px dashed black;
+    }
+
+    :root{
+        --taille-conteneur-hours : 50px;
+    }
+
+
+    #emploi_du_temps .jour{
+        width: 100%;
+        border:0;
+        box-sizing: border-box;
+    }
+
+    #emploi_du_temps .jour h1{
+        display: none;
+    }
+
+    
+}
+
+@media screen and (max-height: 700px) {
+    .divHeure div{
+        min-height: 50px;
+    }
+
+    .conteneurHours h4{
+        min-height: 50px;
+    }
+}
+
+@keyframes shake {
+    0% { transform: translateX(0) rotate(0); }
+    25% { transform: translateX(-1px) rotate(-1deg); }
+    50% { transform: translateX(1px) rotate(1deg); }
+    75% { transform: translateX(-1px) rotate(-1deg); }
+    100% { transform: translateX(0) rotate(0); }
+}
+
+.shake-element {
+    animation: shake 0.2s ease-in-out infinite; /* Ajustez la durée et l'accélération selon votre besoin */
+}
+
+#deleteCours .coursCancel , #deleteCours .coursDelete{
+    border-radius: 10px;
+    padding: 7px 10px 7px 10px;
+    height: 31px;
+    outline: none;
+    color: #32373B;
+    box-sizing: border-box;
+    border: 1px solid #32373B;
+    background-color: white;
+    transition: background-color 0.3s linear, color 0.3s linear, border 0.3s linear; /* Transition de couleur de fond */
+    cursor: pointer;
+}
+#deleteCours .coursCancel{
+    margin-right: 10px;
+    margin-left: 10px;
+}
+#deleteCours .coursCancel:hover, #deleteCours .coursDelete:hover{
+    border: 0;
+    color: white;
+    background-color: #32373B;
+}
+
+
+
+
+
 
