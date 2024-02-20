@@ -3,7 +3,7 @@ session_start();
 function DBCredential(){
     $dbhost = 'localhost';
     $dbuser = 'root';
-    $dbpass = 'root';
+    $dbpass = '';
     $dbname = 'ut_swap';
     $connect = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to mysql');
     mysqli_set_charset($connect, 'utf8');
@@ -71,7 +71,7 @@ function nombreEnJour($chiffre){
     }
 }
 function sendNotifications($loginNotif, $loginPersonne, $idDemande, $demandeur, $type_notif, $statut, $connect){
-    
+
     date_default_timezone_set('Europe/Paris');
     $sqlInsertNotif = "INSERT INTO notifications (loginEtu, typeNotif, idDemande, demandeur, contenuNotif, date, viewed) VALUES (?, ?, ?, ?, ?, NOW(), 0)";
     $stmtInsertNotif = $connect->prepare($sqlInsertNotif);
@@ -124,7 +124,7 @@ function sendNotifications($loginNotif, $loginPersonne, $idDemande, $demandeur, 
         $stmtInsertNotif->bind_param("sssss", $loginNotif, $type_notif, $idDemande, $demandeur, $contenu_notif);
         $stmtInsertNotif->execute();
     }
-    
+
 }
 function getResponsableByUv($uv){
     $responsableLogin = "antjouglet";
@@ -178,7 +178,7 @@ if (
     if ($stmtCheckSwap->num_rows !== 0) {
         $stmtCheckSwap->bind_result($loginDemandeur);
         $stmtCheckSwap->fetch();
-        
+
         if($choix === "0"){
             $sqlUpdateSwap = "UPDATE swap SET statut = 1 WHERE idDemande = ? AND demandeur = ?";
             $choixTexte = "refusé";
@@ -202,7 +202,7 @@ if (
         }else{
             $nouveauContenuNotif = "Vous avez ".$choixTexte." la demande de Swap.;La demande de swap du ".$type." de ".$codeUV." pour ".nombreEnJour($jour)." ".date("H\hi", strtotime($horaireDebut))."-".date("H\hi", strtotime($horaireFin))." a été ".$choixTexte."e";
         }
-        
+
 
         $stmtUpdateNotif = $connect->prepare($sqlUpdateNotif);
         $stmtUpdateNotif->bind_param("ss", $nouveauContenuNotif, $idNotif);
@@ -220,274 +220,335 @@ if (
     <link rel="stylesheet" href="../css/header.css">
 </head>
 <body>
-    <header>
-        <img class="logo" src="../img/logo.png">
-        <nav>
-            <ul id="menu_liste_grand">
-                <li><a href="#">Home</a></li>
-                <li><a href="emploiDuTemps.php">Swap</a></li>
-                <li><a href="demandes.php">Demandes</a></li>
-                <li><a href="#">Profil</a></li>
-                <li><a href="#">Informations</a></li>
-                <li><img class="notification" src="../svg/notif.svg">
-<?php
-$connect = DBCredential();
-$sql = "SELECT * FROM notifications WHERE viewed = 0 AND typeNotif='1';";
-$sql2 = "SELECT * FROM notifications WHERE viewed = 0 AND typeNotif='2';";
+<header>
+    <img class="logo" src="../img/logo.png">
+    <nav>
+        <ul id="menu_liste_grand">
+            <li><a href="#">Home</a></li>
+            <li><a href="emploiDuTemps.php">Swap</a></li>
+            <li><a href="demandes.php">Demandes</a></li>
+            <li><a href="#">Profil</a></li>
+            <li><a href="#">Informations</a></li>
+            <li><img class="notification" src="../svg/notif.svg">
+                <?php
+                $connect = DBCredential();
+                $sql = "SELECT * FROM notifications WHERE viewed = 0 AND typeNotif='1';";
+                $sql2 = "SELECT * FROM notifications WHERE viewed = 0 AND typeNotif='2';";
 
-$resultat = $connect->query($sql);
-$resultat2 = $connect->query($sql2);
-if ($resultat->num_rows > 0 || $resultat2->num_rows > 0) {
-    echo '<div class="cercle';
-    if($resultat2->num_rows > 0){
-        echo ' important"></div>';
-    }else{
-        echo '"></div>';
-    }
-}
-?>
-                </li>
-                <li><button onclick="nouveauClick()" class="bouton_nouveau"><img src="../svg/plus.svg">Nouveau</button></li>
-            </ul>
-            <ul id="menu_liste_petit">
-                <li><img class="notification" src="../svg/notif.svg">
-<?php
-$connect = DBCredential();
-$sql = "SELECT * FROM notifications WHERE viewed = 0 AND typeNotif='1';";
-$sql2 = "SELECT * FROM notifications WHERE viewed = 0 AND typeNotif='2';";
+                $resultat = $connect->query($sql);
+                $resultat2 = $connect->query($sql2);
+                if ($resultat->num_rows > 0 || $resultat2->num_rows > 0) {
+                    echo '<div class="cercle';
+                    if($resultat2->num_rows > 0){
+                        echo ' important"></div>';
+                    }else{
+                        echo '"></div>';
+                    }
+                }
+                ?>
+            </li>
+            <li><button onclick="nouveauClick()" class="bouton_nouveau"><img src="../svg/plus.svg">Nouveau</button></li>
+        </ul>
+        <ul id="menu_liste_petit">
+            <li><img class="notification" src="../svg/notif.svg">
+                <?php
+                $connect = DBCredential();
+                $sql = "SELECT * FROM notifications WHERE viewed = 0 AND typeNotif='1';";
+                $sql2 = "SELECT * FROM notifications WHERE viewed = 0 AND typeNotif='2';";
 
-$resultat = $connect->query($sql);
-$resultat2 = $connect->query($sql2);
-if ($resultat->num_rows > 0 || $resultat2->num_rows > 0) {
-    echo '<div class="cercle';
-    if($resultat2->num_rows > 0){
-        echo ' important"></div>';
-    }else{
-        echo '"></div>';
-    }
-}
-?>
-                </li>
-                <li><img src="../svg/menu.svg" id="bouton_menu"></li>
-            </ul>
-        </nav>
-    </header>
-    
-    <div id="notification_pannel">
-        <div id="titre_notification">
-            <h2>Notification</h2>
-            <hr>
-        </div>
-        <div id="endroit_notification">
-<?php
-$connect = DBCredential();
-$sql = "SELECT idNotif, typeNotif, contenuNotif, idDemande, demandeur, date, viewed FROM notifications ORDER BY date DESC;";
-$resultat = $connect->query($sql);
+                $resultat = $connect->query($sql);
+                $resultat2 = $connect->query($sql2);
+                if ($resultat->num_rows > 0 || $resultat2->num_rows > 0) {
+                    echo '<div class="cercle';
+                    if($resultat2->num_rows > 0){
+                        echo ' important"></div>';
+                    }else{
+                        echo '"></div>';
+                    }
+                }
+                ?>
+            </li>
+            <li><img src="../svg/menu.svg" id="bouton_menu"></li>
+        </ul>
+    </nav>
+</header>
 
-// Vérifier s'il y a des résultats
-if ($resultat->num_rows > 0) {
-    // Afficher les options du datalist
-    
-    while ($row = $resultat->fetch_assoc()) {
-        echo '<div class="notif type_'. $row["typeNotif"];
-        if($row["viewed"]){
-            echo  ' viewed">';
-        }else{
-            echo '">';
-        }
-        echo '<div class="endroit_texte_notif">';
-        echo '<div class="user_importance_notification">';
-        echo '<div class="image_profil_notification">';
-        echo '<img src="../svg/profil.svg">';
-        echo '<div class="cercle"></div>';
-        echo '</div>';
-        echo '</div>';
-        $contenuNotif = explode(";", $row["contenuNotif"]);
-        $titre_notif = $contenuNotif[0];
-        $texte_notif = $contenuNotif[1];
-        if($row["typeNotif"] === "1"){
-            echo '<form class="texte_notification" method="POST">';
-            $idDemande = $row["idDemande"];
-            $demandeur = $row["demandeur"];
-            echo '<input type="hidden" name="idDemande" value="'.$idDemande.'">';
-            echo '<input type="hidden" name="demandeur" value="'.$demandeur.'">';
-            echo '<input type="hidden" name="id_notif" value="'.$row["idNotif"].'">';
-            echo '<input type="hidden" class="choix_notification" name="choix" value="0">';
-        }else{
-            echo '<div class="texte_notification">';
-        }
-        echo '<h1>'. $titre_notif .'</h1>';
-        echo '<p>'. $texte_notif .'<p>';
-        if($row["typeNotif"] === "1"){
-            echo '<div><button class="bouton_refuser_notif">Refuser</button><button class="bouton_accepter_notif">Accepter</button></div>';
-            echo '</form>';
-        }else{
-            echo '</div>';
-        }
-        echo '<div class="time_notification">';
-        echo '<p>il y a '. convertirTemps($row["date"]) .'</p>';
-        echo '</div>';
-        echo '</div>';
-        echo '<hr>';
-        echo '</div>';
-    }
-}
-?>
-        </div>
+<div id="notification_pannel">
+    <div id="titre_notification">
+        <h2>Notification</h2>
+        <hr>
     </div>
-    <div id="menu_pannel">
-        <div>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Swap</a></li>
-                <li><a href="#">Demandes</a></li>
-                <li><a href="#">Profil</a></li>
-                <li><a href="#">Informations</a></li>
-            </ul>
-            <hr>
-            <a href="#">
-                <img class="profil" src="../svg/profil.svg">
-                <h2>Nom Prénom</h2>
-            </a>
-        </div>
-        <button onclick="nouveauClick()" class="bouton_nouveau"><img src="../svg/plus.svg">Nouveau</button>
-    </div>
-    <div id="ecran"></div>
-    
-    <form action="#" method="post" id="nouveau_pannel">
-        <div id="titre_nouveau">
-            <h1>Nouvelle demande de Swap</h1>
-            <hr>
-        </div>
-        <img src="../svg/croix.svg" id="croix_nouveau">
-        <div id="div_debut_nouveau">
-            <ul id="ul_nouveau">
-                <li class="double-input">
-                    <div>
-                        <label for="input-uv">Code d'UV:<p class="hidden">*</p></label>
-                        <input type="text" id="input-uv" list="uvs" name="uv" placeholder="Veuillez entrer le code de l'UV" >
-                        <p class="hidden">UV non valide</p>
-<?php
-$connect = DBCredential();
-$sql = "SELECT codeUV FROM uv";
-$resultat = $connect->query($sql);
+    <div id="endroit_notification">
+        <?php
+        $connect = DBCredential();
+        $sql = "SELECT idNotif, typeNotif, contenuNotif, idDemande, demandeur, date, viewed FROM notifications ORDER BY date DESC;";
+        $resultat = $connect->query($sql);
 
-// Vérifier s'il y a des résultats
-if ($resultat->num_rows > 0) {
-    // Afficher les options du datalist
-    echo '<datalist id="uvs">';
-    while ($row = $resultat->fetch_assoc()) {
-        echo '<option value="' . $row["codeUV"] . '">';
-    }
-    echo '</datalist>';
-}
-?>
-                    </div>
-                    <div>
-                        <label for="input-creneau">Créneau:<p class="hidden">*</p></label>
-                        <select id="input-creneau" name="creneau" >
-                            <option value="" disabled selected>Sélectionnez un créneau</option>
-                            <option value="lundi">Lundi</option>
-                            <option value="mardi">Mardi</option>
-                            <option value="mercredi">Mercredi</option>
-                            <option value="jeudi">Jeudi</option>
-                            <option value="vendredi">Vendredi</option>
-                            <option value="samedi">Samedi</option>
-                        </select>
-                        <p class="hidden">Créneau non valide</p>
-                    </div>
-                    <div class="nouveau_heure_triple">
-                        <label for="input-hdebut2">Heure début:<p class="hidden">*</p></label>
-                        <input type="time" class="input-hdebut" name="hdebut" id="input-hdebut2" >
-                        <p class="hidden">Heures non valide</p>
-                    </div>
-                </li>
-                <li class="double-input" id="nouveau_heure_double">
-                    <div>
-                        <label for="input-hdebut1">Heure début:<p class="hidden">*</p></label>
-                        <input type="time" class="input-hdebut" name="hdebut" id="input-hdebut1" >
-                        <p class="hidden">Heures non valide</p>
-                    </div>
-                    <div>
-                        <label for="input-hfin1">Heure fin:<p class="hidden">*</p></label>
-                        <input type="time" class="input-hfin" name="hfin" id="input-hfin1" >
-                    </div>
-                </li>
-                <li class="double-input">
-                    <div>
-                        <label for="input-salle">Salle:<p class="hidden">*</p></label>
-                        <input type="text" id="input-salle" name="salle" placeholder="Veuillez entrer votre salle" >
-                        <p class="hidden">Salle non valide</p>
-                    </div>
-                    <div>
-                        <label for="input-type">Type:<p class="hidden">*</p></label>
-                        <select id="input-type" name="type" >
-                            <option value="" disabled selected>Sélectionnez un type</option>
-                            <option value="TD">TD</option>
-                            <option value="TP">TP</option>
-                            <option value="CM">Cours</option>
-                        </select>
-                        <p class="hidden">Type non valide</p>
-                    </div>
-                    <div class="nouveau_heure_triple">
-                        <label for="input-hfin2">Heure fin:<p class="hidden">*</p></label>
-                        <input type="time" class="input-hfin" name="hfin" id="input-hfin2" >
-                    </div>
-                </li>
-                <li id="li_motivation">
-                    <div>
-                        <label for="input-motivation">Motivation: (facultatif)</label>
-                        <input type="text" id="input-motivation" name="motivation" placeholder="Veuillez entrer votre motivation">
-                    </div>
-                </li>
-                <li class="basique">
-                    <input type="checkbox" id="input-semaine" name="semaine">
-                    <label for="input-semaine">Créneau une semaine sur deux</label>
-                </li>
-                <li class="basique hidden" id="choix-semaine">
-                    <input type="radio" name="semainechoix" value="A" id="sA-choix" selected>
-                    <label for="sA-choix">Semaine A</label>
-                    <input type="radio" name="semainechoix" value="B" id="sB-choix">
-                    <label for="sB-choix">Semaine B</label>
-                    
-                </li>
-            </ul>
-            <div class="hidden">
-                <h1>Récapitulatif:</h1>
+        // Vérifier s'il y a des résultats
+        if ($resultat->num_rows > 0) {
+            // Afficher les options du datalist
+
+            while ($row = $resultat->fetch_assoc()) {
+                echo '<div class="notif type_'. $row["typeNotif"];
+                if($row["viewed"]){
+                    echo  ' viewed">';
+                }else{
+                    echo '">';
+                }
+                echo '<div class="endroit_texte_notif">';
+                echo '<div class="user_importance_notification">';
+                echo '<div class="image_profil_notification">';
+                echo '<img src="../svg/profil.svg">';
+                echo '<div class="cercle"></div>';
+                echo '</div>';
+                echo '</div>';
+                $contenuNotif = explode(";", $row["contenuNotif"]);
+                $titre_notif = $contenuNotif[0];
+                $texte_notif = $contenuNotif[1];
+                if($row["typeNotif"] === "1"){
+                    echo '<form class="texte_notification" method="POST">';
+                    $idDemande = $row["idDemande"];
+                    $demandeur = $row["demandeur"];
+                    echo '<input type="hidden" name="idDemande" value="'.$idDemande.'">';
+                    echo '<input type="hidden" name="demandeur" value="'.$demandeur.'">';
+                    echo '<input type="hidden" name="id_notif" value="'.$row["idNotif"].'">';
+                    echo '<input type="hidden" class="choix_notification" name="choix" value="0">';
+                }else{
+                    echo '<div class="texte_notification">';
+                }
+                echo '<h1>'. $titre_notif .'</h1>';
+                echo '<p>'. $texte_notif .'<p>';
+                if($row["typeNotif"] === "1"){
+                    echo '<div><button class="bouton_refuser_notif">Refuser</button><button class="bouton_accepter_notif">Accepter</button></div>';
+                    echo '</form>';
+                }else{
+                    echo '</div>';
+                }
+                echo '<div class="time_notification">';
+                echo '<p>il y a '. convertirTemps($row["date"]) .'</p>';
+                echo '</div>';
+                echo '</div>';
+                echo '<hr>';
+                echo '</div>';
+            }
+        }
+        ?>
+    </div>
+</div>
+<div id="menu_pannel">
+    <div>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Swap</a></li>
+            <li><a href="#">Demandes</a></li>
+            <li><a href="#">Profil</a></li>
+            <li><a href="#">Informations</a></li>
+        </ul>
+        <hr>
+        <a href="#">
+            <img class="profil" src="../svg/profil.svg">
+            <h2>Nom Prénom</h2>
+        </a>
+    </div>
+    <button onclick="nouveauClick()" class="bouton_nouveau"><img src="../svg/plus.svg">Nouveau</button>
+</div>
+<div id="ecran"></div>
+
+<form action="#" method="post" id="nouveau_pannel">
+    <div id="titre_nouveau">
+        <h1 id="newDemandeSwap" class="">Nouvelle demande de Swap</h1>
+        <h1 id="swapRecap" class="hidden">Récapitulatif : </h1>
+        <hr>
+    </div>
+    <img src="../svg/croix.svg" id="croix_nouveau">
+    <div id="div_debut_nouveau">
+        <ul id="ul_nouveau">
+            <li class="double-input">
                 <div>
-                    <p>Créneau désiré -></p><div><p>UV:</p><p>MT23</p></div><div><p>Type:</p><p>TD</p></div>
+                    <label for="input-uv">Code d'UV:<p class="hidden">*</p></label>
+                    <input type="text" id="input-uv" list="uvs" name="uv" placeholder="Veuillez entrer le code de l'UV" >
+                    <p class="hidden">UV non valide</p>
+                    <?php
+                    $connect = DBCredential();
+                    $sql = "SELECT codeUV FROM uv";
+                    $resultat = $connect->query($sql);
+
+                    // Vérifier s'il y a des résultats
+                    if ($resultat->num_rows > 0) {
+                        // Afficher les options du datalist
+                        echo '<datalist id="uvs">';
+                        while ($row = $resultat->fetch_assoc()) {
+                            echo '<option value="' . $row["codeUV"] . '">';
+                        }
+                        echo '</datalist>';
+                    }
+                    ?>
                 </div>
+                <div>
+                    <label for="input-creneau">Créneau:<p class="hidden">*</p></label>
+                    <select id="input-creneau" name="creneau" >
+                        <option value="" disabled selected>Sélectionnez un créneau</option>
+                        <option value="lundi">Lundi</option>
+                        <option value="mardi">Mardi</option>
+                        <option value="mercredi">Mercredi</option>
+                        <option value="jeudi">Jeudi</option>
+                        <option value="vendredi">Vendredi</option>
+                        <option value="samedi">Samedi</option>
+                    </select>
+                    <p class="hidden">Créneau non valide</p>
+                </div>
+                <div class="nouveau_heure_triple">
+                    <label for="input-hdebut2">Heure début:<p class="hidden">*</p></label>
+                    <input type="time" class="input-hdebut" name="hdebut" id="input-hdebut2" >
+                    <p class="hidden">Heures non valide</p>
+                </div>
+            </li>
+            <li class="double-input" id="nouveau_heure_double">
+                <div>
+                    <label for="input-hdebut1">Heure début:<p class="hidden">*</p></label>
+                    <input type="time" class="input-hdebut" name="hdebut" id="input-hdebut1" >
+                    <p class="hidden">Heures non valide</p>
+                </div>
+                <div>
+                    <label for="input-hfin1">Heure fin:<p class="hidden">*</p></label>
+                    <input type="time" class="input-hfin" name="hfin" id="input-hfin1" >
+                </div>
+            </li>
+            <li class="double-input">
+                <div>
+                    <label for="input-salle">Salle:<p class="hidden">*</p></label>
+                    <input type="text" id="input-salle" name="salle" placeholder="Veuillez entrer votre salle" >
+                    <p class="hidden">Salle non valide</p>
+                </div>
+                <div>
+                    <label for="input-type">Type:<p class="hidden">*</p></label>
+                    <select id="input-type" name="type" >
+                        <option value="" disabled selected>Sélectionnez un type</option>
+                        <option value="TD">TD</option>
+                        <option value="TP">TP</option>
+                        <option value="CM">Cours</option>
+                    </select>
+                    <p class="hidden">Type non valide</p>
+                </div>
+                <div class="nouveau_heure_triple">
+                    <label for="input-hfin2">Heure fin:<p class="hidden">*</p></label>
+                    <input type="time" class="input-hfin" name="hfin" id="input-hfin2" >
+                </div>
+            </li>
+            <li id="li_motivation">
+                <div>
+                    <label for="input-motivation">Motivation: (facultatif)</label>
+                    <input type="text" id="input-motivation" name="motivation" placeholder="Veuillez entrer votre motivation">
+                </div>
+            </li>
+            <li class="basique">
+                <input type="checkbox" id="input-semaine" name="semaine">
+                <label for="input-semaine">Créneau une semaine sur deux</label>
+            </li>
+            <li class="basique hidden" id="choix-semaine">
+                <input type="radio" name="semainechoix" value="A" id="sA-choix" selected>
+                <label for="sA-choix">Semaine A</label>
+                <input type="radio" name="semainechoix" value="B" id="sB-choix">
+                <label for="sB-choix">Semaine B</label>
+
+            </li>
+        </ul>
+
+        <div class="hidden">
+            <h1>Récapitulatif:</h1>
+            <div>
+                <p>Créneau désiré -></p><div><p>UV:</p><p>MT23</p></div><div><p>Type:</p><p>TD</p></div>
             </div>
+        </div>
+        <div id="afficherSwapRequest">
             <p id="message_uv_type" class="hidden">Malheureusement vous avez déjà réalisé une demande pour ce type et cet UV</p>
             <p id="message_pression" class="hidden">Assurez-vous de la validité ainsi que de la possession du créneau renseigné. Des incohérences répétées pourraient entraîner des sanctions, y compris le bannissement.</p>
             <p id="message_impossible_uv" class="hidden">Nous sommes désolé mais le responsable de cette UV a désactivé les changements de créneaux. Aucune demande n'est donc possible...</p>
             <p id="message_insertion" class="hidden">La demande a été envoyée !!</p>
-        </div>
-        <div id="div_fin_nouveau">
-            <hr>
-            <button id="bouton_ajouter_creneau" class="hidden" id="bouton_ok">Ajouter</button>
-            <button onclick="nouveauClick()" class="bouton_nouveau hidden" id="bouton_ok">OK !</button>
-            <button id="bouton_non_submit">Poster</button>
-            <div id="boutons_uv" >
-                <button id="bouton_impossible_uv" onclick="nouveauClick()" class="bouton_nouveau hidden">Abandonner</button>
-                <button id="bouton_remplacer" onclick="reloadPage()" class="hidden">Remplacer</button>
+
+            <div class="hidden" id="sendSwap">
+                <div class="confirmationSwap">
+                    <input type="text" name="swapIdDemande" id="swapIdDemande" hidden>
+                    <div class="creneau">
+                        <div class="details">
+                            <span class="row">
+                                <h3>Jour:</h3>
+                                <p id="swapJour1"></p>
+                            </span>
+                            <span class="hidden" id="spanSemaine1">
+                                <span class="row">
+                                    <h3>Semaine:</h3>
+                                    <p id="swapSemaine1"></p>
+                                </span>
+                            </span>
+                            <span class="row">
+                                <h3>Salle:</h3>
+                                <p id="swapSalle1"></p>
+                            </span>
+                            <span class="row">
+                                <h3>Horaire:</h3>
+                                <p id="swapCreneau1"></p>
+                            </span>
+                        </div>
+                    </div>
+
+                    <img src="../svg/Vector.svg" alt="">
+
+                    <div class="creneau">
+                        <div class="details">
+                            <span class="row">
+                                <h3>Jour:</h3>
+                                <p id="swapJour2"></p>
+                            </span>
+                            <span class="hidden" id="spanSemaine2">
+                                <span class="row">
+                                    <h3>Semaine:</h3>
+                                    <p id="swapSemaine2"></p>
+                                </span>
+                            </span>
+                            <span class="row">
+                                <h3>Salle:</h3>
+                                <p id="swapSalle2"></p>
+                            </span>
+                            <span class="row">
+                                <h3>Horaire:</h3>
+                                <p id="swapCreneau2"></p>
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
             </div>
-            <div id="boutons_message" class="hidden">
-                <button id="bouton_retour">Retour</button>
-                <input type="submit" value="Poster la demande" id="submit_fin_nouveau">
-            </div>
         </div>
-    </form>
-    
-    
-    <script src="../js/header.js"></script>
+
+    </div>
+
+
+
+    <div id="div_fin_nouveau">
+        <hr>
+        <button id="bouton_ajouter_creneau" class="hidden" id="bouton_ok">Ajouter</button>
+        <button onclick="nouveauClick()" class="bouton_nouveau hidden" id="bouton_ok">OK !</button>
+        <button id="bouton_non_submit">Poster</button>
+        <div id="boutons_uv" >
+            <button id="bouton_impossible_uv" onclick="nouveauClick()" class="bouton_nouveau hidden">Abandonner</button>
+            <button id="bouton_remplacer" onclick="reloadPage()" class="hidden">Remplacer</button>
+        </div>
+        <div id="boutons_message" class="hidden">
+            <button id="bouton_retour">Retour</button>
+            <input type="submit" value="Poster la demande" id="submit_fin_nouveau">
+        </div>
+    </div>
+</form>
+
+
+<script src="../js/header.js"></script>
 <?php
 // Vérifier si les variables sont définies et non vides
 if (
     isset($_POST['uv'], $_POST['creneau'], $_POST['hdebut'], $_POST['hfin'], $_POST['salle'], $_POST['type']) &&
     !empty($_POST['uv']) && !empty($_POST['creneau']) && !empty($_POST['hdebut']) && !empty($_POST['hfin']) && !empty($_POST['salle']) && !empty($_POST['type'])
 ) {
-    
     $connect = DBCredential();
     // Valider les données
     $uv = validateInput($_POST['uv'],$connect);
@@ -496,9 +557,6 @@ if (
     $hfin = validateInput($_POST['hfin'],$connect);
     $salle = validateInput($_POST['salle'],$connect);
     $type = validateInput($_POST['type'],$connect);
-
-    
-
 
     if(strlen($uv) != 4){
         header("Location: erreur.php");
@@ -515,7 +573,7 @@ if (
     }else{
         // Récupérez la valeur de la case à cocher
         $creneauUneSemaine = isset($_POST['semaine']) ? 1 : 0;
-        $responsable= getResponsableByUv($uv);
+        $responsable = getResponsableByUv($uv);
         $responsableLogin = $responsable["login"];
         $responsableNom = $responsable["nom"];
         $responsablePrénom = $responsable["prénom"];
@@ -566,7 +624,7 @@ if (
             $stmtCheckUV->fetch();
             if($swap_uv === 0){
                 echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_impossible_uv.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);</script>";
-                
+
             }
         }
 
@@ -582,16 +640,16 @@ if (
             $stmtCheckInsertion->store_result();
             if ($stmtCheckInsertion->num_rows === 0) {
                 $insertion = $connect->prepare("INSERT INTO demande (login, codeUV, type, jour, horaireDebut, horaireFin, salle, semaine, raison, demande) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            
-                
                 $raison = validateInput($_POST['motivation'],$connect);
-                $demande = 1;
+                $demande = (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande'])) ? 0 : 1;
                 // Liez les valeurs aux paramètres de la requête
                 $insertion->bind_param("sssisssssi", $login, $uv, $type, $jour, $hdebut, $hfin, $salle, $semaineChoix, $raison, $demande);
                 // Exécutez la requête
                 if ($insertion->execute()) {
+                    $primaryKeyDemande = $connect->insert_id;
                     echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
                 }else {
+                    $primaryKeyDemande = null;
                     echo "Erreur lors de l'insertion des données : " . $insertion->error;
                 }
                 // Fermez la connexion
@@ -608,10 +666,35 @@ if (
                 $_SESSION["semaine"] = $semaineChoix;
             }
         }
-        $connect->close();
     }
+    /* Vérifier si un swap n'existe pas déjà pour la demande de l'étudiant. */
+    if (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande'])){
+        if ($primaryKeyDemande != null){
+            $offerId = $_POST['swapIdDemande'];
+            $offerCodeUV = "";
+            $offerType = "";
+            $sqlCheckData = "SELECT codeUV , type FROM demande WHERE idDemande = ?";
+            $stmtCheckData = $connect->prepare($sqlCheckData);
+            $stmtCheckData->bind_param("i", $offerId);
+            $stmtCheckData->execute();
+            $stmtCheckData->bind_result($offerCodeUV, $offerType);
+            $stmtCheckData->fetch();
+            $stmtCheckData->close();
+            /* Vérifier que le code UV et le type sont bien égaux pour le demandeur et le receveur. */
+            if ($offerCodeUV != $uv || $offerType != $type){
+                error_log("Erreur : L'UV et / ou le type sont différents !");
+            } else {
+                $stmt = $connect->prepare("INSERT INTO swap (idDemande , demandeur , statut) VALUES (? , ? , 0)");
+                $stmt->bind_param("ii" , $offerId , $primaryKeyDemande);
+                $stmt->execute();
+                $stmt->close();
+            }
+        } else {
+            echo "Erreur dans l'insertion des données";
+        }
 
-    
+    }
+    $connect->close();
 }
 ?>
 </body>

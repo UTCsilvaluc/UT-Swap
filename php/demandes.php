@@ -8,71 +8,107 @@
     <link rel="icon" href="../img/logo.png" type="image/x-icon">
 </head>
 <body>
-    <?php
-    
-    include "header.php"
-
-    ?>
+    <?php include "header.php" ?>
     <main>
-        <div id="demandes_pannel">
-            <?php
-                $login = "bazileel";
-                $connect = DBCredential();
-                $sqlSelectDemandes = "SELECT d.idDemande, d.codeUV, d.type, d.semaine, d.jour, d.horaireDebut, d.horaireFin, d.salle, (SELECT COUNT(*) FROM swap s WHERE (s.idDemande = d.idDemande or s.demandeur = d.idDemande) and statut > 0 ) as nbDemande, p.nom, p.prenom FROM demande d JOIN etudiant e ON e.login = d.login JOIN personne p ON p.login = e.login WHERE d.idDemande != ? and d.demande=1;";
-                $stmtSelectDemandes = $connect->prepare($sqlSelectDemandes);
-                $stmtSelectDemandes->bind_param("s", $login);
-                
-                $stmtSelectDemandes->execute();
-                // Obtenir le résultat
-                $resultat = $stmtSelectDemandes->get_result();
+        <?php
+        if (isset($_GET['codeUV'])){
+            $UV = $_GET['codeUV'];
+            echo $UV;
+        } else {
+        }
+        ?>
+        <div class="main_conteneur">
+            <div class="demandesControl">
+                <div class="filtres">
+                    <form action="demandes.php" method="get" id="filterForm">
+                    <span class="rechercher">
+                        <input class="filtreInput" type="text" name="codeUV" id="codeUV" placeholder="Chercher une UV" value="<?php echo $_GET['codeUV'] ?? ''; ?>">
+                        <img id="filterUV" class="svgFiltre" src="../svg/search.svg" alt="" onclick="filtrerUV(event)">
+                    </span>
+                        <span class="sort">
 
-                // Vérifier s'il y a des résultats
-                if ($resultat->num_rows > 0) {
-                    // Afficher les options du datalist
-                    
-                    while ($row = $resultat->fetch_assoc()) {
-                        $personne= ucfirst($row["nom"])." ".ucfirst($row["prenom"]);
-                        $row['semaine'] = ($row['semaine'] === 'null') ? null : $row['semaine'];
-                        echo '<div class="demande" data-row="' . htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8') . '" onclick="clickDemande(this)">';
-                        echo '<div class="demande_info1">';
-                        echo '<img src="../svg/demande_thing.svg">';
-                        echo '<div>';
-                        echo '<h1>'.$row["codeUV"].' - '.$row["type"] .'</h1>';
-                        echo '<h2>'.nombreEnJour($row["jour"]).'  '.date("H\hi", strtotime($row["horaireDebut"])).' - '.date("H\hi", strtotime($row["horaireFin"])).' | '.$row["salle"] .'</h2>';
-                        echo '</div>';
-                        echo '</div>';
-                        echo '<div class="demande_info2">';
-                        echo '<div>';
-                        echo '<p>Auteur: </p><p>'.$personne.'</p>';
-                        echo '</div>';
-                        echo '<div>';
-                        echo '<p>Demande(s):</p><p>'.$row["nbDemande"] .'</p>';
-                        echo '</div>';
-                        echo '</div>';
-                        echo '<img src="../svg/swap_icon.svg" onclick="copierLien(this)">';
-                        echo '</div>';
+                        <button type="submit">Rechercher</button>
 
-                    }
-                }
+                        <img id="filterUV" class="svgFiltre" src="../svg/search.svg" alt="" onclick="filtrerUV(event)">
+                    </span>
+                        <span class="jour">
 
-            ?>
-        </div>
-        <div id="others_demandes">
-            <div id="demandes_top">
-                <div class="demandes_top">
-                    <h1></h1>
-                    <hr>
+                    </span>
+                        <span class="lieu">
+
+                    </span>
+                        <span class="type">
+
+                    </span>
+                        <span class="other">
+
+                    </span>
+                    </form>
                 </div>
-                <div class="demandes_content">
-                </div>
-                <div class="demandes_bottom">
-                    <button></button>
+                <div class="demande_container">
+                    <?php
+                    // Supposons que $result soit votre tableau de résultats de la requête SQL
+                    $connect = DBCredential();
+                    $stmt = $connect->prepare("SELECT d.idDemande , d.login , d.codeUV , d.type , d.jour ,  d.horaireDebut , d.horaireFin , d.salle , d.semaine , e.login , p.nom , p.prenom , (SELECT count(idDemande) FROM swap WHERE idDemande = d.idDemande) AS nbDemandes FROM demande as d JOIN etudiant as e ON e.login = d.login JOIN personne as p ON p.login = e.login WHERE demande = 1");
+                    $isAvailable = $stmt->execute();
+                    $result = $stmt->get_result();
+                    foreach ($result as $demande) {
+                        // Assignation des valeurs du tableau à des variables
+                        $UV = $demande['codeUV'];
+                        $type = $demande['type'];
+                        $jour = $demande['jour'];
+                        $hdebut = $demande['horaireDebut'];
+                        $hfin = $demande['horaireFin'];
+                        $salle = $demande['salle'];
+                        $semaine = $demande['semaine'];
+                        $nom = $demande['nom'];
+                        $prenom = $demande['prenom'];
+                        $login = $demande['login'];
+                        $nbDemandes = $demande["nbDemandes"];
+                        $jours = array(
+                            1 => 'Lundi',
+                            2 => 'Mardi',
+                            3 => 'Mercredi',
+                            4 => 'Jeudi',
+                            5 => 'Vendredi',
+                            6 => 'Samedi',
+                            7 => 'Dimanche'
+                        );
+                        $hdebut = substr($hdebut , 0 , 5);
+                        $hfin = substr($hfin , 0 , 5);
+                        $data_row = htmlspecialchars(json_encode($demande) , ENT_QUOTES , 'UTF-8')
+                        ?>
+                        <div class="div_demande" onclick="clickDemande(this)" data-row=<?php echo "$data_row"; ?>>
+                            <div class="gauche_container">
+                                <img class="rectangle_demande" src="../svg/rectangle_demande.svg" alt="">
+                                <div class="infos_uv">
+                                    <h2><?php echo ($semaine == "null") ? "$UV - $type" : "$UV - $type $semaine"; ?></h2>
+                                    <h4><?php echo "$jours[$jour] $hdebut - $hfin | $salle"; ?></h4>
+                                </div>
+                            </div>
+
+                            <div class="infos_auteur">
+                        <span class="span_auteur">
+                            <p>Auteur:</p> <h5><?php echo "$nom $prenom"; ?></h5>
+                        </span>
+                                <span class="span_nb_demandes">
+                            <p>Demande(s):</p> <h5><?php echo $nbDemandes; ?></h5>
+                        </span>
+                            </div>
+
+                            <div class="swap_div_container">
+                                <img class="swap_icon" src="../svg/swap_icon.svg" alt="" onclick="copierLien(this)">
+                            </div>
+                        </div>
+                    <?php } ?>
                 </div>
             </div>
-            <div id="demandes_bottom">
+            <div class="misc_container">
+
             </div>
         </div>
     </main>
+
     <script src="../js/demandes.js"></script>
 </body>
 

@@ -1,7 +1,7 @@
 function copierLien(element) {
     // Récupérer les informations sur la demande
-    var uvType = element.closest('.demande').querySelector('h1').innerText;
-    var horaires = element.closest('.demande').querySelector('h2').innerText;
+    var uvType = element.closest('.div_demande').querySelector('h2').innerText;
+    var horaires = element.closest('.div_demande').querySelector('h4').innerText;
     var matchResult = horaires.match(/(\d{2}:\d{2}) - (\d{2}:\d{2})/);
     var heureDebut;
     var heureFin;
@@ -47,23 +47,45 @@ function clickDemande(element) {
             } else {
                 console.error("Aucune donnée trouvée dans l'attribut data-row");
             }
-            if(donnees.codeUV !== "" && donnees.type !== "" && donnees.salle !== ""){
-                document.getElementsByClassName("bouton_nouveau")[0].click();
-                bouton_non_submit.innerHTML = "Continuer";
-                
+            if(donnees.codeUV !== "" && donnees.type !== "" && donnees.salle !== "") {
+                const joursSemaine = {
+                    "1": 'Lundi',
+                    "2": 'Mardi',
+                    "3": 'Mercredi',
+                    "4": 'Jeudi',
+                    "5": 'Vendredi',
+                    "6": 'Samedi'
+                };
+                nouveauClick();
+                bouton_non_submit.className = "submitSwap";
+
                 input_uv.value = donnees.codeUV;
                 input_type.value = donnees.type;
-                input_uv.disabled = true
-                input_type.disabled = true
-                bouton_non_submit.addEventListener("click", function() {
-            
-                    if(type !== "" && salle !== "" && hfin !== "" && hdebut !== "" && creneau !== "" && uv !== "" && uv.length === 4 && ["TD","TP","CM"].includes(type) && ["lundi","mardi","mercredi","jeudi","vendredi","samedi"].includes(creneau) && hdebut < hfin){
-                        
-                    }
-                });
+                input_uv.disabled = true;
+                input_type.disabled = true;
+                localStorage.setItem("idDemande" , donnees.idDemande);
+                localStorage.setItem("salle" , donnees.salle);
+                localStorage.setItem("hdebut" , donnees.horaireDebut);
+                localStorage.setItem("hfin" , donnees.horaireFin);
+                localStorage.setItem("jour" , joursSemaine[donnees.jour]);
+
+
+                if (donnees.semaine === "null") {
+                    checkbox.disabled = true;
+                } else {
+                    checkbox.disabled = false;
+                    checkbox.click();
+                    checkbox.checked = true;
+                    localStorage.setItem("semaine" , donnees.semaine);
+                }
+
             }
+
         }
     
 }
 
+function filtrerUV(event){
+    document.getElementById('filterForm').submit();
+}
 

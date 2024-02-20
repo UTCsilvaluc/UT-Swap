@@ -626,7 +626,11 @@ nav .important{
 }
 
 #nouveau_pannel #message_pression{
-    margin: 50px
+    margin: 50px;
+}
+
+p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_insertion{
+    width: auto;
 }
 
 
@@ -938,4 +942,44 @@ nav .important{
 
 .shake-element {
     animation: shake 0.2s ease-in-out infinite; /* Ajustez la durée et l'accélération selon votre besoin */
+}
+
+/* CSS partie récapitulatif demande de swap */
+
+div.confirmationSwap{
+    display: flex;
+    flex-direction: row;
+    gap: 2vh;
+    justify-content: center;
+
+}
+
+div.creneau{
+    background: #F3F3F3;
+    padding: 3vh;
+    border-radius: 2vh;
+}
+
+span.row{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    vertical-align: center;
+    align-items: center;
+    gap: 1vh;
+}
+
+span.row h3 , span.row p{
+    margin: 0;
+    padding: 0;
+}
+
+span.row h3{
+    font-style: oblique;
+}
+
+#afficherSwapRequest{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
 }
