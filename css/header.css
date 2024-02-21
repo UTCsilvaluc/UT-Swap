@@ -629,7 +629,7 @@ nav .important{
     margin: 50px;
 }
 
-p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_insertion{
+p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_insertion , p#message_changement_creneau{
     width: auto;
 }
 

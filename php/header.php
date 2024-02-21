@@ -461,7 +461,8 @@ if (
             </div>
         </div>
         <div id="afficherSwapRequest">
-            <p id="message_uv_type" class="hidden">Malheureusement vous avez déjà réalisé une demande pour ce type et cet UV</p>
+            <p id="message_uv_type" class="hidden">Vous proposez déjà un horaire pour cette UV et ce type de cours !</p>
+            <p id="message_changement_creneau" class="hidden">Vous avez effectué une autre demande pour cette UV et ce type en fournissant des créneaux différents, souhaitez-vous modifier le créneau ?</p>
             <p id="message_pression" class="hidden">Assurez-vous de la validité ainsi que de la possession du créneau renseigné. Des incohérences répétées pourraient entraîner des sanctions, y compris le bannissement.</p>
             <p id="message_impossible_uv" class="hidden">Nous sommes désolé mais le responsable de cette UV a désactivé les changements de créneaux. Aucune demande n'est donc possible...</p>
             <p id="message_insertion" class="hidden">La demande a été envoyée !!</p>
@@ -629,32 +630,76 @@ if (
         }
 
         if($swap_uv === 1){
+            $canSwap = false;
             // Récupérez la valeur du choix de semaine seulement si la case à cocher est cochée
             $semaineChoix = $creneauUneSemaine && isset($_POST['semainechoix']) ? validateInput($_POST['semainechoix'],$connect) : 'null';
             // Préparez la requête SQL d'insertion
             $jour = jourEnNombre($creneau);
-            $sqlCheckInsertion = "SELECT idDemande FROM demande WHERE login = ? and type=? and codeUV = ?";
+            $sqlCheckInsertion = "SELECT idDemande FROM demande WHERE login = ? and type=? and codeUV = ? AND demande = 1";
             $stmtCheckInsertion = $connect->prepare($sqlCheckInsertion);
             $stmtCheckInsertion->bind_param("sss", $login, $type, $uv);
             $stmtCheckInsertion->execute();
             $stmtCheckInsertion->store_result();
-            if ($stmtCheckInsertion->num_rows === 0) {
-                $insertion = $connect->prepare("INSERT INTO demande (login, codeUV, type, jour, horaireDebut, horaireFin, salle, semaine, raison, demande) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $raison = validateInput($_POST['motivation'],$connect);
-                $demande = (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande'])) ? 0 : 1;
-                // Liez les valeurs aux paramètres de la requête
-                $insertion->bind_param("sssisssssi", $login, $uv, $type, $jour, $hdebut, $hfin, $salle, $semaineChoix, $raison, $demande);
-                // Exécutez la requête
-                if ($insertion->execute()) {
-                    $primaryKeyDemande = $connect->insert_id;
-                    echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
-                }else {
-                    $primaryKeyDemande = null;
-                    echo "Erreur lors de l'insertion des données : " . $insertion->error;
+            if ($stmtCheckInsertion->num_rows === 0 || (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande']))) {
+                $stmtCheckInsertion->close();
+
+                /* Quand un étudiant fait une demande de swap, vérifier que la demande n'existe pas encore, cela permet à l'étudiant de formuler plusieurs demandes*/
+                /* Si elle existe, simplement créer le SWAP sinon créer la demande puis ensuite créer le swap */
+
+                $sqlCheckInsertion = "SELECT idDemande FROM demande WHERE login = ? and type=? and codeUV = ? AND demande = 0";
+                $stmtCheckInsertion = $connect->prepare($sqlCheckInsertion);
+                $stmtCheckInsertion->bind_param("sss", $login, $type, $uv);
+                $stmtCheckInsertion->execute();
+                $stmtCheckInsertion->store_result();
+
+                /* --------------------------------------- */
+
+                if ($stmtCheckInsertion->num_rows === 0) {
+                    $insertion = $connect->prepare("INSERT INTO demande (login, codeUV, type, jour, horaireDebut, horaireFin, salle, semaine, raison, demande) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    $raison = validateInput($_POST['motivation'],$connect);
+                    $demande = (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande'])) ? 0 : 1;
+                    // Liez les valeurs aux paramètres de la requête
+                    $insertion->bind_param("sssisssssi", $login, $uv, $type, $jour, $hdebut, $hfin, $salle, $semaineChoix, $raison, $demande);
+                    // Exécutez la requête
+                    if ($insertion->execute()) {
+                        $primaryKeyDemande = $connect->insert_id;
+                        $canSwap = true;
+                        echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
+                    }else {
+                        $primaryKeyDemande = null;
+                        echo "Création demande -> Erreur lors de l'insertion des données : " . $insertion->error;
+                    }
+                    // Fermez la connexion
+                    $insertion->close();
+                } else {
+                    /* Quand un étudiant a déjà fait une demande pour un créneau, et qu'il change l'horaire en faisant la demande de swap par rapport à son ancien créneau, le notifier. */
+
+                    $sqlCheckInsertion = "SELECT idDemande , horaireDebut, horaireFin , codeUV FROM demande WHERE login = ? and type=? and codeUV = ? AND horaireDebut = ? AND horaireFin = ? AND jour = ? AND demande = 0";
+                    $stmtCheckInsertion = $connect->prepare($sqlCheckInsertion);
+                    $stmtCheckInsertion->bind_param("sssssi", $login, $type, $uv , $hdebut , $hfin , $jour);
+                    $stmtCheckInsertion->execute();
+                    $result = $stmtCheckInsertion->get_result();
+
+                    /* --------------------------------------- */
+                    foreach ($result as $item){
+                        $primaryKeyDemande = $item['idDemande'];
+                    }
+
+                    if ($result->num_rows === 0){
+                        /* Ici, l'élève a changer son créneau , il faut lui proposer de l'update. */
+                        echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_changement_creneau.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);bouton_remplacer.classList.toggle('hidden', false);</script>";
+                        $_SESSION["idDemande"] = $idDemande;
+                        $_SESSION["hDeb"] = $hdebut;
+                        $_SESSION["hFin"] = $hfin;
+                        $_SESSION["salle"] = $salle;
+                        $_SESSION["jour"] = $jour;
+                        $_SESSION["semaine"] = $semaineChoix;
+                    } else {
+                        $canSwap = true;
+                    }
                 }
-                // Fermez la connexion
-                $insertion->close();
             }else{
+                /* Le changement ne fonctionne pas pour le moment.*/
                 $stmtCheckInsertion->bind_result($idDemande);
                 $stmtCheckInsertion->fetch();
                 echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_uv_type.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);bouton_remplacer.classList.toggle('hidden', false);</script>";
@@ -668,21 +713,24 @@ if (
         }
     }
     /* Vérifier si un swap n'existe pas déjà pour la demande de l'étudiant. */
-    if (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande'])){
+    if (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande']) && $canSwap){
         if ($primaryKeyDemande != null){
             $offerId = $_POST['swapIdDemande'];
             $offerCodeUV = "";
             $offerType = "";
-            $sqlCheckData = "SELECT codeUV , type FROM demande WHERE idDemande = ?";
+            $sqlCheckData = "SELECT codeUV , type , login FROM demande WHERE idDemande = ?";
             $stmtCheckData = $connect->prepare($sqlCheckData);
             $stmtCheckData->bind_param("i", $offerId);
             $stmtCheckData->execute();
-            $stmtCheckData->bind_result($offerCodeUV, $offerType);
+            $stmtCheckData->bind_result($offerCodeUV, $offerType , $offerLogin);
             $stmtCheckData->fetch();
             $stmtCheckData->close();
             /* Vérifier que le code UV et le type sont bien égaux pour le demandeur et le receveur. */
             if ($offerCodeUV != $uv || $offerType != $type){
                 error_log("Erreur : L'UV et / ou le type sont différents !");
+            } else if ($offerLogin === $login) {
+                error_log("Impossible de se faire une demande à soi-même !!!!");
+                echo "demande à moi -même";
             } else {
                 $stmt = $connect->prepare("INSERT INTO swap (idDemande , demandeur , statut) VALUES (? , ? , 0)");
                 $stmt->bind_param("ii" , $offerId , $primaryKeyDemande);
@@ -690,7 +738,7 @@ if (
                 $stmt->close();
             }
         } else {
-            echo "Erreur dans l'insertion des données";
+            echo "Swap -> Erreur dans l'insertion des données : ";
         }
 
     }

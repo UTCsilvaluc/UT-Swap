@@ -47,13 +47,27 @@
                 </div>
                 <div class="demande_container">
                     <?php
+                    $login = ""; /* Sera à récupérer une fois que l'étudiant sera login. */
                     // Supposons que $result soit votre tableau de résultats de la requête SQL
                     $connect = DBCredential();
-                    $stmt = $connect->prepare("SELECT d.idDemande , d.login , d.codeUV , d.type , d.jour ,  d.horaireDebut , d.horaireFin , d.salle , d.semaine , e.login , p.nom , p.prenom , (SELECT count(idDemande) FROM swap WHERE idDemande = d.idDemande) AS nbDemandes FROM demande as d JOIN etudiant as e ON e.login = d.login JOIN personne as p ON p.login = e.login WHERE demande = 1");
+                    $stmt = $connect->prepare("SELECT d.idDemande , d.login , d.codeUV , d.type , d.jour ,  d.horaireDebut , d.horaireFin , d.salle , d.semaine , e.login , p.nom , p.prenom , (SELECT count(idDemande) FROM swap WHERE idDemande = d.idDemande) AS nbDemandes FROM demande as d JOIN etudiant as e ON e.login = d.login JOIN personne as p ON p.login = e.login WHERE demande = 1 AND d.login != ?");
+                    $stmt->bind_param("s" , $login);
                     $isAvailable = $stmt->execute();
                     $result = $stmt->get_result();
+                    $stmt->close();
+
+                    /* Récupérer les demandes effectuées par l'étudiant pour ne pas les afficher. */
+                    $stmtGetSwap = $connect->prepare("SELECT s.idDemande FROM swap as s JOIN demande as d ON d.idDemande = s.demandeur WHERE d.login = ?");
+                    $stmtGetSwap->bind_param("s" , $login);
+                    $stmtGetSwap->execute();
+                    $idList = $stmtGetSwap->get_result();
+                    $listIdDemandeUser = array();
+                    foreach ($idList as $item) {
+                        $listIdDemandeUser[] = $item['idDemande'];
+                    }
                     foreach ($result as $demande) {
                         // Assignation des valeurs du tableau à des variables
+                        $idDemande = $demande['idDemande'];
                         $UV = $demande['codeUV'];
                         $type = $demande['type'];
                         $jour = $demande['jour'];
@@ -76,7 +90,9 @@
                         );
                         $hdebut = substr($hdebut , 0 , 5);
                         $hfin = substr($hfin , 0 , 5);
-                        $data_row = htmlspecialchars(json_encode($demande) , ENT_QUOTES , 'UTF-8')
+                        $data_row = htmlspecialchars(json_encode($demande) , ENT_QUOTES , 'UTF-8');
+                        if (!(in_array($idDemande , $listIdDemandeUser))){
+
                         ?>
                         <div class="div_demande" onclick="clickDemande(this)" data-row=<?php echo "$data_row"; ?>>
                             <div class="gauche_container">
@@ -100,7 +116,7 @@
                                 <img class="swap_icon" src="../svg/swap_icon.svg" alt="" onclick="copierLien(this)">
                             </div>
                         </div>
-                    <?php } ?>
+                    <?php } } ?>
                 </div>
             </div>
             <div class="misc_container">

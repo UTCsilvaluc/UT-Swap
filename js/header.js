@@ -19,6 +19,7 @@ var message_pression = document.getElementById("message_pression");
 var message_insertion = document.getElementById('message_insertion');
 var message_impossible_uv = document.getElementById("message_impossible_uv");
 var message_uv_type = document.getElementById("message_uv_type");
+var message_changement_creneau = document.getElementById("message_changement_creneau");
 
 var input_type = document.getElementById("input-type");
 var input_salle = document.getElementById("input-salle");
