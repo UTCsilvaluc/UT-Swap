@@ -20,6 +20,7 @@ var message_insertion = document.getElementById('message_insertion');
 var message_impossible_uv = document.getElementById("message_impossible_uv");
 var message_uv_type = document.getElementById("message_uv_type");
 var message_changement_creneau = document.getElementById("message_changement_creneau");
+var message_envoie_swap = document.getElementById("message_envoie_swap");
 
 var input_type = document.getElementById("input-type");
 var input_salle = document.getElementById("input-salle");
@@ -39,6 +40,7 @@ var ecran = document.getElementById("ecran");
 
 var navBar = document.querySelector("nav");
 var bouton_menu = document.getElementById("bouton_menu");
+var boutons_confirmation = document.getElementById("boutons_confirmation");
 var menu_pannel = document.getElementById("menu_pannel");
 
 var largeurFenetre;
@@ -287,6 +289,8 @@ function nouveauClick() {
     input_uv.disabled = false
     input_type.disabled = false
     bouton_ok.classList.toggle('hidden', true);
+    boutons_confirmation.classList.toggle("hidden" , true);
+    message_envoie_swap.classList.toggle("hidden" , true);
     message_insertion.classList.toggle('hidden', true);
     bouton_non_submit.classList.toggle('hidden', false);
     ul_nouveau.classList.toggle('hidden', false);
@@ -342,4 +346,8 @@ for (let i = 0; i < bouton_accepter_notif.length; i++) {
 function reloadPage(){
     event.preventDefault();
     location.reload();
+}
+
+function cancelForm(){
+    window.location.href = "demandes.php?cancel=true";
 }

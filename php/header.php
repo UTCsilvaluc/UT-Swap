@@ -136,21 +136,63 @@ function getResponsableByUv($uv){
 $login = "ldompnie";
 $connect = DBCredential();
 if (isset($_SESSION['idDemande']) && isset($_SESSION['hDeb']) && isset($_SESSION['hFin']) && isset($_SESSION['salle']) && isset($_SESSION['jour']) && isset($_SESSION['semaine'])) {
-    $sqlCheckInsertion = "UPDATE demande SET jour=?,horaireDebut=?, horaireFin=?, salle=?, semaine=? WHERE idDemande=?";
-    $stmtCheckInsertion = $connect->prepare($sqlCheckInsertion);
-    $stmtCheckInsertion->bind_param("issssi", $_SESSION['jour'], $_SESSION['hDeb'], $_SESSION['hFin'], $_SESSION['salle'], $_SESSION['semaine'], $_SESSION['idDemande']);
-    if ($stmtCheckInsertion->execute()) {
-        echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
-    }else {
-        echo "Erreur lors de l'insertion des données : " . $stmtCheckInsertion->error;
+    if (isset($_GET['cancel'])){
+        unset($_SESSION['jour']);
+        unset($_SESSION['idDemande']);
+        unset($_SESSION['hDeb']);
+        unset($_SESSION['hFin']);
+        unset($_SESSION['salle']);
+        unset($_SESSION['semaine']);
+        unset($_SESSION['swap']);
+        unset($_SESSION['uv']);
+        unset($_SESSION['type']);
+        unset($_POST['uv'], $_POST['creneau'], $_POST['hdebut'], $_POST['hfin'], $_POST['salle'], $_POST['type']);
+    } else {
+        $idDemande = $_SESSION['idDemande'];
+        $uv = $_SESSION['uv'];
+        $type = $_SESSION['type'];
+        $sqlCheckInsertion = "UPDATE demande SET jour=?,horaireDebut=?, horaireFin=?, salle=?, semaine=? WHERE idDemande=?";
+        $stmtCheckInsertion = $connect->prepare($sqlCheckInsertion);
+        $stmtCheckInsertion->bind_param("issssi", $_SESSION['jour'], $_SESSION['hDeb'], $_SESSION['hFin'], $_SESSION['salle'], $_SESSION['semaine'], $_SESSION['idDemande']);
+        if ($stmtCheckInsertion->execute()) {
+            //echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
+        }else {
+            echo "Erreur lors de l'insertion des données : " . $stmtCheckInsertion->error;
+        }
+        if (isset($_SESSION['swap'])){
+            $offerId = $_SESSION['swap'];
+            $offerCodeUV = "";
+            $offerType = "";
+            $sqlCheckData = "SELECT codeUV , type , login FROM demande WHERE idDemande = ?";
+            $stmtCheckData = $connect->prepare($sqlCheckData);
+            $stmtCheckData->bind_param("i", $offerId);
+            $stmtCheckData->execute();
+            $stmtCheckData->bind_result($offerCodeUV, $offerType , $offerLogin);
+            $stmtCheckData->fetch();
+            $stmtCheckData->close();
+            /* Vérifier que le code UV et le type sont bien égaux pour le demandeur et le receveur. */
+            if ($offerCodeUV != $uv || $offerType != $type){
+                error_log("Erreur : L'UV et / ou le type sont différents !");
+            } else if ($offerLogin === $login) {
+                error_log("Impossible de se faire une demande à soi-même !!!!");
+                echo "demande à moi -même";
+            } else {
+                $stmt = $connect->prepare("INSERT INTO swap (idDemande , demandeur , statut) VALUES (? , ? , 0)");
+                $stmt->bind_param("ii" , $offerId , $idDemande);
+                if ($stmt->execute()){
+                    $_SESSION['reloadPage'] = "swapSuccess";
+                    //echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_envoie_swap.classList.toggle('hidden', false);boutons_confirmation.classList.toggle('hidden', false);</script>";
+                } else {
+                    error_log("Erreur dans la création du SWAP...");
+                }
+                $stmt->close();
+                $connect->close();
+            }
+        } else {
+            $_SESSION['reloadPage'] = "updateSuccess";
+        }
     }
-    unset($_SESSION['jour']);
-    unset($_SESSION['idDemande']);
-    unset($_SESSION['hDeb']);
-    unset($_SESSION['hFin']);
-    unset($_SESSION['salle']);
-    unset($_SESSION['semaine']);
-    unset($_POST['uv'], $_POST['creneau'], $_POST['hdebut'], $_POST['hfin'], $_POST['salle'], $_POST['type']);
+
 }
 if (isset($_POST['view'])){
     $view = validateInput($_POST['view'],$connect);
@@ -466,6 +508,7 @@ if (
             <p id="message_pression" class="hidden">Assurez-vous de la validité ainsi que de la possession du créneau renseigné. Des incohérences répétées pourraient entraîner des sanctions, y compris le bannissement.</p>
             <p id="message_impossible_uv" class="hidden">Nous sommes désolé mais le responsable de cette UV a désactivé les changements de créneaux. Aucune demande n'est donc possible...</p>
             <p id="message_insertion" class="hidden">La demande a été envoyée !!</p>
+            <p id="message_envoie_swap" class="hidden">Votre demande de SWAP a bien été envoyée !</p>
 
             <div class="hidden" id="sendSwap">
                 <div class="confirmationSwap">
@@ -532,12 +575,15 @@ if (
         <button onclick="nouveauClick()" class="bouton_nouveau hidden" id="bouton_ok">OK !</button>
         <button id="bouton_non_submit">Poster</button>
         <div id="boutons_uv" >
-            <button id="bouton_impossible_uv" onclick="nouveauClick()" class="bouton_nouveau hidden">Abandonner</button>
+            <button id="bouton_impossible_uv" onclick="cancelForm()" class="bouton_nouveau hidden" type="reset">Abandonner</button>
             <button id="bouton_remplacer" onclick="reloadPage()" class="hidden">Remplacer</button>
         </div>
         <div id="boutons_message" class="hidden">
             <button id="bouton_retour">Retour</button>
             <input type="submit" value="Poster la demande" id="submit_fin_nouveau">
+        </div>
+        <div id="boutons_confirmation" class="hidden">
+            <button id="bouton_retour" onclick="nouveauClick()">Fermer la fenêtre</button>
         </div>
     </div>
 </form>
@@ -664,7 +710,9 @@ if (
                     if ($insertion->execute()) {
                         $primaryKeyDemande = $connect->insert_id;
                         $canSwap = true;
-                        echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
+                        if (!(isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande']))){
+                            echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
+                        }
                     }else {
                         $primaryKeyDemande = null;
                         echo "Création demande -> Erreur lors de l'insertion des données : " . $insertion->error;
@@ -679,27 +727,47 @@ if (
                     $stmtCheckInsertion->bind_param("sssssi", $login, $type, $uv , $hdebut , $hfin , $jour);
                     $stmtCheckInsertion->execute();
                     $result = $stmtCheckInsertion->get_result();
+                    $resultRow = $result->fetch_assoc();
 
-                    /* --------------------------------------- */
-                    foreach ($result as $item){
-                        $primaryKeyDemande = $item['idDemande'];
-                    }
 
                     if ($result->num_rows === 0){
                         /* Ici, l'élève a changer son créneau , il faut lui proposer de l'update. */
-                        echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_changement_creneau.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);bouton_remplacer.classList.toggle('hidden', false);</script>";
-                        $_SESSION["idDemande"] = $idDemande;
-                        $_SESSION["hDeb"] = $hdebut;
-                        $_SESSION["hFin"] = $hfin;
-                        $_SESSION["salle"] = $salle;
-                        $_SESSION["jour"] = $jour;
-                        $_SESSION["semaine"] = $semaineChoix;
+                        $sqlGetIdDemande = "SELECT idDemande FROM demande WHERE login = ? and type=? and codeUV = ? AND demande = 0";
+                        $sqlGetIdDemande = $connect->prepare($sqlGetIdDemande);
+                        $sqlGetIdDemande->bind_param("sss", $login, $type, $uv);
+                        $sqlGetIdDemande->execute();
+                        $resultId = $sqlGetIdDemande->get_result();
+                        $row = $resultId->fetch_assoc();
+                        if ($row && (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande']))) {
+                            $currentIDdemande = $row['idDemande'];
+                            echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_changement_creneau.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);bouton_remplacer.classList.toggle('hidden', false);</script>";
+                            $_SESSION["idDemande"] = $currentIDdemande;
+                            $_SESSION["hDeb"] = $hdebut;
+                            $_SESSION["hFin"] = $hfin;
+                            $_SESSION["salle"] = $salle;
+                            $_SESSION["jour"] = $jour;
+                            $_SESSION["semaine"] = $semaineChoix;
+                            $_SESSION["swap"] = $_POST['swapIdDemande'];
+                            $_SESSION["uv"] = $uv;
+                            $_SESSION["type"] = $type;
+                            $sqlGetIdDemande->close();
+                        } else {
+                            error_log("Erreur dans la récupération des données...");
+                        }
+
                     } else {
-                        $canSwap = true;
+                        if ($resultRow){
+                            $primaryKeyDemande = $resultRow['idDemande'];
+                            //echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
+                            $canSwap = true;
+                        } else {
+                            error_log("Erreur...");
+                        }
+
                     }
                 }
             }else{
-                /* Le changement ne fonctionne pas pour le moment.*/
+                /* Afficher ancien et nouvel horaire. */
                 $stmtCheckInsertion->bind_result($idDemande);
                 $stmtCheckInsertion->fetch();
                 echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_uv_type.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);bouton_remplacer.classList.toggle('hidden', false);</script>";
@@ -709,6 +777,7 @@ if (
                 $_SESSION["salle"] = $salle;
                 $_SESSION["jour"] = $jour;
                 $_SESSION["semaine"] = $semaineChoix;
+                $canSwap = false;
             }
         }
     }
@@ -734,7 +803,11 @@ if (
             } else {
                 $stmt = $connect->prepare("INSERT INTO swap (idDemande , demandeur , statut) VALUES (? , ? , 0)");
                 $stmt->bind_param("ii" , $offerId , $primaryKeyDemande);
-                $stmt->execute();
+                if ($stmt->execute()){
+                    echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_envoie_swap.classList.toggle('hidden', false);boutons_confirmation.classList.toggle('hidden', false);</script>";
+                } else {
+                    error_log("Erreur dans la création du SWAP...");
+                }
                 $stmt->close();
             }
         } else {
@@ -743,6 +816,14 @@ if (
 
     }
     $connect->close();
+} else if (isset($_SESSION['reloadPage'])){
+    $content = $_SESSION['reloadPage'];
+    if ($content == "swapSuccess"){
+        echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_envoie_swap.classList.toggle('hidden', false);boutons_confirmation.classList.toggle('hidden', false);</script>";
+    } else {
+        echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
+    }
+    unset($_SESSION['reloadPage']);
 }
 ?>
 </body>
