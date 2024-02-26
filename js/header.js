@@ -156,6 +156,8 @@ bouton_non_submit.addEventListener("click", function() {
             boutons_message.classList.toggle('hidden', false);
             message_pression.classList.toggle('hidden', false);
             document.getElementById("sendSwap").classList.toggle('hidden' , false);
+            document.getElementById("MonCreneauSwap1").classList.toggle('hidden' , false);
+            document.getElementById("MonCreneauSwap2").classList.toggle('hidden' , false);
             document.getElementById("newDemandeSwap").classList.toggle('hidden' , true);
             titleDiv.classList.toggle('hidden' , false);
             titleDiv.innerHTML = `Récapitulatif : ${input_type.value} de ${input_uv.value}`
@@ -299,6 +301,10 @@ function nouveauClick() {
     document.getElementById("sendSwap").classList.toggle('hidden' , true);
     document.getElementById("newDemandeSwap").classList.toggle('hidden' , false);
     document.getElementById("swapRecap").classList.toggle("hidden" , true);
+    document.getElementById("MonCreneauSwap1").classList.toggle('hidden' , true);
+    document.getElementById("MonCreneauSwap2").classList.toggle('hidden' , true);
+    document.getElementById("ancienCreneauSwap2").classList.toggle('hidden' , true);
+    document.getElementById("ancienCreneauSwap1").classList.toggle('hidden' , true);
     var conteneurFiltre = document.getElementById("menuFiltre");
 
     if(conteneurFiltre !== null && typeof conteneurFiltre !== 'undefined'){
@@ -350,4 +356,18 @@ function reloadPage(){
 
 function cancelForm(){
     window.location.href = "demandes.php?cancel=true";
+}
+
+function changeCreneau(){
+    document.getElementById('sendSwap').classList.toggle('hidden' , false);
+    document.getElementById('MonCreneauSwap1').classList.toggle('hidden' , false);
+    document.getElementById('MonCreneauSwap2').classList.toggle('hidden' , false);
+    document.getElementById('newDemandeSwap').classList.toggle('hidden' , true);
+    /*document.getElementById("swapJour1").innerHTML = `${input_creneau.value}`
+    document.getElementById("swapSalle1").innerHTML = `${input_salle.value}`
+    document.getElementById("swapCreneau1").innerHTML = `${input_hdebut[1].value} - ${input_hfin[1].value}`
+
+    document.getElementById("swapSalle2").innerHTML = `${localStorage.getItem("salle")}`
+    document.getElementById("swapJour2").innerHTML = `${localStorage.getItem("jour")}`
+    document.getElementById("swapCreneau2").innerHTML = `${localStorage.getItem("hdebut").slice(0,-3)} - ${localStorage.getItem("hfin").slice(0,-3)}` */
 }

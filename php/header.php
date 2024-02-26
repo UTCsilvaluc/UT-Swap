@@ -1,6 +1,7 @@
 <?php
 include "../utils/db_functions.php";
 include "../utils/header_utils.php";
+include "../utils/utils.php";
 session_start();
 function DBCredential(){
     $dbhost = 'localhost';
@@ -488,51 +489,59 @@ if (
             <div class="hidden" id="sendSwap">
                 <div class="confirmationSwap">
                     <input type="text" name="swapIdDemande" id="swapIdDemande" hidden>
-                    <div class="creneau">
-                        <div class="details">
+                    <div>
+                        <h3 class="hidden" id="ancienCreneauSwap1" style="text-align: center ; margin: 0">Nouveau créneau</h3>
+                        <h3 class="hidden" id="MonCreneauSwap1" style="text-align: center ; margin: 0">Mon créneau</h3>
+                        <div class="creneau">
+                            <div class="details">
                             <span class="row">
                                 <h3>Jour:</h3>
                                 <p id="swapJour1"></p>
                             </span>
-                            <span class="hidden" id="spanSemaine1">
+                                <span class="hidden" id="spanSemaine1">
                                 <span class="row">
                                     <h3>Semaine:</h3>
                                     <p id="swapSemaine1"></p>
                                 </span>
                             </span>
-                            <span class="row">
+                                <span class="row">
                                 <h3>Salle:</h3>
                                 <p id="swapSalle1"></p>
                             </span>
-                            <span class="row">
+                                <span class="row">
                                 <h3>Horaire:</h3>
                                 <p id="swapCreneau1"></p>
                             </span>
+                            </div>
                         </div>
                     </div>
 
                     <img src="../svg/Vector.svg" alt="">
 
-                    <div class="creneau">
-                        <div class="details">
+                    <div>
+                        <h3 id="ancienCreneauSwap2" style="text-align: center ; margin: 0" class="hidden">Ancien créneau</h3>
+                        <h3 id="MonCreneauSwap2" style="text-align: center ; margin: 0" class="hidden">Créneau souhaité</h3>
+                        <div class="creneau">
+                            <div class="details">
                             <span class="row">
                                 <h3>Jour:</h3>
                                 <p id="swapJour2"></p>
                             </span>
-                            <span class="hidden" id="spanSemaine2">
+                                <span class="hidden" id="spanSemaine2">
                                 <span class="row">
                                     <h3>Semaine:</h3>
                                     <p id="swapSemaine2"></p>
                                 </span>
                             </span>
-                            <span class="row">
+                                <span class="row">
                                 <h3>Salle:</h3>
                                 <p id="swapSalle2"></p>
                             </span>
-                            <span class="row">
+                                <span class="row">
                                 <h3>Horaire:</h3>
                                 <p id="swapCreneau2"></p>
                             </span>
+                            </div>
                         </div>
                     </div>
 
@@ -687,6 +696,8 @@ if (
                     if ($result->num_rows === 0){
                         /* Ici, l'élève a changer son créneau , il faut lui proposer de l'update. */
                         $currentIDdemande = getIdDemandeSwap($connect ,$login , $type , $uv , 0);
+
+
                         if ($currentIDdemande != null) {
                             if (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande'])){
                                 $_SESSION["swap"] = $_POST['swapIdDemande'];
@@ -699,7 +710,7 @@ if (
                             $_SESSION["salle"] = $salle;
                             $_SESSION["jour"] = $jour;
                             $_SESSION["semaine"] = $semaineChoix;
-                            echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_changement_creneau.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);bouton_remplacer.classList.toggle('hidden', false);</script>";
+                            afficherChangementCreneau($connect , $currentIDdemande , $jour , $salle , $hdebut , $hfin);
                         } else {
                             error_log("Erreur dans la récupération des données...");
                         }
@@ -717,7 +728,7 @@ if (
             }else{
                 /* Afficher ancien et nouvel horaire. */
                 $idDemande = $isDemandeExisting;
-                echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_uv_type.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);bouton_remplacer.classList.toggle('hidden', false);</script>";
+                afficherChangementCreneau($connect , $idDemande , $jour , $salle , $hdebut , $hfin);
                 $_SESSION["idDemande"] = $idDemande;
                 $_SESSION["hDeb"] = $hdebut;
                 $_SESSION["hFin"] = $hfin;
