@@ -17,12 +17,13 @@
     --margin: 25px;
     --margin-menu: 2vh;
     --border-radius: 20px;
+    --border-radius-edt: 10px;
     --taille-edt:12vw;
     --taille-conteneur-hours:50px;
 }
 
 main{
-    overflow-y: auto;
+    overflow-y: scroll;
     overflow-x: hidden;
 }
 
@@ -39,7 +40,7 @@ main{
     flex-direction: row;
     justify-content: space-between;
     margin: 10px;
-    width: calc(100% - 20px);
+    width: 95%;
 }
 
 #control_edt{
@@ -81,12 +82,15 @@ main{
     width: 100%;
 }
 
-.importEDT{
+.mid_pannel{
     display: flex;
     position: absolute;
     align-items: center;
     justify-content: space-between;
     flex-direction: column;
+    top: calc(50vh + calc(var(--taille-header)/2)); /* La moitié de la hauteur de l'en-tête + ajustement */
+    left: 50%;
+    transform: translate(-50%, -50%);
     height:40vh;
     width:40vw;
     border-radius: 20px;
@@ -96,28 +100,29 @@ main{
     z-index: 2;
 }
 
-#titre_import, #button_import{
+.mid_titre, .mid_button{
     width: 100%;
 }
 
-#titre_import h1{
+.mid_pannel h1{
     font-size: 1.5vw;
     text-align: center;
     margin: 0;
     padding: 3.5vh 0 3.5vh 0;
 }
 
-#titre_import hr, #button_import hr{
+.mid_titre hr, .mid_button hr{
     border-top: 1px solid #C4C4C4;
     margin: 0;
 }
 
-#button_import{
+.mid_button{
     text-align: center;
 }
 
-#content_import{
+.mid_content{
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     overflow-y: auto;
@@ -126,7 +131,29 @@ main{
     width: 100%;
 }
 
-#button_import button{
+.mid_content label,.mid_content input{
+    width: 60%;
+    white-space: nowrap;
+}
+
+.mid_content input{
+    box-sizing: border-box;
+    cursor: pointer;
+    border: 0;
+    border-radius: 5px;
+    background-color: #E9E9E9;
+    padding:8px;
+    transition: background-color 0.4s ease, padding 0.4s ease;
+    padding-left:10px;
+    outline: none;
+}
+
+.mid_content input:focus{
+    background-color: #f3f3f3;
+    padding-left: 13px;
+}
+
+.mid_pannel button{
     width: 200px;
     border-radius: 10px;
     font-size: 15px;
@@ -142,8 +169,12 @@ main{
     white-space: nowrap;
 }
 
-.importEDT textarea{
-    overflow: hidden;
+.mid_pannel button:nth-of-type(2){
+    margin-left: 20px;
+}
+
+.mid_content textarea{
+    overflow: auto;
     background: #E9E9E9;
     width: 80%;
     height: 80%;
@@ -167,12 +198,12 @@ main{
 
 #emploi_du_temps .jour{
     width: var(--taille-edt);
-    min-width: 170px;
     height:fit-content;
     border: 1px solid black;
     border-left: 0;
     text-align: center;
     vertical-align: middle;
+    box-sizing:border-box;
 }
 
 #emploi_du_temps .jour:first-child{
@@ -195,6 +226,10 @@ main{
     position: relative;
     width: 100%;
     overflow: hidden;
+}
+
+#emploi_du_temps .jour .titleday{
+    font-size: 1em;
 }
 
 #emploi_du_temps .jour .cours{
@@ -233,8 +268,8 @@ div.divHeure:hover {
 
 .hoverCoursIcon{
     transition: transform 0.3s ease;  /*Ajoute une transition de 0.5 seconde avec une accélération douce */
-    height:40px;
-    width: 40px;
+    height:33px;
+    width: 33px;
 }
 
 /* Styles lorsqu'on survole l'élément SVG */
@@ -260,11 +295,12 @@ div.divHeure:hover {
     right: 0;
     top:var(--taille-header);
     flex-direction: column;
-    justify-content: space-between;
     height: calc(100% - var(--taille-header));
     width: 500px;
     overflow-x: hidden;
     background-color: white;
+    -webkit-box-shadow: -5px 0px 15px 0px var(--couleur-shadow); 
+    box-shadow: -5px 0px 15px 0px var(--couleur-shadow);
 }
 
 .filtres h1 , .filtres h3 , .filtres h4 {
@@ -278,6 +314,7 @@ div.divHeure:hover {
     justify-content: space-between;
     background: white;
     height: 10vh;
+    max-height: 90px;
     border-bottom: 10px #EBEBEB solid;
     gap: 15px;
 }
@@ -305,8 +342,8 @@ div.divHeure:hover {
 
 .filtre_titre #filtre_croix img{
     padding: 0;
-    height: 15px;
-    width: 15px;
+    height: 10px;
+    width: 10px;
     transition: scale 0.3s ease-in-out;
 }
 
@@ -332,6 +369,7 @@ div.divHeure:hover {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    box-sizing: border-box;
 }
 
 
@@ -344,8 +382,7 @@ div.divHeure:hover {
     transform: translateX(5%);
     width: 400px;
     padding-bottom: 15px;
-    margin-left: 15px;
-
+    padding-left: 15px;
 }
 
 #spanJour{
@@ -395,7 +432,6 @@ div.divHeure:hover {
     box-sizing: content-box;
     cursor: pointer;
     height: 31px;
-    width: 10vw;
     white-space: nowrap;
 }
 
@@ -471,7 +507,6 @@ span input[type='color']{
     padding: 0;
     display: none;
     align-items: center;
-    justify-content: space-between;
     width: 100%;
     list-style-type: none;
     border-bottom: 1px solid black;
@@ -479,51 +514,141 @@ span input[type='color']{
 }
 
 #menu_jour_edt li{
+    flex: 1;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100%;
-    padding: 0 10px 0 10px;
 }
 
 
-#menu_jour_edt a{
-    color: black;
-    text-decoration: none;
-}
 
 #menu_jour_edt li.jour_select{
     border-bottom: 2px solid black;
     box-sizing: border-box;
 }
 
-#conteneur_edt > div:nth-child(3){
+#conteneur_edt > div:nth-child(4){
     display: inline-flex;
     justify-content: center;
     width: 100vw;
     height: calc(100% - 100px);
-    margin-left: 20px;
 }
 
 #emploi_du_temps{
     display: flex;
     flex-direction: row;
 }
-@media screen and (max-width: 1100px) {
-    #conteneur_edt > div:nth-child(3){
-        justify-content:unset;
+
+.jour:first-of-type {
+    border-top-left-radius: var(--border-radius-edt);
+    border-bottom-left-radius: var(--border-radius-edt);
+}
+
+.jour:last-of-type {
+    border-top-right-radius: var(--border-radius-edt);
+    border-bottom-right-radius: var(--border-radius-edt);
+}
+
+.jour:first-of-type h1{
+    border-top-left-radius: var(--border-radius-edt);
+}
+
+.jour:last-of-type h1{
+    border-top-right-radius: var(--border-radius-edt);
+}
+
+.croix{
+    display: none;
+    position: absolute;
+    top:15px;
+    right: 15px;
+    width: 12px;
+}
+
+@media screen and (max-width: 1300px) {
+    .mid_pannel{
+        width: 50%;
     }
 
-    #dessus_edt{
-        width: 95%;
+    .mid_pannel h1{
+        font-size: 20px;
+    }
+
+    .mid_pannel button{
+        width:20vw;
+    }
+
+    .mid_pannel{
+        width:55%;
+    }
+}
+
+
+@media screen and (max-width: 750px) {
+
+    .mid_pannel{
+        width: 80%;
+    }
+
+    .mid_pannel button{
+        width:20vw;
+    }
+}
+
+@media screen and (max-width: 550px) and (max-height: 550px){
+
+    .mid_pannel{
+        width: 100%;
+        height: calc(100vh - var(--taille-header));
+        top:var(--taille-header);
+        transform: translate(0%, 0%);
+        left: 0;
+        border: 0;
+        border-radius: 0;
+    }
+    
+    .mid_pannel .croix{
+        display: block;
+    }
+    
+    .mid_pannel h1{
+        font-size: 5vw;
+    }
+}
+
+@media screen and (max-width: 400px) and (max-height: 550px){
+
+    .mid_pannel h1{
+        font-size: 5vw;
     }
 
 }
 
+@media screen and (max-height: 800px) and (min-width:550px) {
+
+    .mid_pannel{
+        height: 50%;
+    }
+}
+
+@media screen and (max-height: 650px) and (min-width:550px) {
+
+    .mid_pannel{
+        height: 60%;
+    }
+}
+
+
 @media screen and (max-width: 600px) {
 
-    #conteneur_edt > div:nth-child(3){
-        margin-left: 20px;
+    .jour_entier{
+        display: block;
+    }
+
+    .jour_mid, .jour_small{
+        display: none;
     }
 
     div.divHeure:hover {
@@ -577,6 +702,7 @@ span input[type='color']{
     #emploi_du_temps .jour{
         width: 100%;
         border:0;
+        border-bottom: 1px dashed black;
         box-sizing: border-box;
     }
 
@@ -584,7 +710,45 @@ span input[type='color']{
         display: none;
     }
 
+    .filtres{
+        width: 100%;
+    }
+
+    .conteneur_filtre .filtre_parent{
+        width: max-content;
+    }
+
+}
+
+@media screen and (max-width: 450px) {
+
+    .mid_button button:nth-of-type(2){
+        margin:10px;
+    }
+
     
+    .mid_pannel button{
+        min-width: none;
+    }
+
+    .jour_mid{
+        display: block;
+    }
+
+    .jour_entier, .jour_small{
+        display: none;
+    }
+}
+
+@media screen and (max-width: 300px) {
+
+    .jour_small{
+        display: block;
+    }
+
+    .jour_entier, .jour_mid{
+        display: none;
+    }
 }
 
 @media screen and (max-height: 700px) {
