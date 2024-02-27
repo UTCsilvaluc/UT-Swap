@@ -5,7 +5,7 @@ session_start();
 function DBCredential(){
     $dbhost = 'localhost';
     $dbuser = 'root';
-    $dbpass = '';
+    $dbpass = 'root';
     $dbname = 'ut_swap';
     $connect = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to mysql');
     mysqli_set_charset($connect, 'utf8');
@@ -238,7 +238,7 @@ if (
 </head>
 <body>
 <header>
-    <img class="logo" src="../img/logo.png">
+    <img class="logo" src="../img/logo23.png">
     <nav>
         <ul id="menu_liste_grand">
             <li><a href="#">Home</a></li>
@@ -356,8 +356,8 @@ if (
     <div>
         <ul>
             <li><a href="#">Home</a></li>
-            <li><a href="#">Swap</a></li>
-            <li><a href="#">Demandes</a></li>
+            <li><a href="emploiDuTemps.php">Swap</a></li>
+            <li><a href="demandes.php">Demandes</a></li>
             <li><a href="#">Profil</a></li>
             <li><a href="#">Informations</a></li>
         </ul>
@@ -699,6 +699,7 @@ if (
                             $_SESSION["salle"] = $salle;
                             $_SESSION["jour"] = $jour;
                             $_SESSION["semaine"] = $semaineChoix;
+                            
                             echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_changement_creneau.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);bouton_remplacer.classList.toggle('hidden', false);</script>";
                         } else {
                             error_log("Erreur dans la récupération des données...");

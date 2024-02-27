@@ -548,7 +548,6 @@ function suivreSouris(element, isCours) {
             newPosition = Math.round(newPosition / arrondi) * arrondi;
             newPosition = Math.min(Math.max(newPosition, 0), coursEnDeplacement.parentElement.clientHeight - coursEnDeplacement.clientHeight)
             
-
             coursEnDeplacement.style.top = newPosition + "px";
             
             if(lastPosition != newPosition && lastPosition !== null){
@@ -569,6 +568,15 @@ function suivreSouris(element, isCours) {
                     endroitCours.appendChild(coursEnDeplacement);
                 }
             });
+            
+            if (coursEnDeplacement.style.width == "50%" && event.clientX > coursEnDeplacement.parentElement.getBoundingClientRect().left + coursEnDeplacement.offsetWidth) {
+                coursEnDeplacement.style.left = "50%";
+                coursEnDeplacement.querySelector("h2").innerHTML = coursEnDeplacement.querySelector("h2").innerHTML.replace(" A", " B");
+            }else if(coursEnDeplacement.style.width == "50%" && event.clientX < coursEnDeplacement.parentElement.getBoundingClientRect().left + coursEnDeplacement.offsetWidth){
+                coursEnDeplacement.style.left = "";
+                coursEnDeplacement.querySelector("h2").innerHTML = coursEnDeplacement.querySelector("h2").innerHTML.replace(" B", " A");
+            }
+
             return true;
         }else{
             return false;
@@ -626,9 +634,9 @@ function preremplirNouveauForm(){
         checkbox = document.getElementById("input-semaine");
         checkbox.checked = true;
         document.getElementById("choix-semaine").className = "basique";
-        if (semaine == "A"){
+        if (semaine === " A"){
             document.getElementById("sA-choix").checked = true;
-        } else {
+        } else if(semaine === " B") {
             document.getElementById("sB-choix").checked = true;
         }
     } else {
