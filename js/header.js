@@ -349,13 +349,21 @@ for (let i = 0; i < bouton_accepter_notif.length; i++) {
     });
 }
 
-function reloadPage(){
+function reloadPage() {
     event.preventDefault();
+    // Stocker le token dans le stockage local
+    var tokenRemplacer = document.getElementById("csrf_token_remplacer");
+    if (tokenRemplacer) {
+        var tokenInput = document.getElementById("input_csrf_token_remplacer");
+        tokenInput.value = tokenRemplacer.value;
+    }
+    // Recharger la page
     location.reload();
 }
 
 function cancelForm(){
     window.location.href = "demandes.php?cancel=true";
+    document.getElementById("csrf_token_remplacer").remove();
 }
 
 function changeCreneau(){
@@ -363,11 +371,4 @@ function changeCreneau(){
     document.getElementById('MonCreneauSwap1').classList.toggle('hidden' , false);
     document.getElementById('MonCreneauSwap2').classList.toggle('hidden' , false);
     document.getElementById('newDemandeSwap').classList.toggle('hidden' , true);
-    /*document.getElementById("swapJour1").innerHTML = `${input_creneau.value}`
-    document.getElementById("swapSalle1").innerHTML = `${input_salle.value}`
-    document.getElementById("swapCreneau1").innerHTML = `${input_hdebut[1].value} - ${input_hfin[1].value}`
-
-    document.getElementById("swapSalle2").innerHTML = `${localStorage.getItem("salle")}`
-    document.getElementById("swapJour2").innerHTML = `${localStorage.getItem("jour")}`
-    document.getElementById("swapCreneau2").innerHTML = `${localStorage.getItem("hdebut").slice(0,-3)} - ${localStorage.getItem("hfin").slice(0,-3)}` */
 }

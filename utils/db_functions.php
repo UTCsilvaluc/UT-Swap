@@ -20,6 +20,25 @@ function insert_swap($connect, $offerId, $primaryKeyDemande) {
     return true;
 }
 
+function update_demande_statut($connect, $idDemande , $state) {
+    try {
+        $stmt = $connect->prepare("UPDATE demande SET demande = ? WHERE idDemande = ?");
+        if (!$stmt) {
+            throw new Exception("Erreur de préparation de la requête.");
+        }
+
+        $stmt->bind_param("ii", $state, $idDemande);
+        if (!$stmt->execute()) {
+            throw new Exception("Erreur lors de l'exécution de la requête.");
+        }
+        $stmt->close();
+    } catch (Exception $e) {
+        error_log("Erreur dans la création du SWAP : " . $e->getMessage());
+        return "Erreur dans la création du SWAP : " . $e->getMessage();
+    }
+    return true;
+}
+
 function insert_demande($connect, $login, $uv, $type, $jour, $hdebut, $hfin, $salle, $semaineChoix) {
     try {
         // Préparer la requête SQL
@@ -50,12 +69,12 @@ function insert_demande($connect, $login, $uv, $type, $jour, $hdebut, $hfin, $sa
     }
 }
 
-function getIdDemandeSwap($connect, $login, $type, $uv , $demande = 0) {
+function getIdDemandeSwap($connect, $login, $type, $uv) {
     try {
         // Préparer la requête SQL
-        $sqlGetIdDemande = "SELECT idDemande FROM demande WHERE login = ? AND type = ? AND codeUV = ? AND demande = ?";
+        $sqlGetIdDemande = "SELECT idDemande , demande FROM demande WHERE login = ? AND type = ? AND codeUV = ?";
         $stmtGetIdDemande = $connect->prepare($sqlGetIdDemande);
-        $stmtGetIdDemande->bind_param("sssi", $login, $type, $uv , $demande);
+        $stmtGetIdDemande->bind_param("sss", $login, $type, $uv);
 
         // Exécuter la requête
         if ($stmtGetIdDemande->execute()) {
@@ -66,7 +85,7 @@ function getIdDemandeSwap($connect, $login, $type, $uv , $demande = 0) {
 
             // Vérifier si une ligne a été retournée et si l'ID de demande de swap est spécifié
             if ($row) {
-                return $row['idDemande'];
+                return $row;
             } else {
                 error_log("Aucune ligne retournée ou swapIdDemande non spécifié");
                 return null;
