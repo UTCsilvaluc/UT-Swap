@@ -55,4 +55,33 @@ function checkIfSwapExist($connect, $offerId, $demandeur) {
         return false;
     }
 }
+
+function afficherChangementCreneau($connect , $currentIDdemande , $jour, $salle, $hdebut, $hfin) {
+    $demandeDetails = fetchDemandeDetails($connect, $currentIDdemande);
+    // Extraction des détails dans des variables individuelles
+    $initHoraireDebut = $demandeDetails['horaireDebut'];
+    $initHoraireDebut = substr($initHoraireDebut, 0, 5);
+    $initHoraireFin = $demandeDetails['horaireFin'];
+    $initHoraireFin = substr($initHoraireFin, 0, 5);
+    $initJour = $demandeDetails['jour'];
+    $initSalle = $demandeDetails['salle'];
+    // Conversion des numéros de jour en texte
+    $textJour = numeroVersJour($jour);
+    $textInitJour = numeroVersJour($initJour);
+
+    // Affichage des éléments HTML avec les valeurs fournies
+
+    echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_changement_creneau.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);bouton_remplacer.classList.toggle('hidden', false);</script>";
+    echo "<script> document.getElementById('swapJour1').innerHTML = '$textJour'; document.getElementById('swapSalle1').innerHTML = '$salle'; document.getElementById('swapCreneau1').innerHTML = `$hdebut - $hfin` ; </script>";
+    echo "<script> document.getElementById('swapJour2').innerHTML = '$textInitJour'; document.getElementById('swapSalle2').innerHTML = '$initSalle'; document.getElementById('swapCreneau2').innerHTML = `$initHoraireDebut - $initHoraireFin` ; </script>";
+    echo "<script> document.getElementById('sendSwap').classList.toggle('hidden' , false);document.getElementById('ancienCreneauSwap1').classList.toggle('hidden' , false);document.getElementById('ancienCreneauSwap2').classList.toggle('hidden' , false);</script>";
+
+    // Générer le jeton CSRF pour remplacer
+
+
+    // Intégrer les jetons CSRF dans le formulaire
+
+    /* Comme ça je récupère mes jetons en $_POST, quand l'utilisateur appuie sur Abandonner je supprime l'input avec Remplacer ce qui évite d'avoir une requête $_POST avec le token.
+    Quand il appuie sur Envoyer je supprime Abandonner et pareil. */
+}
 ?>

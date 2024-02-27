@@ -156,6 +156,8 @@ bouton_non_submit.addEventListener("click", function() {
             boutons_message.classList.toggle('hidden', false);
             message_pression.classList.toggle('hidden', false);
             document.getElementById("sendSwap").classList.toggle('hidden' , false);
+            document.getElementById("MonCreneauSwap1").classList.toggle('hidden' , false);
+            document.getElementById("MonCreneauSwap2").classList.toggle('hidden' , false);
             document.getElementById("newDemandeSwap").classList.toggle('hidden' , true);
             titleDiv.classList.toggle('hidden' , false);
             titleDiv.innerHTML = `Récapitulatif : ${input_type.value} de ${input_uv.value}`
@@ -299,6 +301,10 @@ function nouveauClick() {
     document.getElementById("sendSwap").classList.toggle('hidden' , true);
     document.getElementById("newDemandeSwap").classList.toggle('hidden' , false);
     document.getElementById("swapRecap").classList.toggle("hidden" , true);
+    document.getElementById("MonCreneauSwap1").classList.toggle('hidden' , true);
+    document.getElementById("MonCreneauSwap2").classList.toggle('hidden' , true);
+    document.getElementById("ancienCreneauSwap2").classList.toggle('hidden' , true);
+    document.getElementById("ancienCreneauSwap1").classList.toggle('hidden' , true);
     var conteneurFiltre = document.getElementById("menuFiltre");
 
     if(conteneurFiltre !== null && typeof conteneurFiltre !== 'undefined'){
@@ -343,11 +349,26 @@ for (let i = 0; i < bouton_accepter_notif.length; i++) {
     });
 }
 
-function reloadPage(){
+function reloadPage() {
     event.preventDefault();
+    // Stocker le token dans le stockage local
+    var tokenRemplacer = document.getElementById("csrf_token_remplacer");
+    if (tokenRemplacer) {
+        var tokenInput = document.getElementById("input_csrf_token_remplacer");
+        tokenInput.value = tokenRemplacer.value;
+    }
+    // Recharger la page
     location.reload();
 }
 
 function cancelForm(){
     window.location.href = "demandes.php?cancel=true";
+    document.getElementById("csrf_token_remplacer").remove();
+}
+
+function changeCreneau(){
+    document.getElementById('sendSwap').classList.toggle('hidden' , false);
+    document.getElementById('MonCreneauSwap1').classList.toggle('hidden' , false);
+    document.getElementById('MonCreneauSwap2').classList.toggle('hidden' , false);
+    document.getElementById('newDemandeSwap').classList.toggle('hidden' , true);
 }

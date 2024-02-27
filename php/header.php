@@ -1,6 +1,7 @@
 <?php
 include "../utils/db_functions.php";
 include "../utils/header_utils.php";
+include "../utils/utils.php";
 session_start();
 function DBCredential(){
     $dbhost = 'localhost';
@@ -138,24 +139,29 @@ function getResponsableByUv($uv){
 $login = "ldompnie";
 $connect = DBCredential();
 if (isset($_SESSION['idDemande']) && isset($_SESSION['hDeb']) && isset($_SESSION['hFin']) && isset($_SESSION['salle']) && isset($_SESSION['jour']) && isset($_SESSION['semaine'])) {
-    if (!(isset($_GET['cancel']))){
-        $idDemande = $_SESSION['idDemande'];
-        $sqlCheckInsertion = "UPDATE demande SET jour=?,horaireDebut=?, horaireFin=?, salle=?, semaine=? WHERE idDemande=?";
-        $stmtCheckInsertion = $connect->prepare($sqlCheckInsertion);
-        $stmtCheckInsertion->bind_param("issssi", $_SESSION['jour'], $_SESSION['hDeb'], $_SESSION['hFin'], $_SESSION['salle'], $_SESSION['semaine'], $_SESSION['idDemande']);
-        if ($stmtCheckInsertion->execute()) {
-            //echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
-        }else {
-            echo "Erreur lors de l'insertion des données : " . $stmtCheckInsertion->error;
-        }
-        if (isset($_SESSION['swap'])){
-            $uv = $_SESSION['uv'];
-            $type = $_SESSION['type'];
-            $offerId = $_SESSION['swap'];
-            create_swap($connect , $idDemande , $offerId , $uv , $type , $login);
-            $_SESSION['reloadPage'] = "swapSuccess";
-        } else {
-            $_SESSION['reloadPage'] = "updateSuccess";
+    if (isset($_POST['csrf_token_remplacer']) && isset($_SESSION['csrf_token_remplacer'])){
+        $jetonPost = $_POST['csrf_token_remplacer'];
+        $jetonSession = $_SESSION['csrf_token_remplacer'];
+        echo "<script> alert('$jetonPost') </script>";
+        if ($_POST['csrf_token_remplacer'] === $_SESSION['csrf_token_remplacer']){
+            $idDemande = $_SESSION['idDemande'];
+            $sqlCheckInsertion = "UPDATE demande SET jour=?,horaireDebut=?, horaireFin=?, salle=?, semaine=? WHERE idDemande=?";
+            $stmtCheckInsertion = $connect->prepare($sqlCheckInsertion);
+            $stmtCheckInsertion->bind_param("issssi", $_SESSION['jour'], $_SESSION['hDeb'], $_SESSION['hFin'], $_SESSION['salle'], $_SESSION['semaine'], $_SESSION['idDemande']);
+            if ($stmtCheckInsertion->execute()) {
+                //echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
+            }else {
+                echo "Erreur lors de l'insertion des données : " . $stmtCheckInsertion->error;
+            }
+            if (isset($_SESSION['swap'])){
+                $uv = $_SESSION['uv'];
+                $type = $_SESSION['type'];
+                $offerId = $_SESSION['swap'];
+                create_swap($connect , $idDemande , $offerId , $uv , $type , $login);
+                $_SESSION['reloadPage'] = "swapSuccess";
+            } else {
+                $_SESSION['reloadPage'] = "updateSuccess";
+            }
         }
     }
     unset($_SESSION['jour']);
@@ -488,51 +494,59 @@ if (
             <div class="hidden" id="sendSwap">
                 <div class="confirmationSwap">
                     <input type="text" name="swapIdDemande" id="swapIdDemande" hidden>
-                    <div class="creneau">
-                        <div class="details">
+                    <div>
+                        <h3 class="hidden" id="ancienCreneauSwap1" style="text-align: center ; margin: 0">Nouveau créneau</h3>
+                        <h3 class="hidden" id="MonCreneauSwap1" style="text-align: center ; margin: 0">Mon créneau</h3>
+                        <div class="creneau">
+                            <div class="details">
                             <span class="row">
                                 <h3>Jour:</h3>
                                 <p id="swapJour1"></p>
                             </span>
-                            <span class="hidden" id="spanSemaine1">
+                                <span class="hidden" id="spanSemaine1">
                                 <span class="row">
                                     <h3>Semaine:</h3>
                                     <p id="swapSemaine1"></p>
                                 </span>
                             </span>
-                            <span class="row">
+                                <span class="row">
                                 <h3>Salle:</h3>
                                 <p id="swapSalle1"></p>
                             </span>
-                            <span class="row">
+                                <span class="row">
                                 <h3>Horaire:</h3>
                                 <p id="swapCreneau1"></p>
                             </span>
+                            </div>
                         </div>
                     </div>
 
                     <img src="../svg/Vector.svg" alt="">
 
-                    <div class="creneau">
-                        <div class="details">
+                    <div>
+                        <h3 id="ancienCreneauSwap2" style="text-align: center ; margin: 0" class="hidden">Ancien créneau</h3>
+                        <h3 id="MonCreneauSwap2" style="text-align: center ; margin: 0" class="hidden">Créneau souhaité</h3>
+                        <div class="creneau">
+                            <div class="details">
                             <span class="row">
                                 <h3>Jour:</h3>
                                 <p id="swapJour2"></p>
                             </span>
-                            <span class="hidden" id="spanSemaine2">
+                                <span class="hidden" id="spanSemaine2">
                                 <span class="row">
                                     <h3>Semaine:</h3>
                                     <p id="swapSemaine2"></p>
                                 </span>
                             </span>
-                            <span class="row">
+                                <span class="row">
                                 <h3>Salle:</h3>
                                 <p id="swapSalle2"></p>
                             </span>
-                            <span class="row">
+                                <span class="row">
                                 <h3>Horaire:</h3>
                                 <p id="swapCreneau2"></p>
                             </span>
+                            </div>
                         </div>
                     </div>
 
@@ -561,6 +575,8 @@ if (
             <button id="bouton_retour" onclick="nouveauClick()">Fermer la fenêtre</button>
         </div>
     </div>
+
+    <input type="hidden" name="csrf_token_remplacer" id="input_csrf_token_remplacer" value="">
 </form>
 
 
@@ -656,11 +672,11 @@ if (
             $semaineChoix = $creneauUneSemaine && isset($_POST['semainechoix']) ? validateInput($_POST['semainechoix'],$connect) : 'null';
             // Préparez la requête SQL d'insertion
             $jour = jourEnNombre($creneau);
-            $isDemandeExisting = getIdDemandeSwap($connect , $login , $type , $uv , 1);
+            $isDemandeExisting = getIdDemandeSwap($connect , $login , $type , $uv);
             if ($isDemandeExisting === null || (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande']))) {
                 /* Quand un étudiant fait une demande de swap, vérifier que la demande n'existe pas encore, cela permet à l'étudiant de formuler plusieurs demandes*/
                 /* Si elle existe, simplement créer le SWAP sinon créer la demande puis ensuite créer le swap */
-                $isDemandeExisting = getIdDemandeSwap($connect , $login , $type , $uv , 0);
+                $isDemandeExisting = getIdDemandeSwap($connect , $login , $type , $uv);
                 /* --------------------------------------- */
                 if ($isDemandeExisting === null) {
                     $primaryKeyDemande = insert_demande($connect , $login , $uv , $type , $jour , $hdebut , $hfin , $salle , $semaineChoix);
@@ -686,21 +702,25 @@ if (
 
                     if ($result->num_rows === 0){
                         /* Ici, l'élève a changer son créneau , il faut lui proposer de l'update. */
-                        $currentIDdemande = getIdDemandeSwap($connect ,$login , $type , $uv , 0);
+                        $currentIDdemande = getIdDemandeSwap($connect ,$login , $type , $uv);
+
+
                         if ($currentIDdemande != null) {
                             if (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande'])){
                                 $_SESSION["swap"] = $_POST['swapIdDemande'];
                                 $_SESSION["uv"] = $uv;
                                 $_SESSION["type"] = $type;
                             }
-                            $_SESSION["idDemande"] = $currentIDdemande;
+                            $_SESSION["idDemande"] = $currentIDdemande['idDemande'];
                             $_SESSION["hDeb"] = $hdebut;
                             $_SESSION["hFin"] = $hfin;
                             $_SESSION["salle"] = $salle;
                             $_SESSION["jour"] = $jour;
                             $_SESSION["semaine"] = $semaineChoix;
-                            
-                            echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_changement_creneau.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);bouton_remplacer.classList.toggle('hidden', false);</script>";
+                            afficherChangementCreneau($connect , $currentIDdemande['idDemande'] , $jour , $salle , $hdebut , $hfin);
+                            $csrfTokenRemplacer = generateCSRFToken();
+                            $_SESSION['csrf_token_remplacer'] = $csrfTokenRemplacer;
+                            echo '<input id="csrf_token_remplacer" type="hidden" value="' . $csrfTokenRemplacer . '">';
                         } else {
                             error_log("Erreur dans la récupération des données...");
                         }
@@ -716,15 +736,22 @@ if (
                     }
                 }
             }else{
+                $idDemande = $isDemandeExisting['idDemande'];
+                $isOffer = $isDemandeExisting['demande'];
+                if ($isOffer === 0 ){
+                    update_demande_statut($connect , $idDemande , 1);
+                }
                 /* Afficher ancien et nouvel horaire. */
-                $idDemande = $isDemandeExisting;
-                echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_uv_type.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);bouton_remplacer.classList.toggle('hidden', false);</script>";
+                afficherChangementCreneau($connect , $idDemande , $jour , $salle , $hdebut , $hfin);
                 $_SESSION["idDemande"] = $idDemande;
                 $_SESSION["hDeb"] = $hdebut;
                 $_SESSION["hFin"] = $hfin;
                 $_SESSION["salle"] = $salle;
                 $_SESSION["jour"] = $jour;
                 $_SESSION["semaine"] = $semaineChoix;
+                $csrfTokenRemplacer = generateCSRFToken();
+                $_SESSION['csrf_token_remplacer'] = $csrfTokenRemplacer;
+                echo '<input id="csrf_token_remplacer" type="hidden" value="' . $csrfTokenRemplacer . '">';
                 $canSwap = false;
             }
         }
