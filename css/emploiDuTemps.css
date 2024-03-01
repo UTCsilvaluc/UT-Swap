@@ -643,14 +643,6 @@ span input[type='color']{
 
 @media screen and (max-width: 600px) {
 
-    .jour_entier{
-        display: block;
-    }
-
-    .jour_mid, .jour_small{
-        display: none;
-    }
-
     div.divHeure:hover {
         background-color: white;
     }
@@ -729,25 +721,6 @@ span input[type='color']{
     
     .mid_pannel button{
         min-width: none;
-    }
-
-    .jour_mid{
-        display: block;
-    }
-
-    .jour_entier, .jour_small{
-        display: none;
-    }
-}
-
-@media screen and (max-width: 300px) {
-
-    .jour_small{
-        display: block;
-    }
-
-    .jour_entier, .jour_mid{
-        display: none;
     }
 }
 

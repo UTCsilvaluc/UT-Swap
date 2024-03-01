@@ -70,26 +70,6 @@ function cancelDelete(event){
     document.getElementById("trash").style.display = "flex";
 }
 
-function mettreAJourContenu() {
-    var largeurFenetre = window.innerWidth;
-
-    // Changez le contenu en fonction de la largeur de la fenêtre
-    var exportPDF = document.getElementById('export_pdf');
-    var exportPNG = document.getElementById('export_png');
-    if (largeurFenetre <= 400) {
-        exportPDF.innerHTML = 'PDF';
-        exportPNG.innerHTML = 'PNG';
-    } else {
-        exportPDF.innerHTML = 'Exporter PDF';
-        exportPNG.innerHTML = 'Exporter PNG';
-    }
-}
-
-// Attacher la fonction au changement de taille de la fenêtre
-window.addEventListener('resize', mettreAJourContenu);
-
-// Appeler la fonction une fois au chargement de la page
-mettreAJourContenu();
 
 function formaterHeure(heureNonFormatee) {
     const [heures, minutes] = heureNonFormatee.split(':');
@@ -329,6 +309,128 @@ for (var i of listeJour) {
     }
 }
 
+function setBorderRadius(){
+    var listeJour = document.getElementsByClassName("jour");
+    // Filtrer les éléments pour exclure ceux avec display: none
+    var elementsVisibles = Array.from(listeJour).filter(function(element) {
+        return window.getComputedStyle(element).display !== 'none';
+    });
+
+    // Vérifiez s'il y a des éléments visibles
+    if (elementsVisibles.length > 0) {
+        // Récupérez le premier et le dernier élément visibles
+        var premierElement = elementsVisibles[0];
+        var dernierElement = elementsVisibles[elementsVisibles.length - 1];
+        var borderRadiusSize = "10px";
+        premierElement.style.borderTopLeftRadius = borderRadiusSize;
+        premierElement.querySelector("h1").style.borderTopLeftRadius = borderRadiusSize;
+        premierElement.style.borderBottomLeftRadius = borderRadiusSize;
+        dernierElement.style.borderTopRightRadius = borderRadiusSize;
+        dernierElement.querySelector("h1").style.borderTopRightRadius = borderRadiusSize;
+        dernierElement.style.borderBottomRightRadius = borderRadiusSize;
+    }
+}
+
+function clearBorderRadius(){
+    var listeJour = document.getElementsByClassName("jour");
+    for(jour of listeJour){
+        var borderRadiusSize = "0";
+        jour.style.borderTopLeftRadius = borderRadiusSize;
+        jour.querySelector("h1").style.borderTopLeftRadius = borderRadiusSize;
+        jour.style.borderBottomLeftRadius = borderRadiusSize;
+        jour.style.borderTopRightRadius = borderRadiusSize;
+        jour.querySelector("h1").style.borderTopRightRadius = borderRadiusSize;
+        jour.style.borderBottomRightRadius = borderRadiusSize;
+    }
+}
+
+function mettreAJourContenu() {
+    var listeJour = document.getElementsByClassName("jour");
+    var largeurFenetre = window.innerWidth;
+
+    // Changez le contenu en fonction de la largeur de la fenêtre
+    var exportPDF = document.getElementById('export_pdf');
+    var exportPNG = document.getElementById('export_png');
+    if (largeurFenetre <= 400) {
+        exportPDF.innerHTML = 'PDF';
+        exportPNG.innerHTML = 'PNG';
+    } else {
+        exportPDF.innerHTML = 'Exporter PDF';
+        exportPNG.innerHTML = 'Exporter PNG';
+    }
+
+    if(largeurFenetre <= 600){
+        for(element of document.getElementsByClassName("jour_entier")){
+            element.style.display = "block";
+        }
+        for(element of document.getElementsByClassName("jour_mid")){
+            element.style.display = "none";
+        }
+        for(element of document.getElementsByClassName("jour_small")){
+            element.style.display = "none";
+        }
+
+        var nbJour = 0;
+        var taillePrec;
+        for(jour of listeJour){
+            if(jour.style.display != "none"){
+                nbJour++;
+            }
+            jour.style.display = "";
+            jour.style.border = 0;
+            jour.style.borderRadius = 0;
+            taillePrec = jour.offsetWidth;
+        }        
+        clearBorderRadius();
+        changeCSSVar("taille-edt","12vw");
+    }else{
+        var firstDay = false;
+        for (var jour of listeJour){
+            if (jour.style.display != "none"){
+                jour.style.borderLeft = "0";
+            }
+            jour.style.border = "1px solid black";
+            jour.style.borderLeft = "";
+            
+            if (firstDay === false && jour.style.display != "none"){
+                jour.style.borderLeft = "1px black solid";
+                firstDay = true;
+            }
+        }
+        setBorderRadius();
+    }
+
+    if(largeurFenetre <=450){
+        for(element of document.getElementsByClassName("jour_entier")){
+            element.style.display = "none";
+        }
+        for(element of document.getElementsByClassName("jour_mid")){
+            element.style.display = "block";
+        }
+        for(element of document.getElementsByClassName("jour_small")){
+            element.style.display = "none";
+        }
+    }
+
+    if(largeurFenetre <=300){
+        for(element of document.getElementsByClassName("jour_entier")){
+            element.style.display = "none";
+        }
+        for(element of document.getElementsByClassName("jour_mid")){
+            element.style.display = "none";
+        }
+        for(element of document.getElementsByClassName("jour_small")){
+            element.style.display = "block";
+        }
+    }
+}
+
+// Attacher la fonction au changement de taille de la fenêtre
+window.addEventListener('resize', mettreAJourContenu);
+
+// Appeler la fonction une fois au chargement de la page
+mettreAJourContenu();
+
 function calculDecimal(nombre) {
     var heuresMinutesDebut = nombre.split('h');
     var heuresDebut = parseInt(heuresMinutesDebut[0], 10);
@@ -533,13 +635,7 @@ function suivreSouris(element, isCours) {
             
             //enlever le hover avec l'apparition des bulles
             stopHovering()
-            
-            
-            
             var newPosition = event.clientY - coursEnDeplacement.parentElement.getBoundingClientRect().top - coursEnDeplacement.offsetHeight / 2;
-
-            
-
             var heureDebutEDT = parseInt(document.getElementById("hdebut").innerHTML.split("h")[0]);
             var heureFinEDT = parseInt(document.getElementById("hfin").innerHTML.split("h")[0]);
             var nbHeureEDT = heureFinEDT - heureDebutEDT;
@@ -784,8 +880,32 @@ document.addEventListener("click" , function (event) {
 
 });
 
+
+// Create a function for getting a variable value
+function myFunction_get() {
+  // Get the styles (properties and values) for the root
+  var rs = getComputedStyle(r);
+  // Alert the value of the --blue variable
+  alert("The value of --blue is: " + rs.getPropertyValue('--blue'));
+}
+
+// Create a function for setting a variable value
+function changeCSSVar(variable, valeur) {
+    var r = document.querySelector(':root');
+    r.style.setProperty('--' + variable, valeur);
+}
+
+function pxToVw(pxValue) {
+    // Obtenir la largeur de la fenêtre
+    var windowWidth = window.innerWidth;
+
+    // Calculer la valeur en vue (vw)
+    var vwValue = (pxValue / windowWidth) * 100;
+
+    return vwValue;
+}
+
 function changeJour(event){
-    
     var listeJour = document.getElementsByClassName("jour");
     var nbJour = 0;
     var taillePrec = null;
@@ -796,17 +916,15 @@ function changeJour(event){
         }
     }
 
-    for (var jour of listeJour){
-        if (event.target.className == "check"){
-            jour.style.width = taillePrec * nbJour / (nbJour-1) + "px";
-        }else{
-            jour.style.width = taillePrec * nbJour / (nbJour+1) + "px";
-        }
+    if (event.target.className == "check"){
+        changeCSSVar("taille-edt",pxToVw(taillePrec * nbJour / (nbJour-1)) + "vw");
+    }else{
+        changeCSSVar("taille-edt",pxToVw(taillePrec * nbJour / (nbJour+1)) + "vw");
     }
+
     var jour = event.target.innerHTML.toLowerCase();
     document.getElementById(jour).style.display = "none";
     var listeJour = document.getElementsByClassName("jour");
-    var taille = listeJour.length;
     if (event.target.className == "check"){
         event.target.className = "uncheck"
         for (var jour of listeJour){
@@ -819,16 +937,9 @@ function changeJour(event){
         event.target.className = "check"
         document.getElementById(jour).style.display = "block";
     }
+    
     var firstDay = false;
     for (var jour of listeJour){
-        
-        var borderRadiusSize = "0";
-        jour.style.borderTopLeftRadius = borderRadiusSize;
-        jour.querySelector("h1").style.borderTopLeftRadius = borderRadiusSize;
-        jour.style.borderBottomLeftRadius = borderRadiusSize;
-        jour.style.borderTopRightRadius = borderRadiusSize;
-        jour.querySelector("h1").style.borderTopRightRadius = borderRadiusSize;
-        jour.style.borderBottomRightRadius = borderRadiusSize;
         if (jour.style.display != "none"){
             jour.style.borderLeft = "0";
         }
@@ -837,25 +948,10 @@ function changeJour(event){
             firstDay = true;
         }
     }
+    
+    clearBorderRadius();
 
-    // Filtrer les éléments pour exclure ceux avec display: none
-    var elementsVisibles = Array.from(listeJour).filter(function(element) {
-        return window.getComputedStyle(element).display !== 'none';
-    });
-
-    // Vérifiez s'il y a des éléments visibles
-    if (elementsVisibles.length > 0) {
-        // Récupérez le premier et le dernier élément visibles
-        var premierElement = elementsVisibles[0];
-        var dernierElement = elementsVisibles[elementsVisibles.length - 1];
-        var borderRadiusSize = "10px";
-        premierElement.style.borderTopLeftRadius = borderRadiusSize;
-        premierElement.querySelector("h1").style.borderTopLeftRadius = borderRadiusSize;
-        premierElement.style.borderBottomLeftRadius = borderRadiusSize;
-        dernierElement.style.borderTopRightRadius = borderRadiusSize;
-        dernierElement.querySelector("h1").style.borderTopRightRadius = borderRadiusSize;
-        dernierElement.style.borderBottomRightRadius = borderRadiusSize;
-    }
+    setBorderRadius();
 }
 
 function changePolice(event){
