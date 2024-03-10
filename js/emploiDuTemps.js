@@ -209,6 +209,7 @@ bouton_ajouter_creneau.addEventListener("click", function() {
     hfin = hfin.replace(":" , "h");
     let cours = new Cours(uv, hdebut, hfin, creneau, salle , semainechoix , null , type);
     createCours(cours);
+    tempsCurrentCours = null;
     nouveauClick();
 });
 
@@ -594,7 +595,7 @@ function colorChange(event){
     var Liste_cours = document.getElementsByClassName("cours");
     for (var cours of Liste_cours){
         var texte = cours.querySelector('h2.UV').textContent;
-        var regex = /^([A-Z0-9]+) - (TD|TP|CM)(A|B)?$/;
+        var regex = /^([A-Z0-9]+) - (TD|TP|CM)( A |B)?$/;
         var match = texte.match(regex);
         var currentCode = match[1];
         if (currentCode == UV){
@@ -625,8 +626,32 @@ function convertirDecimalEnHeure(decimal) {
     return `${heures}h${String(minutes).padStart(2, '0')}`;
 }
 
+function calculerDifference() {
+    // Récupérer les valeurs des input time
+    var time1 = input_hdebut[1].value;
+    var time2 = input_hfin[1].value;
+    // Vérifier si les valeurs sont non vides
+    if (time1 && time2) {
+        // Convertir les valeurs en minutes
+        var minutes1 = convertirEnMinutes(time1);
+        var minutes2 = convertirEnMinutes(time2);
+
+        // Calculer la différence en minutes
+        var differenceMinutes = minutes2 - minutes1;
+
+        // Convertir la différence en heures et minutes
+        var heures = Math.floor(differenceMinutes / 60);
+        var minutes = differenceMinutes % 60;
+        // Mettre à jour le champ de résultat
+        return heures + ':' + (minutes < 10 ? '0' : '') + minutes;
+    }else{
+        return null;
+    }
+}
+
 var suivreLaSouris = false;
 var lastPosition;
+var tempsCurrentCours;
 function suivreSouris(element, isCours) {
 
     var gestionnaireSouris = function(event) {
@@ -705,6 +730,7 @@ function suivreSouris(element, isCours) {
         input_type.disabled = true;
         input_creneau.disabled = true;
         preremplirNouveauForm();
+        tempsCurrentCours=calculerDifference();
     }
     
 }
@@ -810,7 +836,7 @@ function filtreTime(event) {
 
         var texte = coursElement.querySelector('h2.UV').textContent;
 
-        var regex = /^([A-Z0-9]+) - (TD|TP|CM)(A|B)?$/;
+        var regex = /^([A-Z0-9]+) - (TD|TP|CM)( A| B)?$/;
 
         var match = texte.match(regex);
         var codeUV = match[1];
