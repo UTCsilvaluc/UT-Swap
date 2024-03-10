@@ -47,6 +47,7 @@ var largeurFenetre;
 var lastHeight;
 
 var list_input=[input_creneau,input_type,input_salle,input_hfin[0],input_hfin[1],input_hdebut[0],input_hdebut[1],input_uv];
+
 for(var element of input_hfin){
     element.addEventListener('change', function() {
 
@@ -67,7 +68,35 @@ for(var element of input_hfin){
                 autre_element.value = event.target.value;
             }
         };
+
+        if(tempsCurrentCours){
+            for(var element_hdebut of input_hdebut){
+                // Calculer la différence en minutes
+                var differenceEnMinutes = convertirEnMinutes(this.value) - convertirEnMinutes(tempsCurrentCours);
+
+                // Mettre à jour la valeur du résultat
+                element_hdebut.value = convertirEnFormatTime(differenceEnMinutes);
+            }
+        }
     });
+}
+
+// Fonction pour convertir une heure au format HH:mm en minutes
+function convertirEnMinutes(heure) {
+    var [heures, minutes] = heure.split(':').map(Number);
+    return heures * 60 + minutes;
+}
+
+// Fonction pour convertir une durée en minutes au format HH:mm
+function convertirEnFormatTime(dureeEnMinutes) {
+    var heures = Math.floor(dureeEnMinutes / 60);
+    var minutes = dureeEnMinutes % 60;
+
+    // Formater la nouvelle heure au format HH:mm
+    var heuresFormat = heures.toString().padStart(2, '0');
+    var minutesFormat = minutes.toString().padStart(2, '0');
+
+    return heuresFormat + ':' + minutesFormat;
 }
 
 for(var element of input_hdebut){
@@ -89,6 +118,15 @@ for(var element of input_hdebut){
                 autre_element.value = event.target.value;
             }
         };
+        if(tempsCurrentCours){
+            for(var element_hfin of input_hfin){
+                // Calculer la différence en minutes
+                var differenceEnMinutes = convertirEnMinutes(this.value) + convertirEnMinutes(tempsCurrentCours);
+
+                // Mettre à jour la valeur du résultat
+                element_hfin.value = convertirEnFormatTime(differenceEnMinutes);
+            }
+        }
     });
 }
 
