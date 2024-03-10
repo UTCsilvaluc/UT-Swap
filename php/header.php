@@ -6,7 +6,7 @@ session_start();
 function DBCredential(){
     $dbhost = 'localhost';
     $dbuser = 'root';
-    $dbpass = 'root';
+    $dbpass = '';
     $dbname = 'ut_swap';
     $connect = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to mysql');
     mysqli_set_charset($connect, 'utf8');
@@ -138,30 +138,27 @@ function getResponsableByUv($uv){
 }
 $login = "ldompnie";
 $connect = DBCredential();
-if (isset($_SESSION['idDemande']) && isset($_SESSION['hDeb']) && isset($_SESSION['hFin']) && isset($_SESSION['salle']) && isset($_SESSION['jour']) && isset($_SESSION['semaine'])) {
-    if (isset($_POST['csrf_token_remplacer']) && isset($_SESSION['csrf_token_remplacer'])){
-        $jetonPost = $_POST['csrf_token_remplacer'];
-        $jetonSession = $_SESSION['csrf_token_remplacer'];
-        echo "<script> alert('$jetonPost') </script>";
-        if ($_POST['csrf_token_remplacer'] === $_SESSION['csrf_token_remplacer']){
-            $idDemande = $_SESSION['idDemande'];
-            $sqlCheckInsertion = "UPDATE demande SET jour=?,horaireDebut=?, horaireFin=?, salle=?, semaine=? WHERE idDemande=?";
-            $stmtCheckInsertion = $connect->prepare($sqlCheckInsertion);
-            $stmtCheckInsertion->bind_param("issssi", $_SESSION['jour'], $_SESSION['hDeb'], $_SESSION['hFin'], $_SESSION['salle'], $_SESSION['semaine'], $_SESSION['idDemande']);
-            if ($stmtCheckInsertion->execute()) {
-                //echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
-            }else {
-                echo "Erreur lors de l'insertion des données : " . $stmtCheckInsertion->error;
-            }
-            if (isset($_SESSION['swap'])){
-                $uv = $_SESSION['uv'];
-                $type = $_SESSION['type'];
-                $offerId = $_SESSION['swap'];
-                create_swap($connect , $idDemande , $offerId , $uv , $type , $login);
-                $_SESSION['reloadPage'] = "swapSuccess";
-            } else {
-                $_SESSION['reloadPage'] = "updateSuccess";
-            }
+if (isset($_POST['update_choix']) && !(empty($_POST['update_choix']))) {
+    $update_choix = $_POST['update_choix'];
+    if ($update_choix == '1'){
+        echo "<script> alert('Je dois mettre à jour : ' " . $_POST['uv'] .")</script>";
+        $idDemande = $_SESSION['idDemande'];
+        $sqlCheckInsertion = "UPDATE demande SET jour=?,horaireDebut=?, horaireFin=?, salle=?, semaine=? WHERE idDemande=?";
+        $stmtCheckInsertion = $connect->prepare($sqlCheckInsertion);
+        $stmtCheckInsertion->bind_param("issssi", $_SESSION['jour'], $_SESSION['hDeb'], $_SESSION['hFin'], $_SESSION['salle'], $_SESSION['semaine'], $_SESSION['idDemande']);
+        if ($stmtCheckInsertion->execute()) {
+            //echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
+        }else {
+            echo "Erreur lors de l'insertion des données : " . $stmtCheckInsertion->error;
+        }
+        if (isset($_SESSION['swap'])){
+            $uv = $_SESSION['uv'];
+            $type = $_SESSION['type'];
+            $offerId = $_SESSION['swap'];
+            create_swap($connect , $idDemande , $offerId , $uv , $type , $login);
+            $_SESSION['reloadPage'] = "swapSuccess";
+        } else {
+            $_SESSION['reloadPage'] = "updateSuccess";
         }
     }
     unset($_SESSION['jour']);
@@ -564,8 +561,8 @@ if (
         <button onclick="nouveauClick()" class="bouton_nouveau hidden" id="bouton_ok">OK !</button>
         <button id="bouton_non_submit">Poster</button>
         <div id="boutons_uv" >
-            <button id="bouton_impossible_uv" onclick="cancelForm()" class="bouton_nouveau hidden" type="reset">Abandonner</button>
-            <button id="bouton_remplacer" onclick="reloadPage()" class="hidden">Remplacer</button>
+            <button id="bouton_impossible_uv" onclick="cancelForm()" type="reset" class="bouton_nouveau hidden" type="reset">Abandonner</button>
+            <button id="bouton_remplacer" type="submit" class="hidden">Remplacer</button>
         </div>
         <div id="boutons_message" class="hidden">
             <button id="bouton_retour">Retour</button>
@@ -577,6 +574,7 @@ if (
     </div>
 
     <input type="hidden" name="csrf_token_remplacer" id="input_csrf_token_remplacer" value="">
+    <input type="hidden" name="update_choix" id="update_choix" value="0">
 </form>
 
 
@@ -584,8 +582,8 @@ if (
 <?php
 // Vérifier si les variables sont définies et non vides
 if (
-    isset($_POST['uv'], $_POST['creneau'], $_POST['hdebut'], $_POST['hfin'], $_POST['salle'], $_POST['type']) &&
-    !empty($_POST['uv']) && !empty($_POST['creneau']) && !empty($_POST['hdebut']) && !empty($_POST['hfin']) && !empty($_POST['salle']) && !empty($_POST['type'])
+    isset($_POST['uv'], $_POST['creneau'], $_POST['hdebut'], $_POST['hfin'], $_POST['salle'], $_POST['type']) && ($_POST['update_choix'] == '0') &&
+    !empty($_POST['uv']) && !empty($_POST['creneau']) && !empty($_POST['hdebut']) && !empty($_POST['hfin']) && !empty($_POST['salle']) && !empty($_POST['type'] )
 ) {
     $connect = DBCredential();
     // Valider les données
@@ -711,6 +709,10 @@ if (
                                 $_SESSION["uv"] = $uv;
                                 $_SESSION["type"] = $type;
                             }
+                            if (checkIfDetailsChange($connect , $login , $type , $uv , $hdebut , $hfin , $salle , $semaineChoix) != null){
+                                echo "<script> alert('Une même demande existe déjà ! ')</script>";
+                            }
+                            echo "<script> document.getElementById('update_choix').value = '1'; document.getElementById('input-uv').value = $uv ; alert('test'); </script>";
                             $_SESSION["idDemande"] = $currentIDdemande['idDemande'];
                             $_SESSION["hDeb"] = $hdebut;
                             $_SESSION["hFin"] = $hfin;
@@ -718,9 +720,6 @@ if (
                             $_SESSION["jour"] = $jour;
                             $_SESSION["semaine"] = $semaineChoix;
                             afficherChangementCreneau($connect , $currentIDdemande['idDemande'] , $jour , $salle , $hdebut , $hfin);
-                            $csrfTokenRemplacer = generateCSRFToken();
-                            $_SESSION['csrf_token_remplacer'] = $csrfTokenRemplacer;
-                            echo '<input id="csrf_token_remplacer" type="hidden" value="' . $csrfTokenRemplacer . '">';
                         } else {
                             error_log("Erreur dans la récupération des données...");
                         }
@@ -741,6 +740,10 @@ if (
                 if ($isOffer === 0 ){
                     update_demande_statut($connect , $idDemande , 1);
                 }
+                if (checkIfDetailsChange($connect , $login , $type , $uv , $hdebut , $hfin , $salle , $semaineChoix) == null){
+                    echo "<script> alert('Une même demande existe déjà ! ')</script>";
+                }
+                echo "<script> document.getElementById('update_choix').value = '1' ; alert('test'); </script>";
                 /* Afficher ancien et nouvel horaire. */
                 afficherChangementCreneau($connect , $idDemande , $jour , $salle , $hdebut , $hfin);
                 $_SESSION["idDemande"] = $idDemande;
@@ -749,9 +752,6 @@ if (
                 $_SESSION["salle"] = $salle;
                 $_SESSION["jour"] = $jour;
                 $_SESSION["semaine"] = $semaineChoix;
-                $csrfTokenRemplacer = generateCSRFToken();
-                $_SESSION['csrf_token_remplacer'] = $csrfTokenRemplacer;
-                echo '<input id="csrf_token_remplacer" type="hidden" value="' . $csrfTokenRemplacer . '">';
                 $canSwap = false;
             }
         }

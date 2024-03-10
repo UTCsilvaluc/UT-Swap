@@ -399,14 +399,6 @@ function reloadPage() {
     location.reload();
 }
 
-function cancelForm(){
-    window.location.href = "demandes.php?cancel=true";
-    document.getElementById("csrf_token_remplacer").remove();
-}
-
-function changeCreneau(){
-    document.getElementById('sendSwap').classList.toggle('hidden' , false);
-    document.getElementById('MonCreneauSwap1').classList.toggle('hidden' , false);
-    document.getElementById('MonCreneauSwap2').classList.toggle('hidden' , false);
-    document.getElementById('newDemandeSwap').classList.toggle('hidden' , true);
+function cancelForm() {
+    window.location.href = "demandes.php";
 }

@@ -99,6 +99,35 @@ function getIdDemandeSwap($connect, $login, $type, $uv) {
     }
 }
 
+function checkIfDetailsChange($connect , $login , $type , $uv , $hdebut, $hfin , $salle, $semaineChoix){
+    try {
+        // Préparer la requête SQL
+        $sqlGetIdDemande = "SELECT idDemande FROM demande WHERE login = ? AND type = ? AND codeUV = ? AND horaireDebut = ? AND horaireFin = ? AND salle = ? AND semaine = ?";
+        $stmtGetIdDemande = $connect->prepare($sqlGetIdDemande);
+        $stmtGetIdDemande->bind_param("sssssss", $login, $type, $uv , $hdebut , $hfin , $salle , $semaineChoix);
+
+        // Exécuter la requête
+        if ($stmtGetIdDemande->execute()) {
+            // Récupérer le résultat
+            $resultId = $stmtGetIdDemande->get_result();
+            $row = $resultId->fetch_assoc();
+            $stmtGetIdDemande->close();
+
+            // Vérifier si une ligne a été retournée et si l'ID de demande de swap est spécifié
+            if ($row) {
+                return $row;
+            } else {
+                error_log("Aucune ligne retournée ou swapIdDemande non spécifié");
+                return null;
+            }
+        } else {
+            throw new Exception("Erreur lors de l'exécution de la requête");
+        }
+    } catch (Exception $e) {
+        error_log("Erreur lors de la récupération de l'ID de demande : " . $e->getMessage());
+        return null;
+    }
+}
 function getDetailsById($connect , $idDemande){
     try {
         // Préparer la requête SQL
