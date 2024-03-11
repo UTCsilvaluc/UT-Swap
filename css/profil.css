@@ -23,8 +23,11 @@ main{
 
 #demandes_faites_utilisateur, #demandes_reçues_utilisateur{
     justify-content: space-around;
-    margin-bottom: 50px;
     min-height: 325px;
+}
+
+#demandes_reçues_utilisateur{
+    margin-bottom: 50px;
 }
 
 
@@ -166,7 +169,7 @@ main{
 .profil_demande h2{
     max-width: 100%;
     text-overflow: hidden;
-    font-size: 1.25vw;
+    font-size: 1.4vw;
     font-weight: 100;
     margin: 0;
     white-space: nowrap;
@@ -393,7 +396,7 @@ main{
     }
 
     .profil_demande h2{
-        font-size: 1.5vw;
+        font-size: 1.75vw;
     }
 
     #profil_utilisateur{

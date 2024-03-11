@@ -26,17 +26,12 @@ body {
 }
 
 main {
-    padding-top: var(--taille-header);
-    display: flex;
-    justify-content: space-around;
     width: 100%;
-    align-items: center;
     overflow-y: auto;
 }
 
 main::-webkit-scrollbar-track
 {
-    margin-top: var(--taille-header);
 	border: 1px solid #d1d1d1;
 	border-radius: 10px;
 	background-color: #F5F5F5;
@@ -63,15 +58,16 @@ header {
     align-items: center;
     background-color: #32373B;
     color: white;
-    position: fixed;
     font-size: 18px;
     width: 100%;
     height: var(--taille-header);
+    max-height: 100px;
+    position:relative;
     z-index: 3;
 }
 
 header .logo{
-    height: 50%;
+    height: 40%;
     margin-left: 20px;
 }
 
@@ -761,7 +757,7 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
 }
 
 
-@media screen and (max-width: 750px) {
+@media screen and (max-width: 850px) {
     #menu_liste_grand{
         display: none;
     }

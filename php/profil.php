@@ -43,6 +43,28 @@
         }
         return "email@email.com";
     }
+
+    function getDemandeProfil($type){
+        global $login;
+        $connect = DBCredential();
+        if($type === "attente"){
+            $sqlNbSwap = "SELECT count(*) FROM `swap` s JOIN demande d1 ON d1.idDemande=s.idDemande JOIN demande d2 ON d2.idDemande = s.demandeur WHERE (d1.login = ? OR d2.login = ?) AND s.statut=3";
+        }else if($type === "accept"){
+            $sqlNbSwap = "SELECT count(*) FROM `swap` s JOIN demande d1 ON d1.idDemande=s.idDemande JOIN demande d2 ON d2.idDemande = s.demandeur WHERE (d1.login = ? OR d2.login = ?) AND s.statut=5";
+        }else if($type === "refus"){
+            $sqlNbSwap = "SELECT count(*) FROM `swap` s JOIN demande d1 ON d1.idDemande=s.idDemande JOIN demande d2 ON d2.idDemande = s.demandeur WHERE (d1.login = ? OR d2.login = ?) AND s.statut=4";
+        }
+        $stmtNbSwap = $connect->prepare($sqlNbSwap);
+        $stmtNbSwap->bind_param("ss", $login, $login);
+        $stmtNbSwap->execute();
+        $stmtNbSwap->store_result();
+        if ($stmtNbSwap->num_rows !== 0) {
+            $stmtNbSwap->bind_result($nbSwap);
+            $stmtNbSwap->fetch();
+            return $nbSwap;
+        }
+        return "0";
+    }
     ?>
     <main>
         <div class="arc-de-cercle"></div>
@@ -66,16 +88,16 @@
                 <div id="profil_demandes">
                     <div id="profil_demandes_parent">
                         <div id="profil_demande_cours" class="profil_demande">
-                            <span class="profil_demande_header"><img src="../svg/dmd_attent.svg" alt=""><span>0</span></span>
-                            <h2>Demandes en cours</h2>
+                            <span class="profil_demande_header"><img src="../svg/dmd_attent.svg" alt=""><span><?= getDemandeProfil("attente"); ?></span></span>
+                            <h2>Swaps en cours</h2>
                         </div>
                         <div id="profil_demande_accept" class="profil_demande">
-                            <span class="profil_demande_header"><img src="../svg/dmd_accept.svg" alt=""><span>0</span></span>
-                            <h2>Demandes acceptées</h2>
+                            <span class="profil_demande_header"><img src="../svg/dmd_accept.svg" alt=""><span><?= getDemandeProfil("accept"); ?></span></span>
+                            <h2>Swaps acceptées</h2>
                         </div>
                         <div id="profil_demande_refus" class="profil_demande">
-                            <span class="profil_demande_header"><img src="../svg/dmd_refus.svg" alt=""><span>0</span></span>
-                            <h2>Demandes refusées</h2>
+                            <span class="profil_demande_header"><img src="../svg/dmd_refus.svg" alt=""><span><?= getDemandeProfil("refus"); ?></span></span>
+                            <h2>Swaps refusées</h2>
                         </div>
                     </div>
                 </div>

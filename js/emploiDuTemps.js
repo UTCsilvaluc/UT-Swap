@@ -1102,6 +1102,7 @@ function transformerEntreeCours(entree) {
 }
 function importEDT(event){
     var allCourses = document.getElementById("textUV").value.split("\n");
+    coursColors = {};
     resetEDT(event)
     for (var currentCours of allCourses){
         if (currentCours.length > 0){
@@ -1109,7 +1110,6 @@ function importEDT(event){
             createCours(cours);
         }
     }
-
     document.getElementById("importEDTID").style.display = "none";
     document.getElementById("textUV").value = "";
     document.getElementById("ecran_edt").style.display = "none";
