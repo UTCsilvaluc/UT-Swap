@@ -59,23 +59,50 @@
     padding-top: 3%;
     display: flex;
     flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
     gap: 3%;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+}
+
+#searchInput {
+    flex: 1; /* Le champ de saisie de texte prendra tout l'espace disponible */
+}
+
+#searchButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.demandes_rechercher{
+    display: flex;
+    flex-direction: row;
+    background: #EDEDED;
+    vertical-align: center;
+    align-items: center;
 }
 
 .filtreInput{
     border: none;
-    padding: 2%;
+    padding: 8% 0 8% 8%;
     background: #EDEDED;
     background-size: 16px; /* Taille de l'image */
-    border-radius: 50vh;
+    border-radius: 5%;
 }
 
-.rechercher .svgFiltre {
-    width: 3vh;
-    height: 3vh;
-    transform: translate(-200%,25%);
-    vertical-align: center;
-    justify-content: center;
+.researchLogoSvg{
+    transform: translateX(-200%);
+    width: 2vh;
+    height: 2vh;
+}
+
+.researchLogoSvg:hover{
+    cursor: pointer;
 }
 
 .rechercher .svgFiltre:hover{

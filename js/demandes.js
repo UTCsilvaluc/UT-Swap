@@ -99,3 +99,144 @@ function closeFiltre(event){
     conteneurFiltre.style.display = "none";
 }
 
+/* Partie sur les filtres */
+
+var input_code_uv = document.getElementById('filtre_demandes_codeUV');
+input_code_uv.addEventListener("keyup" , function (event){
+    if (event.keyCode === 13){
+        researchUV(event);
+    }
+});
+
+function researchUV(event){
+    if (input_code_uv.value.length == 0){
+        var divs_demande = document.getElementsByClassName("div_demande");
+        Array.from(divs_demande).forEach(function(div) {
+            div.style.display = "flex";
+        });
+    } else if (input_code_uv.value.length != 4){
+        alert("Le code d'UV doit être composé de quatre caractères !");
+    } else {
+        // Créer un nouvel URLSearchParams avec la chaîne de requête actuelle
+        var params = new URLSearchParams(window.location.search);
+        // Ajouter le paramètre codeUV avec la valeur "uv"
+        params.set("codeUV", input_code_uv.value);
+        // Modifier l'URL dans la barre d'adresse sans recharger la page
+        history.pushState(null, null, '?' + params.toString());
+        canDisplayCourses(event);
+    }
+}
+
+function changeJour(event){
+    if (event.target.className === "check"){
+        event.target.className = "uncheck";
+    } else {
+        event.target.className = "check";
+    }
+    canDisplayCourses(event);
+
+}
+
+function canDisplayCourses(event) {
+    var divs_demande = document.getElementsByClassName("div_demande");
+    var liste_jours = document.getElementsByClassName('check');
+    var joursActifs = []; // Initialiser une liste pour stocker les jours actifs
+    var display = true;
+
+// Créer un objet pour stocker la correspondance entre les jours et les nombres
+    var joursMap = {
+        "Lundi": 1,
+        "Mardi": 2,
+        "Mercredi": 3,
+        "Jeudi": 4,
+        "Vendredi": 5,
+        "Samedi": 6
+    };
+    for (var i = 0; i < liste_jours.length; i++) {
+        var jour = liste_jours[i].innerHTML.trim(); // Récupérer le contenu HTML de l'élément et supprimer les espaces
+        joursActifs.push(joursMap[jour]);
+    }
+    // Créer un nouvel objet URLSearchParams avec la chaîne de requête de l'URL actuelle
+    var params = new URLSearchParams(window.location.search);
+    var codeUV = params.get('codeUV');
+    Array.from(divs_demande).forEach(function(div) {
+        // Faites quelque chose avec chaque élément div ici
+        var rowAttribute = div.dataset.row;
+        if (rowAttribute) {
+            try {
+                var donnees = JSON.parse(rowAttribute);
+            } catch (error) {
+                console.error("Erreur lors du parsing JSON :", error);
+            }
+        } else {
+            console.error("Aucune donnée trouvée dans l'attribut data-row");
+        }
+
+        if (codeUV != null){
+            if (donnees.codeUV.toLowerCase() != input_code_uv.value.toLowerCase()){
+                display = false;
+            }
+        }
+
+        if (!(joursActifs.includes(donnees.jour))){
+            display = false;
+        }
+        div.style.display = display ? 'flex' : 'none';
+        display = true;
+    });
+
+}
+
+function resetFilter(){
+    document.getElementById('filterContainer1').innerHTML = "<div class=\"filtre_parent\" id=\"police\">\n" +
+        "                        <h1 class=\"filtre_entete\">Trier par</h1>\n" +
+        "                        <span class=\"filtre_span\">\n" +
+        "                            <h3 class=\"checkElement\" onclick=\"changeFilter(event)\" id=\"mainFilter\">Pertinence</h3>\n" +
+        "                            <h3 class=\"uncheckElement\" onclick=\"changeFilter(event))\">Date</h3>\n" +
+        "                            <h3 class=\"uncheckElement\" onclick=\"changeFilter(event)\">Demande</h3>\n" +
+        "                            <h3 class=\"uncheckElement\" onclick=\"changeFilter(event)\">Auteur</h3>\n" +
+        "                        </span>\n" +
+        "                    </div>\n" +
+        "                    <div class=\"filtre_parent\" id=\"jours\">\n" +
+        "                        <h1 class=\"filtre_entete\">Jour</h1>\n" +
+        "                        <span class=\"filtre_span\" id=\"spanJour\">\n" +
+        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Lundi</h3>\n" +
+        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Mardi</h3>\n" +
+        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Mercredi</h3>\n" +
+        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Jeudi</h3>\n" +
+        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Vendredi</h3>\n" +
+        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Samedi</h3>\n" +
+        "                    </div>\n" +
+        "                    <div class=\"filtre_parent\" id=\"type\">\n" +
+        "                        <h1 class=\"filtre_entete\">Type</h1>\n" +
+        "                        <span class=\"filtre_span\" id=\"spanType\">\n" +
+        "                            <h3 class=\"check\" onclick=\"changeType(event)\">Cours</h3>\n" +
+        "                            <h3 class=\"check\" onclick=\"changeType(event)\">TD</h3>\n" +
+        "                            <h3 class=\"check\" onclick=\"changeType(event)\">TP</h3>\n" +
+        "                    </div>\n" +
+        "                    <div class=\"filtre_parent\" id=\"jours\">\n" +
+        "                        <h1 class=\"filtre_entete\">Semaine</h1>\n" +
+        "                        <span class=\"filtre_span\" id=\"spanSemaine\">\n" +
+        "                            <h3 class=\"check\" onclick=\"changeType(event)\">A</h3>\n" +
+        "                            <h3 class=\"check\" onclick=\"changeType(event)\">B</h3>\n" +
+        "                    </div>\n" +
+        "                    <div class=\"filtre_parent\" id=\"heures\">\n" +
+        "                        <h1>Horaires</h1>\n" +
+        "                        <span class=\"filtre_span\">\n" +
+        "                            <div>\n" +
+        "                                <input type=\"time\" id=\"filtre-input-hdebut\" name=\"hdebut\" value=\"08:00\" required onchange=\"filtreTime(event)\">\n" +
+        "                            </div>\n" +
+        "                            <div>\n" +
+        "                                <input type=\"time\" id=\"filtre-input-hfin\" name=\"hfin\" value=\"20:00\" required onchange=\"filtreTime(event)\">\n" +
+        "                            </div>\n" +
+        "                        </span>\n" +
+        "                    </div>\n" +
+        "                    <div class=\"buttonFiltres\">\n" +
+        "                        <button class=\"filtreButton\" id=\"appliquerFiltre\" onclick=\"resetFilter(event)\">Supprimer les filtres</button>\n" +
+        "                    </div>";
+    var divs_demande = document.getElementsByClassName("div_demande");
+    Array.from(divs_demande).forEach(function(div) {
+        div.style.display = 'flex';
+    });
+}
+

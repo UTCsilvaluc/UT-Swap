@@ -21,10 +21,13 @@
         <div class="main_conteneur">
             <div class="demandesControl">
                 <div class="demandes_filtre">
-                    <span class="rechercher">
-                        <input class="filtreInput" type="text" name="codeUV" id="codeUV" placeholder="Chercher une UV" value="<?php echo $_GET['codeUV'] ?? ''; ?>">
+                    <span class="demandes_rechercher">
+                        <input class="filtreInput" type="text" name="codeUV" id="filtre_demandes_codeUV" placeholder="Chercher une UV" value="<?php echo $_GET['codeUV'] ?? ''; ?>" maxlength="4" minlength="4">
+                        <img src="../svg/search.svg" class="researchLogoSvg" alt="" onclick="researchUV(event)">
                     </span>
-                    <div><img class="svgFiltre" title="filtres" src="../svg/FILTRE_FILTRE.svg" id="filtre_edt" onclick="openFiltre(event)"></div>
+                    <div>
+                        <img class="svgFiltre" title="filtres" src="../svg/FILTRE_FILTRE.svg" id="filtre_edt" onclick="openFiltre(event)">
+                    </div>
                 </div>
                 <div class="demande_container">
                     <?php
@@ -109,12 +112,12 @@
                 </div>
                 <div class="conteneur_filtre" id="filterContainer1">
                     <div class="filtre_parent" id="police">
-                        <h1 class="filtre_entete">Police</h1>
+                        <h1 class="filtre_entete">Trier par</h1>
                         <span class="filtre_span">
-                            <h3 class="checkElement" onclick="changePolice(event)" id="mainPolice">Jost</h3>
-                            <h3 class="uncheckElement" onclick="changePolice(event)">Kantumruy</h3>
-                            <h3 class="uncheckElement" onclick="changePolice(event)">Times New Roman</h3>
-                            <h3 class="uncheckElement" onclick="changePolice(event)">Comic Sans MS</h3>
+                            <h3 class="checkElement" onclick="changeFilter(event)" id="mainFilter">Pertinence</h3>
+                            <h3 class="uncheckElement" onclick="changeFilter(event))">Date</h3>
+                            <h3 class="uncheckElement" onclick="changeFilter(event)">Demande</h3>
+                            <h3 class="uncheckElement" onclick="changeFilter(event)">Auteur</h3>
                         </span>
                     </div>
                     <div class="filtre_parent" id="jours">
@@ -126,25 +129,20 @@
                             <h3 class="check" onclick="changeJour(event)">Jeudi</h3>
                             <h3 class="check" onclick="changeJour(event)">Vendredi</h3>
                             <h3 class="check" onclick="changeJour(event)">Samedi</h3>
-                            <h3 class="uncheck" onclick="changeJour(event)">Dimanche</h3>
                     </div>
-                    <div class="filtre_parent" id="couleurs">
-                        <h1 class="filtre_entete">Couleurs</h1>
-                        <span>
-                            <span class="filtre_span" id="couleurSpan"></span>
-                        </span>
+                    <div class="filtre_parent" id="type">
+                        <h1 class="filtre_entete">Type</h1>
+                        <span class="filtre_span" id="spanType">
+                            <h3 class="check" onclick="changeType(event)">Cours</h3>
+                            <h3 class="check" onclick="changeType(event)">TD</h3>
+                            <h3 class="check" onclick="changeType(event)">TP</h3>
                     </div>
-                    <div class="filtre_parent" id="couleur_entete">
-                        <h1 class="filtre_entete">Couleur entête</h1>
-                        <span class="filtre_span">
-                            <div class="inputCouleur" id="inputCouleur" style="">
-                                <span style="margin-left: 20px">
-                                    <input class="colorChoice" type="color" id="choix-couleur" name="choix-couleur" style="position: absolute; ; width: 2px ; height: 2px">
-                                </span>
-                            </div>
-                        </span>
+                    <div class="filtre_parent" id="jours">
+                        <h1 class="filtre_entete">Semaine</h1>
+                        <span class="filtre_span" id="spanSemaine">
+                            <h3 class="check" onclick="changeType(event)">A</h3>
+                            <h3 class="check" onclick="changeType(event)">B</h3>
                     </div>
-
                     <div class="filtre_parent" id="heures">
                         <h1>Horaires</h1>
                         <span class="filtre_span">
@@ -157,7 +155,7 @@
                         </span>
                     </div>
                     <div class="buttonFiltres">
-                        <button class="filtreButton" id="appliquerFiltre" onclick="supprimerFiltre(event)">Supprimer les filtres</button>
+                        <button class="filtreButton" id="appliquerFiltre" onclick="resetFilter(event)">Supprimer les filtres</button>
                     </div>
                 </div>
             </div>
