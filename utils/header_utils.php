@@ -75,13 +75,5 @@ function afficherChangementCreneau($connect , $currentIDdemande , $jour, $salle,
     echo "<script> document.getElementById('swapJour1').innerHTML = '$textJour'; document.getElementById('swapSalle1').innerHTML = '$salle'; document.getElementById('swapCreneau1').innerHTML = `$hdebut - $hfin` ; </script>";
     echo "<script> document.getElementById('swapJour2').innerHTML = '$textInitJour'; document.getElementById('swapSalle2').innerHTML = '$initSalle'; document.getElementById('swapCreneau2').innerHTML = `$initHoraireDebut - $initHoraireFin` ; </script>";
     echo "<script> document.getElementById('sendSwap').classList.toggle('hidden' , false);document.getElementById('ancienCreneauSwap1').classList.toggle('hidden' , false);document.getElementById('ancienCreneauSwap2').classList.toggle('hidden' , false);</script>";
-
-    // Générer le jeton CSRF pour remplacer
-
-
-    // Intégrer les jetons CSRF dans le formulaire
-
-    /* Comme ça je récupère mes jetons en $_POST, quand l'utilisateur appuie sur Abandonner je supprime l'input avec Remplacer ce qui évite d'avoir une requête $_POST avec le token.
-    Quand il appuie sur Envoyer je supprime Abandonner et pareil. */
 }
 ?>

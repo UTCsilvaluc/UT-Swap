@@ -24,9 +24,4 @@ function numeroVersJour($numeroJour) {
     }
 }
 
-function generateCSRFToken() {
-    $token = bin2hex(random_bytes(32)); // Génère un jeton aléatoire de 32 octets
-    return $token;
-}
-
 ?>

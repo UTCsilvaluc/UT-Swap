@@ -21,6 +21,7 @@ var message_impossible_uv = document.getElementById("message_impossible_uv");
 var message_uv_type = document.getElementById("message_uv_type");
 var message_changement_creneau = document.getElementById("message_changement_creneau");
 var message_envoie_swap = document.getElementById("message_envoie_swap");
+var message_meme_creneau_existant = document.getElementById('message_meme_creneau_existant');
 
 var input_type = document.getElementById("input-type");
 var input_salle = document.getElementById("input-salle");
@@ -47,6 +48,7 @@ var largeurFenetre;
 var lastHeight;
 
 var list_input=[input_creneau,input_type,input_salle,input_hfin[0],input_hfin[1],input_hdebut[0],input_hdebut[1],input_uv];
+
 for(var element of input_hfin){
     element.addEventListener('change', function() {
 
@@ -197,7 +199,7 @@ bouton_non_submit.addEventListener("click", function() {
             document.getElementById("newDemandeSwap").classList.toggle('hidden' , true);
             titleDiv.classList.toggle('hidden' , false);
             titleDiv.innerHTML = `Récapitulatif : ${input_type.value} de ${input_uv.value}`
-            document.getElementById("swapJour1").innerHTML = `${input_creneau.value}`
+            document.getElementById("swapJour1").innerHTML = `${input_creneau.value[0].toUpperCase() + input_creneau.value.slice(1)}`
             document.getElementById("swapSalle1").innerHTML = `${input_salle.value}`
             document.getElementById("swapCreneau1").innerHTML = `${input_hdebut[1].value} - ${input_hfin[1].value}`
 
@@ -334,6 +336,8 @@ function nouveauClick() {
     ul_nouveau.classList.toggle('hidden', false);
     boutons_message.classList.toggle('hidden', true);
     message_pression.classList.toggle('hidden', true);
+    checkbox.disabled = false;
+
     document.getElementById("sendSwap").classList.toggle('hidden' , true);
     document.getElementById("newDemandeSwap").classList.toggle('hidden' , false);
     document.getElementById("swapRecap").classList.toggle("hidden" , true);
@@ -397,14 +401,6 @@ function reloadPage() {
     location.reload();
 }
 
-function cancelForm(){
-    window.location.href = "demandes.php?cancel=true";
-    document.getElementById("csrf_token_remplacer").remove();
-}
-
-function changeCreneau(){
-    document.getElementById('sendSwap').classList.toggle('hidden' , false);
-    document.getElementById('MonCreneauSwap1').classList.toggle('hidden' , false);
-    document.getElementById('MonCreneauSwap2').classList.toggle('hidden' , false);
-    document.getElementById('newDemandeSwap').classList.toggle('hidden' , true);
+function cancelForm() {
+    window.location.href = "demandes.php";
 }
