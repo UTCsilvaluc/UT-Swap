@@ -141,7 +141,6 @@ $connect = DBCredential();
 if (isset($_POST['update_choix']) && !(empty($_POST['update_choix']))) {
     $update_choix = $_POST['update_choix'];
     if ($update_choix == '1'){
-        echo "<script> alert('Je dois mettre à jour : ' " . $_POST['uv'] .")</script>";
         $idDemande = $_SESSION['idDemande'];
         $sqlCheckInsertion = "UPDATE demande SET jour=?,horaireDebut=?, horaireFin=?, salle=?, semaine=? WHERE idDemande=?";
         $stmtCheckInsertion = $connect->prepare($sqlCheckInsertion);
@@ -481,12 +480,15 @@ if (
             </div>
         </div>
         <div id="afficherSwapRequest">
-            <p id="message_uv_type" class="hidden">Vous proposez déjà un horaire pour cette UV et ce type de cours !</p>
-            <p id="message_changement_creneau" class="hidden">Vous avez effectué une autre demande pour cette UV et ce type en fournissant des créneaux différents, souhaitez-vous modifier le créneau ?</p>
-            <p id="message_pression" class="hidden">Assurez-vous de la validité ainsi que de la possession du créneau renseigné. Des incohérences répétées pourraient entraîner des sanctions, y compris le bannissement.</p>
-            <p id="message_impossible_uv" class="hidden">Nous sommes désolé mais le responsable de cette UV a désactivé les changements de créneaux. Aucune demande n'est donc possible...</p>
-            <p id="message_insertion" class="hidden">La demande a été envoyée !!</p>
-            <p id="message_envoie_swap" class="hidden">Votre demande de SWAP a bien été envoyée !</p>
+            <div id="div_messages">
+                <p id="message_uv_type" class="hidden">Vous proposez déjà un horaire pour cette UV et ce type de cours !</p>
+                <p id="message_changement_creneau" class="hidden">Vous avez effectué une autre demande pour cette UV et ce type en fournissant des créneaux différents, souhaitez-vous modifier le créneau ?</p>
+                <p id="message_pression" class="hidden">Assurez-vous de la validité ainsi que de la possession du créneau renseigné. Des incohérences répétées pourraient entraîner des sanctions, y compris le bannissement.</p>
+                <p id="message_impossible_uv" class="hidden">Nous sommes désolé mais le responsable de cette UV a désactivé les changements de créneaux. Aucune demande n'est donc possible...</p>
+                <p id="message_insertion" class="hidden">La demande a été envoyée !!</p>
+                <p id="message_envoie_swap" class="hidden">Votre demande de SWAP a bien été envoyée !</p>
+                <p id="message_meme_creneau_existant" class="hidden">Vous avez déjà proposé ce créneau... !</p>
+            </div>
 
             <div class="hidden" id="sendSwap">
                 <div class="confirmationSwap">
@@ -690,7 +692,7 @@ if (
                 } else {
                     /* Quand un étudiant a déjà fait une demande pour un créneau, et qu'il change l'horaire en faisant la demande de swap par rapport à son ancien créneau, le notifier. */
 
-                    $sqlCheckInsertion = "SELECT idDemande , horaireDebut, horaireFin , codeUV FROM demande WHERE login = ? and type=? and codeUV = ? AND horaireDebut = ? AND horaireFin = ? AND jour = ? AND demande = 0";
+                    $sqlCheckInsertion = "SELECT idDemande , horaireDebut, horaireFin , codeUV FROM demande WHERE login = ? and type=? and codeUV = ? AND horaireDebut = ? AND horaireFin = ? AND jour = ?";
                     $stmtCheckInsertion = $connect->prepare($sqlCheckInsertion);
                     $stmtCheckInsertion->bind_param("sssssi", $login, $type, $uv , $hdebut , $hfin , $jour);
                     $stmtCheckInsertion->execute();
@@ -709,10 +711,7 @@ if (
                                 $_SESSION["uv"] = $uv;
                                 $_SESSION["type"] = $type;
                             }
-                            if (checkIfDetailsChange($connect , $login , $type , $uv , $hdebut , $hfin , $salle , $semaineChoix) != null){
-                                echo "<script> alert('Une même demande existe déjà ! ')</script>";
-                            }
-                            echo "<script> document.getElementById('update_choix').value = '1'; document.getElementById('input-uv').value = $uv ; alert('test'); </script>";
+                            echo "<script> document.getElementById('update_choix').value = '1'; document.getElementById('input-uv').value = $uv ; </script>";
                             $_SESSION["idDemande"] = $currentIDdemande['idDemande'];
                             $_SESSION["hDeb"] = $hdebut;
                             $_SESSION["hFin"] = $hfin;
@@ -735,24 +734,40 @@ if (
                     }
                 }
             }else{
+
+                $sqlCheckInsertion = "SELECT idDemande , horaireDebut, horaireFin , codeUV FROM demande WHERE login = ? and type=? and codeUV = ? AND horaireDebut = ? AND horaireFin = ? AND jour = ?";
+                $stmtCheckInsertion = $connect->prepare($sqlCheckInsertion);
+                $stmtCheckInsertion->bind_param("sssssi", $login, $type, $uv , $hdebut , $hfin , $jour);
+                $stmtCheckInsertion->execute();
+                $result = $stmtCheckInsertion->get_result();
+                $resultRow = $result->fetch_assoc();
                 $idDemande = $isDemandeExisting['idDemande'];
                 $isOffer = $isDemandeExisting['demande'];
-                if ($isOffer === 0 ){
-                    update_demande_statut($connect , $idDemande , 1);
+
+                if ($result->num_rows === 0) {
+                    /* Ici, l'élève a changer son créneau , il faut lui proposer de l'update. */
+                    echo "<script> document.getElementById('update_choix').value = '1' ; </script>";
+                    /* Afficher ancien et nouvel horaire. */
+                    afficherChangementCreneau($connect , $idDemande , $jour , $salle , $hdebut , $hfin);
+                    $_SESSION["idDemande"] = $idDemande;
+                    $_SESSION["hDeb"] = $hdebut;
+                    $_SESSION["hFin"] = $hfin;
+                    $_SESSION["salle"] = $salle;
+                    $_SESSION["jour"] = $jour;
+                    $_SESSION["semaine"] = $semaineChoix;
+                    $canSwap = false;
+                } else {
+                    if ($isOffer !== 0 ) {
+                        echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_meme_creneau_existant.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
+                    } else {
+                        echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
+                    }
                 }
-                if (checkIfDetailsChange($connect , $login , $type , $uv , $hdebut , $hfin , $salle , $semaineChoix) == null){
-                    echo "<script> alert('Une même demande existe déjà ! ')</script>";
+
+                if ($isOffer === 0 ) {
+                    update_demande_statut($connect, $idDemande, 1);
                 }
-                echo "<script> document.getElementById('update_choix').value = '1' ; alert('test'); </script>";
-                /* Afficher ancien et nouvel horaire. */
-                afficherChangementCreneau($connect , $idDemande , $jour , $salle , $hdebut , $hfin);
-                $_SESSION["idDemande"] = $idDemande;
-                $_SESSION["hDeb"] = $hdebut;
-                $_SESSION["hFin"] = $hfin;
-                $_SESSION["salle"] = $salle;
-                $_SESSION["jour"] = $jour;
-                $_SESSION["semaine"] = $semaineChoix;
-                $canSwap = false;
+
             }
         }
     }

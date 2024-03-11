@@ -89,3 +89,13 @@ function filtrerUV(event){
     document.getElementById('filterForm').submit();
 }
 
+function openFiltre(event){
+    var conteneurFiltre = document.getElementById("menuFiltre");
+    conteneurFiltre.style.display = "flex";
+}
+
+function closeFiltre(event){
+    var conteneurFiltre = document.getElementById("menuFiltre");
+    conteneurFiltre.style.display = "none";
+}
+

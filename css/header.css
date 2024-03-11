@@ -613,8 +613,14 @@ nav .important{
     display:none;
 }
 
-#nouveau_pannel p{
-    width:70%;
+div#div_messages{
+    display: flex;
+    vertical-align: center;
+    justify-content: center;
+}
+
+#nouveau_pannel div#div_messages p{
+    width:80%;
     margin:0;
     color: red;
 }
@@ -957,6 +963,7 @@ div.creneau{
     background: #F3F3F3;
     padding: 3vh;
     border-radius: 2vh;
+    text-align: center;
 }
 
 span.row{
@@ -971,6 +978,19 @@ span.row{
 span.row h3 , span.row p{
     margin: 0;
     padding: 0;
+    color: black;
+    width: auto;
+}
+
+#swapSalle1 p,
+#swapSalle2 p,
+#swapCreneau1 p,
+#swapCreneau2 p,
+#swapJour1 p,
+#swapJour2 p {
+    width: auto;
+    margin: 0;
+    color: black;
 }
 
 span.row h3{
@@ -981,4 +1001,5 @@ span.row h3{
     display: flex;
     flex-direction: column;
     text-align: center;
+    gap: 10%;
 }

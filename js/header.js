@@ -21,6 +21,7 @@ var message_impossible_uv = document.getElementById("message_impossible_uv");
 var message_uv_type = document.getElementById("message_uv_type");
 var message_changement_creneau = document.getElementById("message_changement_creneau");
 var message_envoie_swap = document.getElementById("message_envoie_swap");
+var message_meme_creneau_existant = document.getElementById('message_meme_creneau_existant');
 
 var input_type = document.getElementById("input-type");
 var input_salle = document.getElementById("input-salle");
@@ -183,7 +184,6 @@ bouton_non_submit.addEventListener("click", function() {
             var pElement = element.parentNode.querySelector("p");
             pElement.classList.toggle('hidden', true);
         }
-        console.log(bouton_non_submit);
         if (bouton_non_submit.className.includes("submitSwap")){
             input_uv.disabled = false;
             input_type.disabled = false;
@@ -199,7 +199,7 @@ bouton_non_submit.addEventListener("click", function() {
             document.getElementById("newDemandeSwap").classList.toggle('hidden' , true);
             titleDiv.classList.toggle('hidden' , false);
             titleDiv.innerHTML = `Récapitulatif : ${input_type.value} de ${input_uv.value}`
-            document.getElementById("swapJour1").innerHTML = `${input_creneau.value}`
+            document.getElementById("swapJour1").innerHTML = `${input_creneau.value[0].toUpperCase() + input_creneau.value.slice(1)}`
             document.getElementById("swapSalle1").innerHTML = `${input_salle.value}`
             document.getElementById("swapCreneau1").innerHTML = `${input_hdebut[1].value} - ${input_hfin[1].value}`
 
@@ -336,6 +336,8 @@ function nouveauClick() {
     ul_nouveau.classList.toggle('hidden', false);
     boutons_message.classList.toggle('hidden', true);
     message_pression.classList.toggle('hidden', true);
+    checkbox.disabled = false;
+
     document.getElementById("sendSwap").classList.toggle('hidden' , true);
     document.getElementById("newDemandeSwap").classList.toggle('hidden' , false);
     document.getElementById("swapRecap").classList.toggle("hidden" , true);

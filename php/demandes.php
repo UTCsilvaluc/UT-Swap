@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/demandes.css">
+    <link rel="stylesheet" href="../css/emploiDuTemps.css">
     <title>Demandes - UT'Swap</title>
     <link rel="icon" href="../img/logo.png" type="image/x-icon">
 </head>
@@ -19,31 +20,11 @@
         ?>
         <div class="main_conteneur">
             <div class="demandesControl">
-                <div class="filtres">
-                    <form action="demandes.php" method="get" id="filterForm">
+                <div class="demandes_filtre">
                     <span class="rechercher">
                         <input class="filtreInput" type="text" name="codeUV" id="codeUV" placeholder="Chercher une UV" value="<?php echo $_GET['codeUV'] ?? ''; ?>">
-                        <img id="filterUV" class="svgFiltre" src="../svg/search.svg" alt="" onclick="filtrerUV(event)">
                     </span>
-                        <span class="sort">
-
-                        <button type="submit">Rechercher</button>
-
-                        <img id="filterUV" class="svgFiltre" src="../svg/search.svg" alt="" onclick="filtrerUV(event)">
-                    </span>
-                        <span class="jour">
-
-                    </span>
-                        <span class="lieu">
-
-                    </span>
-                        <span class="type">
-
-                    </span>
-                        <span class="other">
-
-                    </span>
-                    </form>
+                    <div><img class="svgFiltre" title="filtres" src="../svg/FILTRE_FILTRE.svg" id="filtre_edt" onclick="openFiltre(event)"></div>
                 </div>
                 <div class="demande_container">
                     <?php
@@ -119,8 +100,66 @@
                     <?php } } ?>
                 </div>
             </div>
-            <div class="misc_container">
+            <div class="filtres" id="menuFiltre">
+                <div class="filtre_titre">
+                    <h1>Filtrer par</h1>
+                    <div id="filtre_croix">
+                        <img src="../svg/black_cross.svg" alt="" id="CloseOpenFiltreMenu" onclick="closeFiltre(event)">
+                    </div>
+                </div>
+                <div class="conteneur_filtre" id="filterContainer1">
+                    <div class="filtre_parent" id="police">
+                        <h1 class="filtre_entete">Police</h1>
+                        <span class="filtre_span">
+                            <h3 class="checkElement" onclick="changePolice(event)" id="mainPolice">Jost</h3>
+                            <h3 class="uncheckElement" onclick="changePolice(event)">Kantumruy</h3>
+                            <h3 class="uncheckElement" onclick="changePolice(event)">Times New Roman</h3>
+                            <h3 class="uncheckElement" onclick="changePolice(event)">Comic Sans MS</h3>
+                        </span>
+                    </div>
+                    <div class="filtre_parent" id="jours">
+                        <h1 class="filtre_entete">Jour</h1>
+                        <span class="filtre_span" id="spanJour">
+                            <h3 class="check" onclick="changeJour(event)">Lundi</h3>
+                            <h3 class="check" onclick="changeJour(event)">Mardi</h3>
+                            <h3 class="check" onclick="changeJour(event)">Mercredi</h3>
+                            <h3 class="check" onclick="changeJour(event)">Jeudi</h3>
+                            <h3 class="check" onclick="changeJour(event)">Vendredi</h3>
+                            <h3 class="check" onclick="changeJour(event)">Samedi</h3>
+                            <h3 class="uncheck" onclick="changeJour(event)">Dimanche</h3>
+                    </div>
+                    <div class="filtre_parent" id="couleurs">
+                        <h1 class="filtre_entete">Couleurs</h1>
+                        <span>
+                            <span class="filtre_span" id="couleurSpan"></span>
+                        </span>
+                    </div>
+                    <div class="filtre_parent" id="couleur_entete">
+                        <h1 class="filtre_entete">Couleur entête</h1>
+                        <span class="filtre_span">
+                            <div class="inputCouleur" id="inputCouleur" style="">
+                                <span style="margin-left: 20px">
+                                    <input class="colorChoice" type="color" id="choix-couleur" name="choix-couleur" style="position: absolute; ; width: 2px ; height: 2px">
+                                </span>
+                            </div>
+                        </span>
+                    </div>
 
+                    <div class="filtre_parent" id="heures">
+                        <h1>Horaires</h1>
+                        <span class="filtre_span">
+                            <div>
+                                <input type="time" id="filtre-input-hdebut" name="hdebut" value="08:00" required onchange="filtreTime(event)">
+                            </div>
+                            <div>
+                                <input type="time" id="filtre-input-hfin" name="hfin" value="20:00" required onchange="filtreTime(event)">
+                            </div>
+                        </span>
+                    </div>
+                    <div class="buttonFiltres">
+                        <button class="filtreButton" id="appliquerFiltre" onclick="supprimerFiltre(event)">Supprimer les filtres</button>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
