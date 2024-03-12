@@ -17,6 +17,8 @@ function create_swap($connect, $primaryKeyDemande, $offerId, $uv, $type, $login)
             throw new Exception("Impossible de se faire une demande à soi-même !");
         } else if (checkIfSwapExist($connect , $offerId , $primaryKeyDemande)){
             throw new Exception("Cette demande de SWAP existe déjà !!!!");
+        } else if (!(checkCreneauIsEqual($connect , $primaryKeyDemande , $offerId))){
+            throw new Exception("La durée du créneau proposé et demandé ne sont pas équivalents...");
         } else {
             // Insérer le swap dans la base de données
             $result = insert_swap($connect, $offerId, $primaryKeyDemande);
@@ -29,6 +31,47 @@ function create_swap($connect, $primaryKeyDemande, $offerId, $uv, $type, $login)
     } catch (Exception $e) {
         error_log("Erreur lors de la création du swap : " . $e->getMessage());
         echo "Erreur lors de la création du swap : " . $e->getMessage();
+    }
+}
+
+function checkCreneauIsEqual($connect , $primaryKeyDemande, $offerId){
+    try {
+        $sqlGetCreneau = "SELECT horaireDebut, horaireFin FROM demande WHERE idDemande = ?";
+
+        $stmtCheckData = $connect->prepare($sqlGetCreneau);
+        $stmtCheckData->bind_param("i", $primaryKeyDemande);
+        if ($stmtCheckData->execute()) {
+            // Récupérer le résultat
+            $result = $stmtCheckData->get_result();
+            $row = $result->fetch_assoc();
+            $stmtCheckData->close();
+            $heureDebut1 = $row['horaireDebut'];
+            $heureFin1 = $row['horaireFin'];
+        }
+
+        $stmtCheckData = $connect->prepare($sqlGetCreneau);
+        $stmtCheckData->bind_param("i", $offerId);
+        if ($stmtCheckData->execute()) {
+            // Récupérer le résultat
+            $result = $stmtCheckData->get_result();
+            $row = $result->fetch_assoc();
+            $stmtCheckData->close();
+            $heureDebut2 = $row['horaireDebut'];
+            $heureFin2 = $row['horaireFin'];
+        }
+
+        if ($heureDebut1 == null || $heureDebut2 == null || $heureFin1 == null || $heureFin2 == null){
+            throw new Exception("Erreur dans la récupération des données, valeur null...");
+        }
+        $tempsDecimal1 = tempsDecimalEntreDeuxHeures($heureDebut1 , $heureFin1);
+        $tempsDecimal2 = tempsDecimalEntreDeuxHeures($heureDebut2 , $heureFin2);
+        if ($tempsDecimal1 == $tempsDecimal2){
+            return true;
+        }
+        return false;
+    } catch (Exception $e){
+        error_log("Erreur lors de la récupération des données du créneau : " . $e->getMessage());
+        echo "Erreur lors de la récupération des données du créneau : " . $e->getMessage();
     }
 }
 function checkIfSwapExist($connect, $offerId, $demandeur) {

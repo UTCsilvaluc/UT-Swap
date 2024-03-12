@@ -40,7 +40,7 @@ function clickDemande(element) {
 
             if (rowAttribute) {
                 try {
-                    var donnees = JSON.parse(rowAttribute);
+                    var donnees = JSON.parse(atob(rowAttribute));
                 } catch (error) {
                     console.error("Erreur lors du parsing JSON :", error);
                 }
@@ -69,6 +69,8 @@ function clickDemande(element) {
                 localStorage.setItem("hfin" , donnees.horaireFin);
                 localStorage.setItem("jour" , joursSemaine[donnees.jour]);
 
+                tempsCurrentCours = calculerDifference(donnees.horaireDebut , donnees.horaireFin);
+
 
                 if (donnees.semaine === "null") {
                     checkbox.disabled = true;
@@ -85,6 +87,25 @@ function clickDemande(element) {
     
 }
 
+function calculerDifference(time1 , time2) {
+    // Vérifier si les valeurs sont non vides
+    if (time1 && time2) {
+        // Convertir les valeurs en minutes
+        var minutes1 = convertirEnMinutes(time1);
+        var minutes2 = convertirEnMinutes(time2);
+
+        // Calculer la différence en minutes
+        var differenceMinutes = minutes2 - minutes1;
+
+        // Convertir la différence en heures et minutes
+        var heures = Math.floor(differenceMinutes / 60);
+        var minutes = differenceMinutes % 60;
+        // Mettre à jour le champ de résultat
+        return heures + ':' + (minutes < 10 ? '0' : '') + minutes;
+    }else{
+        return null;
+    }
+}
 function filtrerUV(event){
     document.getElementById('filterForm').submit();
 }
@@ -164,7 +185,7 @@ function canDisplayCourses(event) {
         var rowAttribute = div.dataset.row;
         if (rowAttribute) {
             try {
-                var donnees = JSON.parse(rowAttribute);
+                var donnees = JSON.parse(atob(rowAttribute));
             } catch (error) {
                 console.error("Erreur lors du parsing JSON :", error);
             }

@@ -24,4 +24,21 @@ function numeroVersJour($numeroJour) {
     }
 }
 
+function tempsDecimalEntreDeuxHeures($heureDebut, $heureFin) {
+    // Convertir les heures en minutes
+    $heuresDebut = explode(":", $heureDebut);
+    $heuresFin = explode(":", $heureFin);
+
+    $minutesDebut = $heuresDebut[0] * 60 + $heuresDebut[1];
+    $minutesFin = $heuresFin[0] * 60 + $heuresFin[1];
+
+    // Calculer la différence en minutes
+    $differenceMinutes = $minutesFin - $minutesDebut;
+
+    // Convertir la différence en heures décimales
+    $tempsDecimal = $differenceMinutes / 60;
+
+    return $tempsDecimal;
+}
+
 ?>
