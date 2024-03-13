@@ -155,6 +155,7 @@ if (isset($_POST['update_choix']) && !(empty($_POST['update_choix']))) {
             $type = $_SESSION['type'];
             $offerId = $_SESSION['swap'];
             create_swap($connect , $idDemande , $offerId , $uv , $type , $login);
+            sendNotifications($login , $login , $idDemande , $offerId , 1 , 0 , $connect);
             $_SESSION['reloadPage'] = "swapSuccess";
         } else {
             $_SESSION['reloadPage'] = "updateSuccess";
@@ -776,6 +777,7 @@ if (
         if ($primaryKeyDemande != null){
             $offerId = $_POST['swapIdDemande'];
             create_swap($connect , $primaryKeyDemande , $offerId , $uv , $type , $login);
+            sendNotifications($login , $login , $primaryKeyDemande , $offerId , 1 , 0 , $connect);
         } else {
             echo "Swap -> Erreur dans l'insertion des données : ";
         }
