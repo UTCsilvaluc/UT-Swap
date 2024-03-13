@@ -49,13 +49,13 @@ main{
     gap: 10px
 }
 
-.svgFiltre{
+.svgCustom,.svgFiltre{
     height: 30px;
     width: 30px;
     transition: scale 0.3s linear;
 }
 
-.svgFiltre:hover{
+.svgCustom:hover, .svgFiltre:hover{
     scale: 110%;
     cursor: pointer;
 }
@@ -255,7 +255,7 @@ div.divHeure{
 }
 
 div.divHeure:hover {
-    background-color: #b1c5c8; /* Nouvelle couleur de fond au survol */
+    background-color: #e2edee; /* Nouvelle couleur de fond au survol */
     cursor: pointer; /* Nouveau curseur au survol */
 }
 
@@ -288,7 +288,7 @@ div.divHeure:hover {
 
 
 
-.filtres{
+.customs, .filtres{
     display: none;
     z-index: 2;
     position: absolute;
@@ -303,11 +303,11 @@ div.divHeure:hover {
     box-shadow: -5px 0px 15px 0px var(--couleur-shadow);
 }
 
-.filtres h1 , .filtres h3 , .filtres h4 {
+.customs h1 , .customs h3 , .customs h4 ,.filtres h1 , .filtres h3 , .filtres h4 {
     margin: 0;
     padding: 0;
 }
-.filtre_titre{
+.custom_titre,.filtre_titre{
     display: flex;
     align-items: center;
     flex-direction: row;
@@ -319,7 +319,7 @@ div.divHeure:hover {
     gap: 15px;
 }
 
-.filtre_titre h1{
+.custom_titre h1, .filtre_titre h1{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -330,7 +330,7 @@ div.divHeure:hover {
 }
 
 
-.filtre_titre #filtre_croix {
+.custom_titre #custom_croix, .filtre_titre #filtre_croix {
     width: 20%;
     height: 100%;
     display: flex;
@@ -340,27 +340,27 @@ div.divHeure:hover {
     box-sizing: border-box;
 }
 
-.filtre_titre #filtre_croix img{
+.custom_titre #custom_croix img, .filtre_titre #filtre_croix img{
     padding: 0;
     height: 10px;
     width: 10px;
     transition: scale 0.3s ease-in-out;
 }
 
-.filtre_titre #filtre_croix img:hover{
+.custom_titre #custom_croix img:hover, .filtre_titre #filtre_croix img:hover{
     scale: 110%;
     cursor: pointer;
 }
 
-.conteneur_filtre{
+.conteneur_custom, .conteneur_filtre{
     overflow-y: auto;
 }
 
-.conteneur_filtre .filtre_parent:first-child{
+.conteneur_custom .custom_parent:first-child, .conteneur_filtre .filtre_parent:first-child{
     margin-top: 15px;
 }
 
-.conteneur_filtre .filtre_parent{
+.conteneur_custom .custom_parent, .conteneur_filtre .filtre_parent{
     margin-top: 0;
     background: white;
     margin-bottom: 10px;
@@ -373,7 +373,7 @@ div.divHeure:hover {
 }
 
 
-.conteneur_filtre .filtre_span{
+.conteneur_custom .custom_span, .conteneur_filtre .filtre_span{
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
@@ -388,7 +388,7 @@ div.divHeure:hover {
 #spanJour{
     margin-bottom: 2px;
 }
-.filtre_span h3{
+.custom_span h3, .filtre_span h3{
     margin-top: 5px;
     font-size: 16px;
     border: 1px black solid;
@@ -396,7 +396,7 @@ div.divHeure:hover {
     padding: 5px 30px;
 }
 
-.filtre_span .inputCouleur{
+.custom_span .inputCouleur, .filtre_span .inputCouleur{
     width: 75px;
     height: 75px;
     background-color: lightgrey; /* Couleur de fond par défaut */
@@ -408,7 +408,7 @@ div.divHeure:hover {
     border-radius: 100%; /
 }
 
-.filtre_span input{
+.custom_span input, .filtre_span input{
     box-sizing: content-box;
     border: 1px black solid;
     cursor: pointer;
@@ -417,13 +417,13 @@ div.divHeure:hover {
     border-radius: 5px;
 }
 
-.buttonFiltres{
+.buttonCustoms, .buttonFiltres{
     text-align: center;
     margin-bottom: 25px;
     margin-top: 25px;
 }
 
-.buttonFiltres button{
+.buttonCustoms button, .buttonFiltres button{
     text-align: center;
     border-radius: 10px;
     color: white;
@@ -435,7 +435,7 @@ div.divHeure:hover {
     white-space: nowrap;
 }
 
-.divFiltre input[type='time']{
+.divCustom input[type='time'], .divFiltre input[type='time']{
     font-family: Jost;
     font-style: oblique;
     padding: 10px;
@@ -480,19 +480,19 @@ span input[type='color']{
 .inputCouleur{
     transform: translateX(100%);
 }
-.filtreButton{
+.customButton, .filtreButton{
     padding: 5px 10px;
     transition: background-color 0.3s ease-in-out;
 }
-#appliquerFiltre:hover{
+#appliquerCustom:hover, #appliquerFiltre:hover{
     background: #595e5e;
 }
-#supprimerFiltre{
+#supprimerCustom, #supprimerFiltre{
     background :#E6E6E6;
     color: black;
 }
 
-#supprimerFiltre:hover{
+#supprimerCustom:hover, #supprimerFiltre:hover{
     background: #c7c4c4;
 }
 
@@ -702,11 +702,11 @@ span input[type='color']{
         display: none;
     }
 
-    .filtres{
+    .customs, .filtres{
         width: 100%;
     }
 
-    .conteneur_filtre .filtre_parent{
+    .conteneur_custom .custom_parent, .conteneur_filtre .filtre_parent{
         width: max-content;
     }
 

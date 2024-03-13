@@ -217,13 +217,13 @@ main{
 {
 	border: 1px solid #d1d1d1;
 	border-radius: 10px;
-	background-color: #F5F5F5;
+	background-color: white;
 }
 
 .demandes_profil::-webkit-scrollbar
 {
-	height: 12px;
-	background-color: #F5F5F5;
+	height: 10px;
+	background-color:white;
 }
 
 .demandes_profil::-webkit-scrollbar-thumb
@@ -241,8 +241,8 @@ main{
     justify-content: space-around;
     border-radius: 20px;
     padding:20px;
-    width: 200px;
-    min-width: 200px;
+    width: 215px;
+    min-width: 215px;
     height: 100px;
     overflow: hidden;
     cursor: pointer;
@@ -262,9 +262,9 @@ main{
 }
 
 .demande_faite_button_accept, .demande_reçue_button_accept{
-    background-color: #A0E8FF;
-    color: #24ACB5;
-    border: 1px solid #24ACB5;
+    background-color: #aeffa0;
+    color: #52b524;
+    border: 1px solid #52b524;
 }
 
 .demande_faite_button_refus, .demande_reçue_button_refus{
@@ -340,7 +340,7 @@ main{
     display: none;
     width: 150px;
     height: 150px;
-    z-index: 2;
+    z-index: 1;
 }
 #fond_profil_image{
     position: absolute;
@@ -350,28 +350,23 @@ main{
     width: 125px;
     border-radius: 50%;
     background-color: white;
-    z-index: 1;
+    z-index: 0;
 }
 
-#fond_logout_image{
+#demande_attente_pannel{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content:space-between;
+    padding:0;
     position: absolute;
-    display: none;
-    top:102.25px;
-    left:calc(50% + 0.25px);
-    transform: translate(-50%, 0%);
-    height:145.75px;
-    width: 145.75px;
-    border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.644);
-    z-index: 3;
-}
-
-#logout_image{
-    position: absolute;
-    top:165px;
-    display: none;
-    width: 35px;
-    z-index: 4;
+    top: calc(50vh + calc(var(--taille-header)/2)); /* La moitié de la hauteur de l'en-tête + ajustement */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    background-color: white;
+    height: 60%;
+    width: 50%;
 }
 
 @media screen and (min-width: 1400px) {
@@ -435,18 +430,22 @@ main{
         font-size: 28px;
     }
 
-    #profil_utilisateur, #demandes_faites_utilisateur{
+    #profil_utilisateur, #demandes_faites_utilisateur, #demandes_reçues_utilisateur{
         min-height: fit-content;
     }
 
-    .demande_faite,#demandes_faites_fleches img{
+    .demande_faite,.demande_reçue{
         border: 1px solid lightgray;
     }
 
-    .profil_demande h2, #demandes_faites_fleches{
+    .demandes_profil_fleches{
         display: none;
     }
 
+    .profil_demande h2{
+        margin-top: 5px;
+        font-size: 3vw;
+    }
 
     .profil_demande_header img{
         width: 50%;
@@ -461,9 +460,18 @@ main{
     }
 
     .profil_demande{
+        height: 20vw;
         border-radius: 10px;
-        min-height: 50px;
+        min-height: 70px;
         min-width: 80px;
+    }
+
+}
+
+@media screen and (max-width: 400px) {
+
+    .profil_demande h2{
+        font-size: 13px;
     }
 
 }

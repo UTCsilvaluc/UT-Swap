@@ -312,7 +312,7 @@ for (var i of listeJour) {
 
 function setBorderRadius(){
     var listeJour = document.getElementsByClassName("jour");
-    // Filtrer les éléments pour exclure ceux avec display: none
+    // Customr les éléments pour exclure ceux avec display: none
     var elementsVisibles = Array.from(listeJour).filter(function(element) {
         return window.getComputedStyle(element).display !== 'none';
     });
@@ -595,7 +595,7 @@ function colorChange(event){
     var Liste_cours = document.getElementsByClassName("cours");
     for (var cours of Liste_cours){
         var texte = cours.querySelector('h2.UV').textContent;
-        var regex = /^([A-Z0-9]+) - (TD|TP|CM)( A |B)?$/;
+        var regex = /^([A-Z0-9]+) - (TD|TP|CM)( A| B)?$/;
         var match = texte.match(regex);
         var currentCode = match[1];
         if (currentCode == UV){
@@ -795,14 +795,14 @@ couleurInput.addEventListener('change', function(event) {
     }
 });
 
-function filtreTime(event) {
+function customTime(event) {
     var liste_Cours = document.getElementsByClassName("cours");
     var cours = [];
 
     /* Informations du formulaire : heure début & fin*/
 
-    var debut = parseInt(document.getElementById("filtre-input-hdebut").value);
-    var fin = parseInt(document.getElementById("filtre-input-hfin").value);
+    var debut = parseInt(document.getElementById("custom-input-hdebut").value);
+    var fin = parseInt(document.getElementById("custom-input-hfin").value);
 
     let conteneurHours = document.getElementsByClassName("conteneurHours")[0];
     conteneurHours.className = "conteneurHours";
@@ -900,8 +900,8 @@ function resetEDT(event) {
 
 document.addEventListener("click" , function (event) {
 
-    if (!(event.target.closest("#menuFiltre")) && document.getElementById("menuFiltre") != "none" && event.target.id !== "filtre_edt"){
-        document.getElementById("menuFiltre").style.display = "none";
+    if (!(event.target.closest("#menuCustom")) && document.getElementById("menuCustom") != "none" && event.target.id !== "custom_edt"){
+        document.getElementById("menuCustom").style.display = "none";
     }
 
 });
@@ -987,19 +987,19 @@ function changePolice(event){
     document.body.style.fontFamily = `${police} , sans-serif`;
 }
 
-function openFiltre(event){
-    var conteneurFiltre = document.getElementById("menuFiltre");
-    conteneurFiltre.style.display = "flex";
+function openCustom(event){
+    var conteneurCustom = document.getElementById("menuCustom");
+    conteneurCustom.style.display = "flex";
 }
 
-function closeFiltre(event){
-    var conteneurFiltre = document.getElementById("menuFiltre");
-    conteneurFiltre.style.display = "none";
+function closeCustom(event){
+    var conteneurCustom = document.getElementById("menuCustom");
+    conteneurCustom.style.display = "none";
 }
 
-function supprimerFiltre(){
+function supprimerCustom(){
     var couleurSpan = document.getElementById("couleurSpan").innerHTML;
-    document.getElementById("filterContainer1").innerHTML = '<div class="conteneur_filtre" id="filterContainer1"><div class="filtre_parent" id="police"><h1 class="filtre_entete">Police</h1><span class="filtre_span"><h3 class="checkPolice" onclick="changePolice(event)" id="mainPolice">Jost</h3><h3 class="uncheckPolice" onclick="changePolice(event)">Times New Roman</h3><h3 class="uncheckPolice" onclick="changePolice(event)">Comic Sans MS</h3></span></div><div class="filtre_parent" id="jours"><h1 class="filtre_entete">Jour</h1><span class="filtre_span" id="spanJour"><h3 class="check" onclick="changeJour(event)">Lundi</h3><h3 class="check" onclick="changeJour(event)">Mardi</h3><h3 class="check" onclick="changeJour(event)">Mercredi</h3><h3 class="check" onclick="changeJour(event)">Jeudi</h3><h3 class="check" onclick="changeJour(event)">Vendredi</h3><h3 class="check" onclick="changeJour(event)">Samedi</h3><h3 class="uncheck" onclick="changeJour(event)">Dimanche</h3></div><div class="filtre_parent" id="couleurs"><h1 class="filtre_entete">Couleurs</h1><span><span class="filtre_span" id="couleurSpan"></span></span></div><div class="filtre_parent" id="couleur_entete"><h1 class="filtre_entete">Couleur entête</h1><span class="filtre_span"><div class="inputCouleur" id="inputCouleur" style=""><span style="margin-left: 20px"><input class="colorChoice" type="color" id="choix-couleur" name="choix-couleur" style="position: absolute; ; width: 2px ; height: 2px"></span></div></span></div><div class="filtre_parent" id="langue"><h1>Langue</h1><span class="filtre_span"><h3>Anglais</h3><h3>Français</h3><h3>Espagnol</h3></span></div><div class="filtre_parent" id="heures"><h1>Horaires</h1><span class="filtre_span"><div><input type="time" id="filtre-input-hdebut" name="hdebut" value="08:00" required onchange="filtreTime(event)"></div><div><input type="time" id="filtre-input-hfin" name="hfin" value="20:00" required onchange="filtreTime(event)"></div></span></div><div class="buttonFiltres"><button class="filtreButton" id="appliquerFiltre" onclick="supprimerFiltre(event)">Supprimer les filtres</button></div></div>';
+    document.getElementById("filterContainer1").innerHTML = '<div class="conteneur_custom" id="filterContainer1"><div class="custom_parent" id="police"><h1 class="custom_entete">Police</h1><span class="custom_span"><h3 class="checkPolice" onclick="changePolice(event)" id="mainPolice">Jost</h3><h3 class="uncheckPolice" onclick="changePolice(event)">Times New Roman</h3><h3 class="uncheckPolice" onclick="changePolice(event)">Comic Sans MS</h3></span></div><div class="custom_parent" id="jours"><h1 class="custom_entete">Jour</h1><span class="custom_span" id="spanJour"><h3 class="check" onclick="changeJour(event)">Lundi</h3><h3 class="check" onclick="changeJour(event)">Mardi</h3><h3 class="check" onclick="changeJour(event)">Mercredi</h3><h3 class="check" onclick="changeJour(event)">Jeudi</h3><h3 class="check" onclick="changeJour(event)">Vendredi</h3><h3 class="check" onclick="changeJour(event)">Samedi</h3><h3 class="uncheck" onclick="changeJour(event)">Dimanche</h3></div><div class="custom_parent" id="couleurs"><h1 class="custom_entete">Couleurs</h1><span><span class="custom_span" id="couleurSpan"></span></span></div><div class="custom_parent" id="couleur_entete"><h1 class="custom_entete">Couleur entête</h1><span class="custom_span"><div class="inputCouleur" id="inputCouleur" style=""><span style="margin-left: 20px"><input class="colorChoice" type="color" id="choix-couleur" name="choix-couleur" style="position: absolute; ; width: 2px ; height: 2px"></span></div></span></div><div class="custom_parent" id="langue"><h1>Langue</h1><span class="custom_span"><h3>Anglais</h3><h3>Français</h3><h3>Espagnol</h3></span></div><div class="custom_parent" id="heures"><h1>Horaires</h1><span class="custom_span"><div><input type="time" id="custom-input-hdebut" name="hdebut" value="08:00" required onchange="customTime(event)"></div><div><input type="time" id="custom-input-hfin" name="hfin" value="20:00" required onchange="customTime(event)"></div></span></div><div class="buttonCustoms"><button class="customButton" id="appliquerCustom" onclick="supprimerCustom(event)">Supprimer les customs</button></div></div>';
     document.body.style.fontFamily = `Jost , sans-serif`;
     document.getElementById("spanJour").querySelectorAll("h3").forEach(function (jour){
         var elementJour = document.getElementById(jour.innerHTML.toLowerCase());
@@ -1015,8 +1015,8 @@ function supprimerFiltre(){
             elementJour.style.display = "none";
         }
     })
-    document.getElementById("filtre-input-hfin").value = "20:00";
-    var input = document.getElementById("filtre-input-hdebut");
+    document.getElementById("custom-input-hfin").value = "20:00";
+    var input = document.getElementById("custom-input-hdebut");
     input.value = "08:00";
     var event = new Event('change');
     input.dispatchEvent(event);

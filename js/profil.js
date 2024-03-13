@@ -32,6 +32,10 @@ function scrollToElement(next) {
     }
 }
 
+var swap_en_cours = document.getElementById("profil_demande_cours").querySelector("h2");
+var swap_accept = document.getElementById("profil_demande_accept").querySelector("h2");
+var swap_refus = document.getElementById("profil_demande_refus").querySelector("h2");
+var titre_profil = document.getElementsByClassName("profil_titre")[0].querySelector("h1");
 
 function mettreAJourContenuProfil() {
     var largeurFenetre = window.innerWidth;
@@ -50,7 +54,15 @@ function mettreAJourContenuProfil() {
             var insertionIndex = Math.min(3, elementsInsideMain.length); // Troisième position
             mainElement.insertBefore(elementToMove, elementsInsideMain[insertionIndex]);
         }
+        titre_profil.innerHTML = "Mes swaps";
+        swap_en_cours.innerHTML = "En cours";
+        swap_accept.innerHTML = "Acceptés";
+        swap_refus.innerHTML = "Refusés";
     }else{
+        titre_profil.innerHTML = "Mon profil";
+        swap_en_cours.innerHTML = "Swaps en cours";
+        swap_accept.innerHTML = "Swaps acceptés";
+        swap_refus.innerHTML = "Swaps refusés";
         if (elementToMove && profil_content) {
             elementToMove.remove();
             var elementsInsideMain = profil_content.children;

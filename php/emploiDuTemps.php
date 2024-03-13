@@ -40,11 +40,11 @@ function exportEDT(type){
             <div class="edt" style="display:flex ;">
                 <div id="dessus_edt">
                         <div id="control_edt">
-                            <img class="svgFiltre" title="importer" src="../svg/IMPORT_FILTRE.svg" alt="" onclick="menuimportEDT(event)">
-                            <img class="svgFiltre" title="supprimer" src="../svg/TRASH_FILTRE.svg" onclick="resetEDT(event)" alt="">
-                            <img class="svgFiltre" title="exporter" src="../svg/EXPORT_FILTRE.svg" onclick="menuExportEDT(event)" alt="">
+                            <img class="svgCustom" title="Importer l'emploi du temps" src="../svg/IMPORT_FILTRE.svg" alt="" onclick="menuimportEDT(event)">
+                            <img class="svgCustom" title="Supprimer l'emploi du temps" src="../svg/TRASH_FILTRE.svg" onclick="resetEDT(event)" alt="">
+                            <img class="svgCustom" title="Exporter l'emploi du temps" src="../svg/EXPORT_FILTRE.svg" onclick="menuExportEDT(event)" alt="">
                         </div>
-                        <div><img class="svgFiltre" title="filtres" src="../svg/FILTRE_FILTRE.svg" id="filtre_edt" onclick="openFiltre(event)"></div>
+                        <div><img class="svgCustom" title="Personnaliser l'emploi du temps" src="../svg/custom.svg" id="custom_edt" onclick="openCustom(event)"></div>
                     </div>
                 <ul id="menu_jour_edt">
                     <li class="jour_select" onclick="changerJour(this,'lundi')"><span class="jour_entier">Lundi</span><span class="jour_mid">Lun.</span><span class="jour_small">L.</span></li>
@@ -128,26 +128,26 @@ function exportEDT(type){
                     </div>
                 </div>
             </div>
-            <div class="filtres" id="menuFiltre">
-                <div class="filtre_titre"> 
-                    <h1>Filtrer par</h1>
-                    <div id="filtre_croix">
-                        <img src="../svg/black_cross.svg" alt="" id="CloseOpenFiltreMenu" onclick="closeFiltre(event)">
+            <div class="customs" id="menuCustom">
+                <div class="custom_titre"> 
+                    <h1>Personnaliser</h1>
+                    <div id="custom_croix">
+                        <img src="../svg/black_cross.svg" alt="" id="CloseOpenCustomMenu" onclick="closeCustom(event)">
                     </div>
                 </div>
-                <div class="conteneur_filtre" id="filterContainer1">
-                    <div class="filtre_parent" id="police">
-                        <h1 class="filtre_entete">Police</h1>
-                        <span class="filtre_span">
+                <div class="conteneur_custom" id="filterContainer1">
+                    <div class="custom_parent" id="police">
+                        <h1 class="custom_entete">Police</h1>
+                        <span class="custom_span">
                             <h3 class="checkElement" onclick="changePolice(event)" id="mainPolice">Jost</h3>
                             <h3 class="uncheckElement" onclick="changePolice(event)">Kantumruy</h3>
                             <h3 class="uncheckElement" onclick="changePolice(event)">Times New Roman</h3>
                             <h3 class="uncheckElement" onclick="changePolice(event)">Comic Sans MS</h3>
                         </span>
                     </div>
-                    <div class="filtre_parent" id="jours">
-                        <h1 class="filtre_entete">Jour</h1>
-                        <span class="filtre_span" id="spanJour">
+                    <div class="custom_parent" id="jours">
+                        <h1 class="custom_entete">Jour</h1>
+                        <span class="custom_span" id="spanJour">
                             <h3 class="check" onclick="changeJour(event)">Lundi</h3>
                             <h3 class="check" onclick="changeJour(event)">Mardi</h3>
                             <h3 class="check" onclick="changeJour(event)">Mercredi</h3>
@@ -156,15 +156,15 @@ function exportEDT(type){
                             <h3 class="check" onclick="changeJour(event)">Samedi</h3>
                             <h3 class="uncheck" onclick="changeJour(event)">Dimanche</h3>
                         </div>
-                    <div class="filtre_parent" id="couleurs">
-                        <h1 class="filtre_entete">Couleurs</h1>
+                    <div class="custom_parent" id="couleurs">
+                        <h1 class="custom_entete">Couleurs</h1>
                         <span>
-                            <span class="filtre_span" id="couleurSpan"></span>
+                            <span class="custom_span" id="couleurSpan"></span>
                         </span>
                     </div>
-                    <div class="filtre_parent" id="couleur_entete">
-                        <h1 class="filtre_entete">Couleur entête</h1>
-                        <span class="filtre_span">
+                    <div class="custom_parent" id="couleur_entete">
+                        <h1 class="custom_entete">Couleur entête</h1>
+                        <span class="custom_span">
                             <div class="inputCouleur" id="inputCouleur" style="">
                                 <span style="margin-left: 20px">
                                     <input class="colorChoice" type="color" id="choix-couleur" name="choix-couleur" style="position: absolute; ; width: 2px ; height: 2px">
@@ -173,19 +173,19 @@ function exportEDT(type){
                         </span>
                     </div>
 
-                    <div class="filtre_parent" id="heures">
+                    <div class="custom_parent" id="heures">
                         <h1>Horaires</h1>
-                        <span class="filtre_span">
+                        <span class="custom_span">
                             <div>
-                                <input type="time" id="filtre-input-hdebut" name="hdebut" value="08:00" required onchange="filtreTime(event)">
+                                <input type="time" id="custom-input-hdebut" name="hdebut" value="08:00" required onchange="customTime(event)">
                             </div>
                             <div>
-                                <input type="time" id="filtre-input-hfin" name="hfin" value="20:00" required onchange="filtreTime(event)">
+                                <input type="time" id="custom-input-hfin" name="hfin" value="20:00" required onchange="customTime(event)">
                             </div>
                         </span>
                     </div>
-                    <div class="buttonFiltres">
-                        <button class="filtreButton" id="appliquerFiltre" onclick="supprimerFiltre(event)">Supprimer les filtres</button>
+                    <div class="buttonCustoms">
+                        <button class="customButton" id="appliquerCustom" onclick="supprimerCustom(event)">Supprimer les customs</button>
                     </div>
                 </div>
             </div>

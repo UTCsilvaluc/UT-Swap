@@ -40,7 +40,7 @@ function clickDemande(element) {
 
             if (rowAttribute) {
                 try {
-                    var donnees = JSON.parse(rowAttribute);
+                    var donnees = JSON.parse(atob(rowAttribute));
                 } catch (error) {
                     console.error("Erreur lors du parsing JSON :", error);
                 }

@@ -6,7 +6,7 @@ session_start();
 function DBCredential(){
     $dbhost = 'localhost';
     $dbuser = 'root';
-    $dbpass = '';
+    $dbpass = 'root';
     $dbname = 'ut_swap';
     $connect = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to mysql');
     mysqli_set_charset($connect, 'utf8');
@@ -136,7 +136,7 @@ function getResponsableByUv($uv){
     $responsableMail = "antoine.jouglet@utc.fr";
     return array('login' => $responsableLogin, 'nom' => $responsableNom,'prénom' => $responsablePrénom, 'mail' => $responsableMail);
 }
-$login = "ldompnie";
+$login = "bazileel";
 $connect = DBCredential();
 if (isset($_POST['update_choix']) && !(empty($_POST['update_choix']))) {
     $update_choix = $_POST['update_choix'];
@@ -246,7 +246,7 @@ if (
             <li><a href="#">Home</a></li>
             <li><a href="emploiDuTemps.php">Swap</a></li>
             <li><a href="demandes.php">Demandes</a></li>
-            <li><a href="#">Profil</a></li>
+            <li><a href="profil.php">Profil</a></li>
             <li><a href="#">Informations</a></li>
             <li><img class="notification" src="../svg/notif.svg">
                 <?php
@@ -360,7 +360,7 @@ if (
             <li><a href="#">Home</a></li>
             <li><a href="emploiDuTemps.php">Swap</a></li>
             <li><a href="demandes.php">Demandes</a></li>
-            <li><a href="#">Profil</a></li>
+            <li><a href="profil.php">Profil</a></li>
             <li><a href="#">Informations</a></li>
         </ul>
         <hr>
@@ -369,18 +369,18 @@ if (
             <h2>Nom Prénom</h2>
         </a>
     </div>
-    <button onclick="nouveauClick()" class="bouton_nouveau"><img src="../svg/plus.svg">Nouveau</button>
+    <button onclick="nouveauClick()" class="bouton_nouveau"><img onclick="nouveauClick()" src="../svg/plus.svg">Nouveau</button>
 </div>
 <div id="ecran"></div>
 
 <form action="#" method="post" id="nouveau_pannel">
-    <div id="titre_nouveau">
+    <div id="div_debut_nouveau">
         <h1 id="newDemandeSwap" class="">Nouvelle demande de Swap</h1>
         <h1 id="swapRecap" class="hidden">Récapitulatif : </h1>
         <hr>
     </div>
     <img src="../svg/croix.svg" id="croix_nouveau">
-    <div id="div_debut_nouveau">
+    <div id="div_milieu_nouveau">
         <ul id="ul_nouveau">
             <li class="double-input">
                 <div>

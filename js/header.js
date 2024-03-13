@@ -30,7 +30,7 @@ var input_hdebut = document.getElementsByClassName("input-hdebut");
 var input_creneau = document.getElementById("input-creneau");
 var input_uv = document.getElementById("input-uv");
 var motivation = document.getElementById("li_motivation");
-var texte_nouveau = document.getElementById("titre_nouveau").getElementsByTagName("h1")[0];
+var texte_nouveau = document.getElementById("div_debut_nouveau").getElementsByTagName("h1")[0];
 var checkbox = document.getElementById('input-semaine');
 var choix_semaine = document.getElementById('choix-semaine');
 
@@ -249,9 +249,9 @@ checkbox.addEventListener('change', function () {
     if (checkbox.checked) {
         lastHeight= nouveau_pannel.scrollHeight;
         document.getElementById("sA-choix").checked = true;
-        document.getElementById("div_debut_nouveau").style.height = nouveau_pannel.scrollHeight + 10 + "px";
+        document.getElementById("div_milieu_nouveau").style.height = nouveau_pannel.scrollHeight + 10 + "px";
     } else {
-        document.getElementById("div_debut_nouveau").style.height = ""; // Ajustez ici la hauteur minimale souhaitée
+        document.getElementById("div_milieu_nouveau").style.height = ""; // Ajustez ici la hauteur minimale souhaitée
     }
 });
 
@@ -296,7 +296,7 @@ document.getElementById("croix_nouveau").addEventListener("click", function() {
     menu_pannel.style.left = '-65%';
 
     choix_semaine.classList.toggle('hidden', true);
-    document.getElementById("div_debut_nouveau").style.height = "";
+    document.getElementById("div_milieu_nouveau").style.height = "";
 
     notification_pannel.style.display = "none";
 
@@ -304,7 +304,7 @@ document.getElementById("croix_nouveau").addEventListener("click", function() {
 
 document.addEventListener("click" , function (event) {
 
-    if (!(event.target.closest("#nouveau_pannel")) && document.getElementById("nouveau_pannel") != "none" && event.target.className != "bouton_nouveau" && event.target.className !== "dash" && event.target.id !== "displace" && event.target.className != "div_demande"){
+    if (!(event.target.closest("#nouveau_pannel")) && document.getElementById("nouveau_pannel") != "none" && event.target.className != "bouton_nouveau" && event.target.parentNode.className != "bouton_nouveau" && event.target.className !== "dash" && event.target.id !== "displace" && event.target.className != "div_demande"){
         document.getElementById("nouveau_pannel").style.display = "none";
     }
 
@@ -319,7 +319,7 @@ document.addEventListener("click" , function (event) {
 });
 function nouveauClick() {
     choix_semaine.classList.toggle('hidden', true);
-    document.getElementById("div_debut_nouveau").style.height = "";
+    document.getElementById("div_milieu_nouveau").style.height = "";
     texte_nouveau.innerHTML = "Nouvelle demande de Swap";
 
     nouveau_pannel.reset();

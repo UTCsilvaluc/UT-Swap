@@ -71,7 +71,7 @@
                         );
                         $hdebut = substr($hdebut , 0 , 5);
                         $hfin = substr($hfin , 0 , 5);
-                        $data_row = htmlspecialchars(json_encode($demande) , ENT_QUOTES , 'UTF-8');
+                        $data_row = htmlspecialchars(base64_encode(json_encode($demande)), ENT_QUOTES , 'UTF-8');
                         if (!(in_array($idDemande , $listIdDemandeUser))){
 
                         ?>
