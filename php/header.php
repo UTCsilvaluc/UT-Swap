@@ -564,7 +564,7 @@ if (
         <button onclick="nouveauClick()" class="bouton_nouveau hidden" id="bouton_ok">OK !</button>
         <button id="bouton_non_submit">Poster</button>
         <div id="boutons_uv" >
-            <button id="bouton_impossible_uv" onclick="cancelForm()" type="reset" class="bouton_nouveau hidden" type="reset">Abandonner</button>
+            <button id="bouton_impossible_uv" onclick="nouveauClick()" type="reset" class="bouton_nouveau hidden" type="reset">Abandonner</button>
             <button id="bouton_remplacer" type="submit" class="hidden">Remplacer</button>
         </div>
         <div id="boutons_message" class="hidden">
@@ -663,7 +663,6 @@ if (
             $stmtCheckUV->fetch();
             if($swap_uv === 0){
                 echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_impossible_uv.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);</script>";
-
             }
         }
 

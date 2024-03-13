@@ -41,6 +41,7 @@ function update_demande_statut($connect, $idDemande , $state) {
 
 function insert_demande($connect, $login, $uv, $type, $jour, $hdebut, $hfin, $salle, $semaineChoix) {
     try {
+        echo "<script>console.log($login + $uv + $type + $jour + $hdebut + $hfin + $salle + $semaineChoix)</script>"
         // Préparer la requête SQL
         $insertion = $connect->prepare("INSERT INTO demande (login, codeUV, type, jour, horaireDebut, horaireFin, salle, semaine, raison, demande) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         if (!$insertion) {
@@ -59,7 +60,7 @@ function insert_demande($connect, $login, $uv, $type, $jour, $hdebut, $hfin, $sa
             throw new Exception("Erreur lors de l'exécution de la requête : " . $insertion->error);
         }
     } catch (Exception $e) {
-        error_log("Erreur lors de l'insertion de la demande : " . $e->getMessage());
+        error_log("Erreur lors de l'insertion de la demande : " . $e);
         return null;
     } finally {
         // Fermer la requête

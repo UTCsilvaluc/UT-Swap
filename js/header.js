@@ -323,6 +323,8 @@ function nouveauClick() {
     texte_nouveau.innerHTML = "Nouvelle demande de Swap";
 
     nouveau_pannel.reset();
+    message_impossible_uv.classList.toggle('hidden', true);
+    bouton_impossible_uv.classList.toggle('hidden', true);
     bouton_ajouter_creneau.classList.toggle('hidden', true);
     motivation.classList.toggle('hidden', false);
     input_salle.disabled = false
@@ -399,8 +401,4 @@ function reloadPage() {
     }
     // Recharger la page
     location.reload();
-}
-
-function cancelForm() {
-    window.location.href = "demandes.php";
 }

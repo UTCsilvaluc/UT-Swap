@@ -122,8 +122,8 @@
                       
                     foreach ($result as $row) {
                         $codeUV = $row["codeUV"];
-                        $nom = $row["nom"];
-                        $prenom = $row["prenom"];
+                        $nom = ucfirst($row["nom"]);
+                        $prenom = ucfirst($row["prenom"]);
                         $type = $row["type"];
                         $jours = array(
                             1 => 'Lundi',
@@ -153,12 +153,22 @@
                         }
                         ?>
                         <div class="demande_faite">
-                            <div class="demande_faite_header">
-                                <span class="demande_faite_titre"><h2><?= $codeUV ?></h2><h2>-</h2><h2><?= $type . $semaine ?></h2></span>
-                                <button class="<?= $statutClass ?>"><?= $statutName ?></button>
+                            <div class="demande_faite_front">
+                                <div class="demande_faite_header">
+                                    <span class="demande_faite_titre"><h2><?= $codeUV ?></h2><h2>-</h2><h2><?= $type . $semaine ?></h2></span>
+                                    <button class="<?= $statutClass ?>"><?= $statutName ?></button>
+                                </div>
+                                <span class="demande_faite_detail"><?= $jour . " " . $hDeb . "-" . $hFin . " " . $salle ?></span>
+                                <span class="demande_faite_etudiant"><span class="demande_faite_etudiant_titre">Etudiant:</span><span><?= $nom . " " . $prenom?></span></span>
                             </div>
-                            <span class="demande_faite_detail"><?= $jour . " " . $hDeb . "-" . $hFin . " " . $salle ?></span>
-                            <span class="demande_faite_etudiant"><span class="demande_faite_etudiant_titre">Etudiant:</span><span><?= $nom . " " . $prenom?></span></span>
+                            <div class="demande_faite_back">
+                                <div class="demande_faite_header">
+                                    <span class="demande_faite_titre"><h2><?= $codeUV ?></h2><h2>-</h2><h2><?= $type . $semaine ?></h2></span>
+                                    <button class="<?= $statutClass ?>"><?= $statutName ?></button>
+                                </div>
+                                <span class="demande_faite_detail"><?= $jour . " " . $hDeb . "-" . $hFin . " " . $salle ?></span>
+                                <span class="demande_faite_motif"><span class="demande_faite_motif_titre">Motif:</span><span><?= $raison ?></span></span>
+                            </div>
                         </div>
                         <?php
                     }
@@ -187,8 +197,8 @@
                       
                     foreach ($result as $row) {
                         $codeUV = $row["codeUV"];
-                        $nom = $row["nom"];
-                        $prenom = $row["prenom"];
+                        $nom = ucfirst($row["nom"]);
+                        $prenom = ucfirst($row["prenom"]);
                         $type = $row["type"];
                         $jours = array(
                             1 => 'Lundi',
@@ -218,12 +228,25 @@
                         }
                         ?>
                         <div class="demande_reçue">
-                            <div class="demande_reçue_header">
-                                <span class="demande_reçue_titre"><h2><?= $codeUV ?></h2><h2>-</h2><h2><?= $type . $semaine ?></h2></span>
-                                <button class="<?= $statutClass ?>"><?= $statutName ?></button>
+                            <div class="demande_reçue_front">
+                                <div class="demande_reçue_header">
+                                    <span class="demande_reçue_titre"><h2><?= $codeUV ?></h2><h2>-</h2><h2><?= $type . $semaine ?></h2></span>
+                                    <button class="<?= $statutClass ?>"><?= $statutName ?></button>
+                                </div>
+                                <span class="demande_reçue_detail"><?= $jour . " " . $hDeb . "-" . $hFin . " " . $salle ?></span>
+                                <span class="demande_reçue_etudiant"><span class="demande_reçue_etudiant_titre">Etudiant:</span><span><?= $nom . " " . $prenom?></span></span>
                             </div>
-                            <span class="demande_reçue_detail"><?= $jour . " " . $hDeb . "-" . $hFin . " " . $salle ?></span>
-                            <span class="demande_reçue_etudiant"><span class="demande_reçue_etudiant_titre">Etudiant:</span><span><?= $nom . " " . $prenom?></span></span>
+                            <div class="demande_reçue_back">
+                                <div class="demande_reçue_header">
+                                    <span class="demande_reçue_titre"><h2><?= $codeUV ?></h2><h2>-</h2><h2><?= $type . $semaine ?></h2></span>
+                                    <button class="<?= $statutClass ?>"><?= $statutName ?></button>
+                                </div>
+                                <span class="demande_reçue_motif"><span class="demande_reçue_motif_titre">Motif:</span><span><?= $raison ?></span></span>
+                                <div>
+                                    <button class="demande_reçue_button_refus">Refuser</button>
+                                    <button class="demande_reçue_button_accept">Accepter</button>
+                                </div>
+                            </div>
                         </div>
                         <?php
                     }
@@ -236,7 +259,22 @@
             </div>
         </div>
     </main>
-
+    <div id="demande_attente_pannel">
+        <div>
+            <h1>Demande en attente</h1>
+            <hr>
+        </div>
+        <div>
+            
+        </div>
+        <div>
+            <hr>
+            <div>
+                <button>Refuser</button>
+                <button>Accepter</button>
+            </div>
+        </div>
+    </div>
     <script src="../js/profil.js"></script>
 </body>
 

@@ -7,6 +7,11 @@
 
 /* Initialisation des variables */
 
+
+.hidden{
+    display:none;
+}
+
 :root {
     --taille-header: 13vh;
     --margin: 25px;
@@ -58,7 +63,6 @@ header {
     align-items: center;
     background-color: #32373B;
     color: white;
-    max-height: 100px;
     position: relative;
     font-size: 18px;
     width: 100%;
@@ -154,6 +158,7 @@ nav .important{
     border: 1px solid rgb(219, 219, 219);
     width: 45%;
     height: 75%;
+    max-height: 700px;
     z-index: 2;
     -webkit-box-shadow: 5px 5px 10px 5px var(--couleur-shadow); 
     box-shadow: 5px 5px 10px 5px var(--couleur-shadow);
@@ -231,6 +236,7 @@ nav .important{
     margin: 0;
     height: 10vh;
     min-height: 60px;
+    max-height: 80px;
 }
 
 #notification_pannel #endroit_notification .type_1:not(.viewed) .endroit_texte_notif{
@@ -291,11 +297,11 @@ nav .important{
 
 #notification_pannel #endroit_notification .notif .endroit_texte_notif .texte_notification h1{
     margin: 0;
-    font-size: 10px;
+    font-size: 15px;
 }
 #notification_pannel #endroit_notification .notif .endroit_texte_notif .texte_notification p{
     margin: 0;
-    font-size: 10px;
+    font-size: 15px;
     width: 85%;
 }
 
@@ -432,7 +438,11 @@ nav .important{
 	background-color: #dfdfdf;
 }
 
-#nouveau_pannel ul{
+#nouveau_pannel ul:not(.hidden){
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align:left;
     list-style: none;
     padding: 0;
@@ -646,9 +656,6 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
 
 
 
-.hidden{
-    display:none;
-}
 
 #ecran{
     display: none;
@@ -741,7 +748,11 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
     cursor: pointer;
     height: 3vh;
 }
-
+@media screen and (min-height: 766px) {
+    :root{
+        --taille-header: 100px;
+    }
+}
 
 @media screen and (max-width: 1300px) {
     #nouveau_pannel{
@@ -769,6 +780,17 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
     }
 }
 
+@media screen and (max-width: 1000px) {
+
+    #notification_pannel #endroit_notification .notif .endroit_texte_notif .texte_notification h1{
+        font-size: 12px;
+    }
+    #notification_pannel #endroit_notification .notif .endroit_texte_notif .texte_notification p{
+        font-size: 12px;
+    }
+
+}
+
 
 @media screen and (max-width: 850px) {
     #menu_liste_grand{
@@ -788,6 +810,7 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
         -webkit-box-shadow: -5px 0px 10px 5px var(--couleur-shadow); 
         box-shadow: -5px 0px 10px 5px var(--couleur-shadow);
         border-radius: 0px;
+        max-height: none;
         border: 0;
         border-left: 1px solid rgb(219, 219, 219);
     }
@@ -804,6 +827,12 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
 
     #nouveau_pannel button{
         width:40vw;
+    }
+}
+
+@media screen and (max-width: 600px){
+    #notification_pannel{
+        width: 100%;
     }
 }
 
@@ -830,6 +859,7 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
 
 @media screen and (max-width: 500px){
     #notification_pannel #endroit_notification .notif .endroit_texte_notif{
+        max-height:none;
         height: 15vh;
     }
 }
@@ -838,6 +868,7 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
 
     #notification_pannel #endroit_notification .notif .endroit_texte_notif{
         height: 15vh;
+        max-height:none;
     }
 
     #nouveau_pannel .double-input{
@@ -865,21 +896,13 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
 @media screen and (max-width: 350px){
     #notification_pannel #endroit_notification .notif .endroit_texte_notif{
         height: 20vh;
+        max-height:none;
     }
-    #notification_pannel #endroit_notification .notif .endroit_texte_notif .time_notification{
+    #notification_pannel #endroit_notification .notif .endroit_texte_notif .time_notification, #notification_pannel #endroit_notification .notif .endroit_texte_notif .user_importance_notification{
         display: none;
-    }
-}
-
-@media screen and (max-width: 250px){
-    #notification_pannel{
-        width: 100%;
     }
     #notification_pannel #endroit_notification .notif .endroit_texte_notif .texte_notification{
         align-items: center;
-    }
-    #notification_pannel #endroit_notification .notif .endroit_texte_notif .user_importance_notification{
-        display: none;
     }
 }
 
@@ -896,6 +919,15 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
 
     #nouveau_pannel{
         height: 70%;
+    }
+}
+
+@media screen and (max-height: 800px) and (min-width:550px) {
+    #notification_pannel #endroit_notification .notif .endroit_texte_notif .texte_notification h1{
+        font-size: 10px;
+    }
+    #notification_pannel #endroit_notification .notif .endroit_texte_notif .texte_notification p{
+        font-size: 10px;
     }
 }
 
@@ -953,6 +985,7 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
     }
     
 }
+
 
 
 @keyframes shake {

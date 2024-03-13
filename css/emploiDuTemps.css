@@ -307,7 +307,7 @@ div.divHeure:hover {
     margin: 0;
     padding: 0;
 }
-.custom_titre,.filtre_titre{
+.custom_titre, .filtre_titre{
     display: flex;
     align-items: center;
     flex-direction: row;
@@ -315,6 +315,7 @@ div.divHeure:hover {
     background: white;
     height: 10vh;
     max-height: 90px;
+    min-height: 75px;
     border-bottom: 10px #EBEBEB solid;
     gap: 15px;
 }
