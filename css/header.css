@@ -525,6 +525,9 @@ nav .important{
     padding-left: 13px;
 }
 
+#div_fin_nouveau button:not(.hidden):not(:last-of-type){
+    margin-right: 20px;
+}
 
 #nouveau_pannel h1{
     font-size: 1.5vw;

@@ -14,6 +14,7 @@ var bouton_ok = document.getElementById('bouton_ok');
 var bouton_impossible_uv = document.getElementById("bouton_impossible_uv");
 var bouton_remplacer = document.getElementById("bouton_remplacer");
 var bouton_ajouter_creneau = document.getElementById("bouton_ajouter_creneau");
+var boutons_uv = document.getElementById("boutons_uv");
 
 var message_pression = document.getElementById("message_pression");
 var message_insertion = document.getElementById('message_insertion');
@@ -325,6 +326,10 @@ function nouveauClick() {
     nouveau_pannel.reset();
     message_impossible_uv.classList.toggle('hidden', true);
     bouton_impossible_uv.classList.toggle('hidden', true);
+
+    document.getElementById("bouton_remplacer").classList.toggle('hidden', true)
+    document.getElementById("message_changement_creneau").classList.toggle('hidden', true);
+
     bouton_ajouter_creneau.classList.toggle('hidden', true);
     motivation.classList.toggle('hidden', false);
     input_salle.disabled = false

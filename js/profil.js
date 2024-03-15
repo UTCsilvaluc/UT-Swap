@@ -35,6 +35,7 @@ function scrollToElement(next) {
 var swap_en_cours = document.getElementById("profil_demande_cours").querySelector("h2");
 var swap_accept = document.getElementById("profil_demande_accept").querySelector("h2");
 var swap_refus = document.getElementById("profil_demande_refus").querySelector("h2");
+var swap_attente = document.getElementById("profil_demande_attente").querySelector("h2");
 var titre_profil = document.getElementsByClassName("profil_titre")[0].querySelector("h1");
 
 function mettreAJourContenuProfil() {
@@ -58,9 +59,11 @@ function mettreAJourContenuProfil() {
         swap_en_cours.innerHTML = "En cours";
         swap_accept.innerHTML = "Acceptés";
         swap_refus.innerHTML = "Refusés";
+        swap_attente.innerHTML = "En attente";
     }else{
         titre_profil.innerHTML = "Mon profil";
         swap_en_cours.innerHTML = "Swaps en cours";
+        swap_attente.innerHTML = "Swaps en attente";
         swap_accept.innerHTML = "Swaps acceptés";
         swap_refus.innerHTML = "Swaps refusés";
         if (elementToMove && profil_content) {
@@ -83,3 +86,68 @@ window.addEventListener('resize', mettreAJourContenuProfil);
 
 // Appeler la fonction une fois au chargement de la page
 mettreAJourContenuProfil();
+
+
+function choixDemande(choix, element){
+    var clickedElement = element.target;
+
+    // Vérifier si l'élément cliqué est le même que l'élément sur lequel l'événement est attaché
+    if (clickedElement === element.currentTarget) {
+        var rowAttribute = element.closest('.demande_reçue').dataset.row;
+
+        if (rowAttribute) {
+            try {
+                var donnees = JSON.parse(atob(rowAttribute));
+            } catch (error) {
+                console.error("Erreur lors du parsing JSON :", error);
+            }
+        } else {
+            console.error("Aucune donnée trouvée dans l'attribut data-row");
+        }
+        if(donnees.idDemande !== "" && donnees.demandeur !== "" && donnees.id_notif !== "") {
+            if(choix === true){
+                choix = 1;
+            }else{
+                choix = 0;
+            }
+            var form = document.createElement('form');
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', '');
+
+            var inputChoix = document.createElement('input');
+            inputChoix.setAttribute('type', 'hidden');
+            inputChoix.setAttribute('name', 'choix');
+            inputChoix.setAttribute('value', choix);
+            form.appendChild(inputChoix);
+            
+            var inputDemandeur = document.createElement('input');
+            inputDemandeur.setAttribute('type', 'hidden');
+            inputDemandeur.setAttribute('name', 'demandeur');
+            inputDemandeur.setAttribute('value', donnees.demandeur);
+            form.appendChild(inputDemandeur);
+            
+            var inputIdDemande = document.createElement('input');
+            inputIdDemande.setAttribute('type', 'hidden');
+            inputIdDemande.setAttribute('name', 'idDemande');
+            inputIdDemande.setAttribute('value', donnees.idDemande);
+            form.appendChild(inputIdDemande);
+
+            var inputIdNotif = document.createElement('input');
+            inputIdNotif.setAttribute('type', 'hidden');
+            inputIdNotif.setAttribute('name', 'id_notif');
+            inputIdNotif.setAttribute('value', donnees.id_notif);
+            form.appendChild(inputIdNotif);
+
+            // Ajouter le formulaire à la page
+            document.body.appendChild(form);
+
+            // Soumettre le formulaire
+            form.submit();
+
+            // Supprimer le formulaire après soumission
+            form.remove();
+        }
+    }
+    
+
+}

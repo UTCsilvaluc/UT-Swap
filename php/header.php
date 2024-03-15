@@ -73,7 +73,7 @@ function nombreEnJour($chiffre){
         return null;
     }
 }
-function sendNotifications($loginNotif, $loginPersonne, $idDemande, $demandeur, $type_notif, $statut, $connect){
+function sendNotifications($loginNotif, $idDemande, $demandeur, $type_notif, $statut, $connect){
 
     date_default_timezone_set('Europe/Paris');
     $sqlInsertNotif = "INSERT INTO notifications (loginEtu, typeNotif, idDemande, demandeur, contenuNotif, date, viewed) VALUES (?, ?, ?, ?, ?, NOW(), 0)";
@@ -136,7 +136,7 @@ function getResponsableByUv($uv){
     $responsableMail = "antoine.jouglet@utc.fr";
     return array('login' => $responsableLogin, 'nom' => $responsableNom,'prénom' => $responsablePrénom, 'mail' => $responsableMail);
 }
-$login = "bazileel";
+$login = "silvaluc";
 $connect = DBCredential();
 if (isset($_POST['update_choix']) && !(empty($_POST['update_choix']))) {
     $update_choix = $_POST['update_choix'];
@@ -155,7 +155,7 @@ if (isset($_POST['update_choix']) && !(empty($_POST['update_choix']))) {
             $type = $_SESSION['type'];
             $offerId = $_SESSION['swap'];
             create_swap($connect , $idDemande , $offerId , $uv , $type , $login);
-            sendNotifications($login , $login , $idDemande , $offerId , 1 , 0 , $connect);
+            sendNotifications($login , $offerId , $idDemande , 1 , 0 , $connect);
             $_SESSION['reloadPage'] = "swapSuccess";
         } else {
             $_SESSION['reloadPage'] = "updateSuccess";
@@ -183,56 +183,15 @@ if (isset($_POST['view'])){
 if (
     isset($_POST['choix'], $_POST['demandeur'], $_POST['idDemande'], $_POST['id_notif']) &&
     (!empty($_POST['choix']) || validateInput($_POST['choix'],$connect) === "0") && !empty($_POST['demandeur']) && !empty($_POST['idDemande']) && !empty($_POST['id_notif'])
-) {
-    // Valider les données
-    $choix = validateInput($_POST['choix'],$connect);
-    $demandeur = validateInput($_POST['demandeur'],$connect);
-    $idDemande = validateInput($_POST['idDemande'],$connect);
-    $idNotif = validateInput($_POST['id_notif'],$connect);
-
-    $sqlCheckSwap = "SELECT d.login FROM notifications n JOIN demande d ON d.idDemande=n.demandeur WHERE n.idDemande = ? AND n.demandeur = ? AND n.idNotif = ? AND n.loginEtu = ?";
-    $stmtCheckSwap = $connect->prepare($sqlCheckSwap);
-    $stmtCheckSwap->bind_param("ssss", $idDemande, $demandeur, $idNotif, $login);
-    $stmtCheckSwap->execute();
-    $stmtCheckSwap->store_result();
-    if ($stmtCheckSwap->num_rows !== 0) {
-        $stmtCheckSwap->bind_result($loginDemandeur);
-        $stmtCheckSwap->fetch();
-
-        if($choix === "0"){
-            $sqlUpdateSwap = "UPDATE swap SET statut = 1 WHERE idDemande = ? AND demandeur = ?";
-            $choixTexte = "refusé";
-            sendNotifications($loginDemandeur, $login, $idDemande, $demandeur, 2, $choix+1, $connect);
-        } else if($choix === "1"){
-            $sqlUpdateSwap = "UPDATE swap SET statut = 2 WHERE idDemande = ? AND demandeur = ?";
-            $choixTexte = "accepté";
-            sendNotifications($loginDemandeur, $login, $idDemande, $demandeur, 2, $choix+1, $connect);
-        }
-        $sqlSelectDemande = "SELECT codeUV, type, jour, horaireDebut, horaireFin, semaine FROM demande WHERE idDemande = ?";
-        $stmtSelectDemande = $connect->prepare($sqlSelectDemande);
-        $stmtSelectDemande->bind_param("s", $demandeur);
-        $stmtSelectDemande->execute();
-        $stmtSelectDemande->store_result();
-        $stmtSelectDemande->bind_result($codeUV, $type, $jour, $horaireDebut, $horaireFin, $semaine);
-        $stmtSelectDemande->fetch();
-
-        $sqlUpdateNotif = "UPDATE notifications SET contenuNotif = ?, viewed=1 WHERE idNotif = ?";
-        if($semaine !== "null"){
-            $nouveauContenuNotif = "Vous avez ".$choixTexte." la demande de Swap.;La demande de swap du ".$type." en semaine ".$semaine." de ".$codeUV." pour ".nombreEnJour($jour)." ".date("H\hi", strtotime($horaireDebut))."-".date("H\hi", strtotime($horaireFin))." a été ".$choixTexte."e";
-        }else{
-            $nouveauContenuNotif = "Vous avez ".$choixTexte." la demande de Swap.;La demande de swap du ".$type." de ".$codeUV." pour ".nombreEnJour($jour)." ".date("H\hi", strtotime($horaireDebut))."-".date("H\hi", strtotime($horaireFin))." a été ".$choixTexte."e";
-        }
-
-
-        $stmtUpdateNotif = $connect->prepare($sqlUpdateNotif);
-        $stmtUpdateNotif->bind_param("ss", $nouveauContenuNotif, $idNotif);
-        $stmtUpdateNotif->execute();
-
-        $stmtUpdateSwap = $connect->prepare($sqlUpdateSwap);
-        $stmtUpdateSwap->bind_param("ss", $idDemande, $demandeur);
-        $stmtUpdateSwap->execute();
-    }
+){
+    updateSwapInsertNotif($_POST['choix'], $_POST['demandeur'], $_POST['idDemande'], $_POST['id_notif'], $login, $connect);
+    unset($_POST['choix']);
+    unset($_POST['demandeur']);
+    unset($_POST['idDemande']);
+    unset($_POST['id_notif']);
 }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -776,7 +735,7 @@ if (
         if ($primaryKeyDemande != null){
             $offerId = $_POST['swapIdDemande'];
             create_swap($connect , $primaryKeyDemande , $offerId , $uv , $type , $login);
-            sendNotifications($login , $login , $primaryKeyDemande , $offerId , 1 , 0 , $connect);
+            sendNotifications($login , $offerId , $primaryKeyDemande , 1 , 0 , $connect);
         } else {
             echo "Swap -> Erreur dans l'insertion des données : ";
         }
