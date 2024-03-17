@@ -1207,6 +1207,10 @@ function importEDT(event){
 
 
 if (window.indexedDB){
+    afficherTousLesCours();
+    // Charger les cours au début
+} else {
+    alert("Attention, indexDB est désactivé sur votre navigateur. Nous ne pourrons pas sauvegarder votre emploi du temps...")
 }
 
 // Fonction pour ouvrir ou créer une base de données IndexedDB
@@ -1387,8 +1391,3 @@ async function getMaxId(db) {
         };
     });
 }
-
-
-
-// Utilisation de la fonction
-afficherTousLesCours();
