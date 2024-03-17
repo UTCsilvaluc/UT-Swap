@@ -75,12 +75,6 @@ function mettreAJourContenuProfil() {
     }
 }
 
-document.getElementById('profil_image').addEventListener('click', function() {
-    document.getElementById('logout_image').style.display = 'block';
-    document.getElementById('fond_logout_image').style.display = 'block';
-});
-
-
 // Attacher la fonction au changement de taille de la fenêtre
 window.addEventListener('resize', mettreAJourContenuProfil);
 

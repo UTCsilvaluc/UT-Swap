@@ -92,8 +92,8 @@ function changerJour(element, jour){
 
 function posterSwap(event){
     event.stopPropagation();
+    nouveauClick();
     preremplirNouveauForm();
-    formulaire.style.display = "flex";
 }
 
 var isHovering = false;
@@ -345,6 +345,12 @@ function clearBorderRadius(){
     }
 }
 
+
+var dessus_edt = document.getElementById("dessus_edt");
+var taille_edt = document.querySelector(".conteneurHours").offsetWidth + document.querySelector("#emploi_du_temps").offsetWidth;
+
+dessus_edt.style.width = pxToVw(taille_edt) + "vw";
+
 function mettreAJourContenu() {
     var listeJour = document.getElementsByClassName("jour");
     var largeurFenetre = window.innerWidth;
@@ -352,6 +358,15 @@ function mettreAJourContenu() {
     // Changez le contenu en fonction de la largeur de la fenêtre
     var exportPDF = document.getElementById('export_pdf');
     var exportPNG = document.getElementById('export_png');
+
+    if (largeurFenetre <= 600) {
+        dessus_edt.style.width = ""
+    }else{
+        dessus_edt = document.getElementById("dessus_edt");
+        taille_edt = document.querySelector(".conteneurHours").offsetWidth + document.querySelector("#emploi_du_temps").offsetWidth;
+        dessus_edt.style.width = pxToVw(taille_edt) + "vw";
+    }
+
     if (largeurFenetre <= 400) {
         exportPDF.innerHTML = 'PDF';
         exportPNG.innerHTML = 'PNG';
@@ -431,6 +446,7 @@ window.addEventListener('resize', mettreAJourContenu);
 
 // Appeler la fonction une fois au chargement de la page
 mettreAJourContenu();
+
 
 function calculDecimal(nombre) {
     var heuresMinutesDebut = nombre.split('h');

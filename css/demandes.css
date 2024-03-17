@@ -25,14 +25,17 @@
     font-weight: normal;
     font-style: normal;
 }
+
 .main_conteneur{
     display: flex;
     flex-direction: row;
     justify-content: center;
+    align-items: center;
+    height: calc(100vh - var(--taille-header));
 }
 
+
 .demande_container{
-    background-color: #dfdfdf;
     width: 100%;
     height: calc(85vh - var(--taille-header));
     display: flex;
@@ -41,27 +44,28 @@
     box-sizing: border-box;
     overflow-y: auto;
     overflow-x: hidden;
-    gap: 5%;
-    padding: 0.5% 3% 2%;
+    border-radius: 10px;
+    background-color: #f1f1f1;
+    margin-top: 5px;
+    gap: 10px;
+    padding: 5px 10px;
 }
 
 .demandesControl{
-    width: 150vh;
+    width: 800px;
     display: flex;
     flex-direction: column;
-    gap: 1%;
+    gap: 5px;
 }
 
 .filtres{
     width: 70%;
 }
 .demandes_filtre{
-    padding-top: 3%;
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
-    gap: 3%;
 }
 
 .search-container {
@@ -85,20 +89,35 @@
     background: #EDEDED;
     vertical-align: center;
     align-items: center;
+    border-radius: 20px;
+}
+
+.demandes_filtre > div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height:30px; 
+}
+
+#filtre{
+    width: 100%;
+    height: 100%;
 }
 
 .filtreInput{
     border: none;
-    padding: 8% 0 8% 8%;
-    background: #EDEDED;
-    background-size: 16px; /* Taille de l'image */
-    border-radius: 5%;
+    outline: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    height: 15px;
+    background: #f1f1f1;
 }
 
 .researchLogoSvg{
-    transform: translateX(-200%);
-    width: 2vh;
-    height: 2vh;
+    transform: translateX(-150%);
+    width: 11px;
+    height: 11px;
 }
 
 .researchLogoSvg:hover{
@@ -110,7 +129,10 @@
 }
 
 .rectangle_demande{
-    height: 4vh;
+    height: 25px;
+    width: 5px;
+    background-color: grey;
+    border-radius: 10px;
 }
 
 .div_demande{
@@ -120,21 +142,28 @@
     flex-direction: row;
     justify-content: space-between;
     width: 100%;
-    height: 5vh;
+    height: 68px;
     background-color: white;
-    padding: 2%;
-    border-radius: 20px;
+    border: 1px solid rgb(204, 204, 204);
+    padding: 10px;
+    border-radius: 15px;
+    box-sizing: border-box;
+    transition: border 0.25s linear;
+}
+
+.div_demande:hover{
+    border: 1px solid rgb(72, 72, 72);
 }
 
 .gauche_container{
     display: flex ;
     flex-direction: row;
-    margin-left: 10px;
+    margin-left: 6px;
     align-items: center;
 }
 
 .infos_uv{
-    margin-left: 20px;
+    margin-left: 18px;
     display: flex;
     flex-direction: column;
     justify-content: center; /* Aligne verticalement */
@@ -144,6 +173,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    font-size: 10px;
     margin: 0;
     padding: 0;
 }
@@ -152,7 +182,7 @@
     display: flex;
     flex-direction: row;
     align-items: center; /* Centre horizontalement */
-    gap: 2vh;
+    gap: 12px;
 }
 
 .demande_container h2 , .demande_container h4 ,.demande_container p , .demande_container h5{
@@ -163,14 +193,14 @@
 
 .demande_container h2{
     font-family: 'Jost', serif;
-    font-size: 2.5vh;
+    font-size: 16px;
 }
 
 .demande_container h4{
     cursor: auto;
-    font-size: 14px;
+    font-size: 10px;
     font-family: "Jost", sans-serif;
-    color: lightgray;
+    color: #B5B5B5;
     margin: 0
 }
 
@@ -178,12 +208,10 @@
     font-family: "Jost", serif;
     color: #B5B5B5;
     cursor: auto;
-    font-size: 1.5vh;
     margin: 0;
 }
 
 .demande_container h5{
-    font-size: 1.5vh;
     font-family: "Jost", serif;
 }
 
@@ -194,8 +222,8 @@
 }
 
 .swap_icon{
-    width: 5vh;
-    height: 5vh;
+    width: 30px;
+    height: 30px;
 }
 
 .swap_div_container{
@@ -203,4 +231,77 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+}
+
+@media screen and (max-width: 900px) {
+
+    .demandesControl{
+        width: 700px;
+    }
+
+}
+
+@media screen and (max-width: 800px) {
+
+    .demandesControl{
+        width: 600px;
+    }
+
+}
+
+@media screen and (max-width: 600px) {
+
+    .demande_container{
+        background-color: initial;
+    }
+
+    .demande_container{
+        border-top: 1px solid lightgrey;
+        padding:10px;
+        border-radius: 0;
+        height: calc(100vh - var(--taille-header) - 55px);
+    }
+
+    .demandes_filtre{
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .main_conteneur{
+        align-items: normal;
+        padding-top: 10px;
+    }
+
+    .demandesControl{
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 400px) {
+
+    .infos_auteur{
+        display: none;
+    }
+
+    .filtreInput{
+        width:120px;
+    }
+}
+
+@media screen and (max-width: 250px) {
+
+    .rectangle_demande{
+        display: none;
+    }
+
+    .gauche_container, .infos_uv{
+        margin: 0;
+    }
+}
+
+@media screen and (max-width: 200px) {
+
+    .swap_div_container{
+        display: none;
+    }
 }

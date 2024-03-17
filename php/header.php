@@ -416,13 +416,13 @@ if (
             </li>
             <li id="li_motivation">
                 <div>
-                    <label for="input-motivation">Motivation: (facultatif)</label>
+                    <label for="input-motivation" id="label_motivation">Motivation: (facultatif)</label>
                     <input type="text" id="input-motivation" name="motivation" placeholder="Veuillez entrer votre motivation">
                 </div>
             </li>
             <li class="basique">
                 <input type="checkbox" id="input-semaine" name="semaine">
-                <label for="input-semaine">Créneau une semaine sur deux</label>
+                <label for="input-semaine">Une semaine sur deux</label>
             </li>
             <li class="basique hidden" id="choix-semaine">
                 <input type="radio" name="semainechoix" value="A" id="sA-choix" selected>
@@ -480,7 +480,7 @@ if (
                         </div>
                     </div>
 
-                    <img src="../svg/Vector.svg" alt="">
+                    <img src="../svg/swap_icon_demande.svg" id="image_swap">
 
                     <div>
                         <h3 id="ancienCreneauSwap2" style="text-align: center ; margin: 0" class="hidden">Ancien créneau</h3>
@@ -528,7 +528,7 @@ if (
         </div>
         <div id="boutons_message" class="hidden">
             <button id="bouton_retour">Retour</button>
-            <input type="submit" value="Poster la demande" id="submit_fin_nouveau">
+            <input type="submit" value="Poster" id="submit_fin_nouveau">
         </div>
         <div id="boutons_confirmation" class="hidden">
             <button id="bouton_retour" onclick="nouveauClick()">Fermer la fenêtre</button>

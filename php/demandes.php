@@ -26,7 +26,7 @@
                         <img src="../svg/search.svg" class="researchLogoSvg" alt="" onclick="researchUV(event)">
                     </span>
                     <div>
-                        <img class="svgFiltre" title="filtres" src="../svg/FILTRE_FILTRE.svg" id="filtre_edt" onclick="openFiltre(event)">
+                        <img class="svgFiltre" title="filtres" src="../svg/FILTRE_FILTRE.svg" id="filtre" onclick="openFiltre(event)">
                     </div>
                 </div>
                 <div class="demande_container">
@@ -80,7 +80,7 @@
                         ?>
                         <div class="div_demande" onclick="clickDemande(this)" data-row=<?php echo "$data_row"; ?>>
                             <div class="gauche_container">
-                                <img class="rectangle_demande" src="../svg/rectangle_demande.svg" alt="">
+                                <div class="rectangle_demande"></div>
                                 <div class="infos_uv">
                                     <h2><?php echo ($semaine == "null") ? "$UV - $type" : "$UV - $type $semaine"; ?></h2>
                                     <h4><?php echo "$jours[$jour] $hdebut - $hfin | $salle"; ?></h4>

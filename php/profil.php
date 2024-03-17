@@ -161,7 +161,7 @@
                             $salle2 = $row["salle2"];
                             $semaine2 = $row["semaine2"] !== "null" ? ' ' . $row["semaine2"] : null;
                             if($raison == null){
-                                $raison = "X";
+                                $raison = "non renseigné";
                             }
                             $statut = $row["statut"];
                             if($statut == 0){
@@ -284,7 +284,7 @@
                             $salle2 = $row["salle2"];
                             $semaine2 = $row["semaine2"] !== "null" ? ' ' . $row["semaine2"] : null;
                             if($raison == null){
-                                $raison = "X";
+                                $raison = "non renseigné";
                             }
                             $statut = $row["statut"];
                             if($statut == 0){

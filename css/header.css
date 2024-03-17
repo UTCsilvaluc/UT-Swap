@@ -412,10 +412,9 @@ nav .important{
     justify-content: center;
     width: 100%;
     overflow-y: auto;
+    overflow-x: none;
     box-sizing: border-box;
-    margin-right: 10px;
-    margin-bottom: 8px;
-    margin-top: 8px;
+    margin: 10px 8px;
 }
 
 #nouveau_pannel #div_milieu_nouveau::-webkit-scrollbar-track
@@ -452,6 +451,10 @@ nav .important{
 #nouveau_pannel li:not(.double-input):not(.basique):not(.hidden){
     display: flex;
     flex-direction: column;
+    width: 100%;
+}
+
+#nouveau_pannel li:not(.double-input):not(.basique):not(.hidden) input{
     width: 100%;
 }
 
@@ -638,7 +641,7 @@ div#div_messages{
     justify-content: center;
 }
 
-#nouveau_pannel div#div_messages p{
+#nouveau_pannel div#div_messages p, #ul_nouveau li p{
     width:80%;
     margin:0;
     color: red;
@@ -751,6 +754,70 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
     cursor: pointer;
     height: 3vh;
 }
+
+
+div.confirmationSwap{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    justify-content: center;
+
+}
+
+div.creneau{
+    background: #F3F3F3;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 13px;
+}
+
+div.details{
+    white-space: nowrap;
+}
+
+span.row{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    vertical-align: center;
+    align-items: center;
+    gap: 7px;
+}
+
+span.row h3 , span.row p{
+    margin: 0;
+    padding: 0;
+    color: black;
+    width: auto;
+}
+
+#swapSalle1 p,
+#swapSalle2 p,
+#swapCreneau1 p,
+#swapCreneau2 p,
+#swapJour1 p,
+#swapJour2 p {
+    width: auto;
+    margin: 0;
+    color: black;
+}
+
+span.row h3{
+    font-style: oblique;
+}
+
+#afficherSwapRequest{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    gap: 10%;
+}
+
+#image_swap{
+    width: 40px;
+}
+
 @media screen and (min-height: 766px) {
     :root{
         --taille-header: 100px;
@@ -795,7 +862,16 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
 }
 
 
+@media screen and (min-width: 550px) and (max-width: 850px) {
+    div.creneau{
+        font-size: 14.5px;
+    }
+}
+
 @media screen and (max-width: 850px) {
+
+    
+
     #menu_liste_grand{
         display: none;
     }
@@ -824,12 +900,8 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
     #nouveau_pannel .double-input input,#nouveau_pannel .double-input select{
         width: 30vw;
     }
-    #nouveau_pannel input[type="submit"]{
-        width:40vw;
-    }
-
-    #nouveau_pannel button{
-        width:40vw;
+    #nouveau_pannel input[type="submit"], #nouveau_pannel button{
+        width:30vw;
     }
 }
 
@@ -840,6 +912,8 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
 }
 
 @media screen and (max-width: 550px) and (max-height: 550px){
+
+
 
     #notification_pannel #endroit_notification .notif .endroit_texte_notif .time_notification p{
         display: none;
@@ -861,13 +935,34 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
 }
 
 @media screen and (max-width: 500px){
+    
     #notification_pannel #endroit_notification .notif .endroit_texte_notif{
         max-height:none;
         height: 15vh;
     }
 }
 
-@media screen and (max-width: 400px) and (max-height: 550px){
+@media screen and (max-width: 450px){
+    
+    div.confirmationSwap{
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .confirmationSwap > div{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 90%;
+    }
+
+    div.creneau{
+        width: 80%;
+    }
+}
+
+@media screen and (max-width: 350px){
 
     #notification_pannel #endroit_notification .notif .endroit_texte_notif{
         height: 15vh;
@@ -878,8 +973,12 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
         flex-direction: column;
     }
 
-    #nouveau_pannel .double-input input,#nouveau_pannel .double-input select{
-        width: 100%;
+    #nouveau_pannel .double-input input,#nouveau_pannel .double-input select, #nouveau_pannel #li_motivation input, #ul_nouveau li{
+        width:50vw;
+    }
+
+    #nouveau_pannel li:not(.double-input):not(.basique):not(.hidden){
+        width: unset;
     }
 
     #nouveau_pannel .double-input div:first-child {
@@ -892,6 +991,12 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
 
     #nouveau_pannel h1{
         font-size: 5vw;
+    }
+    #nouveau_pannel input[type="submit"], #nouveau_pannel button{
+        width:20vw;
+    }
+    #nouveau_pannel #bouton_retour{
+        margin-right: 5px;
     }
 
 }
@@ -917,15 +1022,16 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
         width: 15vh;
     }
 }
-
-@media screen and (max-height: 800px) and (min-width:550px) {
-
-    #nouveau_pannel{
-        height: 70%;
+@media screen and (max-width:550px) {
+    #image_swap{
+        display: none;
     }
 }
 
 @media screen and (max-height: 800px) and (min-width:550px) {
+    #nouveau_pannel{
+        height: 70%;
+    }
     #notification_pannel #endroit_notification .notif .endroit_texte_notif .texte_notification h1{
         font-size: 10px;
     }
@@ -934,7 +1040,7 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
     }
 }
 
-@media screen and (max-height: 650px) and (min-width:550px) {
+@media screen and (max-height: 300px) and (min-width:550px) {
 
     #nouveau_pannel{
         height: 80%;
@@ -942,7 +1048,8 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
 }
 
 
-@media screen and (max-height: 550px) and (min-width:550px) {
+@media screen and (max-height: 450px) and (min-width:550px) {
+
 
     #nouveau_pannel{
         top: calc(50vh + calc(var(--taille-header)/2));
@@ -1004,56 +1111,3 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
 }
 
 /* CSS partie récapitulatif demande de swap */
-
-div.confirmationSwap{
-    display: flex;
-    flex-direction: row;
-    gap: 2vh;
-    justify-content: center;
-
-}
-
-div.creneau{
-    background: #F3F3F3;
-    padding: 3vh;
-    border-radius: 2vh;
-    text-align: center;
-}
-
-span.row{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    vertical-align: center;
-    align-items: center;
-    gap: 1vh;
-}
-
-span.row h3 , span.row p{
-    margin: 0;
-    padding: 0;
-    color: black;
-    width: auto;
-}
-
-#swapSalle1 p,
-#swapSalle2 p,
-#swapCreneau1 p,
-#swapCreneau2 p,
-#swapJour1 p,
-#swapJour2 p {
-    width: auto;
-    margin: 0;
-    color: black;
-}
-
-span.row h3{
-    font-style: oblique;
-}
-
-#afficherSwapRequest{
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    gap: 10%;
-}

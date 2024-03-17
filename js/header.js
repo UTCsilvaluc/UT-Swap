@@ -305,7 +305,7 @@ document.getElementById("croix_nouveau").addEventListener("click", function() {
 
 document.addEventListener("click" , function (event) {
 
-    if (!(event.target.closest("#nouveau_pannel")) && document.getElementById("nouveau_pannel") != "none" && event.target.className != "bouton_nouveau" && event.target.parentNode.className != "bouton_nouveau" && event.target.className !== "dash" && event.target.id !== "displace" && event.target.className != "div_demande"){
+    if (!(event.target.closest("#nouveau_pannel")) && !(event.target.closest(".infos_auteur")) && !(event.target.closest(".gauche_container")) && document.getElementById("nouveau_pannel") != "none" && event.target.className != "bouton_nouveau" && event.target.parentNode.className != "bouton_nouveau" && event.target.className !== "dash" && event.target.id !== "displace" && event.target.className != "div_demande"){
         document.getElementById("nouveau_pannel").style.display = "none";
     }
 
@@ -319,6 +319,7 @@ document.addEventListener("click" , function (event) {
 
 });
 function nouveauClick() {
+   
     choix_semaine.classList.toggle('hidden', true);
     document.getElementById("div_milieu_nouveau").style.height = "";
     texte_nouveau.innerHTML = "Nouvelle demande de Swap";
@@ -370,8 +371,46 @@ function nouveauClick() {
         var pElement = element.parentNode.querySelector("p");
         pElement.classList.toggle('hidden', true);
     }
+
+    var bodyHasScrollbar = isScrollbarVisible(document.getElementById("div_milieu_nouveau"));
+    if (bodyHasScrollbar) {
+        document.getElementById("ul_nouveau").style.justifyContent = "unset";
+    } else {
+        document.getElementById("ul_nouveau").style.justifyContent = "center";
+    }
 };
 
+function isScrollbarVisible(element) {
+    return element.scrollHeight > element.clientHeight;
+}
+
+function mettreAJourContenuProfil() {
+    var largeurFenetre = window.innerWidth;
+    var label_motivation = document.getElementById("label_motivation");
+    
+    var label_input_semaine = document.getElementById("input-semaine").parentElement.querySelector("label");
+    if (largeurFenetre <= 350) {
+        label_motivation.innerHTML = 'Motivation: (!)';
+        label_motivation.title = 'Facultatif';
+        label_input_semaine.innerHTML = "Semaine 1/2";
+    } else {
+        label_motivation.innerHTML = 'Motivation: (facultatif)';
+        label_motivation.title = '';
+        label_input_semaine.innerHTML = "Une semaine sur deux";
+    }
+    var bodyHasScrollbar = isScrollbarVisible(document.getElementById("div_milieu_nouveau"));
+    if (bodyHasScrollbar) {
+        document.getElementById("ul_nouveau").style.justifyContent = "unset";
+    } else {
+        document.getElementById("ul_nouveau").style.justifyContent = "center";
+    }
+}
+    
+// Attacher la fonction au changement de taille de la fenêtre
+window.addEventListener('resize', mettreAJourContenuProfil);
+
+// Appeler la fonction une fois au chargement de la page
+mettreAJourContenuProfil();
 
 bouton_menu.addEventListener("click", function() {
     var conteneurFiltre = document.getElementById("menuFiltre");
