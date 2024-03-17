@@ -1,3 +1,4 @@
+
 function svgSwapEnter(event){
     event.target.src = "../svg/swap_texte.svg";
     event.target.style.height = "33px";
@@ -271,6 +272,7 @@ class Cours {
         this.semaine = semaine;
         this.type = type;
         this.couleur = couleur;
+        this.id = null;
     }
 
     afficherDetails() {
@@ -463,9 +465,10 @@ function getRandomColor(listOfColors) {
     // Retourner la couleur sélectionnée
     return randomColor;
 }
-for (var i = 0; i < liste.length; i++) {
+
+/*for (var i = 0; i < liste.length; i++) {
     createCours(liste[i]);
-};
+};*/
 
 function getOffsetHeight(element) {
     if(!element.parentElement.classList.contains("jour_select")){
@@ -516,7 +519,11 @@ function createCours(cours){
     }
     cours.couleur = coursColors[cours.codeUV];
     var nbCours = document.getElementsByClassName("cours").length;
-    endroit_cours.innerHTML += '<div class="cours" id= ' + parseInt(nbCours + 1) + ' onclick="suivreSouris(this, true)"><h2 class="UV">' + '</h2><p class="horaire_cours">' + cours.horaireDebut + '-' + cours.horaireFin + '</p><p>' + cours.salle + '</p></div>'
+    const idDuCours = parseInt(nbCours + 1);
+    if (cours.id == null){
+        cours.id = idDuCours;
+    }
+    endroit_cours.innerHTML += '<div class="cours" id= ' + idDuCours + ' onclick="suivreSouris(this, true)"><h2 class="UV">' + '</h2><p class="horaire_cours">' + cours.horaireDebut + '-' + cours.horaireFin + '</p><p>' + cours.salle + '</p></div>'
     coursElement = endroit_cours.getElementsByClassName("cours")[endroit_cours.getElementsByClassName("cours").length -1];
 
     var tailleEDT = getOffsetHeight(endroit_cours);
@@ -587,7 +594,26 @@ function createCours(cours){
         }
         coursElement.getElementsByClassName("UV")[0].style.fontSize = '12px';
     }
-    
+
+    /* Sauvegarder le cours en local */
+
+    (async () => {
+        try {
+            const db = await ouvrirBaseDeDonnees();
+
+            // Ajoutez ici votre code pour récupérer l'ID du cours
+
+            const courses = await getCoursByID(db, idDuCours);
+            if (courses) {
+                console.log("Cours trouvé:", courses);
+            } else {
+                console.log("Aucun cours trouvé avec l'ID:", cours.id);
+                ajouterCours(db , cours);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    })();
 }
 
 function colorChange(event){
@@ -1116,3 +1142,167 @@ function importEDT(event){
 
 
 }
+
+/* Partie pour la sauvegarde des données en local */
+
+
+if (window.indexedDB){
+/**/
+}
+
+// Fonction pour ouvrir ou créer une base de données IndexedDB
+function ouvrirBaseDeDonnees() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('ma_base_de_donnees', 1);
+
+        request.onerror = function(event) {
+            reject("Erreur lors de l'ouverture de la base de données: " + event.target.error);
+        };
+
+        request.onupgradeneeded = function(event) {
+            const db = event.target.result;
+            const objectStore = db.createObjectStore('cours', { keyPath: 'id', autoIncrement: true });
+
+            // Ajouter des index si nécessaire
+            objectStore.createIndex('codeUV', 'codeUV', { unique: false });
+        };
+
+        request.onsuccess = function(event) {
+            const db = event.target.result;
+            resolve(db);
+        };
+    });
+}
+
+// Fonction pour ajouter un cours à la base de données
+function ajouterCours(db, cours) {
+    return new Promise((resolve, reject) => {
+        console.log(cours.id);
+        const transaction = db.transaction(['cours'], 'readwrite');
+        const objectStore = transaction.objectStore('cours');
+
+        const request = objectStore.add(cours);
+
+        request.onsuccess = function(event) {
+            resolve("Cours ajouté avec succès à la base de données");
+        };
+
+        request.onerror = function(event) {
+            reject("Erreur lors de l'ajout du cours: " + event.target.error);
+        };
+    });
+}
+
+// Fonction pour récupérer tous les cours de la base de données
+function getAllCours(db) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['cours'], 'readonly');
+        const objectStore = transaction.objectStore('cours');
+
+        const request = objectStore.getAll();
+
+        request.onsuccess = function(event) {
+            resolve(event.target.result);
+        };
+
+        request.onerror = function(event) {
+            reject("Erreur lors de la récupération des cours: " + event.target.error);
+        };
+    });
+}
+
+// Fonction pour récupérer un cours par son ID
+function getCoursByID(db, id) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['cours'], 'readonly');
+        const objectStore = transaction.objectStore('cours');
+
+        const request = objectStore.get(id);
+
+        request.onsuccess = function(event) {
+            const cours = event.target.result;
+            if (cours) {
+                resolve(cours); // Le cours a été trouvé
+            } else {
+                resolve(null); // Le cours n'existe pas dans la base de données
+            }
+        };
+
+        request.onerror = function(event) {
+            reject("Erreur lors de la récupération du cours: " + event.target.error);
+        };
+    });
+}
+// Fonction pour afficher tous les cours
+async function afficherTousLesCours() {
+    try {
+        const db = await ouvrirBaseDeDonnees();
+
+        // Récupérer tous les cours de la base de données
+        const tousLesCours = await getAllCours(db);
+        tousLesCours.forEach(cours => {
+            createCours(cours);
+        });
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+// Fonction pour supprimer un cours de la base de données par son ID
+async function supprimerCoursByID(db, id) {
+    try {
+        const transaction = db.transaction(['cours'], 'readwrite');
+        const objectStore = transaction.objectStore('cours');
+
+        const request = objectStore.delete(id);
+
+        request.onsuccess = function(event) {
+            console.log("Cours supprimé avec succès de la base de données");
+        };
+
+        request.onerror = function(event) {
+            console.error("Erreur lors de la suppression du cours:", event.target.error);
+        };
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+// Fonction pour modifier un attribut d'un cours par son ID
+async function modifierAttributCoursByID(db, id, attribut, nouvelleValeur) {
+    try {
+        const transaction = db.transaction(['cours'], 'readwrite');
+        const objectStore = transaction.objectStore('cours');
+
+        const getCoursRequest = objectStore.get(id);
+
+        getCoursRequest.onsuccess = function(event) {
+            const cours = event.target.result;
+            if (cours) {
+                // Modifier l'attribut spécifié
+                cours[attribut] = nouvelleValeur;
+                const updateRequest = objectStore.put(cours);
+
+                updateRequest.onsuccess = function(event) {
+                    console.log("Attribut du cours modifié avec succès dans la base de données");
+                };
+
+                updateRequest.onerror = function(event) {
+                    console.error("Erreur lors de la modification de l'attribut du cours:", event.target.error);
+                };
+            } else {
+                console.log("Aucun cours trouvé avec l'ID:", id);
+            }
+        };
+
+        getCoursRequest.onerror = function(event) {
+            console.error("Erreur lors de la récupération du cours pour modification:", event.target.error);
+        };
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+
+// Utilisation de la fonction
+afficherTousLesCours();
