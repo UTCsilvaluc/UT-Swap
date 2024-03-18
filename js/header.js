@@ -1,6 +1,6 @@
 
 
-
+var tempsCurrentCours;
 var bouton_nouveau = document.getElementsByClassName("bouton_nouveau");
 var nouveau_pannel = document.getElementById("nouveau_pannel");
 var ul_nouveau = document.getElementById("ul_nouveau");
@@ -378,6 +378,11 @@ function nouveauClick() {
     } else {
         document.getElementById("ul_nouveau").style.justifyContent = "center";
     }
+
+    if (tempsCurrentCours){
+        tempsCurrentCours = null;
+    }
+    document.getElementById('update_choix').value = '0';
 };
 
 function isScrollbarVisible(element) {

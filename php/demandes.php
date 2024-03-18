@@ -11,13 +11,6 @@
 <body>
     <?php include "header.php" ?>
     <main>
-        <?php
-        if (isset($_GET['codeUV'])){
-            $UV = $_GET['codeUV'];
-            echo $UV;
-        } else {
-        }
-        ?>
         <div class="main_conteneur">
             <div class="demandesControl">
                 <div class="demandes_filtre">
@@ -31,7 +24,7 @@
                 </div>
                 <div class="demande_container">
                     <?php
-                    $login = "silvaluc"; /* Sera à récupérer une fois que l'étudiant sera login. */
+                    $login = "ldompnie"; /* Sera à récupérer une fois que l'étudiant sera login. */
                     // Supposons que $result soit votre tableau de résultats de la requête SQL
                     $connect = DBCredential();
                     $stmt = $connect->prepare("SELECT d.idDemande , d.login , d.codeUV , d.type , d.jour ,  d.horaireDebut , d.horaireFin , d.salle , d.semaine , e.login , p.nom , p.prenom , (SELECT count(idDemande) FROM swap WHERE idDemande = d.idDemande) AS nbDemandes FROM demande as d JOIN etudiant as e ON e.login = d.login JOIN personne as p ON p.login = e.login WHERE demande = 1 AND d.login != ?");

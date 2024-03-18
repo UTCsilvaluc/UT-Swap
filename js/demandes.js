@@ -32,58 +32,85 @@ function copierLien(element) {
 }
 
 function clickDemande(element) {
-    var clickedElement = element.target;
 
-        // Vérifier si l'élément cliqué est le même que l'élément sur lequel l'événement est attaché
-        if (clickedElement === element.currentTarget) {
-            var rowAttribute = element.dataset.row;
+    async function afficherTousLesCours() {
+        try {
+            var clickedElement = element.target;
 
-            if (rowAttribute) {
-                try {
-                    var donnees = JSON.parse(atob(rowAttribute));
-                } catch (error) {
-                    console.error("Erreur lors du parsing JSON :", error);
-                }
-            } else {
-                console.error("Aucune donnée trouvée dans l'attribut data-row");
-            }
-            if(donnees.codeUV !== "" && donnees.type !== "" && donnees.salle !== "") {
-                const joursSemaine = {
-                    "1": 'Lundi',
-                    "2": 'Mardi',
-                    "3": 'Mercredi',
-                    "4": 'Jeudi',
-                    "5": 'Vendredi',
-                    "6": 'Samedi'
-                };
-                nouveauClick();
-                bouton_non_submit.className = "submitSwap";
+            // Vérifier si l'élément cliqué est le même que l'élément sur lequel l'événement est attaché
+            if (clickedElement === element.currentTarget) {
+                var rowAttribute = element.dataset.row;
 
-                input_uv.value = donnees.codeUV;
-                input_type.value = donnees.type;
-                input_uv.disabled = true;
-                input_type.disabled = true;
-                localStorage.setItem("idDemande" , donnees.idDemande);
-                localStorage.setItem("salle" , donnees.salle);
-                localStorage.setItem("hdebut" , donnees.horaireDebut);
-                localStorage.setItem("hfin" , donnees.horaireFin);
-                localStorage.setItem("jour" , joursSemaine[donnees.jour]);
-
-                tempsCurrentCours = calculerDifference(donnees.horaireDebut , donnees.horaireFin);
-
-
-                if (donnees.semaine === "null") {
-                    checkbox.disabled = true;
+                if (rowAttribute) {
+                    try {
+                        var donnees = JSON.parse(atob(rowAttribute));
+                    } catch (error) {
+                        console.error("Erreur lors du parsing JSON :", error);
+                    }
                 } else {
-                    checkbox.disabled = false;
-                    checkbox.click();
-                    checkbox.checked = true;
-                    localStorage.setItem("semaine" , donnees.semaine);
+                    console.error("Aucune donnée trouvée dans l'attribut data-row");
+                }
+                if(donnees.codeUV !== "" && donnees.type !== "" && donnees.salle !== "") {
+                    const joursSemaine = {
+                        "1": 'Lundi',
+                        "2": 'Mardi',
+                        "3": 'Mercredi',
+                        "4": 'Jeudi',
+                        "5": 'Vendredi',
+                        "6": 'Samedi'
+                    };
+                    nouveauClick();
+                    bouton_non_submit.className = "submitSwap";
+
+                    input_uv.value = donnees.codeUV;
+                    input_type.value = donnees.type;
+                    input_uv.disabled = true;
+                    input_type.disabled = true;
+                    localStorage.setItem("idDemande" , donnees.idDemande);
+                    localStorage.setItem("salle" , donnees.salle);
+                    localStorage.setItem("hdebut" , donnees.horaireDebut);
+                    localStorage.setItem("hfin" , donnees.horaireFin);
+                    localStorage.setItem("jour" , joursSemaine[donnees.jour]);
+
+                    tempsCurrentCours = calculerDifference(donnees.horaireDebut , donnees.horaireFin);
+
+
+                    if (donnees.semaine === "null") {
+                        checkbox.disabled = true;
+                    } else {
+                        checkbox.disabled = false;
+                        checkbox.click();
+                        checkbox.checked = true;
+                        localStorage.setItem("semaine" , donnees.semaine);
+                    }
+
+                    const db = await ouvrirBaseDeDonnees();
+                    // Récupérer tous les cours de la base de données
+                    const tousLesCours = await getAllCours(db);
+                    tousLesCours.forEach(cours => {
+                        if (cours.type === donnees.type && cours.codeUV === donnees.codeUV){
+                            input_salle.value = cours.salle;
+                            input_creneau.value = cours.jour.toLowerCase();
+                            Array.from(input_hdebut).map(element => {
+                                const [heures, minutes] = cours.horaireDebut.split('h');
+                                element.value = `${heures.padStart(2,'0')}:${minutes}`;
+                            });
+                            Array.from(input_hfin).map(element => {
+                                const [heures, minutes] = cours.horaireFin.split('h');
+                                element.value = `${heures.padStart(2,'0')}:${minutes}`;
+                            });
+                        }
+                    });
+
                 }
 
             }
 
+        } catch (error) {
+            console.error(error);
         }
+    }
+    afficherTousLesCours();
     
 }
 
@@ -258,6 +285,46 @@ function resetFilter(){
     var divs_demande = document.getElementsByClassName("div_demande");
     Array.from(divs_demande).forEach(function(div) {
         div.style.display = 'flex';
+    });
+}
+
+function ouvrirBaseDeDonnees() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('ma_base_de_donnees', 1);
+
+        request.onerror = function(event) {
+            reject("Erreur lors de l'ouverture de la base de données: " + event.target.error);
+        };
+
+        request.onupgradeneeded = function(event) {
+            const db = event.target.result;
+            const objectStore = db.createObjectStore('cours', { keyPath: 'id', autoIncrement: true });
+
+            // Ajouter des index si nécessaire
+            objectStore.createIndex('codeUV', 'codeUV', { unique: false });
+        };
+
+        request.onsuccess = function(event) {
+            const db = event.target.result;
+            resolve(db);
+        };
+    });
+}
+
+function getAllCours(db) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(['cours'], 'readonly');
+        const objectStore = transaction.objectStore('cours');
+
+        const request = objectStore.getAll();
+
+        request.onsuccess = function(event) {
+            resolve(event.target.result);
+        };
+
+        request.onerror = function(event) {
+            reject("Erreur lors de la récupération des cours: " + event.target.error);
+        };
     });
 }
 
