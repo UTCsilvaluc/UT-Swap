@@ -110,8 +110,7 @@ function clickDemande(element) {
             console.error(error);
         }
     }
-    afficherTousLesCours();
-    
+    afficherTousLesCours();    
 }
 
 function calculerDifference(time1 , time2) {
