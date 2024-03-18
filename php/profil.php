@@ -11,7 +11,7 @@
     <?php include "header.php" ?>
     <?php
 
-    $login = "silvaluc";
+    $login = "ldompnie";
     function getProfil(){
         global $login;
         $connect = DBCredential();

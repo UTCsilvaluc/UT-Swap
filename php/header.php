@@ -6,7 +6,7 @@ session_start();
 function DBCredential(){
     $dbhost = 'localhost';
     $dbuser = 'root';
-    $dbpass = '';
+    $dbpass = 'root';
     $dbname = 'ut_swap';
     $connect = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to mysql');
     mysqli_set_charset($connect, 'utf8');
@@ -136,7 +136,7 @@ function getResponsableByUv($uv){
     $responsableMail = "antoine.jouglet@utc.fr";
     return array('login' => $responsableLogin, 'nom' => $responsableNom,'prénom' => $responsablePrénom, 'mail' => $responsableMail);
 }
-$login = "silvaluc";
+$login = "ldompnie";
 $connect = DBCredential();
 if (isset($_POST['update_choix']) && !(empty($_POST['update_choix']))) {
     $update_choix = $_POST['update_choix'];
@@ -260,14 +260,17 @@ if (
     <div id="endroit_notification">
         <?php
         $connect = DBCredential();
-        $sql = "SELECT idNotif, typeNotif, contenuNotif, idDemande, demandeur, date, viewed FROM notifications ORDER BY date DESC;";
-        $resultat = $connect->query($sql);
+        $sqlSelectNotif = "SELECT idNotif, typeNotif, contenuNotif, idDemande, demandeur, date, viewed FROM notifications WHERE loginEtu=? ORDER BY date DESC;";
+        $stmtSelectNotif = $connect->prepare($sqlSelectNotif);
+        $stmtSelectNotif->bind_param("s", $login);
+        $stmtSelectNotif->execute();
+        $resultat = $stmtSelectNotif->get_result();
 
         // Vérifier s'il y a des résultats
         if ($resultat->num_rows > 0) {
             // Afficher les options du datalist
 
-            while ($row = $resultat->fetch_assoc()) {
+            foreach ($resultat as $row) {
                 echo '<div class="notif type_'. $row["typeNotif"];
                 if($row["viewed"]){
                     echo  ' viewed">';
