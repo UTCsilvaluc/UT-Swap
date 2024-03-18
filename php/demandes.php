@@ -11,13 +11,6 @@
 <body>
     <?php include "header.php" ?>
     <main>
-        <?php
-        if (isset($_GET['codeUV'])){
-            $UV = $_GET['codeUV'];
-            echo $UV;
-        } else {
-        }
-        ?>
         <div class="main_conteneur">
             <div class="demandesControl">
                 <div class="demandes_filtre">

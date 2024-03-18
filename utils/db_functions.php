@@ -204,13 +204,12 @@ function getIdDemandeSwap($connect, $login, $type, $uv) {
     }
 }
 
-function checkIfDetailsChange($connect , $login , $type , $uv , $hdebut, $hfin , $salle, $semaineChoix){
+function checkIfDetailsChange($connect , $idDemande , $type , $uv , $hdebut, $hfin , $salle, $semaineChoix , $jour){
     try {
         // Préparer la requête SQL
-        $sqlGetIdDemande = "SELECT idDemande FROM demande WHERE login = ? AND type = ? AND codeUV = ? AND horaireDebut = ? AND horaireFin = ? AND salle = ? AND semaine = ?";
+        $sqlGetIdDemande = "SELECT idDemande FROM demande WHERE idDemande = ? AND type = ? AND codeUV = ? AND horaireDebut = ? AND horaireFin = ? AND salle = ? AND semaine = ? AND jour = ?";
         $stmtGetIdDemande = $connect->prepare($sqlGetIdDemande);
-        $stmtGetIdDemande->bind_param("sssssss", $login, $type, $uv , $hdebut , $hfin , $salle , $semaineChoix);
-
+        $stmtGetIdDemande->bind_param("issssssi", $idDemande, $type, $uv , $hdebut , $hfin , $salle , $semaineChoix , $jour);
         // Exécuter la requête
         if ($stmtGetIdDemande->execute()) {
             // Récupérer le résultat
@@ -289,6 +288,37 @@ function fetchDemandeDetails($connect, $currentIDdemande) {
 
     // Retourner les détails de la demande
     return $row;
+}
+
+function getLoginById($connect , $idDemande){
+    try {
+        // Préparer la requête SQL
+        $sqlGetLogin = "SELECT login FROM demande WHERE idDemande = ?";
+        $stmtGetLogin = $connect->prepare($sqlGetLogin);
+        $stmtGetLogin->bind_param("i", $idDemande);
+
+        // Exécuter la requête
+        if ($stmtGetLogin->execute()) {
+            // Récupérer le résultat
+            $resultId = $stmtGetLogin->get_result();
+            $row = $resultId->fetch_assoc();
+            $stmtGetLogin->close();
+
+            // Vérifier si une ligne a été retournée et si l'ID de demande de swap est spécifié
+            if ($row) {
+                return $row['login'];
+            } else {
+                error_log("Aucun login n'a été trouvé...");
+                return null;
+            }
+        } else {
+            throw new Exception("Erreur lors de l'exécution de la requête");
+        }
+    } catch (Exception $e) {
+        error_log("Erreur lors de la récupération du login : " . $e->getMessage());
+        return null;
+    }
+
 }
 
 ?>

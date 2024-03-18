@@ -161,6 +161,7 @@ if (isset($_POST['update_choix']) && !(empty($_POST['update_choix']))) {
             $_SESSION['reloadPage'] = "updateSuccess";
         }
     }
+    echo "<script> document.getElementById('update_choix').value = '0' ; </script>";
     unset($_SESSION['jour']);
     unset($_SESSION['idDemande']);
     unset($_SESSION['hDeb']);
@@ -653,20 +654,12 @@ if (
                     }
                 } else {
                     /* Quand un étudiant a déjà fait une demande pour un créneau, et qu'il change l'horaire en faisant la demande de swap par rapport à son ancien créneau, le notifier. */
-
-                    $sqlCheckInsertion = "SELECT idDemande , horaireDebut, horaireFin , codeUV FROM demande WHERE login = ? and type=? and codeUV = ? AND horaireDebut = ? AND horaireFin = ? AND jour = ?";
-                    $stmtCheckInsertion = $connect->prepare($sqlCheckInsertion);
-                    $stmtCheckInsertion->bind_param("sssssi", $login, $type, $uv , $hdebut , $hfin , $jour);
-                    $stmtCheckInsertion->execute();
-                    $result = $stmtCheckInsertion->get_result();
-                    $resultRow = $result->fetch_assoc();
-
-
-                    if ($result->num_rows === 0){
+                    $primaryKeyDemande = $isDemandeExisting['idDemande'];
+                    $result = checkIfDetailsChange($connect , $primaryKeyDemande , $type, $uv , $hdebut , $hfin , $salle , $semaineChoix , $jour);
+                    if ($result === null){
                         /* Ici, l'élève a changer son créneau , il faut lui proposer de l'update. */
+                        // Penser à supprimer la vérification inutile, j'ia déjà le currentIDdemande inutile de faire une nouvelle requête...
                         $currentIDdemande = getIdDemandeSwap($connect ,$login , $type , $uv);
-
-
                         if ($currentIDdemande != null) {
                             if (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande'])){
                                 $_SESSION["swap"] = $_POST['swapIdDemande'];
@@ -685,8 +678,7 @@ if (
                             error_log("Erreur dans la récupération des données...");
                         }
                     } else {
-                        if ($resultRow){
-                            $primaryKeyDemande = $resultRow['idDemande'];
+                        if ($primaryKeyDemande){
                             //echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
                             $canSwap = true;
                         } else {
@@ -696,22 +688,17 @@ if (
                     }
                 }
             }else{
-
-                $sqlCheckInsertion = "SELECT idDemande , horaireDebut, horaireFin , codeUV FROM demande WHERE login = ? and type=? and codeUV = ? AND horaireDebut = ? AND horaireFin = ? AND jour = ?";
-                $stmtCheckInsertion = $connect->prepare($sqlCheckInsertion);
-                $stmtCheckInsertion->bind_param("sssssi", $login, $type, $uv , $hdebut , $hfin , $jour);
-                $stmtCheckInsertion->execute();
-                $result = $stmtCheckInsertion->get_result();
-                $resultRow = $result->fetch_assoc();
-                $idDemande = $isDemandeExisting['idDemande'];
+                echo "<script>alert('test');</script>";
+                $primaryKeyDemande = $isDemandeExisting['idDemande'];
                 $isOffer = $isDemandeExisting['demande'];
+                $result = checkIfDetailsChange($connect , $primaryKeyDemande , $type, $uv , $hdebut , $hfin , $salle , $semaineChoix , $jour);
 
-                if ($result->num_rows === 0) {
+                if ($result === null) {
                     /* Ici, l'élève a changer son créneau , il faut lui proposer de l'update. */
                     echo "<script> document.getElementById('update_choix').value = '1' ; </script>";
                     /* Afficher ancien et nouvel horaire. */
-                    afficherChangementCreneau($connect , $idDemande , $jour , $salle , $hdebut , $hfin);
-                    $_SESSION["idDemande"] = $idDemande;
+                    afficherChangementCreneau($connect , $primaryKeyDemande , $jour , $salle , $hdebut , $hfin);
+                    $_SESSION["idDemande"] = $primaryKeyDemande;
                     $_SESSION["hDeb"] = $hdebut;
                     $_SESSION["hFin"] = $hfin;
                     $_SESSION["salle"] = $salle;
@@ -725,9 +712,9 @@ if (
                         echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
                     }
                 }
-
-                if ($isOffer === 0 ) {
-                    update_demande_statut($connect, $idDemande, 1);
+                // Faire en sorte que le changement se fait dans le else ou après avoir validé le changement d'horaire !
+                if ($isOffer == 0 ) {
+                    update_demande_statut($connect, $primaryKeyDemande, 1);
                 }
 
             }
@@ -738,7 +725,8 @@ if (
         if ($primaryKeyDemande != null){
             $offerId = $_POST['swapIdDemande'];
             create_swap($connect , $primaryKeyDemande , $offerId , $uv , $type , $login);
-            sendNotifications($login , $offerId , $primaryKeyDemande , 1 , 0 , $connect);
+            $loginNotif = getLoginById($connect , $offerId);
+            sendNotifications($loginNotif , $offerId , $primaryKeyDemande , 1 , 0 , $connect);
         } else {
             echo "Swap -> Erreur dans l'insertion des données : ";
         }
