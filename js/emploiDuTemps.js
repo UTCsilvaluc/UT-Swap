@@ -723,7 +723,33 @@ var suivreLaSouris = false;
 var lastPosition;
 var tempsCurrentCours;
 function suivreSouris(element, isCours) {
+    var parentJourElement = coursElement.closest('.jour');
 
+    if (parentJourElement) {
+        (async () => {
+            try {
+                const db = await ouvrirBaseDeDonnees();
+                const idCurrentCours = parseInt(element.id);
+                const courses = await getCoursByID(db, idCurrentCours);
+                var paragraphElements = coursElement.getElementsByTagName('p');
+                // Récupération du texte des balises <p> pour heureDebut et heureFin
+                var heureDebut = paragraphElements[0].textContent.trim(); // Premier paragraphe
+                var heureFin = paragraphElements[1].textContent.trim();
+                if (courses) {
+                await modifierAttributCoursByID(db, idCurrentCours, 'jour', parentJourElement.id);
+                await modifierAttributCoursByID(db, idCurrentCours, 'horaireDebut', heureDebut); /* Ajouter un 0 devant l'heure si < 10*/
+                await modifierAttributCoursByID(db, idCurrentCours, 'horaireFin', heureFin);
+                console.log(courses);
+                } else {
+                    console.log("Erreur : aucun cours avec cet ID !")
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        })();
+    } else {
+        console.log("Aucun parent avec la classe 'jour' n'a été trouvé.");
+    }
     var gestionnaireSouris = function(event) {
         //faire le changement de jour
         if (suivreLaSouris) {
@@ -773,20 +799,9 @@ function suivreSouris(element, isCours) {
                     // Ajoutez le cours au jour survolé
                     var endroitCours = jour.querySelector(".endroit_cours");
                     endroitCours.appendChild(coursEnDeplacement);
-
-                    (async () => {
-                        try {
-                            const db = await ouvrirBaseDeDonnees();
-                            const courses = await getCoursByID(db, idCurrentCours);
-                            if (courses) {
-                                await modifierAttributCoursByID(db, idCurrentCours, 'jour', jour.id);;
-                            } else {
-                                console.log("Erreur : aucun cours avec cet ID !")
-                            }
-                        } catch (error) {
-                            console.error(error);
-                        }
-                    })();
+                    function getCurrentDay(){
+                        return jour;
+                    }
                 }
             });
 
