@@ -6,7 +6,7 @@ session_start();
 function DBCredential(){
     $dbhost = 'localhost';
     $dbuser = 'root';
-    $dbpass = 'root';
+    $dbpass = '';
     $dbname = 'ut_swap';
     $connect = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to mysql');
     mysqli_set_charset($connect, 'utf8');
@@ -165,7 +165,6 @@ if (isset($_POST['update_choix']) && !(empty($_POST['update_choix']))) {
             $_SESSION['reloadPage'] = "updateSuccess";
         }
     }
-    echo "<script> document.getElementById('update_choix').value = '0' ; </script>";
     unset($_SESSION['jour']);
     unset($_SESSION['idDemande']);
     unset($_SESSION['hDeb']);
@@ -688,7 +687,7 @@ if (
                                 $_SESSION["uv"] = $uv;
                                 $_SESSION["type"] = $type;
                             }
-                            echo "<script> document.getElementById('update_choix').value = '1'; document.getElementById('input-uv').value = $uv ; </script>";
+                            echo "<script> document.getElementById('update_choix').value = '1'; document.getElementById('input-uv').value = '$uv' ; </script>";
                             $_SESSION["idDemande"] = $currentIDdemande['idDemande'];
                             $_SESSION["hDeb"] = $hdebut;
                             $_SESSION["hFin"] = $hfin;
@@ -710,7 +709,6 @@ if (
                     }
                 }
             }else{
-                echo "<script>alert('test');</script>";
                 $primaryKeyDemande = $isDemandeExisting['idDemande'];
                 $isOffer = $isDemandeExisting['demande'];
                 $result = checkIfDetailsChange($connect , $primaryKeyDemande , $type, $uv , $hdebut , $hfin , $salle , $semaineChoix , $jour);

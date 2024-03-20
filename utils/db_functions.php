@@ -217,7 +217,6 @@ function updateSwapInsertNotif($choix, $demandeur, $idDemande, $id_notif, $login
 
 function insert_demande($connect, $login, $uv, $type, $jour, $hdebut, $hfin, $salle, $semaineChoix) {
     try {
-        echo "<script>console.log($login + $uv + $type + $jour + $hdebut + $hfin + $salle + $semaineChoix)</script>";
         // Préparer la requête SQL
         $insertion = $connect->prepare("INSERT INTO demande (login, codeUV, type, jour, horaireDebut, horaireFin, salle, semaine, raison, demande) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         if (!$insertion) {

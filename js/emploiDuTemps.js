@@ -305,7 +305,6 @@ class Cours {
 let cours2 = new Cours("IC05", "12h30", "13h00", "mardi", "FA104" , null , null , "TD");
 let cours3 = new Cours("MT02", "10h15", "11h15", "mardi", "FA104" , null , null , "TD");
 let cours4 = new Cours("PS21", "14h15", "16h15", "vendredi", "FA104" , null , null , "TD");
-let cours5 = new Cours("CACA", "08h00", "10h00", "mercredi", "FA104", null , null , "TP");
 let cours6 = new Cours("MT23", "11h00", "13h00", "lundi", "FA104" , "A" , null , "CM");
 var colorList = [
     "#FF9292","#FFA792","#FFB692","#FFC592","#FFD992",
@@ -315,7 +314,7 @@ var colorList = [
     "#D792FF","#EA92FF","#FF92EA","#FF92D6","#FF92BF"
 ];
 var coursColors = {};
-var liste = [cours2, cours3, cours4, cours5 , cours6]
+var liste = [cours2, cours3, cours4 , cours6]
 var endroit_cours;
 var cours;
 
@@ -717,14 +716,14 @@ var suivreLaSouris = false;
 var lastPosition;
 var tempsCurrentCours;
 function suivreSouris(element, isCours) {
-    var parentJourElement = coursElement.closest('.jour');
+    var parentJourElement = element.closest('.jour');
     if (parentJourElement) {
         (async () => {
             try {
                 const db = await ouvrirBaseDeDonnees();
                 const idCurrentCours = parseInt(element.id);
                 const courses = await getCoursByID(db, idCurrentCours);
-                var heureElement = coursElement.getElementsByTagName('p')[0].innerHTML.split("-");
+                var heureElement = element.getElementsByTagName('p')[0].innerHTML.split("-");
                 var heureDebut = formaterHeure(heureElement[0].replace("h",":")).replace(":","h");
                 var heureFin = formaterHeure(heureElement[1].replace("h",":")).replace(":","h");
                 if (courses) {
@@ -762,7 +761,7 @@ function suivreSouris(element, isCours) {
             if(lastPosition != newPosition && lastPosition !== null){
                 var heureDebutCours = convertirDecimalEnHeure(heureDebutEDT + (newPosition * nbHeureEDT / coursEnDeplacement.parentElement.offsetHeight));
                 var heureFinCours = convertirDecimalEnHeure(heureDebutEDT + ((newPosition + coursEnDeplacement.offsetHeight) * nbHeureEDT / coursEnDeplacement.parentElement.offsetHeight));
-                coursEnDeplacement.getElementsByClassName("horaire_cours")[0].innerHTML = heureDebutCours + "-" + heureFinCours;
+                coursEnDeplacement.getElementsByClassName("horaire_cours")[0].innerHTML = formaterHeure(heureDebutCours.replace("h",":")) + "-" + formaterHeure(heureFinCours.replace("h",":"));
             }
             lastPosition = newPosition;
 

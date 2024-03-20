@@ -10,7 +10,6 @@ function copierLien(element) {
         
         heureDebut = matchResult[1];
         heureFin = matchResult[2];
-        console.log(heureDebut);
     }
     // Créer le lien avec les informations
     var lien = "../php/demandes.php?uv=" + encodeURIComponent(uvType.split(" - ")[0]) +
@@ -299,24 +298,24 @@ function resetFilter(){
         "                    <div class=\"filtre_parent\" id=\"type\">\n" +
         "                        <h1 class=\"filtre_entete\">Type</h1>\n" +
         "                        <span class=\"filtre_span\" id=\"spanType\">\n" +
-        "                            <h3 class=\"check\" onclick=\"changeType(event)\">Cours</h3>\n" +
-        "                            <h3 class=\"check\" onclick=\"changeType(event)\">TD</h3>\n" +
-        "                            <h3 class=\"check\" onclick=\"changeType(event)\">TP</h3>\n" +
+        "                            <h3 class=\"checkType\" onclick=\"changeTypeFilter(event)\">Cours</h3>\n" +
+        "                            <h3 class=\"checkType\" onclick=\"changeTypeFilter(event)\">TD</h3>\n" +
+        "                            <h3 class=\"checkType\" onclick=\"changeTypeFilter(event)\">TP</h3>\n" +
         "                    </div>\n" +
         "                    <div class=\"filtre_parent\" id=\"jours\">\n" +
         "                        <h1 class=\"filtre_entete\">Semaine</h1>\n" +
         "                        <span class=\"filtre_span\" id=\"spanSemaine\">\n" +
-        "                            <h3 class=\"check\" onclick=\"changeType(event)\">A</h3>\n" +
-        "                            <h3 class=\"check\" onclick=\"changeType(event)\">B</h3>\n" +
+        "                            <h3 id=\"semaine-sA\" class=\"checkSemaine\" onclick=\"changeSemaine(event)\">A</h3>\n" +
+        "                            <h3 id=\"semaine-sB\" class=\"checkSemaine\" onclick=\"changeSemaine(event)\">B</h3>\n" +
         "                    </div>\n" +
         "                    <div class=\"filtre_parent\" id=\"heures\">\n" +
         "                        <h1>Horaires</h1>\n" +
         "                        <span class=\"filtre_span\">\n" +
         "                            <div>\n" +
-        "                                <input type=\"time\" id=\"filtre-input-hdebut\" name=\"hdebut\" value=\"08:00\" required onchange=\"filtreTime(event)\">\n" +
+        "                                <input type=\"time\" id=\"filtre-input-hdebut\" name=\"hdebut\" value=\"08:00\" required onchange=\"canDisplayCourses(event)\">\n" +
         "                            </div>\n" +
         "                            <div>\n" +
-        "                                <input type=\"time\" id=\"filtre-input-hfin\" name=\"hfin\" value=\"20:00\" required onchange=\"filtreTime(event)\">\n" +
+        "                                <input type=\"time\" id=\"filtre-input-hfin\" name=\"hfin\" value=\"20:00\" required onchange=\"canDisplayCourses(event)\">\n" +
         "                            </div>\n" +
         "                        </span>\n" +
         "                    </div>\n" +
