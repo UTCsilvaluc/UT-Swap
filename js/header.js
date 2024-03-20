@@ -37,6 +37,7 @@ var choix_semaine = document.getElementById('choix-semaine');
 
 var notifications = document.getElementsByClassName("notification");
 var notification_pannel = document.getElementById("notification_pannel");
+var nombreClickNotification = 0;
 
 var ecran = document.getElementById("ecran");
 
@@ -256,39 +257,42 @@ checkbox.addEventListener('change', function () {
     }
 });
 
+
 // Il y a le notification du menu PC et celui du menu téléphone donc on boucle pour tous les deux les selectionner
-for (var i = 0; i < notifications.length; i++) {
-    notifications[i].addEventListener("click", function() {
-        var xhr = new XMLHttpRequest();
+function notificationClick(){
+    nombreClickNotification++;
+    var xhr = new XMLHttpRequest();
 
-        // Configurer la requête
-        xhr.open("POST", "", true);
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    // Configurer la requête
+    xhr.open("POST", "", true);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
-        // Envoyer la requête avec les données
-        xhr.send("view=" + "1");
+    // Envoyer la requête avec les données
+    xhr.send("view=" + "1");
+    for(var j of document.getElementsByClassName("cercle")){
+        j.classList.remove("orange");;
+    }
 
-        var conteneurFiltre = document.getElementById("menuFiltre");
+    var conteneurFiltre = document.getElementById("menuFiltre");
 
-        var notifs = document.getElementsByClassName("notif");
-        if(notification_pannel.style.right !== "" && notification_pannel.style.display !== ""){
-            for(var j of notifs){
-                if(!j.classList.contains("type_1")){
-                    j.classList.toggle('viewed', true);
-                }
+    var notifs = document.getElementsByClassName("notif");
+    if(nombreClickNotification >= 2){
+        for(var j of notifs){
+            if(!j.classList.contains("type_1")){
+                j.classList.toggle('viewed', true);
             }
         }
+    }
 
-        if(conteneurFiltre !== null && typeof conteneurFiltre !== 'undefined'){
-            conteneurFiltre.style.display = "none";
-        }
+    if(conteneurFiltre !== null && typeof conteneurFiltre !== 'undefined'){
+        conteneurFiltre.style.display = "none";
+    }
 
-        nouveau_pannel.style.display = "none"
+    nouveau_pannel.style.display = "none"
 
-        notification_pannel.style.display = (notification_pannel.style.display === "none" || notification_pannel.style.display === "") ? "flex" : "none";
+    notification_pannel.style.display = (notification_pannel.style.display === "none" || notification_pannel.style.display === "") ? "flex" : "none";
 
-        menu_pannel.style.left = '-65%';
-    });
+    menu_pannel.style.left = '-65%';
 };
 
 document.getElementById("croix_nouveau").addEventListener("click", function() {

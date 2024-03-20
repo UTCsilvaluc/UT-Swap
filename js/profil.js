@@ -104,6 +104,7 @@ function choixDemande(choix, element){
             }else{
                 choix = 0;
             }
+
             var form = document.createElement('form');
             form.setAttribute('method', 'post');
             form.setAttribute('action', '');

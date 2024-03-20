@@ -138,12 +138,18 @@ nav .cercle{
     width: 12px;
     height: 12px;
     border-radius: 50%;
+}
+
+nav .vert{
     background-color: #3eff61;
 }
 
-nav .important{
+
+nav .orange{
     background-color: #ffab3e;
 }
+
+
 
 /* Mise en forme de la page de notif */
 

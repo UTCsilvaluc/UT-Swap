@@ -74,7 +74,7 @@ function nombreEnJour($chiffre){
     }
 }
 function sendNotifications($loginNotif, $idDemande, $demandeur, $type_notif, $statut, $connect){
-
+    
     date_default_timezone_set('Europe/Paris');
     $sqlInsertNotif = "INSERT INTO notifications (loginEtu, typeNotif, idDemande, demandeur, contenuNotif, date, viewed) VALUES (?, ?, ?, ?, ?, NOW(), 0)";
     $stmtInsertNotif = $connect->prepare($sqlInsertNotif);
@@ -96,6 +96,8 @@ function sendNotifications($loginNotif, $idDemande, $demandeur, $type_notif, $st
     $stmtSelectDemande2->bind_result($codeUV2, $type2, $jour2, $horaireDebut2, $horaireFin2, $semaine2, $nom2, $prenom2);
     $stmtSelectDemande2->fetch();
     $personne2= ucfirst($prenom2)." ".ucfirst($nom2);
+
+    
     if($semaine1 !== "null"){
         $semaine1 = " en semaine ".$semaine1;
     }else{
@@ -115,6 +117,8 @@ function sendNotifications($loginNotif, $idDemande, $demandeur, $type_notif, $st
         }
     }else if($type_notif === 3){
         $contenu_notif = "Une nouvelle demande a été postée !"; //à continuer
+    }else if($type_notif === 4){
+        $contenu_notif = $personne1." a retourné sa veste.;La demande de swap du ".$type2.$semaine2." de ".$codeUV2." pour ".nombreEnJour($jour2)." ".date("H\hi", strtotime($horaireDebut2))."-".date("H\hi", strtotime($horaireFin2))." a été annulée;";
     }
 
     // si il la notif n'a pas été envoyé alors le faire
@@ -136,7 +140,7 @@ function getResponsableByUv($uv){
     $responsableMail = "antoine.jouglet@utc.fr";
     return array('login' => $responsableLogin, 'nom' => $responsableNom,'prénom' => $responsablePrénom, 'mail' => $responsableMail);
 }
-$login = "ldompnie";
+$login = "silvaluc";
 $connect = DBCredential();
 if (isset($_POST['update_choix']) && !(empty($_POST['update_choix']))) {
     $update_choix = $_POST['update_choix'];
@@ -176,8 +180,10 @@ if (isset($_POST['update_choix']) && !(empty($_POST['update_choix']))) {
 if (isset($_POST['view'])){
     $view = validateInput($_POST['view'],$connect);
     if($view === "1"){
-        $sqlUpdateSwap = "UPDATE notifications SET viewed = 1 WHERE typeNotif != 1";
-        $connect->query($sqlUpdateSwap);
+        $sqlUpdateSwap = "UPDATE notifications SET viewed = 1 WHERE loginEtu = ? AND typeNotif != 1";
+        $stmtUpdateSwap = $connect->prepare($sqlUpdateSwap);
+        $stmtUpdateSwap->bind_param("s", $login);
+        $stmtUpdateSwap->execute();
         unset($_POST['view']);
     }
 }
@@ -190,6 +196,8 @@ if (
     unset($_POST['demandeur']);
     unset($_POST['idDemande']);
     unset($_POST['id_notif']);
+    header("Location: ".$_SERVER['PHP_SELF']);
+    exit();
 }
 
 
@@ -209,42 +217,56 @@ if (
             <li><a href="demandes.php">Demandes</a></li>
             <li><a href="profil.php">Profil</a></li>
             <li><a href="#">Informations</a></li>
-            <li><img class="notification" src="../svg/notif.svg">
+            <li onclick="notificationClick()"><img class="notification" src="../svg/notif.svg">
                 <?php
                 $connect = DBCredential();
-                $sql = "SELECT * FROM notifications WHERE viewed = 0 AND typeNotif='1';";
-                $sql2 = "SELECT * FROM notifications WHERE viewed = 0 AND typeNotif='2';";
-
-                $resultat = $connect->query($sql);
-                $resultat2 = $connect->query($sql2);
+                $sql = "SELECT * FROM notifications WHERE viewed = 0 AND loginEtu = ? AND typeNotif='1'";
+                $stmt = $connect->prepare($sql);
+                $stmt->bind_param("s", $login);
+                $stmt->execute();
+                $resultat = $stmt->get_result();
+                $sql2 = "SELECT * FROM notifications WHERE viewed = 0 AND loginEtu = ? AND typeNotif='2';";
+                $stmt2 = $connect->prepare($sql2);
+                $stmt2->bind_param("s", $login);
+                $stmt2->execute();
+                $resultat2 = $stmt2->get_result();
                 if ($resultat->num_rows > 0 || $resultat2->num_rows > 0) {
-                    echo '<div class="cercle';
-                    if($resultat2->num_rows > 0){
-                        echo ' important"></div>';
-                    }else{
-                        echo '"></div>';
+                    $classeDiv = "cercle";
+                    if ($resultat2->num_rows > 0) {
+                        $classeDiv .= " orange";
                     }
+                    if($resultat->num_rows > 0){
+                        $classeDiv .= " vert";
+                    }
+                    echo '<div class="' . $classeDiv . '"></div>';
                 }
                 ?>
             </li>
             <li><button onclick="nouveauClick()" class="bouton_nouveau"><img src="../svg/plus.svg">Nouveau</button></li>
         </ul>
         <ul id="menu_liste_petit">
-            <li><img class="notification" src="../svg/notif.svg">
+            <li onclick="notificationClick()"><img class="notification" src="../svg/notif.svg">
                 <?php
                 $connect = DBCredential();
-                $sql = "SELECT * FROM notifications WHERE viewed = 0 AND typeNotif='1';";
-                $sql2 = "SELECT * FROM notifications WHERE viewed = 0 AND typeNotif='2';";
-
-                $resultat = $connect->query($sql);
-                $resultat2 = $connect->query($sql2);
+                $sql = "SELECT * FROM notifications WHERE viewed = 0 AND loginEtu = ? AND typeNotif='1'";
+                $stmt = $connect->prepare($sql);
+                $stmt->bind_param("s", $login);
+                $stmt->execute();
+                $resultat = $stmt->get_result();
+                $sql2 = "SELECT * FROM notifications WHERE viewed = 0 AND loginEtu = ? AND typeNotif='2';";
+                $stmt2 = $connect->prepare($sql2);
+                $stmt2->bind_param("s", $login);
+                $stmt2->execute();
+                $resultat2 = $stmt->get_result();
                 if ($resultat->num_rows > 0 || $resultat2->num_rows > 0) {
-                    echo '<div class="cercle';
-                    if($resultat2->num_rows > 0){
-                        echo ' important"></div>';
-                    }else{
-                        echo '"></div>';
+                    $classeDiv = "cercle";
+                    if ($resultat2->num_rows > 0) {
+                        $classeDiv .= " orange";
                     }
+                    if($resultat->num_rows > 0){
+                        $classeDiv .= " vert";
+                    }
+                    echo '<div class="' . $classeDiv . '"></div>';
                 }
                 ?>
             </li>
