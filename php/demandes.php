@@ -126,24 +126,24 @@
                     <div class="filtre_parent" id="type">
                         <h1 class="filtre_entete">Type</h1>
                         <span class="filtre_span" id="spanType">
-                            <h3 class="check" onclick="changeType(event)">Cours</h3>
-                            <h3 class="check" onclick="changeType(event)">TD</h3>
-                            <h3 class="check" onclick="changeType(event)">TP</h3>
+                            <h3 class="checkType" onclick="changeTypeFilter(event)">Cours</h3>
+                            <h3 class="checkType" onclick="changeTypeFilter(event)">TD</h3>
+                            <h3 class="checkType" onclick="changeTypeFilter(event)">TP</h3>
                     </div>
                     <div class="filtre_parent" id="jours">
                         <h1 class="filtre_entete">Semaine</h1>
                         <span class="filtre_span" id="spanSemaine">
-                            <h3 class="check" onclick="changeType(event)">A</h3>
-                            <h3 class="check" onclick="changeType(event)">B</h3>
+                            <h3 id="semaine-sA" class="checkSemaine" onclick="changeSemaine(event)">A</h3>
+                            <h3 id="semaine-sB" class="checkSemaine" onclick="changeSemaine(event)">B</h3>
                     </div>
                     <div class="filtre_parent" id="heures">
                         <h1>Horaires</h1>
                         <span class="filtre_span">
                             <div>
-                                <input type="time" id="filtre-input-hdebut" name="hdebut" value="08:00" required onchange="filtreTime(event)">
+                                <input type="time" id="filtre-input-hdebut" name="hdebut" value="08:00" required onchange="canDisplayCourses(event)">
                             </div>
                             <div>
-                                <input type="time" id="filtre-input-hfin" name="hfin" value="20:00" required onchange="filtreTime(event)">
+                                <input type="time" id="filtre-input-hfin" name="hfin" value="20:00" required onchange="canDisplayCourses(event)">
                             </div>
                         </span>
                     </div>

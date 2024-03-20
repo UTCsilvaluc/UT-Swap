@@ -13,7 +13,16 @@
     include "header.php";
     ?>
     <script>
-        
+function changeInputType(){
+    document.getElementById("midFileError").classList.toggle('hidden',true);
+    if (document.getElementById("messageUV").checked){
+        document.getElementById("textUV").classList.toggle('hidden', false);
+        document.getElementById("midfileInput").classList.toggle('hidden', true);
+    } else {
+        document.getElementById("textUV").classList.toggle('hidden', true);
+        document.getElementById("midfileInput").classList.toggle('hidden', false);
+    }
+}
 function exportEDT(type){
     // Capture l'élément en PNG
     if (type === 'png'){
@@ -49,6 +58,19 @@ function exportEDT(type){
             var heureDebut = heuresSegments[0].trim();
             var heureFin = heuresSegments[1].trim();
             var salle = coursElement.querySelector('p:nth-of-type(2)').textContent.trim();
+            switch(type) {
+                case "TP":
+                    type = "P";
+                    break;
+                case "CM":
+                    type = "M";
+                    break;
+                case "TD":
+                    type = "D";
+                    break;
+                default:
+                    type=null;
+            }
             line += `${codeUV};${typeMatiere};${semaine};${heureDebut};${heureFin};${salle};${jour}\n`;
         })
         const blob = new Blob([line], { type: "text/plain" });
@@ -92,14 +114,16 @@ function exportEDT(type){
                         </div>
                         <img src="../svg/croix.svg" class="croix">
                         <div class="mid_content">
-                            <textarea name="texteUV" id="textUV" cols="30" rows="10" placeholder="Veuillez renseigner le mail reçu comprenant la liste des inscriptions aux UVS"></textarea>
+                            <p class="hidden" id="midFileError">Merci d'importer un fichier ou de sélectionner une autre méthode !</p>
+                            <textarea class="" name="texteUV" id="textUV" cols="30" rows="10" placeholder="Veuillez renseigner le mail reçu comprenant la liste des inscriptions aux UVS"></textarea>
+                            <input class="hidden" type="file" id="midfileInput" name="fileInput" accept=".txt">
                             <span class="spanChoixInput">
                                 <span class="mid_inputradio">
-                                    <input type="radio" name="inputChoix" id="messageUV" value="0" checked>
+                                    <input type="radio" name="inputChoix" id="messageUV" value="0" onclick="changeInputType(event)" checked>
                                     <label for="messageUV">Message UV</label>
                                 </span>
                                 <span class="mid_inputradio">
-                                    <input type="radio" name="inputChoix" id="messageExport" value="1">
+                                    <input type="radio" name="inputChoix" id="messageExport" onclick="changeInputType(event)" value="1">
                                     <label for="messageUV">Message d'export</label>
                                 </span>
                             </span>

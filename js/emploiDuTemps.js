@@ -110,8 +110,9 @@ function changerJour(element, jour){
 
 function posterSwap(event){
     event.stopPropagation();
-    preremplirNouveauForm();
     nouveauClick();
+    preremplirNouveauForm();
+
 }
 
 var isHovering = false;
@@ -474,7 +475,6 @@ function calculDecimal(nombre) {
 }
 
 function calculPourcentage(nombre , nbHeureEDT , tailleEDT) {
-
     var pixel = nombre * tailleEDT / nbHeureEDT;
     return pixel * 100 / tailleEDT;
 }
@@ -1215,10 +1215,11 @@ function transformerEntreeCours(entree) {
 }
 async function importEDT(event) {
     try {
+        var canClose = false;
         var allCourses = document.getElementById("textUV").value.split("\n");
         coursColors = {};
-        resetEDT(event);
         if (document.getElementById("messageUV").checked) {
+            resetEDT(event);
             for (var currentCours of allCourses) {
                 if (currentCours.length > 20) {
                     if (currentCours.includes("/")){
@@ -1247,12 +1248,43 @@ async function importEDT(event) {
                     }
                 }
             }
+            canClose = true;
         } else {
-            // Autre traitement si nécessaire...
+            file = document.getElementById("midfileInput").files[0];
+            if (file) {
+                resetEDT(event);
+                document.getElementById("midFileError").classList.toggle("hidden", true);
+                document.getElementById("midfileInput").value = "";
+
+                const reader = new FileReader();
+
+                reader.onload = async function(e) {
+                    const content = e.target.result;
+                    const lines = content.split('\n');
+
+                    for (const line of lines) {
+                        if (line.length > 1) {
+                            const detailsLine = line.split(";");
+                            const currentCours = new Cours(detailsLine[0], detailsLine[3], detailsLine[4], detailsLine[6], detailsLine[5], detailsLine[2] === "null" ? null : detailsLine[2], null, detailsLine[1]);
+                            try {
+                                await createCours(currentCours);
+                            } catch (error) {
+                                console.error(error);
+                            }
+                        }
+                    }
+                };
+                reader.readAsText(file);
+                canClose = true;
+            } else {
+                document.getElementById("midFileError").classList.toggle("hidden", false);
+            }
         }
-        document.getElementById("importEDTID").style.display = "none";
-        document.getElementById("textUV").value = "";
-        document.getElementById("ecran_edt").style.display = "none";
+        if (canClose){
+            document.getElementById("importEDTID").style.display = "none";
+            document.getElementById("textUV").value = "";
+            document.getElementById("ecran_edt").style.display = "none";
+        }
     } catch (error) {
         console.error(error);
     }
