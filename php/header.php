@@ -142,40 +142,7 @@ function getResponsableByUv($uv){
 }
 $login = "ldompnie";
 $connect = DBCredential();
-if (isset($_POST['update_choix']) && !(empty($_POST['update_choix']))) {
-    $update_choix = $_POST['update_choix'];
-    if ($update_choix == '1'){
-        $idDemande = $_SESSION['idDemande'];
-        $sqlCheckInsertion = "UPDATE demande SET jour=?,horaireDebut=?, horaireFin=?, salle=?, semaine=? WHERE idDemande=?";
-        $stmtCheckInsertion = $connect->prepare($sqlCheckInsertion);
-        $stmtCheckInsertion->bind_param("issssi", $_SESSION['jour'], $_SESSION['hDeb'], $_SESSION['hFin'], $_SESSION['salle'], $_SESSION['semaine'], $_SESSION['idDemande']);
-        if ($stmtCheckInsertion->execute()) {
-            //echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
-        }else {
-            echo "Erreur lors de l'insertion des données : " . $stmtCheckInsertion->error;
-        }
-        if (isset($_SESSION['swap'])){
-            $uv = $_SESSION['uv'];
-            $type = $_SESSION['type'];
-            $offerId = $_SESSION['swap'];
-            create_swap($connect , $idDemande , $offerId , $uv , $type , $login);
-            sendNotifications($login , $offerId , $idDemande , 1 , 0 , $connect);
-            $_SESSION['reloadPage'] = "swapSuccess";
-        } else {
-            $_SESSION['reloadPage'] = "updateSuccess";
-        }
-    }
-    unset($_SESSION['jour']);
-    unset($_SESSION['idDemande']);
-    unset($_SESSION['hDeb']);
-    unset($_SESSION['hFin']);
-    unset($_SESSION['salle']);
-    unset($_SESSION['semaine']);
-    unset($_SESSION['swap']);
-    unset($_SESSION['uv']);
-    unset($_SESSION['type']);
-    unset($_POST['uv'], $_POST['creneau'], $_POST['hdebut'], $_POST['hfin'], $_POST['salle'], $_POST['type']);
-}
+
 if (isset($_POST['view'])){
     $view = validateInput($_POST['view'],$connect);
     if($view === "1"){
@@ -567,6 +534,42 @@ if (
 
 <script src="../js/header.js"></script>
 <?php
+if (isset($_POST['update_choix']) && !(empty($_POST['update_choix']))) {
+    $update_choix = $_POST['update_choix'];
+    if ($update_choix == '1'){
+        $idDemande = $_SESSION['idDemande'];
+        $sqlCheckInsertion = "UPDATE demande SET jour=?,horaireDebut=?, horaireFin=?, salle=?, semaine=? WHERE idDemande=?";
+        $stmtCheckInsertion = $connect->prepare($sqlCheckInsertion);
+        $stmtCheckInsertion->bind_param("issssi", $_SESSION['jour'], $_SESSION['hDeb'], $_SESSION['hFin'], $_SESSION['salle'], $_SESSION['semaine'], $_SESSION['idDemande']);
+        if ($stmtCheckInsertion->execute()) {
+            //echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
+        }else {
+            echo "Erreur lors de l'insertion des données : " . $stmtCheckInsertion->error;
+        }
+        if (isset($_SESSION['swap'])){
+            $uv = $_SESSION['uv'];
+            $type = $_SESSION['type'];
+            $offerId = $_SESSION['swap'];
+            create_swap($connect , $idDemande , $offerId , $uv , $type , $login);
+            sendNotifications($login , $offerId , $idDemande , 1 , 0 , $connect);
+            $_SESSION['reloadPage'] = "swapSuccess";
+        } else {
+            $_SESSION['reloadPage'] = "updateSuccess";
+        }
+    }
+    unset($_SESSION['jour']);
+    unset($_SESSION['idDemande']);
+    unset($_SESSION['hDeb']);
+    unset($_SESSION['hFin']);
+    unset($_SESSION['salle']);
+    unset($_SESSION['semaine']);
+    unset($_SESSION['swap']);
+    unset($_SESSION['uv']);
+    unset($_SESSION['type']);
+    unset($_POST['uv'], $_POST['creneau'], $_POST['hdebut'], $_POST['hfin'], $_POST['salle'], $_POST['type']);
+}
+?>
+<?php
 // Vérifier si les variables sont définies et non vides
 if (
     isset($_POST['uv'], $_POST['creneau'], $_POST['hdebut'], $_POST['hfin'], $_POST['salle'], $_POST['type']) && ($_POST['update_choix'] == '0') &&
@@ -765,5 +768,7 @@ if (
 
 
 ?>
+
+
 </body>
 </html>
