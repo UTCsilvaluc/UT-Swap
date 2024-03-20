@@ -13,25 +13,75 @@
     include "header.php";
     ?>
     <script>
-        
+function changeInputType(){
+    document.getElementById("midFileError").classList.toggle('hidden',true);
+    if (document.getElementById("messageUV").checked){
+        document.getElementById("textUV").classList.toggle('hidden', false);
+        document.getElementById("midfileInput").classList.toggle('hidden', true);
+    } else {
+        document.getElementById("textUV").classList.toggle('hidden', true);
+        document.getElementById("midfileInput").classList.toggle('hidden', false);
+    }
+}
 function exportEDT(type){
     // Capture l'élément en PNG
-    html2canvas(document.querySelector('#conteneur_edt > div:nth-child(4)')).then(function(canvas) {
-        // Convertit le canvas en image data URL
-        
-        exportElement.style.display = "none";
-        ecran.style.display = "none";
-        var imageDataURL = canvas.toDataURL('image/png');
-        if(type === "png"){
-            // Crée un lien de téléchargement
-            var downloadLink = document.createElement('a');
-            downloadLink.href = imageDataURL;
-            downloadLink.download = document.getElementById("fileName").value + '.png';
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
-            document.body.removeChild(downloadLink);
-        }
-    });
+    if (type === 'png'){
+        html2canvas(document.querySelector('#conteneur_edt > div:nth-child(4)')).then(function(canvas) {
+            // Convertit le canvas en image data URL
+
+            exportElement.style.display = "none";
+            ecran.style.display = "none";
+            var imageDataURL = canvas.toDataURL('image/png');
+            if(type === "png"){
+                // Crée un lien de téléchargement
+                var downloadLink = document.createElement('a');
+                downloadLink.href = imageDataURL;
+                downloadLink.download = document.getElementById("fileName").value + '.png';
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            }
+        });
+    } else if (type === 'txt'){
+        var courses = document.getElementsByClassName("cours");
+        var line = '';
+        Array.from(courses).forEach(function (coursElement) {
+            var jour = coursElement.closest('.jour').id;
+            var texte = coursElement.querySelector('h2.UV').textContent;
+            var regex = /^([A-Z0-9]+) - (TD|TP|CM)( A| B)?$/;
+            var match = texte.match(regex);
+            var codeUV = match[1];
+            var typeMatiere = match[2];
+            var semaine = match[3] ? match[3].replace(/\s/g, "") : null;
+            var heuresText = coursElement.querySelector('.horaire_cours').textContent.trim();
+            var heuresSegments = heuresText.split('-');
+            var heureDebut = heuresSegments[0].trim();
+            var heureFin = heuresSegments[1].trim();
+            var salle = coursElement.querySelector('p:nth-of-type(2)').textContent.trim();
+            switch(type) {
+                case "TP":
+                    type = "P";
+                    break;
+                case "CM":
+                    type = "M";
+                    break;
+                case "TD":
+                    type = "D";
+                    break;
+                default:
+                    type=null;
+            }
+            line += `${codeUV};${typeMatiere};${semaine};${heureDebut};${heureFin};${salle};${jour}\n`;
+        })
+        const blob = new Blob([line], { type: "text/plain" });
+        var downloadLink = document.createElement('a');
+        const url = window.URL.createObjectURL(blob);
+        downloadLink.href = url;
+        downloadLink.download = document.getElementById("fileName").value + '.txt';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    }
 }
 
     </script>
@@ -64,7 +114,19 @@ function exportEDT(type){
                         </div>
                         <img src="../svg/croix.svg" class="croix">
                         <div class="mid_content">
-                            <textarea name="texteUV" id="textUV" cols="30" rows="10" placeholder="Veuillez renseigner le mail reçu comprenant la liste des inscriptions aux UVS"></textarea>
+                            <p class="hidden" id="midFileError">Merci d'importer un fichier ou de sélectionner une autre méthode !</p>
+                            <textarea class="" name="texteUV" id="textUV" cols="30" rows="10" placeholder="Veuillez renseigner le mail reçu comprenant la liste des inscriptions aux UVS"></textarea>
+                            <input class="hidden" type="file" id="midfileInput" name="fileInput" accept=".txt">
+                            <span class="spanChoixInput">
+                                <span class="mid_inputradio">
+                                    <input type="radio" name="inputChoix" id="messageUV" value="0" onclick="changeInputType(event)" checked>
+                                    <label for="messageUV">Message UV</label>
+                                </span>
+                                <span class="mid_inputradio">
+                                    <input type="radio" name="inputChoix" id="messageExport" onclick="changeInputType(event)" value="1">
+                                    <label for="messageUV">Message d'export</label>
+                                </span>
+                            </span>
                         </div>
                         <div class="mid_button">
                             <hr>
@@ -85,6 +147,7 @@ function exportEDT(type){
                             <hr>
                             <button onclick="exportEDT('png')" id="export_png">Exporter PNG</button>
                             <button onclick="exportEDT('pdf')" id="export_pdf">Exporter PDF</button>
+                            <button onclick="exportEDT('txt')" id="export_txt">Exporter txt</button>
                         </div>
                     </div>
                     <div>

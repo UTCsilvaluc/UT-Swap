@@ -114,6 +114,25 @@
     background: #f1f1f1;
 }
 
+.checkType , .checkSemaine{
+    background: #32373B;
+    color: white;
+    transition: background-color 0.3s linear; /* Transition de couleur de fond */
+}
+
+.uncheckType , .uncheckSemaine{
+    transition: background-color 0.3s linear; /* Transition de couleur de fond */
+}
+
+.checkType:hover , .checkSemaine:hover{
+    background: #444a4f;
+    cursor: pointer;
+}
+.uncheckType:hover , .uncheckSemaine:hover{
+    background: #e3dfdf;
+    cursor: pointer;
+}
+
 .researchLogoSvg{
     transform: translateX(-150%);
     width: 11px;

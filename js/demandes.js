@@ -184,10 +184,31 @@ function changeJour(event){
 
 }
 
+function changeTypeFilter(event){
+    if (event.target.className === "checkType"){
+        event.target.className = "uncheckType";
+    } else {
+        event.target.className = "checkType";
+    }
+    canDisplayCourses(event);
+}
+
+function changeSemaine(event){
+    if (event.target.className === "checkSemaine"){
+        event.target.className = "uncheckSemaine";
+    } else {
+        event.target.className = "checkSemaine";
+    }
+    canDisplayCourses(event);
+}
 function canDisplayCourses(event) {
     var divs_demande = document.getElementsByClassName("div_demande");
     var liste_jours = document.getElementsByClassName('check');
+    var liste_type = document.getElementsByClassName("checkType");
+    var heureDebut = document.getElementById("filtre-input-hdebut").value.replace(":","h");
+    var heureFin = document.getElementById("filtre-input-hfin").value.replace(":","h");
     var joursActifs = []; // Initialiser une liste pour stocker les jours actifs
+    var typeActifs = []; // Initialiser une liste pour stocker les jours actifs
     var display = true;
 
 // Créer un objet pour stocker la correspondance entre les jours et les nombres
@@ -202,6 +223,10 @@ function canDisplayCourses(event) {
     for (var i = 0; i < liste_jours.length; i++) {
         var jour = liste_jours[i].innerHTML.trim(); // Récupérer le contenu HTML de l'élément et supprimer les espaces
         joursActifs.push(joursMap[jour]);
+    }
+    for (var i = 0; i < liste_type.length; i++) {
+        var type = liste_type[i].innerHTML.trim(); // Récupérer le contenu HTML de l'élément et supprimer les espaces
+        typeActifs.push(type);
     }
     // Créer un nouvel objet URLSearchParams avec la chaîne de requête de l'URL actuelle
     var params = new URLSearchParams(window.location.search);
@@ -228,12 +253,29 @@ function canDisplayCourses(event) {
         if (!(joursActifs.includes(donnees.jour))){
             display = false;
         }
+        if (!(typeActifs.includes(donnees.type))){
+            display = false;
+        }
+        if (!(calculDecimal(heureDebut) <= calculDecimal(donnees.horaireDebut.slice(0,-3).replace(":","h")) && calculDecimal(heureFin) >= calculDecimal(donnees.horaireFin.slice(0,-3).replace(":","h")))){
+            display = false;
+        }
+        if (donnees.semaine === "A" && document.getElementById("semaine-sA").className === "uncheckSemaine"){
+            display = false;
+        } else if (donnees.semaine === "B" && document.getElementById("semaine-sB").className === "uncheckSemaine"){
+            display = false;
+        }
         div.style.display = display ? 'flex' : 'none';
         display = true;
     });
 
 }
+function calculDecimal(nombre) {
+    var heuresMinutesDebut = nombre.split('h');
+    var heuresDebut = parseInt(heuresMinutesDebut[0], 10);
+    var minutesDebut = parseInt(heuresMinutesDebut[1], 10);
 
+    return heuresDebut + minutesDebut / 60;
+}
 function resetFilter(){
     document.getElementById('filterContainer1').innerHTML = "<div class=\"filtre_parent\" id=\"police\">\n" +
         "                        <h1 class=\"filtre_entete\">Trier par</h1>\n" +

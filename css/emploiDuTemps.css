@@ -131,6 +131,20 @@ main{
     width: 100%;
 }
 
+.spanChoixInput{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.mid_inputradio{
+    display: flex;
+    flex-direction: row;
+
+}
 .mid_content label,.mid_content input{
     width: 60%;
     white-space: nowrap;
