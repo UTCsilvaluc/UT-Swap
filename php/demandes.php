@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/demandes.css">
+    <link rel="stylesheet" href="../css/demande_content.css">
     <link rel="stylesheet" href="../css/emploiDuTemps.css">
     <title>Demandes - UT'Swap</title>
     <link rel="icon" href="../img/logo.png" type="image/x-icon">

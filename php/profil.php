@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/demande_content.css">
     <link rel="stylesheet" href="../css/profil.css">
+    <link rel="stylesheet" href="../css/mid_pannel.css">
     <title>Profil - UT'Swap</title>
     <link rel="icon" href="../img/logo.png" type="image/x-icon">
 </head>
@@ -74,7 +76,8 @@
     function formaterHeure($heureNonFormatee) {
         list($heures, $minutes) = explode(':', $heureNonFormatee);
         return sprintf('%02dh%02d', $heures, $minutes);
-    }?>
+    }
+    ?>
     <main>
         <div class="arc-de-cercle"></div>
         <img src="../svg/profil.svg" id="profil_image">
@@ -95,21 +98,21 @@
                 <div id="profil_demandes">
                     <div id="profil_demandes_parent">
                         <div class="profil_demandes_sous_parent">
-                            <div id="profil_demande_attente" class="profil_demande">
+                            <div id="profil_demande_attente" onclick="openSwapPannel('attente')" class="profil_demande">
                                 <span class="profil_demande_header"><img src="../svg/dmd_attent.svg" alt=""><span><?= getNbSwapProfil("attente"); ?></span></span>
                                 <h2>Swaps en attente</h2>
                             </div>
-                            <div id="profil_demande_cours" class="profil_demande">
+                            <div id="profil_demande_cours" onclick="openSwapPannel('cours')" class="profil_demande">
                                 <span class="profil_demande_header"><img src="../svg/demande_cours.svg" alt=""><span><?= getNbSwapProfil("cours"); ?></span></span>
                                 <h2>Swaps en cours</h2>
                             </div>
                         </div>
                         <div class="profil_demandes_sous_parent">
-                            <div id="profil_demande_accept" class="profil_demande">
+                            <div id="profil_demande_accept" onclick="openSwapPannel('accept')" class="profil_demande">
                                 <span class="profil_demande_header"><img src="../svg/dmd_accept.svg" alt=""><span><?= getNbSwapProfil("accept"); ?></span></span>
                                 <h2>Swaps acceptés</h2>
                             </div>
-                            <div id="profil_demande_refus" class="profil_demande">
+                            <div id="profil_demande_refus" onclick="openSwapPannel('refus')" class="profil_demande">
                                 <span class="profil_demande_header"><img src="../svg/dmd_refus.svg" alt=""><span><?= getNbSwapProfil("refus"); ?></span></span>
                                 <h2>Swaps refusés</h2>
                             </div>
@@ -407,6 +410,94 @@
             </div>
         </div>
     </main>
+    <div id="swap_pannel" class="mid_pannel">
+        <div id="swap_header" class="mid_titre">
+            <?php
+                if(isset($_GET['typeSwap']) && !(empty($_GET['typeSwap']))){
+                    echo "<script>document.getElementById('swap_pannel').style.display='flex'</script>";
+                    $typeSwap = validateInput($_GET['typeSwap'],$connect);
+                    if($typeSwap == "cours"){
+                        echo "<h1>Mes Swaps en cours</h1>";
+                    }else if($typeSwap == "accept"){
+                        echo "<h1>Mes Swaps acceptés</h1>";
+                    }else if($typeSwap == "refus"){
+                        echo "<h1>Mes Swaps refusés</h1>";
+                    }else if($typeSwap == "attente"){
+                        echo "<h1>Mes Swaps en attente</h1>";
+                    }
+                }
+            ?>
+            <hr>
+        </div>
+        <img src="../svg/croix.svg" class="croix">
+        <div id="swap_content" class="mid_content">
+            <div class="demande_container">
+            <?php /* Sera à récupérer une fois que l'étudiant sera login. */
+                // Supposons que $result soit votre tableau de résultats de la requête SQL
+                $connect = DBCredential();
+                if(isset($_GET['typeSwap']) && !(empty($_GET['typeSwap']))){
+                    $typeSwap = validateInput($_GET['typeSwap'],$connect);
+                    if($typeSwap == "cours"){
+                        $stmt = $connect->prepare("SELECT d1.idDemande as demande, d1.login, d1.codeUV , d1.type , d1.jour , d1.horaireDebut , d1.horaireFin , d1.salle , d1.semaine, p.nom , p.prenom, (SELECT count(demandeur) FROM swap WHERE demandeur = d1.idDemande) AS nbDemandes FROM `swap` s JOIN demande d1 ON d1.idDemande = s.demandeur JOIN demande d2 ON d2.idDemande=s.idDemande JOIN personne p ON p.login=d1.login WHERE d2.login = ? AND s.statut=2 UNION SELECT d1.idDemande as demande, d1.login, d1.codeUV , d1.type , d1.jour , d1.horaireDebut , d1.horaireFin , d1.salle , d1.semaine, p.nom , p.prenom, (SELECT count(idDemande) FROM swap WHERE idDemande = d1.idDemande) AS nbDemandes FROM `swap` s JOIN demande d1 ON d1.idDemande = s.idDemande JOIN demande d2 ON d2.idDemande=s.demandeur JOIN personne p ON p.login=d1.login WHERE d2.login = ? AND s.statut=2");
+                        $stmt->bind_param("ss" , $login, $login);
+                    }else if($typeSwap == "accept"){
+                        $stmt = $connect->prepare("SELECT d1.idDemande as demande, d1.login, d1.codeUV , d1.type , d1.jour , d1.horaireDebut , d1.horaireFin , d1.salle , d1.semaine, p.nom , p.prenom, (SELECT count(demandeur) FROM swap WHERE demandeur = d1.idDemande) AS nbDemandes FROM `swap` s JOIN demande d1 ON d1.idDemande = s.demandeur JOIN demande d2 ON d2.idDemande=s.idDemande JOIN personne p ON p.login=d1.login WHERE d2.login = ? AND s.statut=4 UNION SELECT d1.idDemande as demande, d1.login, d1.codeUV , d1.type , d1.jour , d1.horaireDebut , d1.horaireFin , d1.salle , d1.semaine, p.nom , p.prenom, (SELECT count(idDemande) FROM swap WHERE idDemande = d1.idDemande) AS nbDemandes FROM `swap` s JOIN demande d1 ON d1.idDemande = s.idDemande JOIN demande d2 ON d2.idDemande=s.demandeur JOIN personne p ON p.login=d1.login WHERE d2.login = ? AND s.statut=4");
+                        $stmt->bind_param("ss" , $login, $login);
+                    }else if($typeSwap == "refus"){
+                        $stmt = $connect->prepare("SELECT d1.idDemande as demande, d1.login, d1.codeUV , d1.type , d1.jour , d1.horaireDebut , d1.horaireFin , d1.salle , d1.semaine, p.nom , p.prenom, (SELECT count(demandeur) FROM swap WHERE demandeur = d1.idDemande) AS nbDemandes FROM `swap` s JOIN demande d1 ON d1.idDemande = s.demandeur JOIN demande d2 ON d2.idDemande=s.idDemande JOIN personne p ON p.login=d1.login WHERE d2.login = ? AND s.statut=3 UNION SELECT d1.idDemande as demande, d1.login, d1.codeUV , d1.type , d1.jour , d1.horaireDebut , d1.horaireFin , d1.salle , d1.semaine, p.nom , p.prenom, (SELECT count(idDemande) FROM swap WHERE idDemande = d1.idDemande) AS nbDemandes FROM `swap` s JOIN demande d1 ON d1.idDemande = s.idDemande JOIN demande d2 ON d2.idDemande=s.demandeur JOIN personne p ON p.login=d1.login WHERE d2.login = ? AND s.statut=3");
+                        $stmt->bind_param("ss" , $login, $login);
+                    }else if($typeSwap == "attente"){
+                        $stmt = $connect->prepare("SELECT idDemande as demande, codeUV, type, jour, horaireDebut, horaireFin, salle, semaine FROM `demande` d WHERE d.login = ? AND idDemande NOT IN (SELECT s.idDemande FROM `swap` s JOIN demande d1 ON d1.idDemande=s.idDemande WHERE d1.login = ? AND s.statut>=2) AND idDemande NOT IN (SELECT s.demandeur FROM `swap` s JOIN demande d1 ON d1.idDemande=s.demandeur WHERE d1.login = ? AND s.statut>=2)");
+                        $stmt->bind_param("sss" , $login, $login, $login);
+                    }
+                
+                    $isAvailable = $stmt->execute();
+                    $result = $stmt->get_result();
+                    $stmt->close();
+                    if($result->num_rows === 0){
+                        echo "<h2>Vous n'avez aucun swap de ce type</h2><style>.demande_container{justify-content: center;}</style>";
+                    }else{
+                        foreach ($result as $demande) {
+                            // Assignation des valeurs du tableau à des variables
+                            $UV = $demande['codeUV'];
+                            $type = $demande['type'];
+                            $jour = $demande['jour'];
+                            $hdebut = $demande['horaireDebut'];
+                            $hfin = $demande['horaireFin'];
+                            $salle = $demande['salle'];
+                            $semaine = $demande['semaine'];
+                            $jours = array(
+                                1 => 'Lundi',
+                                2 => 'Mardi',
+                                3 => 'Mercredi',
+                                4 => 'Jeudi',
+                                5 => 'Vendredi',
+                                6 => 'Samedi',
+                                7 => 'Dimanche'
+                            );
+                            $hdebut = substr($hdebut , 0 , 5);
+                            $hfin = substr($hfin , 0 , 5);
+                        ?>
+                        <div class="div_demande">
+                            <div class="gauche_container">
+                                <div class="rectangle_demande"></div>
+                                <div class="infos_uv">
+                                    <h2><?php echo ($semaine == "null") ? "$UV - $type" : "$UV - $type $semaine"; ?></h2>
+                                    <h4><?php echo "$jours[$jour] $hdebut - $hfin | $salle"; ?></h4>
+                                </div>
+                            </div>
+                            <div class="swap_div_container">
+                                <img class="swap_icon" src="../svg/swap_icon.svg" alt="" onclick="copierLien(this)">
+                            </div>
+                        </div>
+                <?php } } }?>
+            </div>
+        </div>
+        <div class="mid_button">
+            <hr>
+            <button id="swap_button_retour">Retour</button>
+        </div>
+    </div>
     <script src="../js/profil.js"></script>
 </body>
 

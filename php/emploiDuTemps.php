@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/emploiDuTemps.css">
+    <link rel="stylesheet" href="../css/mid_pannel.css">
     <title>Header avec Notification</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
@@ -17,10 +18,12 @@ function changeInputType(){
     document.getElementById("midFileError").classList.toggle('hidden',true);
     if (document.getElementById("messageUV").checked){
         document.getElementById("textUV").classList.toggle('hidden', false);
-        document.getElementById("midfileInput").classList.toggle('hidden', true);
+        document.getElementById("drag-image").classList.toggle('hidden', true);
+        document.getElementsByClassName("mid_button")[0].classList.toggle('hidden', false);
     } else {
         document.getElementById("textUV").classList.toggle('hidden', true);
-        document.getElementById("midfileInput").classList.toggle('hidden', false);
+        document.getElementById("drag-image").classList.toggle('hidden', false);
+        document.getElementsByClassName("mid_button")[0].classList.toggle('hidden', true);
     }
 }
 function exportEDT(type){
@@ -114,9 +117,6 @@ function exportEDT(type){
                         </div>
                         <img src="../svg/croix.svg" class="croix">
                         <div class="mid_content">
-                            <p class="hidden" id="midFileError">Merci d'importer un fichier ou de sélectionner une autre méthode !</p>
-                            <textarea class="" name="texteUV" id="textUV" cols="30" rows="10" placeholder="Veuillez renseigner le mail reçu comprenant la liste des inscriptions aux UVS"></textarea>
-                            <input class="hidden" type="file" id="midfileInput" name="fileInput" accept=".txt">
                             <span class="spanChoixInput">
                                 <span class="mid_inputradio">
                                     <input type="radio" name="inputChoix" id="messageUV" value="0" onclick="changeInputType(event)" checked>
@@ -124,9 +124,20 @@ function exportEDT(type){
                                 </span>
                                 <span class="mid_inputradio">
                                     <input type="radio" name="inputChoix" id="messageExport" onclick="changeInputType(event)" value="1">
-                                    <label for="messageUV">Message d'export</label>
+                                    <label for="messageExport">Message d'export</label>
                                 </span>
                             </span>
+                            <p class="hidden" id="midFileError">Merci d'importer un fichier ou de sélectionner une autre méthode !</p>
+                            <textarea class="" name="texteUV" id="textUV" cols="30" rows="10" placeholder="Veuillez renseigner le mail reçu comprenant la liste des inscriptions aux UVS"></textarea>
+                            
+                            <div id="drag-image" class="hidden">
+                                <div id="drag-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                                <h6>Drag & Drop le fichier ici</h6>
+                                <span>OU</span>
+                                <button>Choisir un fichier</button>
+                                <input type="file" id="midfileInput" name="fileInput" accept=".txt" hidden>
+                            </div>
+                            
                         </div>
                         <div class="mid_button">
                             <hr>
@@ -146,8 +157,7 @@ function exportEDT(type){
                         <div class="mid_button">
                             <hr>
                             <button onclick="exportEDT('png')" id="export_png">Exporter PNG</button>
-                            <button onclick="exportEDT('pdf')" id="export_pdf">Exporter PDF</button>
-                            <button onclick="exportEDT('txt')" id="export_txt">Exporter txt</button>
+                            <button onclick="exportEDT('txt')" id="export_txt">Exporter TXT</button>
                         </div>
                     </div>
                     <div>

@@ -82,6 +82,28 @@ window.addEventListener('resize', mettreAJourContenuProfil);
 mettreAJourContenuProfil();
 
 
+var swap_pannel = document.getElementById("swap_pannel");
+function openSwapPannel(type){
+    history.replaceState({}, document.title, window.location.pathname);
+    if(type=="attente"){
+        window.location.href = window.location.href + "?typeSwap=attente";
+    }else if(type=="cours"){
+        window.location.href = window.location.href + "?typeSwap=cours";
+    }else if(type=="accept"){
+        window.location.href = window.location.href + "?typeSwap=accept";
+    }else if(type=="refus"){
+        window.location.href = window.location.href + "?typeSwap=refus";
+    }
+    event.stopPropagation();
+}
+
+document.addEventListener("click" , function (event){
+    if ((!(event.target.closest("#swap_pannel")) && swap_pannel.style.display != "none") || event.target.id == "swap_button_retour") {
+        swap_pannel.style.display = "none";
+        history.replaceState({}, document.title, window.location.pathname);
+    }
+})
+
 function choixDemande(choix, element){
     var clickedElement = element.target;
 

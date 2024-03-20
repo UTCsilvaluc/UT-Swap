@@ -6,7 +6,7 @@ session_start();
 function DBCredential(){
     $dbhost = 'localhost';
     $dbuser = 'root';
-    $dbpass = '';
+    $dbpass = 'root';
     $dbname = 'ut_swap';
     $connect = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to mysql');
     mysqli_set_charset($connect, 'utf8');
@@ -140,7 +140,7 @@ function getResponsableByUv($uv){
     $responsableMail = "antoine.jouglet@utc.fr";
     return array('login' => $responsableLogin, 'nom' => $responsableNom,'prénom' => $responsablePrénom, 'mail' => $responsableMail);
 }
-$login = "silvaluc";
+$login = "ldompnie";
 $connect = DBCredential();
 if (isset($_POST['update_choix']) && !(empty($_POST['update_choix']))) {
     $update_choix = $_POST['update_choix'];
@@ -248,22 +248,22 @@ if (
             <li onclick="notificationClick()"><img class="notification" src="../svg/notif.svg">
                 <?php
                 $connect = DBCredential();
-                $sql = "SELECT * FROM notifications WHERE viewed = 0 AND loginEtu = ? AND typeNotif='1'";
-                $stmt = $connect->prepare($sql);
-                $stmt->bind_param("s", $login);
-                $stmt->execute();
-                $resultat = $stmt->get_result();
-                $sql2 = "SELECT * FROM notifications WHERE viewed = 0 AND loginEtu = ? AND typeNotif='2';";
-                $stmt2 = $connect->prepare($sql2);
-                $stmt2->bind_param("s", $login);
-                $stmt2->execute();
-                $resultat2 = $stmt->get_result();
-                if ($resultat->num_rows > 0 || $resultat2->num_rows > 0) {
+                $sql1 = "SELECT * FROM notifications WHERE viewed = 0 AND loginEtu = ? AND typeNotif='1'";
+                $stmt1 = $connect->prepare($sql1);
+                $stmt1->bind_param("s", $login);
+                $stmt1->execute();
+                $result = $stmt1->get_result();
+                $sql12 = "SELECT * FROM notifications WHERE viewed = 0 AND loginEtu = ? AND typeNotif='2';";
+                $stmt12 = $connect->prepare($sql12);
+                $stmt12->bind_param("s", $login);
+                $stmt12->execute();
+                $result2 = $stmt12->get_result();
+                if ($result->num_rows > 0 || $result2->num_rows > 0) {
                     $classeDiv = "cercle";
-                    if ($resultat2->num_rows > 0) {
+                    if ($result2->num_rows > 0) {
                         $classeDiv .= " orange";
                     }
-                    if($resultat->num_rows > 0){
+                    if($result->num_rows > 0){
                         $classeDiv .= " vert";
                     }
                     echo '<div class="' . $classeDiv . '"></div>';

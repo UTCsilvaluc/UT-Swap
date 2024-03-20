@@ -375,8 +375,11 @@ function mettreAJourContenu() {
     var largeurFenetre = window.innerWidth;
 
     // Changez le contenu en fonction de la largeur de la fenêtre
-    var exportPDF = document.getElementById('export_pdf');
+    var exportTXT = document.getElementById('export_txt');
     var exportPNG = document.getElementById('export_png');
+
+    var messageExport = document.getElementById('messageExport').parentElement.querySelector("label");
+    var messageUV = document.getElementById('messageUV').parentElement.querySelector("label");
 
     if (largeurFenetre <= 600) {
         dessus_edt.style.width = ""
@@ -387,10 +390,14 @@ function mettreAJourContenu() {
     }
     
     if (largeurFenetre <= 400) {
-        exportPDF.innerHTML = 'PDF';
+        messageUV.innerHTML = "UV";
+        messageExport.innerHTML = "Export";
+        exportTXT.innerHTML = 'TXT';
         exportPNG.innerHTML = 'PNG';
     } else {
-        exportPDF.innerHTML = 'Exporter PDF';
+        messageUV.innerHTML = "Message d'UV";
+        messageExport.innerHTML = "Message d'export";
+        exportTXT.innerHTML = 'Exporter TXT';
         exportPNG.innerHTML = 'Exporter PNG';
     }
 
@@ -1127,12 +1134,14 @@ var exportElement = document.getElementById("exportEDT");
 var ecran = document.getElementById("ecran_edt");
 
 function menuimportEDT(event){
+    document.getElementById("nouveau_pannel").style.display = "none";
     importElement.style.display = "flex";
     event.stopPropagation();
     ecran.style.display = "block";
 }
 
 function menuExportEDT(event){
+    document.getElementById("nouveau_pannel").style.display = "none";
     exportElement.style.display = "flex";
     event.stopPropagation();
     ecran.style.display = "block";
@@ -1213,6 +1222,78 @@ function transformerEntreeCours(entree) {
         return null;
     }
 }
+
+const dropArea = document.querySelector("#drag-image"),
+dragText = dropArea.querySelector("h6"),
+button_input_file = dropArea.querySelector("button"),
+input_file = dropArea.querySelector("input");
+let file; 
+
+button_input_file.onclick = ()=>{
+    input_file.click(); 
+}
+
+input_file.addEventListener("change", function(){
+ 
+  file = this.files[0];
+  dropArea.classList.add("active");
+  sendFile();
+});
+
+dropArea.addEventListener("dragover", (event)=>{
+  event.preventDefault();
+  dropArea.classList.add("active");
+  dragText.textContent = "Relacher le fichier ici";
+});
+
+
+dropArea.addEventListener("dragleave", ()=>{
+  dropArea.classList.remove("active");
+  dragText.textContent = "Drag & Drop le fichier ici";
+}); 
+
+dropArea.addEventListener("drop", (event)=>{
+  event.preventDefault(); 
+  file = event.dataTransfer.files[0];
+  sendFile(); 
+});
+
+function sendFile(){
+    if (file) {
+        resetEDT(event);
+        document.getElementById("midFileError").classList.toggle("hidden", true);
+        document.getElementById("midfileInput").value = "";
+
+        const reader = new FileReader();
+
+        reader.onload = async function(e) {
+            const content = e.target.result;
+            const lines = content.split('\n');
+
+            for (const line of lines) {
+                if (line.length > 1) {
+                    const detailsLine = line.split(";");
+                    const currentCours = new Cours(detailsLine[0], detailsLine[3], detailsLine[4], detailsLine[6], detailsLine[5], detailsLine[2] === "null" ? null : detailsLine[2], null, detailsLine[1]);
+                    try {
+                        await createCours(currentCours);
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
+            }
+        };
+        reader.readAsText(file);
+        canClose = true;
+    } else {
+        document.getElementById("midFileError").classList.toggle("hidden", false);
+    }
+    if (canClose){
+        document.getElementById("importEDTID").style.display = "none";
+        document.getElementById("textUV").value = "";
+        document.getElementById("ecran_edt").style.display = "none";
+    }
+}
+
 async function importEDT(event) {
     try {
         var canClose = false;
@@ -1249,36 +1330,6 @@ async function importEDT(event) {
                 }
             }
             canClose = true;
-        } else {
-            file = document.getElementById("midfileInput").files[0];
-            if (file) {
-                resetEDT(event);
-                document.getElementById("midFileError").classList.toggle("hidden", true);
-                document.getElementById("midfileInput").value = "";
-
-                const reader = new FileReader();
-
-                reader.onload = async function(e) {
-                    const content = e.target.result;
-                    const lines = content.split('\n');
-
-                    for (const line of lines) {
-                        if (line.length > 1) {
-                            const detailsLine = line.split(";");
-                            const currentCours = new Cours(detailsLine[0], detailsLine[3], detailsLine[4], detailsLine[6], detailsLine[5], detailsLine[2] === "null" ? null : detailsLine[2], null, detailsLine[1]);
-                            try {
-                                await createCours(currentCours);
-                            } catch (error) {
-                                console.error(error);
-                            }
-                        }
-                    }
-                };
-                reader.readAsText(file);
-                canClose = true;
-            } else {
-                document.getElementById("midFileError").classList.toggle("hidden", false);
-            }
         }
         if (canClose){
             document.getElementById("importEDTID").style.display = "none";

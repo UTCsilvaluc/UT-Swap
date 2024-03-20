@@ -481,6 +481,26 @@ main{
     height: 60%;
     width: 50%;
 }
+#swap_content{
+    box-sizing: border-box;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    margin-left: 0;
+}
+
+.demande_container{
+    background-color: white;
+    padding-right:5px;
+    box-sizing: border-box;
+    padding-top: 0;
+    padding-left: 5px;
+}
+
+#swap_pannel{
+    display: none;
+    -webkit-box-shadow: 0px 0px 15px 8px var(--couleur-shadow); 
+    box-shadow: 0px 0px 15px 8px var(--couleur-shadow);
+}
 
 @media screen and (min-width: 1400px) {
     .profil_demande h2 {
@@ -512,7 +532,7 @@ main{
     }
 
     #profil_utilisateur{
-        min-height: 400px;
+        min-height: 350px;
     }
 
     #profil_utilisateur button{
@@ -586,6 +606,13 @@ main{
     #profil_demandes_parent, .profil_demandes_sous_parent{
         flex-direction: row;
         gap:1vw;
+    }
+
+    .demande_container{
+        border-top: 0;
+        box-sizing: border-box;
+        padding-top: 0;
+        padding-left: 5px;
     }
 
 }
