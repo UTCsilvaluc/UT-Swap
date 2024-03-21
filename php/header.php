@@ -3,17 +3,7 @@ include "../utils/db_functions.php";
 include "../utils/header_utils.php";
 include "../utils/utils.php";
 session_start();
-$login;
 
-$current_uri = $_SERVER['REQUEST_URI'];
-$search_string = "login.php";
-
-if(isset($_SESSION["login"]) && !empty($_SESSION['login'])){
-    $login = $_SESSION["login"];
-}else if(strpos($current_uri, $search_string) === false){
-    header("Location: login.php");
-    exit;
-}
 function DBCredential(){
     $dbhost = 'localhost';
     $dbuser = 'root';
@@ -29,6 +19,42 @@ function validateInput($input, $connect) {
     $input = htmlspecialchars($input); // Convertit les caractères spéciaux en entités HTML
     $input = $connect->real_escape_string($input);
     return $input;
+}
+$connect = DBCredential();
+if (isset($_POST['login'], $_POST['nom'], $_POST['prenom']) && !empty($_POST['login']) && !empty($_POST['nom']) && !empty($_POST['prenom'])){
+    $loginEtu = validateInput($_POST['login'],$connect);
+    $prenom = validateInput($_POST['prenom'],$connect);
+    $nom = validateInput($_POST['nom'],$connect);
+    if(strlen($loginEtu) == 8){
+        $sqlSelectLogin = "SELECT * FROM personne WHERE login = ?";
+        $stmtSelectLogin = $connect->prepare($sqlSelectLogin);
+        $stmtSelectLogin->bind_param("s", $loginEtu);
+        $stmtSelectLogin->execute();
+        $stmtSelectLogin->store_result();
+        if ($stmtSelectLogin->num_rows === 0) {
+            $mail = $prenom.".".$nom."@etu.utc.fr";
+            $sqlInsertPersonne = "INSERT INTO `ut_swap`.`personne` (`login`, `nom`, `prenom`, `mail`) VALUES (?,?,?,?);";
+            $stmtInsertPersonne = $connect->prepare($sqlInsertPersonne);
+            $stmtInsertPersonne->bind_param("ssss", $loginEtu, $nom, $prenom, $mail);
+            $stmtInsertPersonne->execute();
+            $sqlInsertEtudiant = "INSERT INTO `ut_swap`.`etudiant` (`login`, `alert`, `reception`, `progress`) VALUES (?,1,1,1);";
+            $stmtInsertEtudiant = $connect->prepare($sqlInsertEtudiant);
+            $stmtInsertEtudiant->bind_param("s", $loginEtu);
+            $stmtInsertEtudiant->execute();
+        }
+        $_SESSION["login"] = $loginEtu;
+    }
+}
+$login;
+
+$current_uri = $_SERVER['REQUEST_URI'];
+$search_string = "login.php";
+
+if(isset($_SESSION["login"]) && !empty($_SESSION['login'])){
+    $login = $_SESSION["login"];
+}else if(strpos($current_uri, $search_string) === false){
+    header("Location: login.php");
+    exit;
 }
 function jourEnNombre($jour) {
     $jours = array(
@@ -151,7 +177,6 @@ function getResponsableByUv($uv){
     $responsableMail = "antoine.jouglet@utc.fr";
     return array('login' => $responsableLogin, 'nom' => $responsableNom,'prénom' => $responsablePrénom, 'mail' => $responsableMail);
 }
-$connect = DBCredential();
 
 if (isset($_POST['view'])){
     $view = validateInput($_POST['view'],$connect);
