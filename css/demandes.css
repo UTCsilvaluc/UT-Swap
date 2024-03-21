@@ -41,9 +41,6 @@
     gap: 5px;
 }
 
-.filtres{
-    width: 70%;
-}
 .demandes_filtre{
     display: flex;
     flex-direction: row;

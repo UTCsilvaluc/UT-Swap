@@ -12,8 +12,6 @@
 <body>
     <?php include "header.php" ?>
     <?php
-
-    $login = "ldompnie";
     function getProfil(){
         global $login;
         $connect = DBCredential();

@@ -1,0 +1,24 @@
+#login_pannel{
+    -webkit-box-shadow: 0 0 15px 0px rgba(0,0,0,0.29); 
+    box-shadow: 0 0 15px 5px rgba(0,0,0,0.29);
+}
+
+.mid_content{
+    gap:10px
+}
+
+.mid_content div{
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+}
+
+.mid_content input{
+    width: 100%;
+    height: 30px;
+    padding-left:10px;
+    border-radius: 10px;
+    background-color: #e6e6e6;
+    border: 0;
+    outline: none;
+}

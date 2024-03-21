@@ -3,10 +3,21 @@ include "../utils/db_functions.php";
 include "../utils/header_utils.php";
 include "../utils/utils.php";
 session_start();
+$login;
+
+$current_uri = $_SERVER['REQUEST_URI'];
+$search_string = "login.php";
+
+if(isset($_SESSION["login"]) && !empty($_SESSION['login'])){
+    $login = $_SESSION["login"];
+}else if(strpos($current_uri, $search_string) === false){
+    header("Location: login.php");
+    exit;
+}
 function DBCredential(){
     $dbhost = 'localhost';
     $dbuser = 'root';
-    $dbpass = '';
+    $dbpass = 'root';
     $dbname = 'ut_swap';
     $connect = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to mysql');
     mysqli_set_charset($connect, 'utf8');
@@ -140,7 +151,6 @@ function getResponsableByUv($uv){
     $responsableMail = "antoine.jouglet@utc.fr";
     return array('login' => $responsableLogin, 'nom' => $responsableNom,'prénom' => $responsablePrénom, 'mail' => $responsableMail);
 }
-$login = "ldompnie";
 $connect = DBCredential();
 
 if (isset($_POST['view'])){
