@@ -174,10 +174,11 @@ function researchUV(event){
 }
 
 function changeJour(event){
-    if (event.target.className === "check"){
-        event.target.className = "uncheck";
+    var labelForInput = document.querySelector('label[for="' + event.target.id + '"]');
+    if (labelForInput.className === "check"){
+        labelForInput.className = "uncheck";
     } else {
-        event.target.className = "check";
+        labelForInput.className = "check";
     }
     canDisplayCourses(event);
 
@@ -191,19 +192,21 @@ document.addEventListener("click" , function (event) {
 });
 
 function changeTypeFilter(event){
-    if (event.target.className === "check"){
-        event.target.className = "uncheck";
+    var labelForInput = document.querySelector('label[for="' + event.target.id + '"]');
+    if (labelForInput.className === "check"){
+        labelForInput.className = "uncheck";
     } else {
-        event.target.className = "check";
+        labelForInput.className = "check";
     }
     canDisplayCourses(event);
 }
 
 function changeSemaine(event){
-    if (event.target.className === "check"){
-        event.target.className = "uncheck";
+    var labelForInput = document.querySelector('label[for="' + event.target.id + '"]');
+    if (labelForInput.className === "check"){
+        labelForInput.className = "uncheck";
     } else {
-        event.target.className = "check";
+        labelForInput.className = "check";
     }
     canDisplayCourses(event);
 }
