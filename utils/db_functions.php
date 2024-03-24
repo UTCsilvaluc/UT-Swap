@@ -137,9 +137,9 @@ function updateSwapInsertNotif($choix, $demandeur, $idDemande, $id_notif, $login
         
         //Demandes reçues
         
-        $sqlGetInfoDemandeReçue = "SELECT d1.login, idNotif, n1.demandeur FROM notifications n1 JOIN demande d1 ON d1.idDemande=n1.demandeur WHERE n1.idNotif in (SELECT idNotif FROM `notifications` n JOIN swap s ON s.idDemande = n.idDemande AND s.demandeur = n.demandeur JOIN demande d ON d.idDemande = n.idDemande WHERE (d.login = ? OR d.login = ?) AND d.codeUV=? AND d.type=? AND s.statut=0 AND n.typeNotif = 1 AND n.viewed = 0) AND n1.idNotif != ?";
+        $sqlGetInfoDemandeReçue = "SELECT d1.login, idNotif, n1.demandeur FROM notifications n1 JOIN demande d1 ON d1.idDemande=n1.demandeur WHERE n1.idNotif in (SELECT idNotif FROM `notifications` n JOIN swap s ON s.idDemande = n.idDemande AND s.demandeur = n.demandeur JOIN demande d ON d.idDemande = n.idDemande WHERE (d.login = ? OR d.login = ?) AND d.codeUV=? AND d.type=? AND s.statut=0 AND n.typeNotif = 1 AND n.viewed = 0) AND d1.idDemande != ? AND d1.idDemande != ?";
         $stmtGetInfoDemandeReçue = $connect->prepare($sqlGetInfoDemandeReçue);
-        $stmtGetInfoDemandeReçue->bind_param("sssss", $login, $loginPersonne, $codeUV, $type, $idNotif);
+        $stmtGetInfoDemandeReçue->bind_param("ssssss", $login, $loginPersonne, $codeUV, $type, $idDemande, $demandeur);
         $stmtGetInfoDemandeReçue->execute();
 
         $result1 = $stmtGetInfoDemandeReçue->get_result();
@@ -153,9 +153,9 @@ function updateSwapInsertNotif($choix, $demandeur, $idDemande, $id_notif, $login
         }
 
         if (count($listeLoginReçue) !== 0) {
-            $sqlUpdateSwap = "UPDATE swap s JOIN demande d ON d.idDemande=s.idDemande JOIN notifications n ON n.idDemande = s.idDemande AND n.demandeur = s.demandeur SET s.statut = 1 WHERE s.demandeur != ? AND (d.login = ? OR d.login= ?) AND d.codeUV=? AND d.type=? AND s.statut=0;";
+            $sqlUpdateSwap = "UPDATE swap s JOIN demande d ON d.idDemande=s.idDemande JOIN notifications n ON n.idDemande = s.idDemande AND n.demandeur = s.demandeur SET s.statut = 1 WHERE s.demandeur != ? AND s.demandeur != ? AND (d.login = ? OR d.login= ?) AND d.codeUV=? AND d.type=? AND s.statut=0;";
             $stmtUpdateSwap = $connect->prepare($sqlUpdateSwap);
-            $stmtUpdateSwap->bind_param("sssss", $demandeur, $login, $loginPersonne, $codeUV ,$type);
+            $stmtUpdateSwap->bind_param("ssssss", $demandeur, $idDemande, $login, $loginPersonne, $codeUV ,$type);
             $stmtUpdateSwap->execute();
 
             for($i=0;$i<count($listeLoginReçue);$i++){
@@ -194,9 +194,9 @@ function updateSwapInsertNotif($choix, $demandeur, $idDemande, $id_notif, $login
         }
 
         if (count($listeLoginFaite) !== 0) {
-            $sqlDeleteSwap = "DELETE FROM swap WHERE idDemande != ? AND (demandeur IN (SELECT idDemande FROM demande WHERE login = ? OR login = ? AND codeUV = ? AND type = ?)) AND statut = 0 AND idDemande IN (SELECT idDemande FROM notifications WHERE demandeur IN (SELECT idDemande FROM demande WHERE login = ? OR login = ? AND codeUV = ? AND type = ?))";
+            $sqlDeleteSwap = "DELETE FROM swap WHERE idDemande != ? AND demandeur IN (SELECT idDemande FROM demande WHERE (login = ? OR login = ?) AND codeUV = ? AND type = ?) AND statut = 0";
             $stmtDeleteSwap = $connect->prepare($sqlDeleteSwap);
-            $stmtDeleteSwap->bind_param("sssssssss", $idDemande, $login, $loginPersonne, $codeUV ,$type, $login, $loginPersonne, $codeUV ,$type);
+            $stmtDeleteSwap->bind_param("sssss", $idDemande, $login, $loginPersonne, $codeUV ,$type);
             $stmtDeleteSwap->execute();
             for($i=0;$i<count($listeLoginFaite);$i++){
                 $informationLogin = getInformationLogin($connect, $listeLoginDemandeurFaite[$i]);
@@ -213,6 +213,39 @@ function updateSwapInsertNotif($choix, $demandeur, $idDemande, $id_notif, $login
             }
         }
     }
+}
+
+function cancelSwapFait($idDemande, $demandeur, $login, $connect){
+
+    $demandeur = validateInput($demandeur,$connect);
+    $idDemande = validateInput($idDemande,$connect);
+    $idNotif = validateInput($id_notif,$connect);
+
+    $sqlGetIdNotif = "SELECT idNotif FROM notifications WHERE idDemande = ? AND demandeur = ? AND typeNotif = 1 AND viewed = 0;";
+    $stmtGetIdNotif = $connect->prepare($sqlGetIdNotif);
+    $stmtGetIdNotif->bind_param("ss", $idDemande, $demandeur);
+    $stmtGetIdNotif->execute();
+    $stmtGetIdNotif->store_result();
+    $stmtGetIdNotif->bind_result($idNotif);
+    $stmtGetIdNotif->fetch();
+    
+    $sqlDeleteSwap = "DELETE FROM swap WHERE idDemande = ? AND demandeur = ? AND statut = 0";
+    $stmtDeleteSwap = $connect->prepare($sqlDeleteSwap);
+    $stmtDeleteSwap->bind_param("ss", $idDemande, $demandeur);
+    $stmtDeleteSwap->execute();
+
+    $informationLogin = getInformationLogin($connect, $login);
+    $nom = $informationLogin["nom"];
+    $prénom = $informationLogin["prénom"];
+
+
+    $semaine = $semaine !== "null" ? ' en semaine ' . $semaine : null;
+    $nouveauContenuNotif = ucfirst($nom)." ".$prénom." a retourné sa veste.;La demande de swap du ".$type.$semaine." de ".$codeUV." pour ".nombreEnJour($jour)." ".date("H\hi", strtotime($horaireDebut))."-".date("H\hi", strtotime($horaireFin))." a été annulée";
+    $sqlUpdateNotif = "UPDATE notifications SET contenuNotif = ?, viewed=1 WHERE idNotif = ?";
+    
+    $stmtUpdateNotif = $connect->prepare($sqlUpdateNotif);
+    $stmtUpdateNotif->bind_param("ss", $nouveauContenuNotif, $idNotif);
+    $stmtUpdateNotif->execute();
 }
 
 function insert_demande($connect, $login, $uv, $type, $jour, $hdebut, $hfin, $salle, $semaineChoix) {

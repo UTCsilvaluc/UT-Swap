@@ -183,27 +183,34 @@ function changeJour(event){
 
 }
 
+document.addEventListener("click" , function (event) {
+    var largeurFenetre = window.innerWidth;
+    if (!(event.target.closest("#menuFiltre")) && document.getElementById("menuFiltre") != "none" && !(event.target.closest("#svg_filtre_parent")) && largeurFenetre < 1200){
+        closeFiltre();
+    }
+});
+
 function changeTypeFilter(event){
-    if (event.target.className === "checkType"){
-        event.target.className = "uncheckType";
+    if (event.target.className === "check"){
+        event.target.className = "uncheck";
     } else {
-        event.target.className = "checkType";
+        event.target.className = "check";
     }
     canDisplayCourses(event);
 }
 
 function changeSemaine(event){
-    if (event.target.className === "checkSemaine"){
-        event.target.className = "uncheckSemaine";
+    if (event.target.className === "check"){
+        event.target.className = "uncheck";
     } else {
-        event.target.className = "checkSemaine";
+        event.target.className = "check";
     }
     canDisplayCourses(event);
 }
 function canDisplayCourses(event) {
     var divs_demande = document.getElementsByClassName("div_demande");
-    var liste_jours = document.getElementsByClassName('check');
-    var liste_type = document.getElementsByClassName("checkType");
+    var liste_jours = document.getElementById("jours").getElementsByClassName('check');
+    var liste_type = document.getElementById("type").getElementsByClassName("check");
     var heureDebut = document.getElementById("filtre-input-hdebut").value.replace(":","h");
     var heureFin = document.getElementById("filtre-input-hfin").value.replace(":","h");
     var joursActifs = []; // Initialiser une liste pour stocker les jours actifs
@@ -258,9 +265,9 @@ function canDisplayCourses(event) {
         if (!(calculDecimal(heureDebut) <= calculDecimal(donnees.horaireDebut.slice(0,-3).replace(":","h")) && calculDecimal(heureFin) >= calculDecimal(donnees.horaireFin.slice(0,-3).replace(":","h")))){
             display = false;
         }
-        if (donnees.semaine === "A" && document.getElementById("semaine-sA").className === "uncheckSemaine"){
+        if (donnees.semaine === "A" && document.getElementById("semaine-sA").className === "uncheck"){
             display = false;
-        } else if (donnees.semaine === "B" && document.getElementById("semaine-sB").className === "uncheckSemaine"){
+        } else if (donnees.semaine === "B" && document.getElementById("semaine-sB").className === "uncheck"){
             display = false;
         }
         div.style.display = display ? 'flex' : 'none';
@@ -367,4 +374,22 @@ function getAllCours(db) {
         };
     });
 }
+
+var isIn1200Px = true;
+
+function mettreAJourContenuProfil() {
+    var largeurFenetre = window.innerWidth;
+    
+    if(largeurFenetre >= 1200){
+        openFiltre();
+    }else{
+        closeFiltre();
+    }
+}
+
+// Attacher la fonction au changement de taille de la fenêtre
+window.addEventListener('resize', mettreAJourContenuProfil);
+
+// Appeler la fonction une fois au chargement de la page
+mettreAJourContenuProfil();
 

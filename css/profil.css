@@ -271,10 +271,10 @@ main{
     width: 100%;
 }
 
-.demande_faite button,
-.demande_reçue button {
-    border-radius: 20px;
+.demande_faite button:not(.demande_trash_parent),
+.demande_reçue button:not(.demande_trash_parent) {
     padding: 5px 15px 5px 15px;
+    border-radius: 20px;
 }
 
 .demande_faite_button_accept,
@@ -296,6 +296,22 @@ main{
     background-color: #FDFF98;
     color: #A0A400;
     border: 1px solid #A0A400;
+}
+
+
+.demande_trash_parent{
+    padding: 5px 10px 5px 10px;
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    color: rgb(196, 42, 42);
+    border: 1px solid rgb(196, 42, 42);
+    background-color:#ffb0b0;
+}
+
+.demande_trash{
+    margin-left: 5px;
+    width: 10px;
 }
 
 .demande_faite_detail,

@@ -104,6 +104,53 @@ document.addEventListener("click" , function (event){
     }
 })
 
+function cancelDemandeFaite(element){
+    var clickedElement = element.target;
+
+    // Vérifier si l'élément cliqué est le même que l'élément sur lequel l'événement est attaché
+    if (clickedElement === element.currentTarget) {
+        var rowAttribute = element.parentElement.parentElement.parentElement.dataset.row;
+
+        if (rowAttribute) {
+            try {
+                var donnees = JSON.parse(atob(rowAttribute));
+                console.log(donnees);
+            } catch (error) {
+                console.error("Erreur lors du parsing JSON :", error);
+            }
+        } else {
+            console.error("Aucune donnée trouvée dans l'attribut data-row");
+        }
+        if(donnees.idDemande !== "" && donnees.demandeur !== "") {
+            
+            var form = document.createElement('form');
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', '');
+            
+            var inputDemandeur = document.createElement('input');
+            inputDemandeur.setAttribute('type', 'hidden');
+            inputDemandeur.setAttribute('name', 'demandeur');
+            inputDemandeur.setAttribute('value', donnees.demandeur);
+            form.appendChild(inputDemandeur);
+            
+            var inputIdDemande = document.createElement('input');
+            inputIdDemande.setAttribute('type', 'hidden');
+            inputIdDemande.setAttribute('name', 'idDemande');
+            inputIdDemande.setAttribute('value', donnees.idDemande);
+            form.appendChild(inputIdDemande);
+
+            // Ajouter le formulaire à la page
+            document.body.appendChild(form);
+
+            // Soumettre le formulaire
+            form.submit();
+
+            // Supprimer le formulaire après soumission
+            form.remove();
+        }
+    }
+}
+
 function choixDemande(choix, element){
     var clickedElement = element.target;
 

@@ -242,11 +242,13 @@ nav .orange{
     margin: 0;
     height: 10vh;
     min-height: 60px;
-    max-height: 80px;
+    max-height: 90px;
 }
 
 #notification_pannel #endroit_notification .type_1:not(.viewed) .endroit_texte_notif{
-    height: 13vh;
+    min-height: 80px;
+    max-height: 110px;
+    height: 50vh;
 }
 
 #notification_pannel #endroit_notification .viewed .endroit_texte_notif .texte_notification div button{
@@ -269,9 +271,12 @@ nav .orange{
     height: 10vh;
     min-height: 55px;
     position: relative;
+    display: flex;
+    align-items: center;
 }
 
 #notification_pannel #endroit_notification .notif .endroit_texte_notif .user_importance_notification .image_profil_notification img{
+    max-height: 80px;
     height: 100%;
 }
 
@@ -325,7 +330,7 @@ nav .orange{
     border-radius: 8px;
     border: 0;
     font-weight: bold;
-    margin-top: 8px;
+    margin-top: 4px;
 }
 
 #notification_pannel #endroit_notification .notif .endroit_texte_notif .texte_notification div button:first-child{
@@ -943,13 +948,21 @@ span.row h3{
 @media screen and (max-width: 500px){
     
     #notification_pannel #endroit_notification .notif .endroit_texte_notif{
-        max-height:none;
+        max-height:140px;
         height: 15vh;
     }
 }
 
 @media screen and (max-width: 450px){
     
+    #notification_pannel #endroit_notification .type_1:not(.viewed) .endroit_texte_notif{
+        max-height: 130px;
+    }
+
+    #notification_pannel #endroit_notification .notif .endroit_texte_notif .time_notification p{
+        display: none;
+    }
+
     div.confirmationSwap{
         flex-direction: column;
         align-items: center;
@@ -972,7 +985,7 @@ span.row h3{
 
     #notification_pannel #endroit_notification .notif .endroit_texte_notif{
         height: 15vh;
-        max-height:none;
+        max-height:140px;
     }
 
     #nouveau_pannel .double-input{
@@ -1010,7 +1023,7 @@ span.row h3{
 @media screen and (max-width: 350px){
     #notification_pannel #endroit_notification .notif .endroit_texte_notif{
         height: 20vh;
-        max-height:none;
+        max-height:140px;
     }
     #notification_pannel #endroit_notification .notif .endroit_texte_notif .time_notification, #notification_pannel #endroit_notification .notif .endroit_texte_notif .user_importance_notification{
         display: none;
@@ -1039,10 +1052,10 @@ span.row h3{
         height: 70%;
     }
     #notification_pannel #endroit_notification .notif .endroit_texte_notif .texte_notification h1{
-        font-size: 10px;
+        font-size: 12px;
     }
     #notification_pannel #endroit_notification .notif .endroit_texte_notif .texte_notification p{
-        font-size: 10px;
+        font-size: 12px;
     }
 }
 

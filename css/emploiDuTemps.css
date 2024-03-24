@@ -607,7 +607,7 @@ span input[type='color']{
     }
 
     .conteneur_custom .custom_parent, .conteneur_filtre .filtre_parent{
-        width: max-content;
+        width: 100%;
     }
 
 }

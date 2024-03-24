@@ -127,7 +127,7 @@
                 <div id="demandes_faites" class="demandes_profil">
                     <?php 
                     $connect = DBCredential();
-                    $sqlDemandeFaite = "SELECT s.statut, p.nom, p.prenom, d1.codeUV as codeUV1, d1.type as type1, d1.jour as jour1, d1.horaireDebut as hdeb1, d1.horaireFin as hfin1, d1.salle as salle1, d1.semaine as semaine1, d1.raison, d2.codeUV as codeUV2, d2.type as type2, d2.jour as jour2, d2.horaireDebut as hdeb2, d2.horaireFin as hfin2, d2.salle as salle2, d2.semaine as semaine2 FROM `swap` s JOIN demande d1 ON d1.idDemande = s.idDemande JOIN demande d2 ON d2.idDemande=s.demandeur JOIN personne p ON p.login = d1.login WHERE d2.login= ? AND s.statut <= 2 ORDER BY CASE statut WHEN 0 THEN 1 WHEN 2 THEN 2 WHEN 1 THEN 3 ELSE 4 END;";
+                    $sqlDemandeFaite = "SELECT s.statut,s.idDemande, s.demandeur, p.nom, p.prenom, d1.codeUV as codeUV1, d1.type as type1, d1.jour as jour1, d1.horaireDebut as hdeb1, d1.horaireFin as hfin1, d1.salle as salle1, d1.semaine as semaine1, d2.raison as raison, d2.codeUV as codeUV2, d2.type as type2, d2.jour as jour2, d2.horaireDebut as hdeb2, d2.horaireFin as hfin2, d2.salle as salle2, d2.semaine as semaine2 FROM `swap` s JOIN demande d1 ON d1.idDemande = s.idDemande JOIN demande d2 ON d2.idDemande=s.demandeur JOIN personne p ON p.login = d1.login WHERE d2.login= ? AND s.statut <= 2 ORDER BY CASE statut WHEN 0 THEN 1 WHEN 2 THEN 2 WHEN 1 THEN 3 ELSE 4 END;";
                     $stmtDemandeFaite = $connect->prepare($sqlDemandeFaite);
                     $stmtDemandeFaite->bind_param("s", $login);
                     $stmtDemandeFaite->execute();
@@ -175,8 +175,15 @@
                                 $statutClass = "demande_faite_button_accept";
                                 $statutName = "Acceptée";
                             }
+                            $idDemande = $row["idDemande"];
+                            $demandeur = $row["demandeur"];
+                            $demande= array(
+                                "idDemande" => $idDemande,
+                                "demandeur" => $demandeur
+                            );
+                            $data_row = htmlspecialchars(base64_encode(json_encode($demande)), ENT_QUOTES , 'UTF-8');
                             ?>
-                            <div class="demande_faite">
+                            <div class="demande_faite" data-row=<?= $data_row; ?>>
                                 <div class="demande_faite_front">
                                     <div class="demande_faite_header">
                             <?php
@@ -210,7 +217,7 @@
                             }
                             ?>
                                         <h2><?= $codeUV2 ?></h2><h2>-</h2><h2><?= $type2 . $semaine2 ?></h2></span>
-                                        <button class="<?= $statutClass ?>"><?= $statutName ?></button>
+                                        <button class="demande_trash_parent" onclick="cancelDemandeFaite(this)">Supprimer<img class="demande_trash" src="../svg/TRASH_FILTRE.svg"></button>
                                     </div>
                                     <span class="demande_faite_detail"><?= $jour2 . " " . $hDeb2 . "-" . $hFin2 . " " . $salle2 ?></span>
                                     <span class="demande_faite_motif"><span class="demande_faite_motif_titre">Motif:</span><span><?= $raison ?></span></span>

@@ -12,18 +12,74 @@
 <body>
     <?php include "header.php" ?>
     <main>
+            <div class="demandes_filtre">
+                <div class="demandes_rechercher">
+                    <input class="filtreInput" type="text" name="codeUV" id="filtre_demandes_codeUV" placeholder="Chercher un créneau" value="<?php echo $_GET['codeUV'] ?? ''; ?>" maxlength="4" minlength="4">
+                    <img src="../svg/search.svg" class="researchLogoSvg" alt="" onclick="researchUV(event)">
+                </div>
+                <div id="svg_filtre_parent" onclick="openFiltre(this)">
+                    <img src="../svg/FILTRE_FILTRE.svg" id="svgFiltre">
+                </div>
+            </div>
         <div class="main_conteneur">
-            <div class="demandesControl">
-                <div class="demandes_filtre">
-                    <span class="demandes_rechercher">
-                        <input class="filtreInput" type="text" name="codeUV" id="filtre_demandes_codeUV" placeholder="Chercher une UV" value="<?php echo $_GET['codeUV'] ?? ''; ?>" maxlength="4" minlength="4">
-                        <img src="../svg/search.svg" class="researchLogoSvg" alt="" onclick="researchUV(event)">
-                    </span>
-                    <div>
-                        <img class="svgFiltre" title="filtres" src="../svg/FILTRE_FILTRE.svg" id="filtre" onclick="openFiltre(event)">
+            <div class="filtres" id="menuFiltre">
+                <div class="filtre_titre">
+                    <h1>Filtrer par</h1>
+                    <div id="filtre_croix">
+                        <img src="../svg/black_cross.svg" alt="" id="CloseOpenFiltreMenu" onclick="closeFiltre(event)">
                     </div>
                 </div>
-                <div class="demande_container">
+                <div class="conteneur_filtre" id="filterContainer1">
+                    <div class="filtre_parent" id="police">
+                        <h1 class="filtre_entete">Trier par</h1>
+                        <span class="filtre_span">
+                            <div class="filtre_parent_label"><label class="check" onclick="changeFilter(event)" id="mainFilter" for="filtre_pertinence">Pertinence</label><input type="checkbox" id="filtre_pertinence"></div>
+                            <div class="filtre_parent_label"><label class="uncheck" onclick="changeFilter(event))" for="filtre_date">Date</label><input type="checkbox" id="filtre_date"></div>
+                            <div class="filtre_parent_label"><label class="uncheck" onclick="changeFilter(event)" for="filtre_demande">Demande</label><input type="checkbox" id="filtre_demande"></div>
+                            <div class="filtre_parent_label"><label class="uncheck" onclick="changeFilter(event)" for="filtre_auteur">Auteur</label><input type="checkbox" id="filtre_auteur"></div>
+                        </span>
+                    </div>
+                    <div class="filtre_parent" id="jours">
+                        <h1 class="filtre_entete">Jour</h1>
+                        <span class="filtre_span" id="spanJour">
+                            <div class="filtre_parent_label"><label class="check" onclick="changeJour(event)" for="filtre_lundi">Lundi</label><input type="checkbox" id="filtre_lundi"></div>
+                            <div class="filtre_parent_label"><label class="check" onclick="changeJour(event)" for="filtre_mardi">Mardi</label><input type="checkbox" id="filtre_mardi"></div>
+                            <div class="filtre_parent_label"><label class="check" onclick="changeJour(event)" for="filtre_mercredi">Mercredi</label><input type="checkbox" id="filtre_mercredi"></div>
+                            <div class="filtre_parent_label"><label class="check" onclick="changeJour(event)" for="filtre_jeudi">Jeudi</label><input type="checkbox" id="filtre_jeudi"></div>
+                            <div class="filtre_parent_label"><label class="check" onclick="changeJour(event)" for="filtre_vendredi">Vendredi</label><input type="checkbox" id="filtre_vendredi"></div>
+                            <div class="filtre_parent_label"><label class="check" onclick="changeJour(event)" for="filtre_samedi">Samedi</label><input type="checkbox" id="filtre_samedi"></div>
+                    </div>
+                    <div class="filtre_parent" id="type">
+                        <h1 class="filtre_entete">Type</h1>
+                        <span class="filtre_span" id="spanType">
+                            <div class="filtre_parent_label"><label class="check" onclick="changeTypeFilter(event)" for="filtre_cours">Cours</label><input type="checkbox" id="filtre_cours"></div>
+                            <div class="filtre_parent_label"><label class="check" onclick="changeTypeFilter(event)" for="filtre_td">TD</label><input type="checkbox" id="filtre_td"></div>
+                            <div class="filtre_parent_label"><label class="check" onclick="changeTypeFilter(event)" for="filtre_tp">TP</label><input type="checkbox" id="filtre_tp"></div>
+                    </div>
+                    <div class="filtre_parent" id="jours">
+                        <h1 class="filtre_entete">Semaine</h1>
+                        <span class="filtre_span" id="spanSemaine">
+                            <div class="filtre_parent_label"><label id="semaine-sA" class="check" onclick="changeSemaine(event)" for="filtre_sA">Semaine A</label><input type="checkbox" id="filtre_sA"></div>
+                            <div class="filtre_parent_label"><label id="semaine-sB" class="check" onclick="changeSemaine(event)" for="filtre_sB">Semaine B</label><input type="checkbox" id="filtre_sB"></div>
+                    </div>
+                    <div class="filtre_parent" id="heures">
+                        <h1>Horaires</h1>
+                        <span class="filtre_span">
+                            <div>
+                                <input type="time" id="filtre-input-hdebut" name="hdebut" value="08:00" required onchange="canDisplayCourses(event)">
+                            </div>
+                            <div>
+                                <input type="time" id="filtre-input-hfin" name="hfin" value="20:00" required onchange="canDisplayCourses(event)">
+                            </div>
+                        </span>
+                    </div>
+                    <div class="buttonFiltres">
+                        <button class="filtreButton" id="appliquerFiltre" onclick="resetFilter(event)">Supprimer les filtres</button>
+                    </div>
+                </div>
+            </div>
+            <div class="demandesControl">
+                <div class="demande_container" id="demande_container1">
                     <?php
                     // Supposons que $result soit votre tableau de résultats de la requête SQL
                     $connect = DBCredential();
@@ -96,62 +152,7 @@
                     <?php } } ?>
                 </div>
             </div>
-            <div class="filtres" id="menuFiltre">
-                <div class="filtre_titre">
-                    <h1>Filtrer par</h1>
-                    <div id="filtre_croix">
-                        <img src="../svg/black_cross.svg" alt="" id="CloseOpenFiltreMenu" onclick="closeFiltre(event)">
-                    </div>
-                </div>
-                <div class="conteneur_filtre" id="filterContainer1">
-                    <div class="filtre_parent" id="police">
-                        <h1 class="filtre_entete">Trier par</h1>
-                        <span class="filtre_span">
-                            <h3 class="checkElement" onclick="changeFilter(event)" id="mainFilter">Pertinence</h3>
-                            <h3 class="uncheckElement" onclick="changeFilter(event))">Date</h3>
-                            <h3 class="uncheckElement" onclick="changeFilter(event)">Demande</h3>
-                            <h3 class="uncheckElement" onclick="changeFilter(event)">Auteur</h3>
-                        </span>
-                    </div>
-                    <div class="filtre_parent" id="jours">
-                        <h1 class="filtre_entete">Jour</h1>
-                        <span class="filtre_span" id="spanJour">
-                            <h3 class="check" onclick="changeJour(event)">Lundi</h3>
-                            <h3 class="check" onclick="changeJour(event)">Mardi</h3>
-                            <h3 class="check" onclick="changeJour(event)">Mercredi</h3>
-                            <h3 class="check" onclick="changeJour(event)">Jeudi</h3>
-                            <h3 class="check" onclick="changeJour(event)">Vendredi</h3>
-                            <h3 class="check" onclick="changeJour(event)">Samedi</h3>
-                    </div>
-                    <div class="filtre_parent" id="type">
-                        <h1 class="filtre_entete">Type</h1>
-                        <span class="filtre_span" id="spanType">
-                            <h3 class="checkType" onclick="changeTypeFilter(event)">Cours</h3>
-                            <h3 class="checkType" onclick="changeTypeFilter(event)">TD</h3>
-                            <h3 class="checkType" onclick="changeTypeFilter(event)">TP</h3>
-                    </div>
-                    <div class="filtre_parent" id="jours">
-                        <h1 class="filtre_entete">Semaine</h1>
-                        <span class="filtre_span" id="spanSemaine">
-                            <h3 id="semaine-sA" class="checkSemaine" onclick="changeSemaine(event)">A</h3>
-                            <h3 id="semaine-sB" class="checkSemaine" onclick="changeSemaine(event)">B</h3>
-                    </div>
-                    <div class="filtre_parent" id="heures">
-                        <h1>Horaires</h1>
-                        <span class="filtre_span">
-                            <div>
-                                <input type="time" id="filtre-input-hdebut" name="hdebut" value="08:00" required onchange="canDisplayCourses(event)">
-                            </div>
-                            <div>
-                                <input type="time" id="filtre-input-hfin" name="hfin" value="20:00" required onchange="canDisplayCourses(event)">
-                            </div>
-                        </span>
-                    </div>
-                    <div class="buttonFiltres">
-                        <button class="filtreButton" id="appliquerFiltre" onclick="resetFilter(event)">Supprimer les filtres</button>
-                    </div>
-                </div>
-            </div>
+            
         </div>
     </main>
 
