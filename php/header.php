@@ -199,12 +199,6 @@ if (
     unset($_POST['id_notif']);
     header("Location: ".$_SERVER['PHP_SELF']);
     exit();
-}else if(isset($_POST['demandeur'], $_POST['idDemande']) && !empty($_POST['demandeur']) && !empty($_POST['idDemande'])){
-    cancelSwapFait($_POST['idDemande'], $_POST['demandeur'], $login, $connect);
-    unset($_POST['demandeur']);
-    unset($_POST['idDemande']);
-    header("Location: ".$_SERVER['PHP_SELF']);
-    exit();
 }
 
 
@@ -592,8 +586,7 @@ if (isset($_POST['update_choix']) && !(empty($_POST['update_choix']))) {
             $type = $_SESSION['type'];
             $offerId = $_SESSION['swap'];
             create_swap($connect , $idDemande , $offerId , $uv , $type , $login);
-            $loginNotif = getLoginById($connect , $offerId);
-            sendNotifications($loginNotif , $offerId , $idDemande , 1 , 0 , $connect);
+            sendNotifications($login , $offerId , $idDemande , 1 , 0 , $connect);
             $_SESSION['reloadPage'] = "swapSuccess";
         } else {
             $_SESSION['reloadPage'] = "updateSuccess";
