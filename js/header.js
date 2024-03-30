@@ -14,6 +14,7 @@ var bouton_ok = document.getElementById('bouton_ok');
 var bouton_impossible_uv = document.getElementById("bouton_impossible_uv");
 var bouton_remplacer = document.getElementById("bouton_remplacer");
 var bouton_ajouter_creneau = document.getElementById("bouton_ajouter_creneau");
+var bouton_continuer = document.getElementById("bouton_continuer");
 var boutons_uv = document.getElementById("boutons_uv");
 
 var message_pression = document.getElementById("message_pression");
@@ -21,6 +22,7 @@ var message_insertion = document.getElementById('message_insertion');
 var message_impossible_uv = document.getElementById("message_impossible_uv");
 var message_uv_type = document.getElementById("message_uv_type");
 var message_changement_creneau = document.getElementById("message_changement_creneau");
+var message_demande_recu_changement_creneau = document.getElementById("message_demande_recu_changement_creneau");
 var message_envoie_swap = document.getElementById("message_envoie_swap");
 var message_meme_creneau_existant = document.getElementById('message_meme_creneau_existant');
 
@@ -336,6 +338,7 @@ function nouveauClick() {
     document.getElementById("message_changement_creneau").classList.toggle('hidden', true);
 
     bouton_ajouter_creneau.classList.toggle('hidden', true);
+    bouton_continuer.classList.toggle('hidden', true);
     motivation.classList.toggle('hidden', false);
     input_salle.disabled = false
     input_uv.disabled = false
@@ -343,6 +346,7 @@ function nouveauClick() {
     bouton_ok.classList.toggle('hidden', true);
     boutons_confirmation.classList.toggle("hidden" , true);
     message_envoie_swap.classList.toggle("hidden" , true);
+    message_demande_recu_changement_creneau.classList.toggle("hidden" , true)
     message_insertion.classList.toggle('hidden', true);
     bouton_non_submit.classList.toggle('hidden', false);
     ul_nouveau.classList.toggle('hidden', false);
@@ -388,6 +392,15 @@ function nouveauClick() {
     }
     document.getElementById('update_choix').value = '0';
 };
+
+bouton_continuer.addEventListener("click" , function (ev) {
+    bouton_continuer.classList.toggle('hidden' , true);
+    message_demande_recu_changement_creneau.classList.toggle('hidden' , true);
+    bouton_remplacer.classList.toggle('hidden', false);
+    document.getElementById('sendSwap').classList.toggle('hidden' , false);
+    document.getElementById('ancienCreneauSwap1').classList.toggle('hidden' , false);
+    document.getElementById('ancienCreneauSwap2').classList.toggle('hidden' , false);
+})
 
 function isScrollbarVisible(element) {
     return element.scrollHeight > element.clientHeight;

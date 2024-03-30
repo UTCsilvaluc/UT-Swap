@@ -654,7 +654,6 @@ function colorChange(event){
                     const db = await ouvrirBaseDeDonneesCours();
                     const courses = await getCoursByID(db, idCurrentCours);
                     if (courses) {
-                        console.log(courses);
                         await modifierAttributCoursByID(db, idCurrentCours, 'couleur', event.target.value);
                     } else {
                         console.log("Erreur : aucun cours avec cet ID !")
@@ -884,6 +883,15 @@ inputCouleur.addEventListener('click', function(event) {
 couleurInput.addEventListener('change', function(event) {
     // Mettre à jour la couleur de fond de la div avec la couleur sélectionnée
     inputCouleur.style.backgroundColor = event.target.value;
+    recupererParametresUtilisateur()
+        .then(parametres => {
+            parametres.couleurEntete = event.target.value;
+            return sauvegarderParametresUtilisateur(parametres);
+        })
+        .then(message => {
+            return recupererParametresUtilisateur();
+        })
+        .catch(error => console.error("Erreur :", error));
     // Cacher à nouveau l'interface de couleur
     var days = document.getElementsByClassName("titleday");
     for (let day of days){
@@ -984,6 +992,17 @@ function customTime(event) {
         }
     }
 
+    recupererParametresUtilisateur()
+        .then(parametres => {
+            parametres.horaireDebut = document.getElementById("custom-input-hdebut").value;
+            parametres.horaireFin = document.getElementById("custom-input-hfin").value;
+            return sauvegarderParametresUtilisateur(parametres);
+        })
+        .then(message => {
+            return recupererParametresUtilisateur();
+        })
+        .catch(error => console.error("Erreur :", error));
+
 }
 
 function resetEDT(event) {
@@ -1083,14 +1102,10 @@ function changeJour(event){
             jour.style.borderLeft = "1px black solid";
             firstDay = true;
         }
-        if (jour.className == "check"){
-
-        }
     }
     Array.from(document.querySelectorAll("#spanJour .check")).forEach(jour => {
         pushJour.push(jour.innerHTML);
     });
-    console.log(pushJour);
     recupererParametresUtilisateur()
         .then(parametres => {
             parametres.jours = pushJour;
@@ -1158,7 +1173,7 @@ function supprimerCustom(){
     input.dispatchEvent(event);
 
     document.getElementById("couleurSpan").innerHTML = couleurSpan;
-
+    supprimerFiltres();
 
 }
 var importElement = document.getElementById("importEDTID");
@@ -1384,14 +1399,23 @@ function lineIsCours(line){
 
 
 if (window.indexedDB){
-    afficherTousLesCours();
-    // Charger les cours au début
-    // Exemple de modification de l'heure de début pour l'utilisateur
+    afficherTousLesCours(); // Charger les cours au début
     recupererParametresUtilisateur()
         .then(parametres => {
-            console.log("Paramètres actuels de l'utilisateur :", parametres);
             if (parametres.police != document.getElementById("mainPolice").innerHTML){
                 document.getElementById(parametres.police).click();
+            }
+            if (parametres.horaireDebut && parametres.horaireFin){
+                document.getElementById("custom-input-hdebut").value = parametres.horaireDebut;
+                document.getElementById("custom-input-hfin").value = parametres.horaireFin;
+                customTime(event);
+            }
+            if (parametres.couleurEntete){
+                inputCouleur.style.backgroundColor = parametres.couleurEntete;
+                var days = document.getElementsByClassName("titleday");
+                for (let day of days){
+                    day.style.background = parametres.couleurEntete;
+                }
             }
             Array.from(document.querySelectorAll("#spanJour h3")).forEach(jour => {
                 if ((parametres.jours.includes((jour.innerHTML))) && jour.className === "uncheck"){
@@ -1405,16 +1429,13 @@ if (window.indexedDB){
         .then(message => {
             return recupererParametresUtilisateur();
         })
-        .then(nouveauxParametres => {
-            console.log("Paramètres mis à jour de l'utilisateur :", nouveauxParametres); // Affichage des nouveaux paramètres
-        })
         .catch(error => console.error("Erreur :", error));
 } else {
     alert("Attention, indexDB est désactivé sur votre navigateur. Nous ne pourrons pas sauvegarder votre emploi du temps...")
 }
 
 // Fonction pour ouvrir ou créer une base de données IndexedDB
-function ouvrirBaseDeDonneesCours(bddName) {
+function ouvrirBaseDeDonneesCours() {
     return new Promise((resolve, reject) => {
         const request = indexedDB.open('cours', 1);
 
@@ -1667,3 +1688,16 @@ function recupererParametresUtilisateur() {
     });
 }
 
+function supprimerFiltres() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.deleteDatabase("Filtres");
+
+        request.onsuccess = function () {
+            console.log("BDD réinitialisée avec succès");
+        }
+        request.onerror = function () {
+            console.log("Erreur dans la suppression des filtres...");
+        }
+    })
+
+}

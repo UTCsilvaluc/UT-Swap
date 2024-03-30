@@ -111,12 +111,15 @@ function afficherChangementCreneau($connect , $currentIDdemande , $jour, $salle,
     // Conversion des numéros de jour en texte
     $textJour = numeroVersJour($jour);
     $textInitJour = numeroVersJour($initJour);
-
-    // Affichage des éléments HTML avec les valeurs fournies
-
-    echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_changement_creneau.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);bouton_remplacer.classList.toggle('hidden', false);</script>";
+    $hasRequest = checkIfHasRequest($connect , $currentIDdemande);
     echo "<script> document.getElementById('swapJour1').innerHTML = '$textJour'; document.getElementById('swapSalle1').innerHTML = '$salle'; document.getElementById('swapCreneau1').innerHTML = `$hdebut - $hfin` ; </script>";
     echo "<script> document.getElementById('swapJour2').innerHTML = '$textInitJour'; document.getElementById('swapSalle2').innerHTML = '$initSalle'; document.getElementById('swapCreneau2').innerHTML = `$initHoraireDebut - $initHoraireFin` ; </script>";
-    echo "<script> document.getElementById('sendSwap').classList.toggle('hidden' , false);document.getElementById('ancienCreneauSwap1').classList.toggle('hidden' , false);document.getElementById('ancienCreneauSwap2').classList.toggle('hidden' , false);</script>";
+    if (!$hasRequest){
+        echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_changement_creneau.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);bouton_remplacer.classList.toggle('hidden', false);</script>";
+        echo "<script> document.getElementById('sendSwap').classList.toggle('hidden' , false);document.getElementById('ancienCreneauSwap1').classList.toggle('hidden' , false);document.getElementById('ancienCreneauSwap2').classList.toggle('hidden' , false);</script>";
+    } else {
+        echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_demande_recu_changement_creneau.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);bouton_continuer.classList.toggle('hidden', false);</script>";
+        $_SESSION["hasRequest"] = "hasRequest";
+    }
 }
 ?>

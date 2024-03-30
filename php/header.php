@@ -156,6 +156,8 @@ function sendNotifications($loginNotif, $idDemande, $demandeur, $type_notif, $st
         $contenu_notif = "Une nouvelle demande a été postée !"; //à continuer
     }else if($type_notif === 4){
         $contenu_notif = $personne1." a retourné sa veste.;La demande de swap du ".$type2.$semaine2." de ".$codeUV2." pour ".nombreEnJour($jour2)." ".date("H\hi", strtotime($horaireDebut2))."-".date("H\hi", strtotime($horaireFin2))." a été annulée;";
+    } else if ($type_notif === 5){
+        $contenu_notif = "Votre demande pour l'UV $codeUV2 de type $type1 a été annulée par " . $personne2 . " suite à un changement de son horaire...";
     }
 
     // si il la notif n'a pas été envoyé alors le faire
@@ -470,6 +472,7 @@ if (
             <div id="div_messages">
                 <p id="message_uv_type" class="hidden">Vous proposez déjà un horaire pour cette UV et ce type de cours !</p>
                 <p id="message_changement_creneau" class="hidden">Vous avez effectué une autre demande pour cette UV et ce type en fournissant des créneaux différents, souhaitez-vous modifier le créneau ?</p>
+                <p id="message_demande_recu_changement_creneau" class="hidden">Attention ! vous avez des demandes en cours avec l'ancien créneau, si vous continuez, toutes les demandes seront automatiquement annulées !!!</p>
                 <p id="message_pression" class="hidden">Assurez-vous de la validité ainsi que de la possession du créneau renseigné. Des incohérences répétées pourraient entraîner des sanctions, y compris le bannissement.</p>
                 <p id="message_impossible_uv" class="hidden">Nous sommes désolé mais le responsable de cette UV a désactivé les changements de créneaux. Aucune demande n'est donc possible...</p>
                 <p id="message_insertion" class="hidden">La demande a été envoyée !!</p>
@@ -552,6 +555,7 @@ if (
         <div id="boutons_uv" >
             <button id="bouton_impossible_uv" onclick="nouveauClick()" type="reset" class="bouton_nouveau hidden" type="reset">Abandonner</button>
             <button id="bouton_remplacer" type="submit" class="hidden">Remplacer</button>
+            <button id="bouton_continuer" type="button" class="hidden">Continuer</button>
         </div>
         <div id="boutons_message" class="hidden">
             <button id="bouton_retour">Retour</button>
@@ -586,10 +590,23 @@ if (isset($_POST['update_choix']) && !(empty($_POST['update_choix']))) {
             $type = $_SESSION['type'];
             $offerId = $_SESSION['swap'];
             create_swap($connect , $idDemande , $offerId , $uv , $type , $login);
-            sendNotifications($login , $offerId , $idDemande , 1 , 0 , $connect);
+            $loginNotif = getLoginById($connect , $offerId);
+            sendNotifications($loginNotif , $offerId , $idDemande , 1 , 0 , $connect);
             $_SESSION['reloadPage'] = "swapSuccess";
         } else {
             $_SESSION['reloadPage'] = "updateSuccess";
+        }
+        if ($_SESSION["hasRequest"]){
+            $message = $_SESSION["hasRequest"];
+            if ($message === "hasRequest"){
+                $rows = checkIfHasRequest($connect ,$idDemande);
+                foreach ($rows as $row){
+                    $idRequester = $row['demandeur'];
+                    $loginNotif = getLoginById($connect , $idRequester);
+                    sendNotifications($loginNotif , $idDemande , $idRequester , 5 , 0 , $connect);
+                }
+                updateSwapByDemandeur($connect , $idDemande , 1);
+            }
         }
     }
     unset($_SESSION['jour']);
