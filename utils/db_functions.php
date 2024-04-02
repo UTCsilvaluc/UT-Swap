@@ -425,4 +425,50 @@ function getLoginById($connect , $idDemande){
 
 }
 
+function checkIfHasRequest($connect, $idDemande){
+    try {
+        $stmt = $connect->prepare("SELECT * FROM swap WHERE idDemande = ? AND statut = 0");
+        $stmt->bind_param("i", $idDemande);
+        if ($stmt->execute()){
+            $result = $stmt->get_result();
+            $rows = $result->fetch_all(MYSQLI_ASSOC); // Récupérer toutes les lignes sous forme de tableau associatif
+            $stmt->close();
+            return $rows;
+        }
+    } catch (Exception $e){
+        error_log("Erreur :" . $e->getMessage());
+    }
+}
+
+
+function deleteSwapByDemandeur($connect , $idDemande){
+    try {
+        $stmt = $connect->prepare("DELETE FROM swap WHERE idDemande = ?");
+        $stmt->bind_param("i" ,$idDemande);
+        if ($stmt->execute()){
+            $stmt->close();
+        } else {
+            error_log("Erreur lors de la suppression des swaps !");
+        }
+    } catch (Exception $e){
+        error_log("Erreur :" . $e->getMessage());
+    }
+
+}
+
+function updateSwapByDemandeur($connect , $idDemande , $statut){
+    try {
+        $stmt = $connect->prepare("UPDATE swap SET statut = ? WHERE idDemande = ?");
+        $stmt->bind_param("ii"  , $statut ,$idDemande);
+        if ($stmt->execute()){
+            $stmt->close();
+        } else {
+            error_log("Erreur lors de l'update des swaps !");
+        }
+    } catch (Exception $e){
+        error_log("Erreur :" . $e->getMessage());
+    }
+
+}
+
 ?>

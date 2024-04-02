@@ -1,4 +1,4 @@
-
+let canSave = document.getElementById("localSave").checked;
 function svgSwapEnter(event){
     event.target.src = "../svg/swap_texte.svg";
     event.target.style.height = "33px";
@@ -67,7 +67,7 @@ function deleteCours(){
 
     (async () => {
         try {
-            const db = await ouvrirBaseDeDonnees();
+            const db = await ouvrirBaseDeDonneesCours();
             const courses = await getCoursByID(db, parseInt(coursID));
             if (courses) {
                 await supprimerCoursByID(db, parseInt(coursID));
@@ -530,8 +530,8 @@ async function createCours(cours) {
     /* Retourne une promesse qui me permet d'attendre le sauvegarde d'un cours avant qu'un autre cours soit crée. Permet d'éviter le mélange des cours entre synchrone et asynchrone.*/
     return new Promise(async (resolve, reject) => {
         try {
+            canSave = document.getElementById("localSave").checked;
             let endroit_cours;
-
             if (cours.jour == "lundi") {
                 endroit_cours = lundi;
             } else if (cours.jour == "mardi") {
@@ -558,8 +558,8 @@ async function createCours(cours) {
             }
             cours.couleur = coursColors[cours.codeUV];
 
-            if (cours.id === null) {
-                const db = await ouvrirBaseDeDonnees();
+            if (cours.id === null && canSave) {
+                const db = await ouvrirBaseDeDonneesCours();
                 const maxId = await getMaxId(db);
                 cours.id = maxId + 1;
                 await ajouterCours(db, cours);
@@ -651,10 +651,9 @@ function colorChange(event){
             const idCurrentCours = parseInt(cours.id);
             (async () => {
                 try {
-                    const db = await ouvrirBaseDeDonnees();
+                    const db = await ouvrirBaseDeDonneesCours();
                     const courses = await getCoursByID(db, idCurrentCours);
                     if (courses) {
-                        console.log(courses);
                         await modifierAttributCoursByID(db, idCurrentCours, 'couleur', event.target.value);
                     } else {
                         console.log("Erreur : aucun cours avec cet ID !")
@@ -720,16 +719,22 @@ function suivreSouris(element, isCours) {
     if (parentJourElement) {
         (async () => {
             try {
-                const db = await ouvrirBaseDeDonnees();
+                const db = await ouvrirBaseDeDonneesCours();
                 const idCurrentCours = parseInt(element.id);
                 const courses = await getCoursByID(db, idCurrentCours);
                 var heureElement = element.getElementsByTagName('p')[0].innerHTML.split("-");
                 var heureDebut = formaterHeure(heureElement[0].replace("h",":")).replace(":","h");
                 var heureFin = formaterHeure(heureElement[1].replace("h",":")).replace(":","h");
+                var coursElement = event.target;
+                var texte = element.querySelector('h2.UV').textContent;
+                var regex = /^([A-Z0-9]+) - (TD|TP|CM)( A| B)?$/;
+                var match = texte.match(regex);
+                var semaine = match[3] ? match[3] : null;
                 if (courses) {
                 await modifierAttributCoursByID(db, idCurrentCours, 'jour', parentJourElement.id);
                 await modifierAttributCoursByID(db, idCurrentCours, 'horaireDebut', heureDebut); /* Ajouter un 0 devant l'heure si < 10*/
                 await modifierAttributCoursByID(db, idCurrentCours, 'horaireFin', heureFin);
+                await modifierAttributCoursByID(db, idCurrentCours, 'semaine', semaine.replace(" ",""));
                 } else {
                     console.log("Erreur : aucun cours avec cet ID !")
                 }
@@ -878,6 +883,15 @@ inputCouleur.addEventListener('click', function(event) {
 couleurInput.addEventListener('change', function(event) {
     // Mettre à jour la couleur de fond de la div avec la couleur sélectionnée
     inputCouleur.style.backgroundColor = event.target.value;
+    recupererParametresUtilisateur()
+        .then(parametres => {
+            parametres.couleurEntete = event.target.value;
+            return sauvegarderParametresUtilisateur(parametres);
+        })
+        .then(message => {
+            return recupererParametresUtilisateur();
+        })
+        .catch(error => console.error("Erreur :", error));
     // Cacher à nouveau l'interface de couleur
     var days = document.getElementsByClassName("titleday");
     for (let day of days){
@@ -978,6 +992,17 @@ function customTime(event) {
         }
     }
 
+    recupererParametresUtilisateur()
+        .then(parametres => {
+            parametres.horaireDebut = document.getElementById("custom-input-hdebut").value;
+            parametres.horaireFin = document.getElementById("custom-input-hfin").value;
+            return sauvegarderParametresUtilisateur(parametres);
+        })
+        .then(message => {
+            return recupererParametresUtilisateur();
+        })
+        .catch(error => console.error("Erreur :", error));
+
 }
 
 function resetEDT(event) {
@@ -1036,6 +1061,7 @@ function pxToVw(pxValue) {
 
 function changeJour(event){
     var listeJour = document.getElementsByClassName("jour");
+    var pushJour = [];
     var nbJour = 0;
     var taillePrec = null;
     for (var jour of listeJour){
@@ -1077,6 +1103,18 @@ function changeJour(event){
             firstDay = true;
         }
     }
+    Array.from(document.querySelectorAll("#spanJour .check")).forEach(jour => {
+        pushJour.push(jour.innerHTML);
+    });
+    recupererParametresUtilisateur()
+        .then(parametres => {
+            parametres.jours = pushJour;
+            return sauvegarderParametresUtilisateur(parametres);
+        })
+        .then(message => {
+            return recupererParametresUtilisateur();
+        })
+        .catch(error => console.error("Erreur :", error));
 
     clearBorderRadius();
 
@@ -1088,6 +1126,16 @@ function changePolice(event){
     document.getElementsByClassName("checkElement")[0].className = "uncheckElement";
     event.target.className = "checkElement";
     document.body.style.fontFamily = `${police} , sans-serif`;
+
+    recupererParametresUtilisateur()
+        .then(parametres => {
+            parametres.police = event.target.innerHTML;
+            return sauvegarderParametresUtilisateur(parametres);
+        })
+        .then(message => {
+            return recupererParametresUtilisateur();
+        })
+        .catch(error => console.error("Erreur :", error));
 }
 
 function openCustom(event){
@@ -1125,7 +1173,7 @@ function supprimerCustom(){
     input.dispatchEvent(event);
 
     document.getElementById("couleurSpan").innerHTML = couleurSpan;
-
+    supprimerFiltres();
 
 }
 var importElement = document.getElementById("importEDTID");
@@ -1351,16 +1399,45 @@ function lineIsCours(line){
 
 
 if (window.indexedDB){
-    afficherTousLesCours();
-    // Charger les cours au début
+    afficherTousLesCours(); // Charger les cours au début
+    recupererParametresUtilisateur()
+        .then(parametres => {
+            if (parametres.police != document.getElementById("mainPolice").innerHTML){
+                document.getElementById(parametres.police).click();
+            }
+            if (parametres.horaireDebut && parametres.horaireFin){
+                document.getElementById("custom-input-hdebut").value = parametres.horaireDebut;
+                document.getElementById("custom-input-hfin").value = parametres.horaireFin;
+                customTime(event);
+            }
+            if (parametres.couleurEntete){
+                inputCouleur.style.backgroundColor = parametres.couleurEntete;
+                var days = document.getElementsByClassName("titleday");
+                for (let day of days){
+                    day.style.background = parametres.couleurEntete;
+                }
+            }
+            Array.from(document.querySelectorAll("#spanJour h3")).forEach(jour => {
+                if ((parametres.jours.includes((jour.innerHTML))) && jour.className === "uncheck"){
+                    jour.click();
+                }
+                else if (!(parametres.jours.includes((jour.innerHTML))) && jour.className === "check"){
+                    jour.click();
+                }
+            });
+        })
+        .then(message => {
+            return recupererParametresUtilisateur();
+        })
+        .catch(error => console.error("Erreur :", error));
 } else {
     alert("Attention, indexDB est désactivé sur votre navigateur. Nous ne pourrons pas sauvegarder votre emploi du temps...")
 }
 
 // Fonction pour ouvrir ou créer une base de données IndexedDB
-function ouvrirBaseDeDonnees() {
+function ouvrirBaseDeDonneesCours() {
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open('ma_base_de_donnees', 1);
+        const request = indexedDB.open('cours', 1);
 
         request.onerror = function(event) {
             reject("Erreur lors de l'ouverture de la base de données: " + event.target.error);
@@ -1442,7 +1519,7 @@ function getCoursByID(db, id) {
 // Fonction pour afficher tous les cours
 async function afficherTousLesCours() {
     try {
-        const db = await ouvrirBaseDeDonnees();
+        const db = await ouvrirBaseDeDonneesCours();
 
         // Récupérer tous les cours de la base de données
         const tousLesCours = await getAllCours(db);
@@ -1456,7 +1533,7 @@ async function afficherTousLesCours() {
 
 async function supprimerTousLesCours() {
     try {
-        const db = await ouvrirBaseDeDonnees();
+        const db = await ouvrirBaseDeDonneesCours();
         // Récupérer tous les cours de la base de données
         const tousLesCours = await getAllCours(db);
         tousLesCours.forEach(cours => {
@@ -1547,4 +1624,81 @@ async function getMaxId(db) {
             reject(event.target.error);
         };
     });
+}
+
+/* Partie de sauvegarde pour les filtres */
+
+// Fonction pour ouvrir la base de données "Filtres"
+function ouvrirBaseDeDonneesFiltre() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('Filtres', 1);
+
+        request.onerror = function(event) {
+            reject("Erreur lors de l'ouverture de la base de données: " + event.target.error);
+        };
+
+        request.onsuccess = function(event) {
+            const db = event.target.result;
+            resolve(db);
+        };
+
+        request.onupgradeneeded = function(event) {
+            const db = event.target.result;
+            const objectStore = db.createObjectStore('parametres', { keyPath: 'utilisateur' }); // Utilisateur est une clé primaire fixe
+            objectStore.transaction.oncomplete = function() {
+                // Initialisation des valeurs par défaut
+                const parametresObjectStore = db.transaction('parametres', 'readwrite').objectStore('parametres');
+                parametresObjectStore.add({ utilisateur: 'utilisateur', jours: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'], horaireDebut: '08:00', horaireFin: '20:00', police: 'Jost', couleurEntete: '#CCCCCC' });
+            };
+        };
+    });
+}
+
+
+// Fonction pour sauvegarder ou mettre à jour les paramètres d'un utilisateur
+function sauvegarderParametresUtilisateur(parametres) {
+    return new Promise((resolve, reject) => {
+        ouvrirBaseDeDonneesFiltre().then(db => {
+            const transaction = db.transaction(['parametres'], 'readwrite');
+            const objectStore = transaction.objectStore('parametres');
+            const request = objectStore.put(parametres);
+
+            request.onsuccess = () => resolve("Paramètres de l'utilisateur sauvegardés avec succès !");
+            request.onerror = (event) => reject("Erreur lors de la sauvegarde des paramètres de l'utilisateur : " + event.target.error);
+        }).catch(error => reject(error));
+    });
+}
+
+// Fonction pour récupérer les paramètres de l'utilisateur
+function recupererParametresUtilisateur() {
+    return new Promise((resolve, reject) => {
+        ouvrirBaseDeDonneesFiltre().then(db => {
+            const transaction = db.transaction(['parametres'], 'readonly');
+            const objectStore = transaction.objectStore('parametres');
+            const request = objectStore.get('utilisateur'); // Utilisateur est la clé primaire fixe
+
+            request.onsuccess = () => {
+                if (request.result) {
+                    resolve(request.result);
+                } else {
+                    reject("Paramètres de l'utilisateur non trouvés !");
+                }
+            };
+            request.onerror = (event) => reject("Erreur lors de la récupération des paramètres de l'utilisateur : " + event.target.error);
+        }).catch(error => reject(error));
+    });
+}
+
+function supprimerFiltres() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.deleteDatabase("Filtres");
+
+        request.onsuccess = function () {
+            console.log("BDD réinitialisée avec succès");
+        }
+        request.onerror = function () {
+            console.log("Erreur dans la suppression des filtres...");
+        }
+    })
+
 }

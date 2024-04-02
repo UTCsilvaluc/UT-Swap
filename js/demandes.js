@@ -1,3 +1,14 @@
+document.addEventListener('DOMContentLoaded', function() {
+    sortByRecent();
+});
+const joursSemaine = {
+    "1": 'Lundi',
+    "2": 'Mardi',
+    "3": 'Mercredi',
+    "4": 'Jeudi',
+    "5": 'Vendredi',
+    "6": 'Samedi'
+};
 function copierLien(element) {
     // Récupérer les informations sur la demande
     var uvType = element.closest('.div_demande').querySelector('h2').innerText;
@@ -50,14 +61,6 @@ function clickDemande(element) {
                     console.error("Aucune donnée trouvée dans l'attribut data-row");
                 }
                 if(donnees.codeUV !== "" && donnees.type !== "" && donnees.salle !== "") {
-                    const joursSemaine = {
-                        "1": 'Lundi',
-                        "2": 'Mardi',
-                        "3": 'Mercredi',
-                        "4": 'Jeudi',
-                        "5": 'Vendredi',
-                        "6": 'Samedi'
-                    };
                     nouveauClick();
                     bouton_non_submit.className = "submitSwap";
 
@@ -172,6 +175,202 @@ function researchUV(event){
         canDisplayCourses(event);
     }
 }
+function changeFilter(event){
+    if (document.getElementById("filtre_pertinence").checked){
+        handlechangeFilter();
+    } else if (document.getElementById("filtre_date").checked){
+        sortBySchedule();
+    } else if (document.getElementById("filtre_demande").checked){
+        sortByDemand();
+    } else if (document.getElementById("filtre_auteur").checked) {
+        sortByAuthor();
+    } else {
+        sortByRecent();
+    }
+}
+async function handlechangeFilter(event) {
+    const pointsType = {"TD":1 , "TP":0.5,"CM":0}
+    const allDemandes = Array.from(document.getElementsByClassName("div_demande"));
+    const { moyenne, min, max } = meansDemandes(allDemandes);
+    var nbPoints = {};
+    for (const demande of allDemandes) {
+        var rowAttribute = demande.dataset.row;
+        if (rowAttribute) {
+            try {
+                var donnees = JSON.parse(atob(rowAttribute));
+                const hasUV = await checkIfHasUV(donnees.codeUV);
+                nbPoints[donnees.idDemande] = 0;
+                if (hasUV) {
+                    nbPoints[donnees.idDemande] += 7;
+
+                }
+                const compatible = await checkIfCreneauCompatible(joursSemaine[donnees.jour], donnees.horaireDebut.slice(0,-3).replace(":","h"), donnees.horaireFin.slice(0,-3).replace(":","h"));
+                if (compatible) {
+                    nbPoints[donnees.idDemande] += 3;
+                }
+                nbPoints[donnees.idDemande] += pointsType[donnees.type];
+                nbPoints[donnees.idDemande] += valeurdecroissante(donnees.nbDemandes , moyenne , min , max);
+            } catch (error) {
+                console.error("Erreur lors du parsing JSON :", error);
+            }
+        } else {
+            console.error("Aucune donnée trouvée dans l'attribut data-row");
+        }
+    }
+    rearrangeElements(nbPoints);
+}
+
+function rearrangeElements(nbPoints) {
+    const container = document.querySelector('.demande_container');
+    const elements = Array.from(container.children);
+
+    // Trier les éléments en fonction du nombre de points
+    elements.sort((a, b) => {
+        const idDemandeA = JSON.parse(atob(a.dataset.row)).idDemande;
+        const idDemandeB = JSON.parse(atob(b.dataset.row)).idDemande;
+
+        const pointsA = nbPoints[idDemandeA] || 0;
+        const pointsB = nbPoints[idDemandeB] || 0;
+
+        return pointsB - pointsA;
+    });
+
+    // Réorganiser les éléments dans le conteneur
+    elements.forEach(element => container.appendChild(element));
+}
+function sortByAuthor() {
+    const container = document.querySelector('.demande_container');
+    const elements = Array.from(container.children);
+    elements.sort((a, b) => {
+        const loginA = JSON.parse(atob(a.dataset.row)).login.toLowerCase();
+        const loginB = JSON.parse(atob(b.dataset.row)).login.toLowerCase();
+        return loginA.localeCompare(loginB);
+    });
+
+    elements.forEach(element => container.appendChild(element));
+}
+
+function sortByDemand() {
+    const container = document.querySelector('.demande_container');
+    const elements = Array.from(container.children);
+    elements.sort((a, b) => {
+        const dataA = JSON.parse(atob(a.dataset.row));
+        const dataB = JSON.parse(atob(b.dataset.row));
+        return dataA.nbDemandes - dataB.nbDemandes;
+    });
+    elements.forEach(element => container.appendChild(element));
+}
+
+function sortBySchedule() {
+    const container = document.querySelector('.demande_container');
+    const elements = Array.from(container.children);
+    elements.sort((a, b) => {
+        const dataA = JSON.parse(atob(a.dataset.row));
+        const dataB = JSON.parse(atob(b.dataset.row));
+        const timeDecimalA = calculDecimal(dataA.horaireDebut.slice(0,-3).replace(":","h"));
+        const timeDecimalB = calculDecimal(dataB.horaireDebut.slice(0,-3).replace(":","h"));
+        // Tri par jour
+        if (dataA.jour !== dataB.jour) {
+            return dataA.jour - dataB.jour;
+        }
+        // Tri par heure (en utilisant la valeur décimale)
+        return timeDecimalA - timeDecimalB;
+    });
+    elements.forEach(element => container.appendChild(element));
+}
+// Définition de la fonction de tri par ID de demande (le plus grand en premier)
+function sortByRecent() {
+    const container = document.querySelector('.demande_container');
+    const elements = Array.from(container.children);
+    elements.sort((a, b) => {
+        const idDemandeA = JSON.parse(atob(a.dataset.row)).idDemande;
+        const idDemandeB = JSON.parse(atob(b.dataset.row)).idDemande;
+        return idDemandeB - idDemandeA; // Trie de manière décroissante
+    });
+    elements.forEach(element => container.appendChild(element));
+}
+
+
+
+
+function checkIfCreneauCompatible(jour, heureDebut, heureFin) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const db = await ouvrirBaseDeDonnees();
+            const courses = await getAllCours(db);
+            var isAvailable = true;
+            courses.forEach(cours => {
+                if (cours.jour.toLowerCase() === jour.toLowerCase()){
+                    if (!((calculDecimal(cours.horaireFin) <= calculDecimal(heureDebut)) || (calculDecimal(heureFin) <= calculDecimal(cours.horaireDebut)))){
+                        isAvailable = false;
+                    }
+                }
+            })
+            resolve(isAvailable);
+        } catch (error) {
+            console.error(error);
+            reject(error);
+        }
+    });
+}
+function checkIfHasUV(codeUV) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const db = await ouvrirBaseDeDonnees();
+            const courses = await getAllCours(db);
+            let hasUV = false;
+            courses.forEach(cours => {
+                if (cours.codeUV === codeUV){
+                    hasUV = true;
+                }
+            })
+            resolve(hasUV);
+        } catch (error) {
+            console.error(error);
+            reject(error);
+        }
+    });
+}
+
+function meansDemandes(Arraydemandes){
+    var somme = 0;
+    var min = Infinity; // Initialisez min à Infinity pour s'assurer que toute valeur sera inférieure à celle-ci
+    var max = -Infinity; // Initialisez max à -Infinity pour s'assurer que toute valeur sera supérieure à celle-ci
+    var nbDemandes = 0;
+    Arraydemandes.forEach(demande => {
+        var rowAttribute = demande.dataset.row;
+        if (rowAttribute) {
+            try {
+                var donnees = JSON.parse(atob(rowAttribute));
+                var nbDemandesCours = donnees.nbDemandes; // Assurez-vous d'utiliser la bonne variable ici (donnees.nbDemandes ou cours.nbDemandes ?)
+                somme += nbDemandesCours;
+                nbDemandes+=1;
+                if (max < nbDemandesCours){
+                    max = nbDemandesCours;
+                }
+                if (min > nbDemandesCours){
+                    min = nbDemandesCours;
+                }
+            } catch (error) {
+                console.error("Erreur lors du parsing JSON :", error);
+            }
+        } else {
+            console.error("Aucune donnée trouvée dans l'attribut data-row");
+        }
+    })
+    // Retourner un objet contenant la moyenne, le minimum et le maximum
+    return {
+        moyenne: somme / nbDemandes,
+        min: min !== Infinity ? min : undefined,
+        max: max !== -Infinity ? max : undefined
+    };
+}
+
+function valeurdecroissante(nbDemandes, moyenne, min, max) {
+    const coefficient = 2 - ((nbDemandes - min) / (max - min));
+    return coefficient < 0 ? 0 : (coefficient > 2 ? 2 : coefficient);
+}
+
 
 function changeJour(event){
     var labelForInput = document.querySelector('label[for="' + event.target.id + '"]');
@@ -339,7 +538,7 @@ function resetFilter(){
 
 function ouvrirBaseDeDonnees() {
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open('ma_base_de_donnees', 1);
+        const request = indexedDB.open('cours', 1);
 
         request.onerror = function(event) {
             reject("Erreur lors de l'ouverture de la base de données: " + event.target.error);
@@ -376,6 +575,7 @@ function getAllCours(db) {
         };
     });
 }
+
 
 var isIn1200Px = true;
 

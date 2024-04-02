@@ -31,13 +31,14 @@
                     </div>
                 </div>
                 <div class="conteneur_filtre" id="filterContainer1">
-                    <div class="filtre_parent" id="police">
+                    <div class="filtre_parent" id="filter">
                         <h1 class="filtre_entete">Trier par</h1>
                         <span class="filtre_span">
-                            <div class="filtre_parent_label"><label class="check" onclick="changeFilter(event)" id="mainFilter" for="filtre_pertinence">Pertinence</label><input type="checkbox" id="filtre_pertinence" checked></div>
-                            <div class="filtre_parent_label"><label class="uncheck" onclick="changeFilter(event))" for="filtre_date">Date</label><input type="checkbox" id="filtre_date"></div>
-                            <div class="filtre_parent_label"><label class="uncheck" onclick="changeFilter(event)" for="filtre_demande">Demande</label><input type="checkbox" id="filtre_demande"></div>
-                            <div class="filtre_parent_label"><label class="uncheck" onclick="changeFilter(event)" for="filtre_auteur">Auteur</label><input type="checkbox" id="filtre_auteur"></div>
+                            <div class="filtre_parent_label"><label class="check"  for="filtre_recent" id="mainFilter" >Récent</label><input type="radio" name="filterBy" id="filtre_recent" onclick="changeFilter(event)" checked></div>
+                            <div class="filtre_parent_label"><label class="uncheck" for="filtre_pertinence">Pertinence</label><input type="radio" name="filterBy" id="filtre_pertinence" onclick="changeFilter(event)"></div>
+                            <div class="filtre_parent_label"><label class="uncheck" for="filtre_date">Date</label><input type="radio" name="filterBy" id="filtre_date" onclick="changeFilter(event)"></div>
+                            <div class="filtre_parent_label"><label class="uncheck" for="filtre_demande">Demande</label><input type="radio" name="filterBy" id="filtre_demande" onclick="changeFilter(event)"></div>
+                            <div class="filtre_parent_label"><label class="uncheck" for="filtre_auteur">Auteur</label><input type="radio" name="filterBy" id="filtre_auteur" onclick="changeFilter(event)"></div>
                         </span>
                     </div>
                     <div class="filtre_parent" id="jours">
@@ -53,7 +54,7 @@
                     <div class="filtre_parent" id="type">
                         <h1 class="filtre_entete">Type</h1>
                         <span class="filtre_span" id="spanType">
-                            <div class="filtre_parent_label"><label class="check" for="filtre_cours">CM</label><input type="checkbox" id="filtre_cours" onclick="changeTypeFilter(event)" checked></div>
+                            <div class="filtre_parent_label"><label class="check" for="filtre_cours">Cours</label><input type="checkbox" id="filtre_cours" onclick="changeTypeFilter(event)" checked></div>
                             <div class="filtre_parent_label"><label class="check" for="filtre_td">TD</label><input type="checkbox" id="filtre_td" onclick="changeTypeFilter(event)" checked></div>
                             <div class="filtre_parent_label"><label class="check" for="filtre_tp">TP</label><input type="checkbox" id="filtre_tp" onclick="changeTypeFilter(event)" checked></div>
                     </div>

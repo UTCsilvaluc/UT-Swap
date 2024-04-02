@@ -137,6 +137,11 @@ function exportEDT(type){
                                 <button>Choisir un fichier</button>
                                 <input type="file" id="midfileInput" name="fileInput" accept=".txt" hidden>
                             </div>
+
+                            <span class="mid_input_local_save">
+                                    <input type="checkbox" name="localSave" id="localSave" checked>
+                                    <label for="localSave">Sauvegarder localement mon emploi du temps</label>
+                            </span>
                             
                         </div>
                         <div class="mid_button">
@@ -213,9 +218,9 @@ function exportEDT(type){
                         <h1 class="custom_entete">Police</h1>
                         <span class="custom_span">
                             <h3 class="checkElement" onclick="changePolice(event)" id="mainPolice">Jost</h3>
-                            <h3 class="uncheckElement" onclick="changePolice(event)">Kantumruy</h3>
-                            <h3 class="uncheckElement" onclick="changePolice(event)">Times New Roman</h3>
-                            <h3 class="uncheckElement" onclick="changePolice(event)">Comic Sans MS</h3>
+                            <h3 class="uncheckElement" onclick="changePolice(event)" id="Kantumruy">Kantumruy</h3>
+                            <h3 class="uncheckElement" onclick="changePolice(event)" id="Times New Roman">Times New Roman</h3>
+                            <h3 class="uncheckElement" onclick="changePolice(event)" id="Comic Sans MS">Comic Sans MS</h3>
                         </span>
                     </div>
                     <div class="custom_parent" id="jours">
@@ -227,7 +232,7 @@ function exportEDT(type){
                             <h3 class="check" onclick="changeJour(event)">Jeudi</h3>
                             <h3 class="check" onclick="changeJour(event)">Vendredi</h3>
                             <h3 class="check" onclick="changeJour(event)">Samedi</h3>
-                            <h3 class="uncheck" onclick="changeJour(event)">Dimanche</h3>
+                            <h3 class="check" onclick="changeJour(event)">Dimanche</h3>
                         </div>
                     <div class="custom_parent" id="couleurs">
                         <h1 class="custom_entete">Couleurs</h1>
