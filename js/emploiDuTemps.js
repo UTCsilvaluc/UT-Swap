@@ -1,4 +1,4 @@
-
+let canSave = document.getElementById("localSave").checked;
 function svgSwapEnter(event){
     event.target.src = "../svg/swap_texte.svg";
     event.target.style.height = "33px";
@@ -530,8 +530,8 @@ async function createCours(cours) {
     /* Retourne une promesse qui me permet d'attendre le sauvegarde d'un cours avant qu'un autre cours soit crée. Permet d'éviter le mélange des cours entre synchrone et asynchrone.*/
     return new Promise(async (resolve, reject) => {
         try {
+            canSave = document.getElementById("localSave").checked;
             let endroit_cours;
-
             if (cours.jour == "lundi") {
                 endroit_cours = lundi;
             } else if (cours.jour == "mardi") {
@@ -558,7 +558,7 @@ async function createCours(cours) {
             }
             cours.couleur = coursColors[cours.codeUV];
 
-            if (cours.id === null) {
+            if (cours.id === null && canSave) {
                 const db = await ouvrirBaseDeDonneesCours();
                 const maxId = await getMaxId(db);
                 cours.id = maxId + 1;
@@ -1410,7 +1410,6 @@ if (window.indexedDB){
                 document.getElementById("custom-input-hfin").value = parametres.horaireFin;
                 customTime(event);
             }
-            console.log(parametres);
             if (parametres.couleurEntete){
                 inputCouleur.style.backgroundColor = parametres.couleurEntete;
                 var days = document.getElementsByClassName("titleday");

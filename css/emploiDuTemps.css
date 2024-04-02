@@ -645,3 +645,13 @@ span input[type='color']{
     color: white;
     background-color: #32373B;
 }
+
+.mid_input_local_save {
+    display: flex;
+    align-items: center;
+    font-size: 10px;
+}
+
+.mid_input_local_save label {
+    margin-left: 5px;
+}

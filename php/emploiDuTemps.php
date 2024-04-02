@@ -137,6 +137,11 @@ function exportEDT(type){
                                 <button>Choisir un fichier</button>
                                 <input type="file" id="midfileInput" name="fileInput" accept=".txt" hidden>
                             </div>
+
+                            <span class="mid_input_local_save">
+                                    <input type="checkbox" name="localSave" id="localSave" checked>
+                                    <label for="localSave">Sauvegarder localement mon emploi du temps</label>
+                            </span>
                             
                         </div>
                         <div class="mid_button">
