@@ -273,8 +273,6 @@ function notificationClick(){
         j.classList.remove("orange");;
     }
 
-    var conteneurFiltre = document.getElementById("menuFiltre");
-
     var notifs = document.getElementsByClassName("notif");
     if(nombreClickNotification >= 2){
         for(var j of notifs){
@@ -284,7 +282,10 @@ function notificationClick(){
         }
     }
 
-    if(conteneurFiltre !== null && typeof conteneurFiltre !== 'undefined'){
+    var conteneurFiltre = document.getElementById("menuFiltre");
+    var largeurFenetre = window.innerWidth;
+
+    if(conteneurFiltre !== null && typeof conteneurFiltre !== 'undefined' && largeurFenetre < 1200){
         conteneurFiltre.style.display = "none";
     }
 
@@ -358,8 +359,9 @@ function nouveauClick() {
     document.getElementById("ancienCreneauSwap2").classList.toggle('hidden' , true);
     document.getElementById("ancienCreneauSwap1").classList.toggle('hidden' , true);
     var conteneurFiltre = document.getElementById("menuFiltre");
+    var largeurFenetre = window.innerWidth;
 
-    if(conteneurFiltre !== null && typeof conteneurFiltre !== 'undefined'){
+    if(conteneurFiltre !== null && typeof conteneurFiltre !== 'undefined' && largeurFenetre < 1200){
         conteneurFiltre.style.display = "none";
     }
     nouveau_pannel.style.display = (nouveau_pannel.style.display === "none" || nouveau_pannel.style.display === "") ? "flex" : "none";
@@ -423,8 +425,9 @@ mettreAJourContenuProfil();
 
 bouton_menu.addEventListener("click", function() {
     var conteneurFiltre = document.getElementById("menuFiltre");
+    var largeurFenetre = window.innerWidth;
 
-    if(conteneurFiltre !== null && typeof conteneurFiltre !== 'undefined'){
+    if(conteneurFiltre !== null && typeof conteneurFiltre !== 'undefined' && largeurFenetre < 1200){
         conteneurFiltre.style.display = "none";
     }
     nouveau_pannel.style.display = "none"

@@ -254,11 +254,10 @@ function canDisplayCourses(event) {
         }
 
         if (codeUV != null){
-            if (donnees.codeUV.toLowerCase() != input_code_uv.value.toLowerCase()){
+            if (donnees.codeUV.toLowerCase() != codeUV.toLowerCase()){
                 display = false;
             }
         }
-
         if (!(joursActifs.includes(donnees.jour))){
             display = false;
         }

@@ -1,0 +1,172 @@
+#profil_texte h1{
+    display: flex;
+    flex-direction:row;
+    align-items: center;
+    gap:15px;
+}
+
+#profil_uv{
+    display: flex;
+    flex-direction:row;
+    align-items: center;
+    gap:5px;
+}
+
+#profil_uv button{
+    border-radius: 10px;
+    padding: 5px 8px;
+}
+
+#profil_uv_parent{
+    display: flex;
+    flex-direction:row;
+    align-items: center;
+    gap:15px;
+}
+
+#profil_choix_uv_parent{
+    display: flex;
+    flex-direction:row;
+    align-items: center;
+    gap:5px;
+    font-size: 13px;
+}
+
+#uv_pannel{
+    display: none;
+    height: 50vh;
+    width: 50vw;
+    -webkit-box-shadow: 0px 0px 15px 8px var(--couleur-shadow); 
+    box-shadow: 0px 0px 15px 8px var(--couleur-shadow);
+}
+
+#uv_content .profil_demandes{
+    max-height: 150px;
+}
+
+#uv_content .profil_demandes_parent,#uv_content .profil_demandes_sous_parent{
+    gap:1vw;
+}
+
+#uv_content > div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#uv_content > div > button{
+    padding: 10px 0px;
+    border-radius: 30px;
+}
+
+#uv_content > div > button:first-of-type{
+    background-color: white;
+    color: #32373B;
+    border: 1px solid #32373B;
+}
+
+#uv_content > div:nth-child(3){
+    white-space: nowrap;
+}
+
+#message_attention_prof:not(.hidden){
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color:red;
+    text-align: center;
+    width: 80%;
+}
+
+#uv_button_retour{
+    color: #32373B;
+    background-color: white;
+    border: 1px solid #32373B;
+}
+
+#profil_id{
+    margin-top: 0;
+}
+
+@media screen and (max-width: 800px) {
+
+    #uv_content > div > button{
+        padding: 10px;
+    }
+
+    #uv_pannel{
+        width: 80%;
+    }
+
+    #profil_demandes_parent{
+        flex-direction: row;
+        gap:1vw;
+    }
+
+    #profil_uv button{
+        border: none;
+    }
+}
+
+@media screen and (max-width: 600px) {
+
+    #profil_utilisateur{
+        margin: 0;
+    }
+
+    #profil_uv button{
+        border: 1px solid lightgrey;
+        background-color: white;
+    }
+
+    #profil_texte {
+        margin: 0;
+    }
+
+    #profil_id{
+        margin-top: 110px;
+    }
+
+    #profil_content{
+        gap:25px;
+    }
+
+    #profil_uv_parent{
+        flex-direction:column;
+        gap:5px;
+        align-items: unset;
+    }
+
+}
+
+@media screen and (max-width: 475px) {
+
+    #profil_uv{
+        flex-wrap: wrap;
+    }
+
+}
+
+@media screen and (max-width: 400px) {
+
+    #uv_content .profil_demandes{
+        max-height: 100px;
+    }
+
+    #uv_content > div:nth-child(3){
+        font-size: 12px;
+    }
+
+    #uv_pannel{
+        width: 90%;
+    }
+
+}
+
+@media screen and (max-width: 350px) {
+
+    #uv_content .profil_demandes_parent{
+        flex-direction: row;
+    }
+
+}

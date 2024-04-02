@@ -35,12 +35,23 @@ function scrollToElement(next) {
 var swap_en_cours = document.getElementById("profil_demande_cours").querySelector("h2");
 var swap_accept = document.getElementById("profil_demande_accept").querySelector("h2");
 var swap_refus = document.getElementById("profil_demande_refus").querySelector("h2");
-var swap_attente = document.getElementById("profil_demande_attente").querySelector("h2");
+if(window.location.href.includes("profil.php")){
+    var swap_attente = document.getElementById("profil_demande_attente").querySelector("h2");
+}
 var titre_profil = document.getElementsByClassName("profil_titre")[0].querySelector("h1");
 
 function mettreAJourContenuProfil() {
     var largeurFenetre = window.innerWidth;
-    var elementToMove = document.getElementById("profil_texte");
+
+    var elementToMove;
+    var profil_texte = document.getElementById("profil_texte");
+
+    if(window.location.href.includes("profil.php")){
+        elementToMove = profil_texte;
+    }else{
+        elementToMove = document.getElementById("profil_id");
+    }
+    
 
     var profil_content = document.getElementById("profil_content");
     var mainElement = document.querySelector("main");
@@ -59,18 +70,29 @@ function mettreAJourContenuProfil() {
         swap_en_cours.innerHTML = "En cours";
         swap_accept.innerHTML = "Acceptés";
         swap_refus.innerHTML = "Refusés";
-        swap_attente.innerHTML = "En attente";
+        if(window.location.href.includes("profil.php")){
+            swap_attente.innerHTML = "En attente";
+        }
     }else{
         titre_profil.innerHTML = "Mon profil";
         swap_en_cours.innerHTML = "Swaps en cours";
-        swap_attente.innerHTML = "Swaps en attente";
+        if(window.location.href.includes("profil.php")){
+            swap_attente.innerHTML = "Swaps en attente";
+        }
         swap_accept.innerHTML = "Swaps acceptés";
         swap_refus.innerHTML = "Swaps refusés";
         if (elementToMove && profil_content) {
             elementToMove.remove();
-            var elementsInsideMain = profil_content.children;
-            var insertionIndex = Math.min(0, elementsInsideMain.length); // Troisième position
-            profil_content.insertBefore(elementToMove, elementsInsideMain[insertionIndex]);
+            if(window.location.href.includes("profil.php")){
+                var elementsInsideMain = profil_content.children;
+                var insertionIndex = Math.min(0, elementsInsideMain.length); // Troisième position
+                profil_content.insertBefore(elementToMove, elementsInsideMain[insertionIndex]);
+            }else{
+                var elementsInsideMain = profil_texte.children;
+                var insertionIndex = Math.min(0, elementsInsideMain.length); // Troisième position
+                profil_texte.insertBefore(elementToMove, elementsInsideMain[insertionIndex]);
+            }
+            
         }
     }
 }
@@ -98,7 +120,7 @@ function openSwapPannel(type){
 }
 
 document.addEventListener("click" , function (event){
-    if ((!(event.target.closest("#swap_pannel")) && swap_pannel.style.display != "none") || event.target.id == "swap_button_retour") {
+    if ((!(event.target.closest("#swap_pannel")) && swap_pannel && swap_pannel.style.display != "none") || event.target.id == "swap_button_retour") {
         swap_pannel.style.display = "none";
         history.replaceState({}, document.title, window.location.pathname);
     }

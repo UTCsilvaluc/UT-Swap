@@ -7,7 +7,7 @@ session_start();
 function DBCredential(){
     $dbhost = 'localhost';
     $dbuser = 'root';
-    $dbpass = '';
+    $dbpass = 'root';
     $dbname = 'ut_swap';
     $connect = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to mysql');
     mysqli_set_charset($connect, 'utf8');
@@ -20,6 +20,11 @@ function validateInput($input, $connect) {
     $input = $connect->real_escape_string($input);
     return $input;
 }
+
+function consoleLog($value){
+    echo "<script>console.log('".$value."')</script>";
+}
+
 $connect = DBCredential();
 if (isset($_POST['login'], $_POST['nom'], $_POST['prenom']) && !empty($_POST['login']) && !empty($_POST['nom']) && !empty($_POST['prenom'])){
     $loginEtu = validateInput($_POST['login'],$connect);
@@ -48,14 +53,26 @@ if (isset($_POST['login'], $_POST['nom'], $_POST['prenom']) && !empty($_POST['lo
 $login;
 
 $current_uri = $_SERVER['REQUEST_URI'];
-$search_string = "login.php";
 
 if(isset($_SESSION["login"]) && !empty($_SESSION['login'])){
     $login = $_SESSION["login"];
-}else if(strpos($current_uri, $search_string) === false){
+}else if(strpos($current_uri, "login.php") === false){
     header("Location: login.php");
     exit;
 }
+if(strpos($current_uri, "profil.php")){
+    echo "<script>console.log('lol')</script>";
+    $sqlSelectProf = "SELECT * FROM professeur WHERE login = ?";
+    $stmtSelectProf = $connect->prepare($sqlSelectProf);
+    $stmtSelectProf->bind_param("s", $login);
+    $stmtSelectProf->execute();
+    $stmtSelectProf->store_result();
+    if ($stmtSelectProf->num_rows !== 0) {
+        header("Location: gestion.php");
+        exit;
+    }
+}
+
 function jourEnNombre($jour) {
     $jours = array(
         'lundi' => 1,
@@ -112,6 +129,7 @@ function nombreEnJour($chiffre){
 }
 function sendNotifications($loginNotif, $idDemande, $demandeur, $type_notif, $statut, $connect){
     
+    consoleLog($loginNotif);
     date_default_timezone_set('Europe/Paris');
     $sqlInsertNotif = "INSERT INTO notifications (loginEtu, typeNotif, idDemande, demandeur, contenuNotif, date, viewed) VALUES (?, ?, ?, ?, ?, NOW(), 0)";
     $stmtInsertNotif = $connect->prepare($sqlInsertNotif);
