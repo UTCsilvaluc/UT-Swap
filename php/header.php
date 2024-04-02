@@ -701,6 +701,7 @@ if (
             $stmtCheckUV->bind_result($swap_uv);
             $stmtCheckUV->fetch();
             if($swap_uv === 0){
+                $canSwap = false;
                 echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_impossible_uv.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);</script>";
             }
         }
@@ -796,14 +797,18 @@ if (
         }
     }
     /* Vérifier si un swap n'existe pas déjà pour la demande de l'étudiant. */
-    if (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande']) && $canSwap){
+    if (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande']) && $canSwap && $swap_uv){
         if ($primaryKeyDemande != null){
             $offerId = $_POST['swapIdDemande'];
             create_swap($connect , $primaryKeyDemande , $offerId , $uv , $type , $login);
             $loginNotif = getLoginById($connect , $offerId);
             sendNotifications($loginNotif , $offerId , $primaryKeyDemande , 1 , 0 , $connect);
         } else {
-            echo "Swap -> Erreur dans l'insertion des données : ";
+            if (!($swap_uv)){
+                echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_impossible_uv.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);</script>";
+            } else {
+                echo "Swap -> Erreur dans l'insertion des données : ";
+            }
         }
 
     }
@@ -817,8 +822,6 @@ if (
     }
     unset($_SESSION['reloadPage']);
 }
-
-
 ?>
 
 

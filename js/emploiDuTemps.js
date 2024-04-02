@@ -1410,6 +1410,7 @@ if (window.indexedDB){
                 document.getElementById("custom-input-hfin").value = parametres.horaireFin;
                 customTime(event);
             }
+            console.log(parametres);
             if (parametres.couleurEntete){
                 inputCouleur.style.backgroundColor = parametres.couleurEntete;
                 var days = document.getElementsByClassName("titleday");
@@ -1653,6 +1654,7 @@ function ouvrirBaseDeDonneesFiltre() {
         };
     });
 }
+
 
 // Fonction pour sauvegarder ou mettre à jour les paramètres d'un utilisateur
 function sauvegarderParametresUtilisateur(parametres) {
