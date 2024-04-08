@@ -1,7 +1,6 @@
-function scrollToElement(next) {
-    const container = document.getElementById('demandes_faites');
-    const elements = document.querySelectorAll('.demande_faite');
-    
+function scrollToElement(type,next) {
+    var container = document.getElementById('demandes_'+type+'es');
+    var elements = document.querySelectorAll('.demande_'+type+'e');
     var currentElement;
 
     for(element of elements){

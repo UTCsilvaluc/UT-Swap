@@ -19,6 +19,31 @@ function redirect($url){
 <body>
     <?php include "header.php" ?>
     <?php
+    
+    function updateSwapProf($choix, $demandeur, $idDemande, $connect){
+        $sqlGetLogins = "SELECT d1.login, d2.login FROM swap s JOIN demande d1 ON d1.idDemande=s.idDemande JOIN demande d2 ON d2.idDemande=s.demandeur WHERE s.demandeur = ? AND s.idDemande = ?";
+        $stmtGetLogins = $connect->prepare($sqlGetLogins);
+        $stmtGetLogins->bind_param("ss", $demandeur, $idDemande);
+        $stmtGetLogins->execute();
+        $stmtGetLogins->store_result();
+        $stmtGetLogins->bind_result($loginIdDemande, $loginDemandeur);
+        $stmtGetLogins->fetch();
+        sendNotifications($loginIdDemande, $idDemande, $demandeur, 2, $choix+3, $connect);
+        sendNotifications($loginDemandeur, $idDemande, $demandeur, 2, $choix+3, $connect);
+        $sqlUpdateSwap = "UPDATE swap SET statut = ? WHERE idDemande = ? AND demandeur = ?";
+        $stmtUpdateSwap = $connect->prepare($sqlUpdateSwap);
+        $choix = $choix+3;
+        $stmtUpdateSwap->bind_param("sss", $choix, $idDemande, $demandeur);         
+        $stmtUpdateSwap->execute();
+    }
+
+    if (
+        isset($_POST['choix'], $_POST['demandeur'], $_POST['idDemande']) &&
+        (!empty($_POST['choix']) || validateInput($_POST['choix'],$connect) === "0") && !empty($_POST['demandeur']) && !empty($_POST['idDemande'])
+    ){
+        $connect = DBCredential();
+        updateSwapProf($_POST['choix'], $_POST['demandeur'], $_POST['idDemande'], $connect);
+    }
     function choixTouteDemande($codeUV, $choix){
         global $login;
         $connect = DBCredential();
@@ -246,7 +271,7 @@ function redirect($url){
                 <div id="demandes_professeur" class="demandes_profil">
                     <?php
                     $connect = DBCredential();
-                    $sqlSwaps = "SELECT s.idDemande, s.demandeur, d1.codeUV, d1.type, d1.jour as jour1, d1.horaireDebut as hDeb1, d1.horaireFin as hFin1, d2.jour as jour2, d2.horaireDebut as hDeb2, d2.horaireFin as hFin2, p1.nom as nom1, p1.prenom as prenom1, p2.nom as nom2,p2.prenom as prenom2, d1.raison as raison1, d2.raison as raison2, d1.semaine as semaine1, d2.semaine as semaine2 FROM swap s JOIN demande d1 ON d1.idDemande = s.idDemande JOIN demande d2 ON d2.idDemande = s.demandeur JOIN personne p1 ON p1.login = d1.login JOIN personne p2 ON p2.login = d2.login JOIN UV u ON u.codeUV = d1.codeUV WHERE u.responsable = ? AND s.statut = 2";
+                    $sqlSwaps = "SELECT s.statut, s.idDemande, s.demandeur, d1.codeUV, d1.type, d1.jour as jour1, d1.horaireDebut as hDeb1, d1.horaireFin as hFin1, d2.jour as jour2, d2.horaireDebut as hDeb2, d2.horaireFin as hFin2, p1.nom as nom1, p1.prenom as prenom1, p2.nom as nom2,p2.prenom as prenom2, d1.raison as raison1, d2.raison as raison2, d1.semaine as semaine1, d2.semaine as semaine2 FROM swap s JOIN demande d1 ON d1.idDemande = s.idDemande JOIN demande d2 ON d2.idDemande = s.demandeur JOIN personne p1 ON p1.login = d1.login JOIN personne p2 ON p2.login = d2.login JOIN UV u ON u.codeUV = d1.codeUV WHERE u.responsable = ? AND s.statut >= 2 ORDER BY CASE statut WHEN 2 THEN 1 WHEN 4 THEN 2 WHEN 3 THEN 3 ELSE 4 END;";
                     $stmtSwaps = $connect->prepare($sqlSwaps);
                     $stmtSwaps->bind_param("s", $login);
                     $stmtSwaps->execute();
@@ -257,7 +282,7 @@ function redirect($url){
                             $type = $row["type"];
                             $idDemande = $row["idDemande"];
                             $demandeur = $row["demandeur"];
-
+                            $statut = $row["statut"];
                             $jours = array(
                                 1 => 'Lundi',
                                 2 => 'Mardi',
@@ -302,12 +327,12 @@ function redirect($url){
 
                             $demande= array(
                                 "idDemande" => $idDemande,
-                                "demandeur" => $demandeur,
-                                "id_notif" => $idNotif
+                                "demandeur" => $demandeur
                             );
+                            
                             $data_row = htmlspecialchars(base64_encode(json_encode($demande)), ENT_QUOTES , 'UTF-8');
                             ?>
-                            <div class="demande_professeur" data-row=<?= $data_row; ?>>
+                            <div class="demande_professeur" onclick="" data-row=<?= $data_row ?>>
                                 <div class="gauche_container">
                                     <div class="rectangle_demande"></div>
                                     <div class="infos_uv">
@@ -355,11 +380,28 @@ function redirect($url){
                                         </div>
                                     </div>
                                 </div>
-                                
-                                <div class="button_choix_etudiant">
-                                    <button><img src="../svg/check_vert.svg"></button>
-                                    <button ><img src="../svg/croix_rouge.svg"></button>
-                                </div>
+                                <?php
+                                if($statut == 2){
+                                    ?>
+                                    <div class="button_choix_etudiant">
+                                        <button onclick="choixProfesseurSwap(true, this)"><img src="../svg/check_vert.svg"></button>
+                                        <button onclick="choixProfesseurSwap(false, this)"><img src="../svg/croix_rouge.svg"></button>
+                                    </div>
+                                    <?php
+                                }else if($statut == 3){
+                                    ?>
+                                    <div class="button_choix_etudiant">
+                                        <button><img src="../svg/croix_rouge.svg"></button>
+                                    </div>
+                                    <?php
+                                }else if($statut == 4){
+                                    ?>
+                                    <div class="button_choix_etudiant">
+                                        <button><img src="../svg/check_vert.svg"></button>
+                                    </div>
+                                    <?php
+                                }
+                                ?>
                             </div>
                     <?php
                         }
@@ -376,6 +418,20 @@ function redirect($url){
         </div>
         
     </main>
+    <div>
+    <div class="mid_titre">
+            <hr>
+        </div>
+        <img src="../svg/croix.svg" class="croix">
+        <div class="mid_content">
+            
+        </div>
+        <div class="mid_button">
+            <hr>
+            <button id="choix_prof_button_refuser">Refuser</button>
+            <button id="choix_prof_button_accepter">Accepter</button>
+        </div>
+    </div>
     <form id="uv_pannel" class="mid_pannel" method="post" action="gestion.php" style="display: none;">
         <div id="uv_header" class="mid_titre">
             <?php

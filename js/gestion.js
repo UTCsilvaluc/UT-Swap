@@ -4,9 +4,6 @@ function gestionUv(codeUV){
     event.stopPropagation();
 }
 
-
-
-
 function getGetValue(key) {
     // Récupère la chaîne de requête de l'URL
     var queryString = window.location.search;
@@ -31,6 +28,64 @@ function getGetValue(key) {
 
     // Retourne null si la clé n'est pas trouvée dans la chaîne de requête
     return null;
+}
+
+function choixProfesseurSwap(choix, element){
+    var clickedElement = element.target;
+
+    // Vérifier si l'élément cliqué est le même que l'élément sur lequel l'événement est attaché
+    if (clickedElement === element.currentTarget) {
+        var rowAttribute = element.parentElement.parentElement.dataset.row;
+
+        if (rowAttribute) {
+            try {
+                var donnees = JSON.parse(atob(rowAttribute));
+            } catch (error) {
+                console.error("Erreur lors du parsing JSON :", error);
+            }
+        } else {
+            console.error("Aucune donnée trouvée dans l'attribut data-row");
+        }
+        if(donnees.idDemande !== "" && donnees.demandeur !== "") {
+            
+            if(choix === true){
+                choix = 1;
+            }else{
+                choix = 0;
+            }
+
+            var form = document.createElement('form');
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', '');
+
+            var inputChoix = document.createElement('input');
+            inputChoix.setAttribute('type', 'hidden');
+            inputChoix.setAttribute('name', 'choix');
+            inputChoix.setAttribute('value', choix);
+            form.appendChild(inputChoix);
+            
+            var inputDemandeur = document.createElement('input');
+            inputDemandeur.setAttribute('type', 'hidden');
+            inputDemandeur.setAttribute('name', 'demandeur');
+            inputDemandeur.setAttribute('value', donnees.demandeur);
+            form.appendChild(inputDemandeur);
+            
+            var inputIdDemande = document.createElement('input');
+            inputIdDemande.setAttribute('type', 'hidden');
+            inputIdDemande.setAttribute('name', 'idDemande');
+            inputIdDemande.setAttribute('value', donnees.idDemande);
+            form.appendChild(inputIdDemande);
+
+            // Ajouter le formulaire à la page
+            document.body.appendChild(form);
+
+            // Soumettre le formulaire
+            form.submit();
+
+            // Supprimer le formulaire après soumission
+            form.remove();
+        }
+    }
 }
 
 function gererUVChoix(choix){

@@ -93,8 +93,8 @@
                         <span><?= getMail(); ?></span>
                     </div>
                 </div>
-                <div id="profil_demandes">
-                    <div id="profil_demandes_parent">
+                <div class="profil_demandes">
+                    <div class="profil_demandes_parent">
                         <div class="profil_demandes_sous_parent">
                             <div id="profil_demande_attente" onclick="openSwapPannel('attente')" class="profil_demande">
                                 <span class="profil_demande_header"><img src="../svg/dmd_attent.svg" alt=""><span><?= getNbSwapProfil("attente"); ?></span></span>
@@ -217,7 +217,18 @@
                             }
                             ?>
                                         <h2><?= $codeUV2 ?></h2><h2>-</h2><h2><?= $type2 . $semaine2 ?></h2></span>
+                                        
+                            <?php
+                            if($statut == 0){
+                                ?>
                                         <button class="demande_trash_parent" onclick="cancelDemandeFaite(this)">Supprimer<img class="demande_trash" src="../svg/TRASH_FILTRE.svg"></button>
+                                    <?php
+                            }else{
+                                ?>
+                                        <button class="<?= $statutClass ?>"><?= $statutName ?></button>
+                                <?php
+                            }
+                                    ?>
                                     </div>
                                     <span class="demande_faite_detail"><?= $jour2 . " " . $hDeb2 . "-" . $hFin2 . " " . $salle2 ?></span>
                                     <span class="demande_faite_motif"><span class="demande_faite_motif_titre">Motif:</span><span><?= $raison ?></span></span>
@@ -227,13 +238,6 @@
                         }
                     }else{
                         ?>
-                            <style>
-                                #demandes_faites{                          
-                                    justify-content: center;
-                                    align-items: center;
-                                }
-
-                            </style>
                             <div class="message_aucune_demande">
                                 <h1>Vous n'avez aucune demande de faite</h1>
                             </div>
@@ -243,8 +247,8 @@
                     ?>
                 </div>
                 <div id="demandes_faites_fleches" class="demandes_profil_fleches">
-                    <img src="../svg/fleche_gauche.svg" onclick="scrollToElement(false)" alt="">
-                    <img src="../svg/fleche_droite.svg" onclick="scrollToElement(true)" alt="">
+                    <img src="../svg/fleche_gauche.svg" onclick="scrollToElement('fait',false)" alt="">
+                    <img src="../svg/fleche_droite.svg" onclick="scrollToElement('fait',true)" alt="">
                 </div>
             </div>
         </div>
@@ -409,8 +413,8 @@
                 ?>
                 </div>
                 <div id="demandes_reçues_fleches" class="demandes_profil_fleches">
-                    <img src="../svg/fleche_gauche.svg" onclick="scrollToElement(false)" alt="">
-                    <img src="../svg/fleche_droite.svg" onclick="scrollToElement(true)" alt="">
+                    <img src="../svg/fleche_gauche.svg" onclick="scrollToElement('reçu',false)" alt="">
+                    <img src="../svg/fleche_droite.svg" onclick="scrollToElement('reçu',true)" alt="">
                 </div>
             </div>
         </div>

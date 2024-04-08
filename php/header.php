@@ -129,11 +129,9 @@ function nombreEnJour($chiffre){
 }
 function sendNotifications($loginNotif, $idDemande, $demandeur, $type_notif, $statut, $connect){
     
-    consoleLog($loginNotif);
     date_default_timezone_set('Europe/Paris');
     $sqlInsertNotif = "INSERT INTO notifications (loginEtu, typeNotif, idDemande, demandeur, contenuNotif, date, viewed) VALUES (?, ?, ?, ?, ?, NOW(), 0)";
     $stmtInsertNotif = $connect->prepare($sqlInsertNotif);
-
     $sqlSelectDemande1 = "SELECT d.codeUV, d.type, d.jour, d.horaireDebut, d.horaireFin, d.semaine, p.nom, p.prenom FROM demande d JOIN etudiant e ON e.login = d.login JOIN personne p ON p.login = e.login WHERE d.idDemande = ?";
     $stmtSelectDemande1 = $connect->prepare($sqlSelectDemande1);
     $stmtSelectDemande1->bind_param("s", $demandeur);
@@ -152,7 +150,6 @@ function sendNotifications($loginNotif, $idDemande, $demandeur, $type_notif, $st
     $stmtSelectDemande2->fetch();
     $personne2= ucfirst($prenom2)." ".ucfirst($nom2);
 
-    
     if($semaine1 !== "null"){
         $semaine1 = " en semaine ".$semaine1;
     }else{
@@ -188,7 +185,6 @@ function sendNotifications($loginNotif, $idDemande, $demandeur, $type_notif, $st
         $stmtInsertNotif->bind_param("sssss", $loginNotif, $type_notif, $idDemande, $demandeur, $contenu_notif);
         $stmtInsertNotif->execute();
     }
-
 }
 function getResponsableByUv($uv){
     $responsableLogin = "antjouglet";
