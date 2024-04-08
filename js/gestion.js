@@ -126,6 +126,8 @@ if(getGetValue("codeUV")){
     var uv_refus = document.getElementById("uv_demande_refus").querySelector("h2");
 }
 var choix_uv_label = document.getElementById("profil_choix_uv_parent").querySelector("label");
+
+var demandeProfesseurs = document.querySelectorAll('.demande_professeur');
 function mettreAJourContenuProfil() {
     var largeurFenetre = window.innerWidth;
     if(getGetValue("codeUV")){
@@ -139,6 +141,32 @@ function mettreAJourContenuProfil() {
             uv_refus.innerHTML = "Swaps refusés";
         }
     }
+
+    // Parcourir chaque demande_professeur
+    demandeProfesseurs.forEach(function(demandeProfesseur) {
+        var gaucheContainer = demandeProfesseur.querySelector('.gauche_container');
+        var buttonContainer = demandeProfesseur.querySelector('.button_choix_etudiant');
+        var midContainer = demandeProfesseur.querySelector('.mid_container');
+        if (largeurFenetre <= 950) {
+            if (!buttonContainer.parentElement.classList.contains('top_container')) {
+                var topContainer = document.createElement('div');
+                topContainer.classList.add('top_container');
+
+                topContainer.appendChild(gaucheContainer);
+                topContainer.appendChild(buttonContainer);
+
+                midContainer.parentNode.insertBefore(topContainer, midContainer);
+            }
+        } else {
+            if (buttonContainer.parentElement.classList.contains('top_container')) {
+                midContainer.parentNode.insertBefore(gaucheContainer, midContainer);
+                midContainer.parentNode.insertBefore(buttonContainer, midContainer.nextSibling);
+                
+                var topContainer = document.querySelector('.top_container');
+                topContainer.parentNode.removeChild(topContainer);
+            }
+        }
+    });
 
     if(largeurFenetre <= 800){
         choix_uv_label.innerHTML = "Autoriser changements UV(s)";

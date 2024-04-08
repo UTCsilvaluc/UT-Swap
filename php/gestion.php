@@ -11,6 +11,7 @@ function redirect($url){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/profil.css">
     <link rel="stylesheet" href="../css/gestion.css">
+    <link rel="stylesheet" href="../css/demande_content.css">
     <link rel="stylesheet" href="../css/mid_pannel.css">
     <title>Gestion - UT'Swap</title>
     <link rel="icon" href="../img/logo.png" type="image/x-icon">
@@ -187,7 +188,7 @@ function redirect($url){
         <img src="../svg/profil.svg" id="profil_image">
         <div id="fond_profil_image"></div>
         <div id="profil_utilisateur" class="profil_pannel">
-            <div id="profil_header">
+            <div class="profil_header">
                 <span class="profil_titre"><span class="tictac"></span><h1>Mon profil</h1></span>
                 <button>Se déconnecter</button>
             </div>
@@ -237,6 +238,142 @@ function redirect($url){
                 </div>
             </div>
         </div>
+        <div id="demandes_professeur_professeur" class="profil_pannel">
+            <div id="demandes_professeur_header" class="profil_header">
+                <span class="demandes_profil_titre"><span class="tictac"></span><h1>Mes demandes</h1></span>
+            </div>
+            <div id="demandes_professeur_content">
+                <div id="demandes_professeur" class="demandes_profil">
+                    <?php
+                    $connect = DBCredential();
+                    $sqlSwaps = "SELECT s.idDemande, s.demandeur, d1.codeUV, d1.type, d1.jour as jour1, d1.horaireDebut as hDeb1, d1.horaireFin as hFin1, d2.jour as jour2, d2.horaireDebut as hDeb2, d2.horaireFin as hFin2, p1.nom as nom1, p1.prenom as prenom1, p2.nom as nom2,p2.prenom as prenom2, d1.raison as raison1, d2.raison as raison2, d1.semaine as semaine1, d2.semaine as semaine2 FROM swap s JOIN demande d1 ON d1.idDemande = s.idDemande JOIN demande d2 ON d2.idDemande = s.demandeur JOIN personne p1 ON p1.login = d1.login JOIN personne p2 ON p2.login = d2.login JOIN UV u ON u.codeUV = d1.codeUV WHERE u.responsable = ? AND s.statut = 2";
+                    $stmtSwaps = $connect->prepare($sqlSwaps);
+                    $stmtSwaps->bind_param("s", $login);
+                    $stmtSwaps->execute();
+                    $result = $stmtSwaps->get_result();
+                    if($result->num_rows > 0){
+                        foreach ($result as $row) {
+                            $codeUV = $row["codeUV"];
+                            $type = $row["type"];
+                            $idDemande = $row["idDemande"];
+                            $demandeur = $row["demandeur"];
+
+                            $jours = array(
+                                1 => 'Lundi',
+                                2 => 'Mardi',
+                                3 => 'Mercredi',
+                                4 => 'Jeudi',
+                                5 => 'Vendredi',
+                                6 => 'Samedi',
+                                7 => 'Dimanche'
+                            );
+
+                            $nom1 = ucfirst($row["nom1"]);
+                            $prenom1 = ucfirst($row["prenom1"]);
+                            $jour1 = $jours[$row["jour1"]];
+                            $hDeb1 = formaterHeure($row["hDeb1"]);
+                            $hFin1 = formaterHeure($row["hFin1"]);
+                            $semaine1 = $row["semaine1"];
+                            $raison1 = $row["raison1"];
+                            if($raison1 == null){
+                                $raison1 = "non renseigné";
+                            }
+                            
+                            $nom2 = ucfirst($row["nom2"]);
+                            $prenom2 = ucfirst($row["prenom2"]);
+                            $jour2 = $jours[$row["jour2"]];
+                            $hDeb2 = formaterHeure($row["hDeb2"]);
+                            $hFin2 = formaterHeure($row["hFin2"]);
+                            $semaine2 = $row["semaine2"];
+                            $raison2 = $row["raison2"];
+                            if($raison2 == null){
+                                $raison2 = "non renseigné";
+                            }
+
+                            if($semaine2 != $semaine1){
+                                $semaine = $semaine1."/".$semaine2;
+                            }else{
+                                if($semaine1 != "null"){
+                                    $semaine = " ".$semaine1;
+                                }else{
+                                    $semaine = "";
+                                }
+                            }
+
+                            $demande= array(
+                                "idDemande" => $idDemande,
+                                "demandeur" => $demandeur,
+                                "id_notif" => $idNotif
+                            );
+                            $data_row = htmlspecialchars(base64_encode(json_encode($demande)), ENT_QUOTES , 'UTF-8');
+                            ?>
+                            <div class="demande_professeur" data-row=<?= $data_row; ?>>
+                                <div class="gauche_container">
+                                    <div class="rectangle_demande"></div>
+                                    <div class="infos_uv">
+                                        <h2><?= $codeUV ?> - <?= $type ?> <?= $semaine ?></h2>
+                                    </div>
+                                </div>
+                                <div class="mid_container">
+                                    <div class="infos_swap">
+                                        <div class="infos_etudiant">
+                                            <div class="nom_etudiant">
+                                                <label class="grey_element">Etudiant:</label><label><?= $nom1 ?> <?= $prenom1 ?></label>
+                                            </div>
+                                            <div class="horaire_etudiant">
+                                                <label class="grey_element">Horaire:</label><label><?= $jour1 ?> <?= $hDeb1 ?> - <?= $hFin1 ?></label>
+                                            </div>
+                                        </div>
+                                        <div class="infos_etudiant_facultatif">
+                                            <div class="branche_etudiant">
+                                                <label class="grey_element">Branche:</label><label>TC</label>
+                                            </div>
+                                            <div class="motivation_etudiant">
+                                                <label class="grey_element">Motivation:</label><label><?= $raison1 ?></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="swap_div_container">
+                                        <img class="swap_icon" src="../svg/swap_icon.svg">
+                                    </div>
+                                    <div class="infos_swap">
+                                        <div class="infos_etudiant">
+                                            <div class="nom_etudiant">
+                                                <label class="grey_element">Etudiant:</label><label><?= $nom2 ?> <?= $prenom2 ?></label>
+                                            </div>
+                                            <div class="horaire_etudiant">
+                                                <label class="grey_element">Horaire:</label><label><?= $jour2 ?> <?= $hDeb2 ?> - <?= $hFin2 ?></label>
+                                            </div>
+                                        </div>
+                                        <div class="infos_etudiant_facultatif">
+                                            <div class="branche_etudiant">
+                                                <label class="grey_element">Branche:</label><label>TC</label>
+                                            </div>
+                                            <div class="motivation_etudiant">
+                                                <label class="grey_element">Motivation:</label><label><?= $raison2 ?></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="button_choix_etudiant">
+                                    <button><img src="../svg/check_vert.svg"></button>
+                                    <button ><img src="../svg/croix_rouge.svg"></button>
+                                </div>
+                            </div>
+                    <?php
+                        }
+                    }else{
+                        ?>
+                            <div class="message_aucune_demande">
+                                <h1>Vous n'avez aucune demande de reçue</h1>
+                            </div>
+                        <?php
+                    }
+                ?>
+                </div>
+            </div>
+        </div>
         
     </main>
     <form id="uv_pannel" class="mid_pannel" method="post" action="gestion.php" style="display: none;">
@@ -254,12 +391,14 @@ function redirect($url){
         </div>
         <img src="../svg/croix.svg" class="croix">
         <div id="message_attention_prof" class="mid_content hidden">
-            <p>Vous vous apprétez à désactiver la possibilité de faire des échanges pour l'UV: <?php
+             <?php
             if(isset($_GET['codeUV']) && !(empty($_GET['codeUV']))){
                 $codeUV = validateInput($_GET['codeUV'],$connect);
-                echo $codeUV;
+                echo "<p>Vous vous apprétez à désactiver la possibilité de faire des échanges pour l'UV: ".$codeUV.". Si vous poursuivez toutes les demandes déjà réalisées seront et resteront refusées</p>";
+            }else{
+                echo "<p>Vous vous apprétez à désactiver la possibilité de faire des échanges pour toutes vos UVs. Si vous poursuivez toutes les demandes déjà réalisées seront et resteront refusées</p>";
             }
-            ?>. Si vous poursuivez toutes les demandes déjà réalisées seront et resteront refusées</p>
+            ?>
         </div>
         <div id="uv_content" class="mid_content">
             <?php

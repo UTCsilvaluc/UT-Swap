@@ -81,7 +81,7 @@
         <img src="../svg/profil.svg" id="profil_image">
         <div id="fond_profil_image"></div>
         <div id="profil_utilisateur" class="profil_pannel">
-            <div id="profil_header">
+            <div class="profil_header">
                 <span class="profil_titre"><span class="tictac"></span><h1>Mon profil</h1></span>
                 <button>Se déconnecter</button>
             </div>
@@ -121,7 +121,7 @@
         </div>
         <div id="demandes_faites_utilisateur" class="profil_pannel">
             <div id="demandes_faites_header" class="demandes_profil_header">
-                <span class="demandes_profil_titre"><span class="tictac"></span><h1 title="demandes que vous avez fais à un autre utilisateur">Demandes faites</h1></span>
+                <span class="demandes_profil_titre"><span class="tictac"></span><h1 title="demandes que vous avez faites à un autre utilisateur">Demandes faites</h1></span>
             </div>
             <div id="demandes_faites_content" class="demandes_profil_content">
                 <div id="demandes_faites" class="demandes_profil">
@@ -251,7 +251,7 @@
         
         <div id="demandes_reçues_utilisateur" class="profil_pannel">
             <div id="demandes_reçues_header" class="demandes_profil_header">
-                <span class="demandes_profil_titre"><span class="tictac"></span><h1 title="demandes que vous avez reçu d'un autre utilisateur">Demandes reçues</h1></span>
+                <span class="demandes_profil_titre"><span class="tictac"></span><h1 title="demandes que vous avez reçues d'un autre utilisateur">Demandes reçues</h1></span>
             </div>
             <div id="demandes_reçues_content" class="demandes_profil_content">
                 <div id="demandes_reçues" class="demandes_profil">
