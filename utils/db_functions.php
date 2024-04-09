@@ -451,7 +451,7 @@ function hasCreneauAccepted($connect , $idDemande){
             $stmt->close();
             foreach ($rows as $row){
                 $statut = $row['statut'];
-                if ($statut == 2){
+                if ($statut == 2 || $statut == 4){
                     return false; /* Une demande avec cet ID déjà acceptée par un prof, il ne peut plus formuler de demande. */
                 }
             }
