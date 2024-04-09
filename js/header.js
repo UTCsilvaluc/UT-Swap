@@ -33,6 +33,8 @@ var input_salle = document.getElementById("input-salle");
 var input_hfin = document.getElementsByClassName("input-hfin");
 var input_hdebut = document.getElementsByClassName("input-hdebut");
 var input_creneau = document.getElementById("input-creneau");
+var input_motivation_autre = document.getElementById("input-motivation-autre");
+var input_motivation = document.getElementById("input-motivation");
 var input_uv = document.getElementById("input-uv");
 var motivation = document.getElementById("li_motivation");
 var texte_nouveau = document.getElementById("div_debut_nouveau").getElementsByTagName("h1")[0];
@@ -473,4 +475,12 @@ function reloadPage() {
     }
     // Recharger la page
     location.reload();
+}
+
+function updateReason(){
+    if (input_motivation.value == 5){
+        input_motivation_autre.classList.toggle('hidden' , false);
+    } else {
+        input_motivation_autre.classList.toggle('hidden' , true);
+    }
 }

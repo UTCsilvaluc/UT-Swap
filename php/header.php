@@ -460,7 +460,15 @@ if (
             <li id="li_motivation">
                 <div>
                     <label for="input-motivation" id="label_motivation">Motivation: (facultatif)</label>
-                    <input type="text" id="input-motivation" name="motivation" placeholder="Veuillez entrer votre motivation">
+                    <select id="input-motivation" name="motivation" onchange="updateReason()">
+                        <option value="0">Sport</option>
+                        <option value="1">Associations</option>
+                        <option value="2">Incompatibilité d'horaires</option>
+                        <option value="3">Travail</option>
+                        <option value="4">Raisons de santé</option>
+                        <option value="5">Autre (à préciser).</option>
+                    </select>
+                    <span class="hidden" id="input-motivation-autre"><input type="text" name="motivation-autre" placeholder="Veuillez entrer votre motivation"></span>
                 </div>
             </li>
             <li class="basique">
