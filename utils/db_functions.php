@@ -336,39 +336,9 @@ function checkIfDetailsChange($connect , $idDemande , $type , $uv , $hdebut, $hf
         return null;
     }
 }
-function getDetailsById($connect , $idDemande){
-    try {
-        // Préparer la requête SQL
-        $sqlGetIdDemande = "SELECT idDemande FROM demande WHERE login = ? AND type = ? AND codeUV = ? AND demande = ?";
-        $stmtGetIdDemande = $connect->prepare($sqlGetIdDemande);
-        $stmtGetIdDemande->bind_param("sssi", $login, $type, $uv , $demande);
-
-        // Exécuter la requête
-        if ($stmtGetIdDemande->execute()) {
-            // Récupérer le résultat
-            $resultId = $stmtGetIdDemande->get_result();
-            $row = $resultId->fetch_assoc();
-            $stmtGetIdDemande->close();
-
-            // Vérifier si une ligne a été retournée et si l'ID de demande de swap est spécifié
-            if ($row) {
-                return $row['idDemande'];
-            } else {
-                error_log("Aucune ligne retournée ou swapIdDemande non spécifié");
-                return null;
-            }
-        } else {
-            throw new Exception("Erreur lors de l'exécution de la requête");
-        }
-    } catch (Exception $e) {
-        error_log("Erreur lors de la récupération de l'ID de demande : " . $e->getMessage());
-        return null;
-    }
-
-}
 
 function fetchDemandeDetails($connect, $currentIDdemande) {
-    $sql = "SELECT horaireDebut, horaireFin, jour, salle FROM demande WHERE idDemande = ?";
+    $sql = "SELECT horaireDebut, horaireFin, jour, salle , semaine FROM demande WHERE idDemande = ?";
     $stmt = $connect->prepare($sql);
     // Vérification de la préparation de la requête
     if ($stmt === false) {

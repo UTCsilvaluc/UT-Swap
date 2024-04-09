@@ -99,7 +99,7 @@ function checkIfSwapExist($connect, $offerId, $demandeur) {
     }
 }
 
-function afficherChangementCreneau($connect , $currentIDdemande , $jour, $salle, $hdebut, $hfin) {
+function afficherChangementCreneau($connect , $currentIDdemande , $jour, $salle, $hdebut, $hfin , $semaine) {
     $demandeDetails = fetchDemandeDetails($connect, $currentIDdemande);
     // Extraction des détails dans des variables individuelles
     $initHoraireDebut = $demandeDetails['horaireDebut'];
@@ -108,13 +108,20 @@ function afficherChangementCreneau($connect , $currentIDdemande , $jour, $salle,
     $initHoraireFin = substr($initHoraireFin, 0, 5);
     $initJour = $demandeDetails['jour'];
     $initSalle = $demandeDetails['salle'];
+    $initSemaine = $demandeDetails['semaine'];
     // Conversion des numéros de jour en texte
     $textJour = numeroVersJour($jour);
     $textInitJour = numeroVersJour($initJour);
     $hasRequest = checkIfHasRequest($connect , $currentIDdemande);
     echo "<script> document.getElementById('swapJour1').innerHTML = '$textJour'; document.getElementById('swapSalle1').innerHTML = '$salle'; document.getElementById('swapCreneau1').innerHTML = `$hdebut - $hfin` ; </script>";
     echo "<script> document.getElementById('swapJour2').innerHTML = '$textInitJour'; document.getElementById('swapSalle2').innerHTML = '$initSalle'; document.getElementById('swapCreneau2').innerHTML = `$initHoraireDebut - $initHoraireFin` ; </script>";
+    echo "<script> document.getElementById('swapSemaine1').innerHTML = '$semaine'; </script>";
+    echo "<script> document.getElementById('swapSemaine2').innerHTML = '$initSemaine'; </script>";
     if (!$hasRequest){
+
+        if ($semaine != 'null'){
+            echo "<script> document.getElementById('spanSemaine1').classList.toggle('hidden' , false); document.getElementById('spanSemaine2').classList.toggle('hidden' , false);</script>";
+        }
         echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_changement_creneau.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);bouton_remplacer.classList.toggle('hidden', false);</script>";
         echo "<script> document.getElementById('sendSwap').classList.toggle('hidden' , false);document.getElementById('ancienCreneauSwap1').classList.toggle('hidden' , false);document.getElementById('ancienCreneauSwap2').classList.toggle('hidden' , false);</script>";
     } else {
@@ -122,4 +129,16 @@ function afficherChangementCreneau($connect , $currentIDdemande , $jour, $salle,
         $_SESSION["hasRequest"] = "hasRequest";
     }
 }
+
+function checkIfCreneauHasSemaine($connect , $offerId , $demandeur){
+    $demandeurDetails = fetchDemandeDetails($connect, $demandeur);
+    $offerDetails = fetchDemandeDetails($connect, $offerId);
+    $semaineDemandeur = $demandeurDetails['semaine'];
+    $semaineOffer = $offerDetails['semaine'];
+    if (($semaineOffer == 'null' && $semaineDemandeur == 'null') || $semaineOffer != 'null' && $semaineDemandeur != 'null'){
+        return true;
+    }
+    return false;
+}
+
 ?>

@@ -23,6 +23,7 @@ var message_impossible_uv = document.getElementById("message_impossible_uv");
 var message_uv_type = document.getElementById("message_uv_type");
 var message_changement_creneau = document.getElementById("message_changement_creneau");
 var message_demande_recu_changement_creneau = document.getElementById("message_demande_recu_changement_creneau");
+var message_creneau_incompatible_semaine = document.getElementById("message_creneau_incompatible_semaine");
 var message_envoie_swap = document.getElementById("message_envoie_swap");
 var message_meme_creneau_existant = document.getElementById('message_meme_creneau_existant');
 var message_creneau_deja_accepte = document.getElementById("message_creneau_deja_accepte");
@@ -347,6 +348,7 @@ function nouveauClick() {
     input_type.disabled = false
     bouton_ok.classList.toggle('hidden', true);
     boutons_confirmation.classList.toggle("hidden" , true);
+    message_creneau_incompatible_semaine.classList.toggle("hidden" , true)
     message_envoie_swap.classList.toggle("hidden" , true);
     message_demande_recu_changement_creneau.classList.toggle("hidden" , true)
     message_insertion.classList.toggle('hidden', true);

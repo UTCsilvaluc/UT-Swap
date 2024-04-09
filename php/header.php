@@ -492,6 +492,7 @@ if (
                 <p id="message_insertion" class="hidden">La demande a été envoyée !!</p>
                 <p id="message_envoie_swap" class="hidden">Votre demande de SWAP a bien été envoyée !</p>
                 <p id="message_creneau_deja_accepte" class="hidden">Votre demande a déjà été acceptée par un professeur. Vous ne pouvez plus faire de demandes... En cas de problème merci de contacter le SIMDE.</p>
+                <p id="message_creneau_incompatible_semaine" class="hidden">Les deux créneaux ne sont pas compatibles quant à la semaine !</p>
                 <p id="message_meme_creneau_existant" class="hidden">Vous avez déjà proposé ce créneau... !</p>
             </div>
 
@@ -600,22 +601,27 @@ if (isset($_POST['update_choix']) && !(empty($_POST['update_choix']))) {
         }else {
             echo "Erreur lors de l'insertion des données : " . $stmtCheckInsertion->error;
         }
+        $offerId = $_SESSION['swap'];
         if (isset($_SESSION['swap'])){
-            if (hasCreneauAccepted($connect , $idDemande)){
+            $hasSemaine = checkIfCreneauHasSemaine($connect , $idDemande , $offerId);
+            if (hasCreneauAccepted($connect , $idDemande) && $hasSemaine){
                 $uv = $_SESSION['uv'];
                 $type = $_SESSION['type'];
-                $offerId = $_SESSION['swap'];
                 create_swap($connect , $idDemande , $offerId , $uv , $type , $login);
                 $loginNotif = getLoginById($connect , $offerId);
                 sendNotifications($loginNotif , $offerId , $idDemande , 1 , 0 , $connect);
                 $_SESSION['reloadPage'] = "swapSuccess";
             } else {
-                echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_creneau_deja_accepte.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);</script>";
+                if (!($hasSemaine)){
+                    echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_creneau_incompatible_semaine.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);</script>";
+                } else {
+                    echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_creneau_deja_accepte.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);</script>";
+                }
             }
         } else {
             $_SESSION['reloadPage'] = "updateSuccess";
         }
-        if ($_SESSION["hasRequest"]){
+        if (isset($_SESSION["hasRequest"])){
             $message = $_SESSION["hasRequest"];
             if ($message === "hasRequest"){
                 $rows = checkIfHasRequest($connect ,$idDemande);
@@ -769,7 +775,7 @@ if (
                             $_SESSION["salle"] = $salle;
                             $_SESSION["jour"] = $jour;
                             $_SESSION["semaine"] = $semaineChoix;
-                            afficherChangementCreneau($connect , $currentIDdemande['idDemande'] , $jour , $salle , $hdebut , $hfin);
+                            afficherChangementCreneau($connect , $currentIDdemande['idDemande'] , $jour , $salle , $hdebut , $hfin , $semaineChoix);
                         } else {
                             error_log("Erreur dans la récupération des données...");
                         }
@@ -792,7 +798,7 @@ if (
                     /* Ici, l'élève a changer son créneau , il faut lui proposer de l'update. */
                     echo "<script> document.getElementById('update_choix').value = '1' ; </script>";
                     /* Afficher ancien et nouvel horaire. */
-                    afficherChangementCreneau($connect , $primaryKeyDemande , $jour , $salle , $hdebut , $hfin);
+                    afficherChangementCreneau($connect , $primaryKeyDemande , $jour , $salle , $hdebut , $hfin , $semaineChoix);
                     $_SESSION["idDemande"] = $primaryKeyDemande;
                     $_SESSION["hDeb"] = $hdebut;
                     $_SESSION["hFin"] = $hfin;
@@ -818,13 +824,19 @@ if (
     /* Vérifier si un swap n'existe pas déjà pour la demande de l'étudiant. */
     if (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande']) && $canSwap && $swap_uv){
         if ($primaryKeyDemande != null){
-            if (hasCreneauAccepted($connect , $primaryKeyDemande)){
-                $offerId = $_POST['swapIdDemande'];
+            $offerId = $_POST['swapIdDemande'];
+            $hasSemaine = checkIfCreneauHasSemaine($connect , $primaryKeyDemande , $offerId);
+            if (hasCreneauAccepted($connect , $primaryKeyDemande) && $hasSemaine){
                 create_swap($connect , $primaryKeyDemande , $offerId , $uv , $type , $login);
                 $loginNotif = getLoginById($connect , $offerId);
                 sendNotifications($loginNotif , $offerId , $primaryKeyDemande , 1 , 0 , $connect);
             } else {
-                echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_creneau_deja_accepte.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);</script>";
+                if (!($hasSemaine)){
+                    echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_creneau_incompatible_semaine.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);</script>";
+                } else {
+                    echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_creneau_deja_accepte.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);</script>";
+                }
+
             }
         } else {
             if (!($swap_uv)){
