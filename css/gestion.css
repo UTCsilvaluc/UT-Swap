@@ -121,6 +121,7 @@
     align-items: center;
     justify-content: space-between;
     background-color: white;
+    overflow: hidden;
     height: 50px;
     border-radius: 20px;
     padding:20px;
@@ -153,7 +154,7 @@
 }
 
 .infos_etudiant_facultatif, .infos_etudiant{
-    margin: 0 20px;
+    margin-left: 20px;
     white-space: nowrap;
     font-size: 13px;
 }
@@ -187,7 +188,11 @@
     width: 80%;
 }
 
-@media screen and (max-width: 1400px) {
+#demandes_professeur .swap_div_container{
+    margin-left: 20px;
+}
+
+@media screen and (max-width: 1600px) {
 
     .infos_etudiant_facultatif{
         display: none;
@@ -225,7 +230,7 @@
     }
 
     .infos_swap > div{
-        width: 45%;
+        width: fit-content;
     }
 
     .separation_etudiant{

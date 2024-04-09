@@ -332,7 +332,7 @@ function redirect($url){
                             
                             $data_row = htmlspecialchars(base64_encode(json_encode($demande)), ENT_QUOTES , 'UTF-8');
                             ?>
-                            <div class="demande_professeur" onclick="" data-row=<?= $data_row ?>>
+                            <div class="demande_professeur" onclick="afficherInfoSwap(this)" data-row=<?= $data_row ?>>
                                 <div class="gauche_container">
                                     <div class="rectangle_demande"></div>
                                     <div class="infos_uv">
@@ -384,8 +384,8 @@ function redirect($url){
                                 if($statut == 2){
                                     ?>
                                     <div class="button_choix_etudiant">
-                                        <button onclick="choixProfesseurSwap(true, this)"><img src="../svg/check_vert.svg"></button>
-                                        <button onclick="choixProfesseurSwap(false, this)"><img src="../svg/croix_rouge.svg"></button>
+                                        <button style="cursor:pointer" onclick="choixProfesseurSwap(true, this)"><img src="../svg/check_vert.svg"></button>
+                                        <button style="cursor:pointer" onclick="choixProfesseurSwap(false, this)"><img src="../svg/croix_rouge.svg"></button>
                                     </div>
                                     <?php
                                 }else if($statut == 3){
@@ -418,20 +418,96 @@ function redirect($url){
         </div>
         
     </main>
-    <div>
-    <div class="mid_titre">
-            <hr>
-        </div>
-        <img src="../svg/croix.svg" class="croix">
-        <div class="mid_content">
-            
-        </div>
-        <div class="mid_button">
-            <hr>
-            <button id="choix_prof_button_refuser">Refuser</button>
-            <button id="choix_prof_button_accepter">Accepter</button>
-        </div>
-    </div>
+    <?php
+        if (
+            isset($_POST['afficher'], $_POST['demandeur'], $_POST['idDemande']) &&
+            !empty($_POST['demandeur']) && !empty($_POST['idDemande'])
+        ){
+            $connect = DBCredential();
+            $demandeur = validateInput($_POST['demandeur'],$connect);
+            $idDemande = validateInput($_POST['idDemande'],$connect);
+            $sqlSwap = "SELECT s.statut, s.idDemande, s.demandeur, d1.codeUV, d1.type, d1.jour as jour1, d1.horaireDebut as hDeb1, d1.horaireFin as hFin1, d2.jour as jour2, d2.horaireDebut as hDeb2, d2.horaireFin as hFin2, p1.nom as nom1, p1.prenom as prenom1, p2.nom as nom2,p2.prenom as prenom2, d1.raison as raison1, d2.raison as raison2, d1.semaine as semaine1, d2.semaine as semaine2 FROM swap s JOIN demande d1 ON d1.idDemande = s.idDemande JOIN demande d2 ON d2.idDemande = s.demandeur JOIN personne p1 ON p1.login = d1.login JOIN personne p2 ON p2.login = d2.login JOIN UV u ON u.codeUV = d1.codeUV WHERE s.idDemande = ? AND s.demandeur = ?;";
+            $stmtSwap = $connect->prepare($sqlSwap);
+            $stmtSwap->bind_param("ss", $idDemande, $demandeur);
+            $stmtSwap->execute();
+            $result = $stmtSwap->get_result();
+            consoleLog($idDemande);
+            if($result->num_rows > 0){
+                foreach ($result as $row) {
+                    $codeUV = $row["codeUV"];
+                    $type = $row["type"];
+                    $idDemande = $row["idDemande"];
+                    $demandeur = $row["demandeur"];
+                    $statut = $row["statut"];
+                    $jours = array(
+                        1 => 'Lundi',
+                        2 => 'Mardi',
+                        3 => 'Mercredi',
+                        4 => 'Jeudi',
+                        5 => 'Vendredi',
+                        6 => 'Samedi',
+                        7 => 'Dimanche'
+                    );
+
+                    $nom1 = ucfirst($row["nom1"]);
+                    $prenom1 = ucfirst($row["prenom1"]);
+                    $jour1 = $jours[$row["jour1"]];
+                    $hDeb1 = formaterHeure($row["hDeb1"]);
+                    $hFin1 = formaterHeure($row["hFin1"]);
+                    $semaine1 = $row["semaine1"];
+                    $raison1 = $row["raison1"];
+                    if($raison1 == null){
+                        $raison1 = "non renseigné";
+                    }
+                    
+                    $nom2 = ucfirst($row["nom2"]);
+                    $prenom2 = ucfirst($row["prenom2"]);
+                    $jour2 = $jours[$row["jour2"]];
+                    $hDeb2 = formaterHeure($row["hDeb2"]);
+                    $hFin2 = formaterHeure($row["hFin2"]);
+                    $semaine2 = $row["semaine2"];
+                    $raison2 = $row["raison2"];
+                    if($raison2 == null){
+                        $raison2 = "non renseigné";
+                    }
+
+                    if($semaine2 != $semaine1){
+                        $semaine = $semaine1."/".$semaine2;
+                    }else{
+                        if($semaine1 != "null"){
+                            $semaine = " ".$semaine1;
+                        }else{
+                            $semaine = "";
+                        }
+                    }
+                    $demande= array(
+                        "idDemande" => $idDemande,
+                        "demandeur" => $demandeur
+                    );
+                    
+                    $data_row = htmlspecialchars(base64_encode(json_encode($demande)), ENT_QUOTES , 'UTF-8');
+                    ?>
+                    <div id="swap_info_pannel" class="mid_pannel">
+                        <div class="mid_titre">
+                            <h1><?= $codeUV ?> - <?= $type ?> <?= $semaine ?></h1>
+                            <hr>
+                        </div>
+                        <img src="../svg/croix.svg" class="croix">
+                        <div class="mid_content">
+                            
+                        </div>
+                        <div class="mid_button">
+                            <hr>
+                            <button id="choix_prof_button_refuser">Refuser</button>
+                            <button id="choix_prof_button_accepter">Accepter</button>
+                        </div>
+                    </div>
+                    <?php
+                }
+            }
+        }
+    ?>
+    
     <form id="uv_pannel" class="mid_pannel" method="post" action="gestion.php" style="display: none;">
         <div id="uv_header" class="mid_titre">
             <?php

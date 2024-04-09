@@ -88,6 +88,54 @@ function choixProfesseurSwap(choix, element){
     }
 }
 
+function afficherInfoSwap(element){
+    var clickedElement = element.target;
+
+    // Vérifier si l'élément cliqué est le même que l'élément sur lequel l'événement est attaché
+    if (clickedElement === element.currentTarget) {
+        var rowAttribute = element.dataset.row;
+
+        if (rowAttribute) {
+            try {
+                var donnees = JSON.parse(atob(rowAttribute));
+            } catch (error) {
+                console.error("Erreur lors du parsing JSON :", error);
+            }
+        } else {
+            console.error("Aucune donnée trouvée dans l'attribut data-row");
+        }
+        if(donnees.idDemande !== "" && donnees.demandeur !== "") {
+
+            var form = document.createElement('form');
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', '');
+            
+            var inputDemandeur = document.createElement('input');
+            inputDemandeur.setAttribute('type', 'hidden');
+            inputDemandeur.setAttribute('name', 'demandeur');
+            inputDemandeur.setAttribute('value', donnees.demandeur);
+            form.appendChild(inputDemandeur);
+
+            var inputAfficher = document.createElement('input');
+            inputAfficher.setAttribute('type', 'hidden');
+            inputAfficher.setAttribute('name', 'afficher');
+            inputAfficher.setAttribute('value', true);
+            form.appendChild(inputAfficher);
+            
+            var inputIdDemande = document.createElement('input');
+            inputIdDemande.setAttribute('type', 'hidden');
+            inputIdDemande.setAttribute('name', 'idDemande');
+            inputIdDemande.setAttribute('value', donnees.idDemande);
+            form.appendChild(inputIdDemande);
+
+            document.body.appendChild(form);
+
+            form.submit();
+            form.remove();
+        }
+    }
+}
+
 function gererUVChoix(choix){
 
     var form = document.createElement('form');
