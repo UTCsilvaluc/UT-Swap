@@ -18,15 +18,15 @@ function copierLien(element) {
     var heureFin;
     // Vérifier si des correspondances ont été trouvées
     if (matchResult) {
-        
+
         heureDebut = matchResult[1];
         heureFin = matchResult[2];
     }
     // Créer le lien avec les informations
     var lien = "../php/demandes.php?uv=" + encodeURIComponent(uvType.split(" - ")[0]) +
-                "&type=" + encodeURIComponent(uvType.split(" - ")[1]) +
-                "&hDeb=" + encodeURIComponent(heureDebut) +
-                "&hFin=" + encodeURIComponent(heureFin);
+        "&type=" + encodeURIComponent(uvType.split(" - ")[1]) +
+        "&hDeb=" + encodeURIComponent(heureDebut) +
+        "&hFin=" + encodeURIComponent(heureFin);
 
     // Créer un élément textarea temporaire pour copier le texte dans le presse-papiers
     var textarea = document.createElement('textarea');
@@ -112,7 +112,7 @@ function clickDemande(element) {
             console.error(error);
         }
     }
-    afficherTousLesCours();    
+    afficherTousLesCours();
 }
 
 function calculerDifference(time1 , time2) {
@@ -158,11 +158,13 @@ input_code_uv.addEventListener("keyup" , function (event){
 });
 
 function researchUV(event){
-    if (input_code_uv.value.length == 0){
+    if (input_code_uv.value.length === 0){
         var divs_demande = document.getElementsByClassName("div_demande");
         Array.from(divs_demande).forEach(function(div) {
             div.style.display = "flex";
         });
+        history.pushState({}, document.title, window.location.pathname);
+        canDisplayCourses(event);
     } else if (input_code_uv.value.length != 4){
         alert("Le code d'UV doit être composé de quatre caractères !");
     } else {
@@ -219,6 +221,13 @@ async function handlechangeFilter(event) {
     }
     rearrangeElements(nbPoints);
 }
+function inverserOrdre() {
+    const container = document.querySelector('.demande_container');
+    const elements = Array.from(container.children);
+    const reversedElements = elements.reverse();
+    reversedElements.forEach(element => container.appendChild(element));
+}
+
 
 function rearrangeElements(nbPoints) {
     const container = document.querySelector('.demande_container');
@@ -409,6 +418,68 @@ function changeSemaine(event){
     }
     canDisplayCourses(event);
 }
+
+function canDisplayCours(div) {
+    var liste_jours = document.getElementById("jours").getElementsByClassName('check');
+    var liste_type = document.getElementById("type").getElementsByClassName("check");
+    var heureDebut = document.getElementById("filtre-input-hdebut").value.replace(":","h");
+    var heureFin = document.getElementById("filtre-input-hfin").value.replace(":","h");
+    var joursActifs = []; // Initialiser une liste pour stocker les jours actifs
+    var typeActifs = []; // Initialiser une liste pour stocker les jours actifs
+    var display = true;
+
+// Créer un objet pour stocker la correspondance entre les jours et les nombres
+    var joursMap = {
+        "Lundi": 1,
+        "Mardi": 2,
+        "Mercredi": 3,
+        "Jeudi": 4,
+        "Vendredi": 5,
+        "Samedi": 6
+    };
+    for (var i = 0; i < liste_jours.length; i++) {
+        var jour = liste_jours[i].innerHTML.trim(); // Récupérer le contenu HTML de l'élément et supprimer les espaces
+        joursActifs.push(joursMap[jour]);
+    }
+    for (var i = 0; i < liste_type.length; i++) {
+        var type = liste_type[i].innerHTML.trim(); // Récupérer le contenu HTML de l'élément et supprimer les espaces
+        typeActifs.push(type);
+    }
+    // Créer un nouvel objet URLSearchParams avec la chaîne de requête de l'URL actuelle
+    var params = new URLSearchParams(window.location.search);
+    var codeUV = params.get('codeUV');
+    var rowAttribute = div.dataset.row;
+    if (rowAttribute) {
+        try {
+            var donnees = JSON.parse(atob(rowAttribute));
+        } catch (error) {
+            console.error("Erreur lors du parsing JSON :", error);
+        }
+    } else {
+        console.error("Aucune donnée trouvée dans l'attribut data-row");
+    }
+
+    if (codeUV != null){
+        if (donnees.codeUV.toLowerCase() != codeUV.toLowerCase()){
+            display = false;
+        }
+    }
+    if (!(joursActifs.includes(donnees.jour))){
+        display = false;
+    }
+    if (!(typeActifs.includes(donnees.type))){
+        display = false;
+    }
+    if (!(calculDecimal(heureDebut) <= calculDecimal(donnees.horaireDebut.slice(0,-3).replace(":","h")) && calculDecimal(heureFin) >= calculDecimal(donnees.horaireFin.slice(0,-3).replace(":","h")))){
+        display = false;
+    }
+    if (donnees.semaine === "A" && document.getElementById("semaine-sA").className === "uncheck"){
+        display = false;
+    } else if (donnees.semaine === "B" && document.getElementById("semaine-sB").className === "uncheck"){
+        display = false;
+    }
+    return display;
+}
 function canDisplayCourses(event) {
     var divs_demande = document.getElementsByClassName("div_demande");
     var liste_jours = document.getElementById("jours").getElementsByClassName('check');
@@ -474,6 +545,7 @@ function canDisplayCourses(event) {
         div.style.display = display ? 'flex' : 'none';
         display = true;
     });
+    afficherPage(currentPage);
 
 }
 function calculDecimal(nombre) {
@@ -581,7 +653,7 @@ var isIn1200Px = true;
 
 function mettreAJourContenuProfil() {
     var largeurFenetre = window.innerWidth;
-    
+
     if(largeurFenetre >= 1200){
         openFiltre();
     }else{
@@ -589,9 +661,72 @@ function mettreAJourContenuProfil() {
     }
 }
 
+/* Système de pagination */
+
+// Variables globales
+const divDemandeContainer = document.querySelector('.demande_container');
+const divDemandeElements = Array.from(divDemandeContainer.querySelectorAll('.div_demande'));
+const itemsPerPage = 5; // Nombre d'éléments à afficher par page
+let currentPage = 1;
+
+function afficherPage(page) {
+    // Calculer les indices de début et de fin pour les éléments de la page
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = page * itemsPerPage;
+
+    // Masquer tous les éléments de div_demande
+    divDemandeElements.forEach(element => {
+        element.style.display = 'none';
+    });
+
+    let count = 0;
+    for (let i = 0; i < divDemandeElements.length; i++) {
+        const element = divDemandeElements[i];
+        if (canDisplayCours(element)) {
+            if (count >= startIndex && count < endIndex) {
+                element.style.display = 'flex';
+            }
+            count++;
+        }
+    }
+}
+
+// Fonction pour passer à la page suivante
+function nextPage() {
+    if (currentPage < Math.ceil(getVisibleElementCount() / itemsPerPage)) {
+        currentPage++;
+        afficherPage(currentPage);
+    }
+}
+
+// Fonction pour revenir à la page précédente
+function previousPage() {
+    if (currentPage > 1) {
+        currentPage--;
+        afficherPage(currentPage);
+    }
+}
+
+// Fonction pour obtenir le nombre d'éléments visibles qui correspondent aux critères de filtrage
+function getVisibleElementCount() {
+    let count = 0;
+    divDemandeElements.forEach(element => {
+        if (canDisplayCours(element)) {
+            count++;
+        }
+    });
+    return count;
+}
+
+// Afficher la première page au chargement de la page
+window.addEventListener('load', () => {
+    afficherPage(currentPage);
+});
+
+
+
 // Attacher la fonction au changement de taille de la fenêtre
 window.addEventListener('resize', mettreAJourContenuProfil);
 
 // Appeler la fonction une fois au chargement de la page
 mettreAJourContenuProfil();
-

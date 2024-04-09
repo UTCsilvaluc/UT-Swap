@@ -25,6 +25,7 @@ var message_changement_creneau = document.getElementById("message_changement_cre
 var message_demande_recu_changement_creneau = document.getElementById("message_demande_recu_changement_creneau");
 var message_envoie_swap = document.getElementById("message_envoie_swap");
 var message_meme_creneau_existant = document.getElementById('message_meme_creneau_existant');
+var message_creneau_deja_accepte = document.getElementById("message_creneau_deja_accepte");
 
 var input_type = document.getElementById("input-type");
 var input_salle = document.getElementById("input-salle");
@@ -333,8 +334,8 @@ function nouveauClick() {
 
     nouveau_pannel.reset();
     message_impossible_uv.classList.toggle('hidden', true);
+    message_creneau_deja_accepte.classList.toggle('hidden', true);
     bouton_impossible_uv.classList.toggle('hidden', true);
-
     document.getElementById("bouton_remplacer").classList.toggle('hidden', true)
     document.getElementById("message_changement_creneau").classList.toggle('hidden', true);
 

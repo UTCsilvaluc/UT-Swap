@@ -471,4 +471,25 @@ function updateSwapByDemandeur($connect , $idDemande , $statut){
 
 }
 
+function hasCreneauAccepted($connect , $idDemande){
+    $stmt = $connect->prepare("SELECT * FROM swap WHERE demandeur = ?");
+    $stmt->bind_param("i", $idDemande);
+    try{
+        if ($stmt->execute()){
+            $result = $stmt->get_result();
+            $rows = $result->fetch_all(MYSQLI_ASSOC);
+            $stmt->close();
+            foreach ($rows as $row){
+                $statut = $row['statut'];
+                if ($statut == 2){
+                    return false; /* Une demande avec cet ID déjà acceptée par un prof, il ne peut plus formuler de demande. */
+                }
+            }
+            return true;
+        }
+    } catch (Exception $e){
+        error_log("Erreur lors de la récupération des données ". $e  );
+    }
+}
+
 ?>

@@ -7,7 +7,7 @@ session_start();
 function DBCredential(){
     $dbhost = 'localhost';
     $dbuser = 'root';
-    $dbpass = 'root';
+    $dbpass = '';
     $dbname = 'ut_swap';
     $connect = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to mysql');
     mysqli_set_charset($connect, 'utf8');
@@ -491,6 +491,7 @@ if (
                 <p id="message_impossible_uv" class="hidden">Nous sommes désolé mais le responsable de cette UV a désactivé les changements de créneaux. Aucune demande n'est donc possible...</p>
                 <p id="message_insertion" class="hidden">La demande a été envoyée !!</p>
                 <p id="message_envoie_swap" class="hidden">Votre demande de SWAP a bien été envoyée !</p>
+                <p id="message_creneau_deja_accepte" class="hidden">Votre demande a déjà été acceptée par un professeur. Vous ne pouvez plus faire de demandes... En cas de problème merci de contacter le SIMDE.</p>
                 <p id="message_meme_creneau_existant" class="hidden">Vous avez déjà proposé ce créneau... !</p>
             </div>
 
@@ -600,13 +601,17 @@ if (isset($_POST['update_choix']) && !(empty($_POST['update_choix']))) {
             echo "Erreur lors de l'insertion des données : " . $stmtCheckInsertion->error;
         }
         if (isset($_SESSION['swap'])){
-            $uv = $_SESSION['uv'];
-            $type = $_SESSION['type'];
-            $offerId = $_SESSION['swap'];
-            create_swap($connect , $idDemande , $offerId , $uv , $type , $login);
-            $loginNotif = getLoginById($connect , $offerId);
-            sendNotifications($loginNotif , $offerId , $idDemande , 1 , 0 , $connect);
-            $_SESSION['reloadPage'] = "swapSuccess";
+            if (hasCreneauAccepted($connect , $idDemande)){
+                $uv = $_SESSION['uv'];
+                $type = $_SESSION['type'];
+                $offerId = $_SESSION['swap'];
+                create_swap($connect , $idDemande , $offerId , $uv , $type , $login);
+                $loginNotif = getLoginById($connect , $offerId);
+                sendNotifications($loginNotif , $offerId , $idDemande , 1 , 0 , $connect);
+                $_SESSION['reloadPage'] = "swapSuccess";
+            } else {
+                echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_creneau_deja_accepte.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);</script>";
+            }
         } else {
             $_SESSION['reloadPage'] = "updateSuccess";
         }
@@ -813,10 +818,14 @@ if (
     /* Vérifier si un swap n'existe pas déjà pour la demande de l'étudiant. */
     if (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande']) && $canSwap && $swap_uv){
         if ($primaryKeyDemande != null){
-            $offerId = $_POST['swapIdDemande'];
-            create_swap($connect , $primaryKeyDemande , $offerId , $uv , $type , $login);
-            $loginNotif = getLoginById($connect , $offerId);
-            sendNotifications($loginNotif , $offerId , $primaryKeyDemande , 1 , 0 , $connect);
+            if (hasCreneauAccepted($connect , $primaryKeyDemande)){
+                $offerId = $_POST['swapIdDemande'];
+                create_swap($connect , $primaryKeyDemande , $offerId , $uv , $type , $login);
+                $loginNotif = getLoginById($connect , $offerId);
+                sendNotifications($loginNotif , $offerId , $primaryKeyDemande , 1 , 0 , $connect);
+            } else {
+                echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_creneau_deja_accepte.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);</script>";
+            }
         } else {
             if (!($swap_uv)){
                 echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_impossible_uv.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);</script>";
