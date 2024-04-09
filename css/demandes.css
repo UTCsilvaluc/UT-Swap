@@ -108,6 +108,7 @@ main{
     flex-direction: column;
     background-color: #fff;
     gap: 5px;
+    align-items: center;
 }
 
 .demandes_filtre_parent{
@@ -203,9 +204,49 @@ main{
     cursor: pointer;
 }
 
+#trierDecroissant{
+    width: 20%;
+    height: 20%;
+    transition: scale 0.3s linear;
+
+}
+#trierDecroissant:hover{
+    scale: 110%;
+    cursor: pointer;
+
+}
+.alignTrier{
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.svgPage{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+}
+.rightPage{
+    height: 30%;
+    width: 30%;
+    transition: scale 0.3s linear;
+}
+.rightPage:hover{
+    scale: 110%;
+    opacity: 110%;
+    cursor: pointer;
+ }
 #svgFiltre{
     width: 30px;
     height: 30px;
+}
+
+.PageContent{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
 }
 
 #filterContainer1 .filtre_span .check , #filterContainer1 .filtre_span .checkElement{

@@ -336,39 +336,9 @@ function checkIfDetailsChange($connect , $idDemande , $type , $uv , $hdebut, $hf
         return null;
     }
 }
-function getDetailsById($connect , $idDemande){
-    try {
-        // Préparer la requête SQL
-        $sqlGetIdDemande = "SELECT idDemande FROM demande WHERE login = ? AND type = ? AND codeUV = ? AND demande = ?";
-        $stmtGetIdDemande = $connect->prepare($sqlGetIdDemande);
-        $stmtGetIdDemande->bind_param("sssi", $login, $type, $uv , $demande);
-
-        // Exécuter la requête
-        if ($stmtGetIdDemande->execute()) {
-            // Récupérer le résultat
-            $resultId = $stmtGetIdDemande->get_result();
-            $row = $resultId->fetch_assoc();
-            $stmtGetIdDemande->close();
-
-            // Vérifier si une ligne a été retournée et si l'ID de demande de swap est spécifié
-            if ($row) {
-                return $row['idDemande'];
-            } else {
-                error_log("Aucune ligne retournée ou swapIdDemande non spécifié");
-                return null;
-            }
-        } else {
-            throw new Exception("Erreur lors de l'exécution de la requête");
-        }
-    } catch (Exception $e) {
-        error_log("Erreur lors de la récupération de l'ID de demande : " . $e->getMessage());
-        return null;
-    }
-
-}
 
 function fetchDemandeDetails($connect, $currentIDdemande) {
-    $sql = "SELECT horaireDebut, horaireFin, jour, salle FROM demande WHERE idDemande = ?";
+    $sql = "SELECT horaireDebut, horaireFin, jour, salle , semaine FROM demande WHERE idDemande = ?";
     $stmt = $connect->prepare($sql);
     // Vérification de la préparation de la requête
     if ($stmt === false) {
@@ -469,6 +439,27 @@ function updateSwapByDemandeur($connect , $idDemande , $statut){
         error_log("Erreur :" . $e->getMessage());
     }
 
+}
+
+function hasCreneauAccepted($connect , $idDemande){
+    $stmt = $connect->prepare("SELECT * FROM swap WHERE demandeur = ?");
+    $stmt->bind_param("i", $idDemande);
+    try{
+        if ($stmt->execute()){
+            $result = $stmt->get_result();
+            $rows = $result->fetch_all(MYSQLI_ASSOC);
+            $stmt->close();
+            foreach ($rows as $row){
+                $statut = $row['statut'];
+                if ($statut == 2 || $statut == 4){
+                    return false; /* Une demande avec cet ID déjà acceptée par un prof, il ne peut plus formuler de demande. */
+                }
+            }
+            return true;
+        }
+    } catch (Exception $e){
+        error_log("Erreur lors de la récupération des données ". $e  );
+    }
 }
 
 ?>

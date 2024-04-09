@@ -23,14 +23,18 @@ var message_impossible_uv = document.getElementById("message_impossible_uv");
 var message_uv_type = document.getElementById("message_uv_type");
 var message_changement_creneau = document.getElementById("message_changement_creneau");
 var message_demande_recu_changement_creneau = document.getElementById("message_demande_recu_changement_creneau");
+var message_creneau_incompatible_semaine = document.getElementById("message_creneau_incompatible_semaine");
 var message_envoie_swap = document.getElementById("message_envoie_swap");
 var message_meme_creneau_existant = document.getElementById('message_meme_creneau_existant');
+var message_creneau_deja_accepte = document.getElementById("message_creneau_deja_accepte");
 
 var input_type = document.getElementById("input-type");
 var input_salle = document.getElementById("input-salle");
 var input_hfin = document.getElementsByClassName("input-hfin");
 var input_hdebut = document.getElementsByClassName("input-hdebut");
 var input_creneau = document.getElementById("input-creneau");
+var input_motivation_autre = document.getElementById("input-motivation-autre");
+var input_motivation = document.getElementById("input-motivation");
 var input_uv = document.getElementById("input-uv");
 var motivation = document.getElementById("li_motivation");
 var texte_nouveau = document.getElementById("div_debut_nouveau").getElementsByTagName("h1")[0];
@@ -333,8 +337,8 @@ function nouveauClick() {
 
     nouveau_pannel.reset();
     message_impossible_uv.classList.toggle('hidden', true);
+    message_creneau_deja_accepte.classList.toggle('hidden', true);
     bouton_impossible_uv.classList.toggle('hidden', true);
-
     document.getElementById("bouton_remplacer").classList.toggle('hidden', true)
     document.getElementById("message_changement_creneau").classList.toggle('hidden', true);
 
@@ -346,6 +350,7 @@ function nouveauClick() {
     input_type.disabled = false
     bouton_ok.classList.toggle('hidden', true);
     boutons_confirmation.classList.toggle("hidden" , true);
+    message_creneau_incompatible_semaine.classList.toggle("hidden" , true)
     message_envoie_swap.classList.toggle("hidden" , true);
     message_demande_recu_changement_creneau.classList.toggle("hidden" , true)
     message_insertion.classList.toggle('hidden', true);
@@ -470,4 +475,12 @@ function reloadPage() {
     }
     // Recharger la page
     location.reload();
+}
+
+function updateReason(){
+    if (input_motivation.value == 5){
+        input_motivation_autre.classList.toggle('hidden' , false);
+    } else {
+        input_motivation_autre.classList.toggle('hidden' , true);
+    }
 }
