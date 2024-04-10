@@ -665,11 +665,11 @@ function mettreAJourContenuProfil() {
 
 // Variables globales
 const divDemandeContainer = document.querySelector('.demande_container');
-const divDemandeElements = Array.from(divDemandeContainer.querySelectorAll('.div_demande'));
 const itemsPerPage = 5; // Nombre d'éléments à afficher par page
 let currentPage = 1;
 
 function afficherPage(page) {
+    var divDemandeElements = Array.from(divDemandeContainer.querySelectorAll('.div_demande'));
     // Calculer les indices de début et de fin pour les éléments de la page
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = page * itemsPerPage;
@@ -709,6 +709,7 @@ function previousPage() {
 
 // Fonction pour obtenir le nombre d'éléments visibles qui correspondent aux critères de filtrage
 function getVisibleElementCount() {
+    var divDemandeElements = Array.from(divDemandeContainer.querySelectorAll('.div_demande'));
     let count = 0;
     divDemandeElements.forEach(element => {
         if (canDisplayCours(element)) {
@@ -722,8 +723,6 @@ function getVisibleElementCount() {
 window.addEventListener('load', () => {
     afficherPage(currentPage);
 });
-
-
 
 // Attacher la fonction au changement de taille de la fenêtre
 window.addEventListener('resize', mettreAJourContenuProfil);
