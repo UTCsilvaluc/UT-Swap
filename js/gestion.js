@@ -1,3 +1,17 @@
+var isSelectionning = false;
+var button_selection = document.getElementById("button_selection");
+
+button_selection.addEventListener("click", function() {
+    isSelectionning = !isSelectionning;
+    Array.from(document.getElementsByClassName("demande_professeur")).forEach(element => {
+        element.classList.toggle("demande_selected", false);
+    });
+    
+    button_selection.classList.toggle('button_filtre_selected' , isSelectionning);
+});
+
+
+
 function gestionUv(codeUV){
     history.replaceState({}, document.title, window.location.pathname);
     window.location.href = window.location.href + "?codeUV=" + codeUV;
@@ -88,6 +102,32 @@ function choixProfesseurSwap(choix, element){
     }
 }
 
+function demandeBehvior(element){
+    if(isSelectionning){
+        var clickedElement = element.target;
+
+        // Vérifier si l'élément cliqué est le même que l'élément sur lequel l'événement est attaché
+        if (clickedElement === element.currentTarget) {
+            var rowAttribute = element.dataset.row;
+
+            if (rowAttribute) {
+                try {
+                    var donnees = JSON.parse(atob(rowAttribute));
+                } catch (error) {
+                    console.error("Erreur lors du parsing JSON :", error);
+                }
+            } else {
+                console.error("Aucune donnée trouvée dans l'attribut data-row");
+            }
+            if(donnees.statut !== "" && donnees.statut == 2) {
+                element.classList.toggle("demande_selected");
+            }
+        }
+    }else{
+        afficherInfoSwap(element);
+    }
+}
+
 function afficherInfoSwap(element){
     var clickedElement = element.target;
 
@@ -168,6 +208,7 @@ var uv_content = document.getElementById("uv_content");
 var uv_button_retour = document.getElementById("uv_button_retour");
 var checkboxChangementGlobal = document.getElementById("checkboxChangementGlobal");
 var uv_pannel = document.getElementById("uv_pannel");
+var swap_info_pannel = document.getElementById("swap_info_pannel");
 
 document.addEventListener("click" , function (event){
     if ((!(event.target.closest("#uv_pannel")) && (uv_pannel.style.display != "none")) || event.target.id == "uv_button_enregistrer") {
@@ -176,6 +217,11 @@ document.addEventListener("click" , function (event){
         if(getGetValue("codeUV") === null){
             checkboxChangementGlobal.checked = !checkboxChangementGlobal.checked;
         }
+    }
+
+    if (!(event.target.closest("#swap_info_pannel")) && swap_info_pannel != null && swap_info_pannel.style.display != "none") {
+        swap_info_pannel.style.display = "none";
+        history.replaceState({}, document.title, window.location.pathname);
     }
 })
 

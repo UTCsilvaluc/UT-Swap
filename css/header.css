@@ -637,6 +637,9 @@ nav .orange{
 }
 
 
+#nouveau_pannel li:not(.double-input):not(.basique):not(.hidden) #input-motivation-autre input{
+    margin-top: 5px;
+}
 
 #boutons_message input{
     width: 13vw;

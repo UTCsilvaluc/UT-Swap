@@ -7,7 +7,7 @@ session_start();
 function DBCredential(){
     $dbhost = 'localhost';
     $dbuser = 'root';
-    $dbpass = '';
+    $dbpass = 'root';
     $dbname = 'ut_swap';
     $connect = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to mysql');
     mysqli_set_charset($connect, 'utf8');
@@ -461,12 +461,13 @@ if (
                 <div>
                     <label for="input-motivation" id="label_motivation">Motivation: (facultatif)</label>
                     <select id="input-motivation" name="motivation" onchange="updateReason()">
-                        <option value="0">Sport</option>
-                        <option value="1">Associations</option>
-                        <option value="2">Incompatibilité d'horaires</option>
-                        <option value="3">Travail</option>
-                        <option value="4">Raisons de santé</option>
-                        <option value="5">Autre (à préciser).</option>
+                        <option value="">Choisissez une option</option>
+                        <option value="sport">Sport</option>
+                        <option value="association">Associations</option>
+                        <option value="incompatibilité">Incompatibilité d'horaires</option>
+                        <option value="travail">Travail</option>
+                        <option value="santé">Raisons de santé</option>
+                        <option value="autre">Autre (à préciser).</option>
                     </select>
                     <span class="hidden" id="input-motivation-autre"><input type="text" name="motivation-autre" placeholder="Veuillez entrer votre motivation"></span>
                 </div>
@@ -668,8 +669,21 @@ if (
     $hfin = validateInput($_POST['hfin'],$connect);
     $salle = validateInput($_POST['salle'],$connect);
     $type = validateInput($_POST['type'],$connect);
+    $raison = validateInput($_POST['motivation'], $connect);
+    $motivationAutre = validateInput($_POST['motivation-autre'], $connect);
+    if($raison != "autre" && $motivationAutre != null){
+        $motivationAutre = null;
+    }else if($raison == "autre" && $motivationAutre == null){
+        $raison = "";
+    }
+    if($motivationAutre != null){
+        $raison = "";
+    }
 
-    if(strlen($uv) != 4){
+    if(!in_array($raison, ["sport", "association", "incompatibilité", "santé", ""])){
+        header("Location: erreur.php");
+        exit();
+    }else if(strlen($uv) != 4){
         header("Location: erreur.php");
         exit();
     }else if(!in_array($type,array("TD","TP","CM"))){
@@ -752,7 +766,7 @@ if (
                 $isDemandeExisting = getIdDemandeSwap($connect , $login , $type , $uv);
                 /* --------------------------------------- */
                 if ($isDemandeExisting === null) {
-                    $primaryKeyDemande = insert_demande($connect , $login , $uv , $type , $jour , $hdebut , $hfin , $salle , $semaineChoix);
+                    $primaryKeyDemande = insert_demande($connect , $login , $uv , $type , $jour , $hdebut , $hfin , $salle , $semaineChoix, $raison, $motivationAutre);
                     if ($primaryKeyDemande != null) {
                         $canSwap = true;
                         if (!(isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande']))){

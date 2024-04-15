@@ -248,18 +248,16 @@ function cancelSwapFait($idDemande, $demandeur, $login, $connect){
     $stmtUpdateNotif->execute();
 }
 
-function insert_demande($connect, $login, $uv, $type, $jour, $hdebut, $hfin, $salle, $semaineChoix) {
+function insert_demande($connect, $login, $uv, $type, $jour, $hdebut, $hfin, $salle, $semaineChoix, $raison, $motivationAutre) {
     try {
         // Préparer la requête SQL
-        $insertion = $connect->prepare("INSERT INTO demande (login, codeUV, type, jour, horaireDebut, horaireFin, salle, semaine, raison, demande) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $insertion = $connect->prepare("INSERT INTO demande (login, codeUV, type, jour, horaireDebut, horaireFin, salle, semaine, raison, motifPerso, demande) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         if (!$insertion) {
             throw new Exception("Erreur de préparation de la requête");
         }
-        // Valider l'entrée pour la raison
-        $raison = validateInput($_POST['motivation'], $connect);
         // Vérifier si c'est une demande de swap
         $demande = (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande'])) ? 0 : 1;
-        $insertion->bind_param("sssisssssi", $login, $uv, $type, $jour, $hdebut, $hfin, $salle, $semaineChoix, $raison, $demande);
+        $insertion->bind_param("sssissssssi", $login, $uv, $type, $jour, $hdebut, $hfin, $salle, $semaineChoix, $raison, $motivationAutre, $demande);
         // Exécuter la requête
         if ($insertion->execute()) {
             // Succès de l'insertion, retourner l'ID de la nouvelle demande

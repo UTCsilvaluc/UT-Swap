@@ -43,6 +43,7 @@ function redirect($url){
     ){
         $connect = DBCredential();
         updateSwapProf($_POST['choix'], $_POST['demandeur'], $_POST['idDemande'], $connect);
+        redirect("gestion.php");
     }
     function choixTouteDemande($codeUV, $choix){
         global $login;
@@ -266,12 +267,15 @@ function redirect($url){
         <div id="demandes_professeur_professeur" class="profil_pannel">
             <div id="demandes_professeur_header" class="profil_header">
                 <span class="demandes_profil_titre"><span class="tictac"></span><h1>Mes demandes</h1></span>
+                <div class="demandes_gestion_filtre">
+                    <button id="button_selection">Selectionner</button>
+                </div>
             </div>
             <div id="demandes_professeur_content">
                 <div id="demandes_professeur" class="demandes_profil">
                     <?php
                     $connect = DBCredential();
-                    $sqlSwaps = "SELECT s.statut, s.idDemande, s.demandeur, d1.codeUV, d1.type, d1.jour as jour1, d1.horaireDebut as hDeb1, d1.horaireFin as hFin1, d2.jour as jour2, d2.horaireDebut as hDeb2, d2.horaireFin as hFin2, p1.nom as nom1, p1.prenom as prenom1, p2.nom as nom2,p2.prenom as prenom2, d1.raison as raison1, d2.raison as raison2, d1.semaine as semaine1, d2.semaine as semaine2 FROM swap s JOIN demande d1 ON d1.idDemande = s.idDemande JOIN demande d2 ON d2.idDemande = s.demandeur JOIN personne p1 ON p1.login = d1.login JOIN personne p2 ON p2.login = d2.login JOIN UV u ON u.codeUV = d1.codeUV WHERE u.responsable = ? AND s.statut >= 2 ORDER BY CASE statut WHEN 2 THEN 1 WHEN 4 THEN 2 WHEN 3 THEN 3 ELSE 4 END;";
+                    $sqlSwaps = "SELECT s.statut, s.idDemande, s.demandeur, d1.codeUV, d1.type, d1.jour as jour1, d1.horaireDebut as hDeb1, d1.horaireFin as hFin1, d2.jour as jour2, d2.horaireDebut as hDeb2, d2.horaireFin as hFin2, p1.nom as nom1, p1.prenom as prenom1, p2.nom as nom2,p2.prenom as prenom2, e1.branche as branche1, e2.branche as branche2, d1.raison as raison1, d1.motifPerso as motifPerso1, d2.motifPerso as motifPerso2, d2.raison as raison2, d1.semaine as semaine1, d2.semaine as semaine2 FROM swap s JOIN demande d1 ON d1.idDemande = s.idDemande JOIN demande d2 ON d2.idDemande = s.demandeur JOIN personne p1 ON p1.login = d1.login JOIN personne p2 ON p2.login = d2.login JOIN etudiant e1 ON p1.login = e1.login JOIN etudiant e2 ON p2.login = e2.login JOIN UV u ON u.codeUV = d1.codeUV WHERE u.responsable = ? AND s.statut >= 2 ORDER BY CASE statut WHEN 2 THEN 1 WHEN 4 THEN 2 WHEN 3 THEN 3 ELSE 4 END;";
                     $stmtSwaps = $connect->prepare($sqlSwaps);
                     $stmtSwaps->bind_param("s", $login);
                     $stmtSwaps->execute();
@@ -295,24 +299,34 @@ function redirect($url){
 
                             $nom1 = ucfirst($row["nom1"]);
                             $prenom1 = ucfirst($row["prenom1"]);
+                            $branche2 = ucfirst($row["branche2"]);
                             $jour1 = $jours[$row["jour1"]];
                             $hDeb1 = formaterHeure($row["hDeb1"]);
                             $hFin1 = formaterHeure($row["hFin1"]);
                             $semaine1 = $row["semaine1"];
-                            $raison1 = $row["raison1"];
+                            $raison1 = ucfirst($row["raison1"]);
                             if($raison1 == null){
-                                $raison1 = "non renseigné";
+                                $raison1 = "Non renseigné";
+                            }
+                            $motifPerso1 = $row["motifPerso1"];
+                            if($motifPerso1 != null){
+                                $raison1 = "Personnalisée";
                             }
                             
                             $nom2 = ucfirst($row["nom2"]);
                             $prenom2 = ucfirst($row["prenom2"]);
+                            $branche2 = ucfirst($row["branche2"]);
                             $jour2 = $jours[$row["jour2"]];
                             $hDeb2 = formaterHeure($row["hDeb2"]);
                             $hFin2 = formaterHeure($row["hFin2"]);
                             $semaine2 = $row["semaine2"];
-                            $raison2 = $row["raison2"];
+                            $raison2 = ucfirst($row["raison2"]);
                             if($raison2 == null){
-                                $raison2 = "non renseigné";
+                                $raison2 = "Non renseigné";
+                            }
+                            $motifPerso2 = $row["motifPerso2"];
+                            if($motifPerso2 != null){
+                                $raison2 = "Personnalisée";
                             }
 
                             if($semaine2 != $semaine1){
@@ -327,12 +341,13 @@ function redirect($url){
 
                             $demande= array(
                                 "idDemande" => $idDemande,
-                                "demandeur" => $demandeur
+                                "demandeur" => $demandeur,
+                                "statut" => $statut
                             );
                             
                             $data_row = htmlspecialchars(base64_encode(json_encode($demande)), ENT_QUOTES , 'UTF-8');
                             ?>
-                            <div class="demande_professeur" onclick="afficherInfoSwap(this)" data-row=<?= $data_row ?>>
+                            <div class="demande_professeur" onclick="demandeBehvior(this)" data-row=<?= $data_row ?>>
                                 <div class="gauche_container">
                                     <div class="rectangle_demande"></div>
                                     <div class="infos_uv">
@@ -351,7 +366,7 @@ function redirect($url){
                                         </div>
                                         <div class="infos_etudiant_facultatif">
                                             <div class="branche_etudiant">
-                                                <label class="grey_element">Branche:</label><label>TC</label>
+                                                <label class="grey_element">Branche:</label><label><?= $branche1 ?></label>
                                             </div>
                                             <div class="motivation_etudiant">
                                                 <label class="grey_element">Motivation:</label><label><?= $raison1 ?></label>
@@ -372,7 +387,7 @@ function redirect($url){
                                         </div>
                                         <div class="infos_etudiant_facultatif">
                                             <div class="branche_etudiant">
-                                                <label class="grey_element">Branche:</label><label>TC</label>
+                                                <label class="grey_element">Branche:</label><label><?= $branche2 ?></label>
                                             </div>
                                             <div class="motivation_etudiant">
                                                 <label class="grey_element">Motivation:</label><label><?= $raison2 ?></label>
@@ -426,7 +441,7 @@ function redirect($url){
             $connect = DBCredential();
             $demandeur = validateInput($_POST['demandeur'],$connect);
             $idDemande = validateInput($_POST['idDemande'],$connect);
-            $sqlSwap = "SELECT s.statut, s.idDemande, s.demandeur, d1.codeUV, d1.type, d1.jour as jour1, d1.horaireDebut as hDeb1, d1.horaireFin as hFin1, d2.jour as jour2, d2.horaireDebut as hDeb2, d2.horaireFin as hFin2, p1.nom as nom1, p1.prenom as prenom1, p2.nom as nom2,p2.prenom as prenom2, d1.raison as raison1, d2.raison as raison2, d1.semaine as semaine1, d2.semaine as semaine2 FROM swap s JOIN demande d1 ON d1.idDemande = s.idDemande JOIN demande d2 ON d2.idDemande = s.demandeur JOIN personne p1 ON p1.login = d1.login JOIN personne p2 ON p2.login = d2.login JOIN UV u ON u.codeUV = d1.codeUV WHERE s.idDemande = ? AND s.demandeur = ?;";
+            $sqlSwap = "SELECT s.statut, s.idDemande, s.demandeur, d1.codeUV, d1.type, d1.jour as jour1, d1.horaireDebut as hDeb1, d1.horaireFin as hFin1, d2.jour as jour2, d2.horaireDebut as hDeb2, d2.horaireFin as hFin2, p1.nom as nom1, p1.prenom as prenom1, p2.nom as nom2,p2.prenom as prenom2, e1.branche as branche1, e2.branche as branche2, d1.motifPerso as motifPerso1, d2.motifPerso as motifPerso2, d1.raison as raison1, d2.raison as raison2, d1.semaine as semaine1, d2.semaine as semaine2 FROM swap s JOIN demande d1 ON d1.idDemande = s.idDemande JOIN demande d2 ON d2.idDemande = s.demandeur JOIN personne p1 ON p1.login = d1.login JOIN personne p2 ON p2.login = d2.login JOIN etudiant e1 ON p1.login = e1.login JOIN etudiant e2 ON p2.login = e2.login JOIN UV u ON u.codeUV = d1.codeUV WHERE s.idDemande = ? AND s.demandeur = ?;";
             $stmtSwap = $connect->prepare($sqlSwap);
             $stmtSwap->bind_param("ss", $idDemande, $demandeur);
             $stmtSwap->execute();
@@ -451,25 +466,29 @@ function redirect($url){
 
                     $nom1 = ucfirst($row["nom1"]);
                     $prenom1 = ucfirst($row["prenom1"]);
+                    $branche1 = ucfirst($row["branche1"]);
                     $jour1 = $jours[$row["jour1"]];
                     $hDeb1 = formaterHeure($row["hDeb1"]);
                     $hFin1 = formaterHeure($row["hFin1"]);
                     $semaine1 = $row["semaine1"];
-                    $raison1 = $row["raison1"];
+                    $raison1 = ucfirst($row["raison1"]);
                     if($raison1 == null){
-                        $raison1 = "non renseigné";
+                        $raison1 = "Non renseigné";
                     }
+                    $motifPerso1 = $row["motifPerso1"];
                     
                     $nom2 = ucfirst($row["nom2"]);
                     $prenom2 = ucfirst($row["prenom2"]);
+                    $branche2 = ucfirst($row["branche2"]);
                     $jour2 = $jours[$row["jour2"]];
                     $hDeb2 = formaterHeure($row["hDeb2"]);
                     $hFin2 = formaterHeure($row["hFin2"]);
                     $semaine2 = $row["semaine2"];
-                    $raison2 = $row["raison2"];
+                    $raison2 = ucfirst($row["raison1"]);
                     if($raison2 == null){
-                        $raison2 = "non renseigné";
+                        $raison2 = "Non renseigné";
                     }
+                    $motifPerso2 = $row["motifPerso2"];
 
                     if($semaine2 != $semaine1){
                         $semaine = $semaine1."/".$semaine2;
@@ -487,19 +506,88 @@ function redirect($url){
                     
                     $data_row = htmlspecialchars(base64_encode(json_encode($demande)), ENT_QUOTES , 'UTF-8');
                     ?>
-                    <div id="swap_info_pannel" class="mid_pannel">
+                    <div id="swap_info_pannel" class="mid_pannel" data-row=<?= $data_row ?>>
                         <div class="mid_titre">
                             <h1><?= $codeUV ?> - <?= $type ?> <?= $semaine ?></h1>
                             <hr>
                         </div>
                         <img src="../svg/croix.svg" class="croix">
                         <div class="mid_content">
-                            
+                            <div class="infos_etudiant">
+                                <div class="nom_etudiant">
+                                    <label class="grey_element">Etudiant:</label><label><?= $nom1 ?> <?= $prenom1 ?></label>
+                                </div>
+                                <div class="branche_etudiant">
+                                    <label class="grey_element">Branche:</label><label><?= $branche1 ?></label>
+                                </div>
+                                <div class="horaire_etudiant">
+                                    <label class="grey_element">Horaire:</label><label><?= $jour1 ?> <?= $hDeb1 ?> - <?= $hFin1 ?></label>
+                                </div>
+                                <?php
+                                    if($motifPerso1 == null){
+                                        ?>
+                                        <div class="motivation_etudiant">
+                                            <label class="grey_element">Motivation:</label><label><?= $raison1 ?></label>
+                                        </div>
+                                        <?php
+                                    }else{
+                                        ?>
+                                        <div class="motivation_perso_etudiant">
+                                            <label class="grey_element">Motivation:</label><textarea readonly><?= $motifPerso1 ?></textarea>
+                                        </div>
+                                        <?php
+                                    }
+                                ?>
+                            </div>
+                            <div class="swap_div_container">
+                                <img class="swap_icon" src="../svg/swap_icon.svg">
+                            </div>
+                            <div class="infos_etudiant">
+                                <div class="nom_etudiant">
+                                    <label class="grey_element">Etudiant:</label><label><?= $nom2 ?> <?= $prenom2 ?></label>
+                                </div>
+                                <div class="branche_etudiant">
+                                    <label class="grey_element">Branche:</label><label><?= $branche2 ?></label>
+                                </div>
+                                <div class="horaire_etudiant">
+                                    <label class="grey_element">Horaire:</label><label><?= $jour2 ?> <?= $hDeb2 ?> - <?= $hFin2 ?></label>
+                                </div>
+                                <?php
+                                    if($motifPerso2 == null){
+                                        ?>
+                                        <div class="motivation_etudiant">
+                                            <label class="grey_element">Motivation:</label><label><?= $raison2 ?></label>
+                                        </div>
+                                        <?php
+                                    }else{
+                                        ?>
+                                        <div class="motivation_perso_etudiant">
+                                            <label class="grey_element">Motivation:</label><textarea readonly><?= $motifPerso2 ?></textarea>
+                                        </div>
+                                        <?php
+                                    }
+                                ?>
+                            </div>
                         </div>
                         <div class="mid_button">
-                            <hr>
-                            <button id="choix_prof_button_refuser">Refuser</button>
-                            <button id="choix_prof_button_accepter">Accepter</button>
+                        <hr>
+                        <?php
+                                if($statut == 2){
+                                    ?>
+                                    <button id="choix_prof_button_refuser" onclick="choixProfesseurSwap(false, this)">Refuser</button>
+                                    <button id="choix_prof_button_accepter" onclick="choixProfesseurSwap(true, this)">Accepter</button>
+                                    <?php
+                                }else if($statut == 3){
+                                    ?>
+                                    <button id="choix_prof_button_refuser">Refuser</button>
+                                    <?php
+                                }else if($statut == 4){
+                                    ?>
+                                    <button id="choix_prof_button_accepter">Accepter</button>
+                                    <?php
+                                }
+                                ?>
+                            
                         </div>
                     </div>
                     <?php

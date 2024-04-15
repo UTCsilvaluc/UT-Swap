@@ -478,7 +478,7 @@ function reloadPage() {
 }
 
 function updateReason(){
-    if (input_motivation.value == 5){
+    if (input_motivation.value == "autre"){
         input_motivation_autre.classList.toggle('hidden' , false);
     } else {
         input_motivation_autre.classList.toggle('hidden' , true);

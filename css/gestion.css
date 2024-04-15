@@ -1,3 +1,18 @@
+.demandes_gestion_filtre button{
+    padding: 11px 20px;
+    border-radius: 15px;
+    border: 1px solid #32373B;
+    background-color: white;
+    color: #32373B;
+    box-sizing: border-box;
+}
+
+.demandes_gestion_filtre .button_filtre_selected{
+    border: none;
+    background-color: #32373B;
+    color: white;
+}
+
 #profil_texte h1{
     display: flex;
     flex-direction:row;
@@ -111,7 +126,7 @@
 }
 
 
-#demandes_professeur_header .tictac{
+#demandes_professeur_header span .tictac{
     background-color: #acff97;
 }
 
@@ -153,13 +168,13 @@
     flex-direction: row;
 }
 
-.infos_etudiant_facultatif, .infos_etudiant{
+.demande_professeur .infos_etudiant_facultatif, .demande_professeur .infos_etudiant{
     margin-left: 20px;
     white-space: nowrap;
     font-size: 13px;
 }
 
-.infos_etudiant_facultatif .grey_element, .infos_etudiant .grey_element{
+.demande_professeur .grey_element, .mid_content .grey_element{
     color: lightgrey;
     margin-right: 10px;
 }
@@ -192,9 +207,80 @@
     margin-left: 20px;
 }
 
+#swap_info_pannel{
+    height: 50vh;
+    -webkit-box-shadow: 0px 0px 15px 8px var(--couleur-shadow); 
+    box-shadow: 0px 0px 15px 8px var(--couleur-shadow);
+}
+
+.demande_selected{
+    background-color: rgba(0, 0, 0, 0.03125);
+}
+
+.mid_content .grey_element, .demande_selected .grey_element{
+    color:rgb(145, 145, 145);
+}
+
+
+#swap_info_pannel ::-webkit-scrollbar-track
+{
+	border: 1px solid #d1d1d1;
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+
+#swap_info_pannel ::-webkit-scrollbar
+{
+	width: 8px;
+	background-color: #F5F5F5;
+}
+
+#swap_info_pannel ::-webkit-scrollbar-thumb
+{
+	border: 1px solid #d1d1d1;
+	border-radius: 10px;
+	background-color: #dfdfdf;
+}
+
+#swap_info_pannel .mid_content{
+    justify-content: unset;
+}
+
+#swap_info_pannel .infos_etudiant{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #f1f1f1;
+    width: 70%;
+    padding: 10px 20px;
+    margin: 20px 0px;
+    border-radius: 20px;
+}
+
+#swap_info_pannel .infos_etudiant > div{
+    display: flex;
+    flex-direction: column;
+    margin-top: 5px;
+}
+
+#swap_info_pannel .infos_etudiant > div > label:nth-child(2), .infos_etudiant > div > textarea:last-of-type{
+    margin-left: 20px;
+}
+
+.mid_content .motivation_perso_etudiant textarea{
+    margin-top: 5px;
+    height: 50px;
+}
+
+#choix_prof_button_refuser{
+    border:1px solid #32373B;
+    color: #32373B;
+    background-color: white;
+}
+
 @media screen and (max-width: 1600px) {
 
-    .infos_etudiant_facultatif{
+    .demande_professeur .infos_etudiant_facultatif{
         display: none;
     }
 
@@ -237,17 +323,18 @@
         display: block;
     }
 
-    .infos_etudiant_facultatif, .infos_etudiant{
+    .demande_professeur .infos_etudiant_facultatif, .demande_professeur .infos_etudiant{
         font-size: 15px;
     }
 
-    .infos_etudiant_facultatif{
+    .demande_professeur .infos_etudiant_facultatif{
         display: block;
     }
 
     #demandes_professeur .mid_container{
         gap: 10px;
         flex-direction: column;
+        align-items: unset;
     }
 
 }
@@ -274,7 +361,7 @@
 
 @media screen and (max-width: 700px) {
 
-    .infos_etudiant_facultatif{
+    .demande_professeur .infos_etudiant_facultatif{
         display: none;
     }
 
@@ -346,6 +433,22 @@
 
     #uv_content .profil_demandes_parent{
         flex-direction: row;
+    }
+
+}
+
+@media screen and (max-height: 700px) {
+
+    #swap_info_pannel{
+        height: 70vh;
+    }
+
+}
+
+@media screen and (max-height: 500px) {
+
+    #swap_info_pannel{
+        height: 80vh;
     }
 
 }

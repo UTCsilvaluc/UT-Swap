@@ -650,6 +650,7 @@ span input[type='color']{
     display: flex;
     align-items: center;
     font-size: 10px;
+    margin-bottom: 10px;
 }
 
 .mid_input_local_save label {
