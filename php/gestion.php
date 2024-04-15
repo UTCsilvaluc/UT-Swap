@@ -299,7 +299,7 @@ function redirect($url){
 
                             $nom1 = ucfirst($row["nom1"]);
                             $prenom1 = ucfirst($row["prenom1"]);
-                            $branche2 = ucfirst($row["branche2"]);
+                            $branche1 = ucfirst($row["branche1"]);
                             $jour1 = $jours[$row["jour1"]];
                             $hDeb1 = formaterHeure($row["hDeb1"]);
                             $hFin1 = formaterHeure($row["hFin1"]);
