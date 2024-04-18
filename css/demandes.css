@@ -256,18 +256,57 @@ main > hr{
     justify-content: space-between;
 }
 
+
 .svgPage{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     height: 30px;
 
 }
-.rightPage{
-    height: 100%;
-    width: 100%;
+
+#pageList{
+    display: flex;
+    flex-direction: row;
+}
+.svgPage i{
+    border: 1px black outset;
+    border-radius: 1px;
+    padding: 8px;
+    margin: 2px;
     transition: scale 0.3s linear;
 }
+
+.svgPage i:hover{
+    background: #ffffff;
+    scale: 110%;
+    cursor: pointer;
+}
+
+#currentPage{
+    background: #ffffff;
+    color: #595e5e;
+}
+#justPage{
+    background: #363232;
+    color: white;
+}
+.pageClick{
+    border: 1px black outset;
+    margin: 5px 2px;
+    padding: 10px 10px;
+    font-family: "Droid Sans", sans-serif;
+    font-size: 70%;
+    transition: opacity 0.3s linear;
+
+}
+
+.pageClick:hover{
+    cursor: pointer;
+    opacity: 0.8;
+}
+
 .rightPage:hover{
     scale: 110%;
     opacity: 110%;
@@ -293,8 +332,6 @@ main > hr{
 #filterContainer1 .filtre_span .uncheck , #filterContainer1 .filtre_span .uncheckElement{
     transition: background-color 0s linear;
 }
-
-
 
 @media screen and (max-width: 1200px) {
 
@@ -493,3 +530,5 @@ main > hr{
     }
 
 }
+
+
