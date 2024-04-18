@@ -712,15 +712,15 @@ function afficherPage(page) {
     if (totalPages <= 5) {
         startPage = 1; // Si le nombre total de pages est inférieur ou égal à 5, commencer à partir de la première page
     }
-    if (currentPage + 2 >= totalPages) {
+    else if (currentPage + 2 >= totalPages) {
         startPage = totalPages - 4; // Si le nombre total de pages est supérieur à 5 et si currentPage est suffisamment proche de la fin, ajuster startPage
     }
 
-    if (currentPage > 3 && totalPages > 5) {
+    else if (currentPage > 3 && totalPages > 5) {
         startPage = currentPage - 2; // Si le nombre total de pages est supérieur à 5 et si currentPage n'est pas trop proche du début, ajuster startPage pour centrer la page courante
     }
 
-    if (totalPages - startPage < 4) {
+    else if (totalPages - startPage < 4) {
         startPage = totalPages - 4; // Si le nombre total de pages est supérieur à 5 et si startPage est trop loin de la fin, l'ajuster pour garantir qu'il y ait au moins 5 pages affichées
     }
 

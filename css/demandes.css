@@ -298,8 +298,8 @@ main > hr{
     padding: 10px 10px;
     font-family: "Droid Sans", sans-serif;
     font-size: 70%;
+    font-style: oblique;
     transition: opacity 0.3s linear;
-
 }
 
 .pageClick:hover{
