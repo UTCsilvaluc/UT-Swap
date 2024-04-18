@@ -1,12 +1,15 @@
 var isSelectionning = false;
 var button_selection = document.getElementById("button_selection");
+var button_accept_all = document.getElementById("button_accept_all");
+var button_decline_all = document.getElementById("button_decline_all");
 
 button_selection.addEventListener("click", function() {
     isSelectionning = !isSelectionning;
     Array.from(document.getElementsByClassName("demande_professeur")).forEach(element => {
         element.classList.toggle("demande_selected", false);
     });
-    
+    button_accept_all.classList.toggle('hidden' , !isSelectionning);
+    button_decline_all.classList.toggle('hidden' , !isSelectionning);
     button_selection.classList.toggle('button_filtre_selected' , isSelectionning);
 });
 
@@ -44,61 +47,85 @@ function getGetValue(key) {
     return null;
 }
 
-function choixProfesseurSwap(choix, element){
-    var clickedElement = element.target;
+function addInputForm(form, choix, idDemande, demandeur, id){
 
+    var inputChoix = document.createElement('input');
+    inputChoix.setAttribute('type', 'hidden');
+    inputChoix.setAttribute('name', 'choix' + id);
+    inputChoix.setAttribute('value', choix);
+    form.appendChild(inputChoix);
+    
+    var inputDemandeur = document.createElement('input');
+    inputDemandeur.setAttribute('type', 'hidden');
+    inputDemandeur.setAttribute('name', 'demandeur' + id);
+    inputDemandeur.setAttribute('value', demandeur);
+    form.appendChild(inputDemandeur);
+    
+    var inputIdDemande = document.createElement('input');
+    inputIdDemande.setAttribute('type', 'hidden');
+    inputIdDemande.setAttribute('name', 'idDemande' + id);
+    inputIdDemande.setAttribute('value', idDemande);
+    form.appendChild(inputIdDemande);
+
+}
+
+function choixProfesseurSwap(choix, element){
+    event.stopPropagation();
+    var clickedElement = element.target;
+   
     // Vérifier si l'élément cliqué est le même que l'élément sur lequel l'événement est attaché
     if (clickedElement === element.currentTarget) {
-        var rowAttribute = element.parentElement.parentElement.dataset.row;
+        var form = document.createElement('form');
+        form.setAttribute('method', 'post');
+        form.setAttribute('action', '');
 
-        if (rowAttribute) {
-            try {
-                var donnees = JSON.parse(atob(rowAttribute));
-            } catch (error) {
-                console.error("Erreur lors du parsing JSON :", error);
-            }
-        } else {
-            console.error("Aucune donnée trouvée dans l'attribut data-row");
+        var demandes_selected = document.getElementsByClassName("demande_selected");
+        var i;
+        if(element.id.includes("all")){
+            i = demandes_selected.length;
+        }else{
+            i=1;
         }
-        if(donnees.idDemande !== "" && donnees.demandeur !== "") {
-            
-            if(choix === true){
-                choix = 1;
+        if(choix === true){
+            choix = 1;
+        }else{
+            choix = 0;
+        }
+        for(var j = 1; j<=i; j++){
+
+            var rowAttribute;
+            if(element.id.includes("all")){
+                rowAttribute = demandes_selected[j-1].dataset.row;
             }else{
-                choix = 0;
+                rowAttribute = element.parentElement.parentElement.dataset.row;
             }
 
-            var form = document.createElement('form');
-            form.setAttribute('method', 'post');
-            form.setAttribute('action', '');
-
-            var inputChoix = document.createElement('input');
-            inputChoix.setAttribute('type', 'hidden');
-            inputChoix.setAttribute('name', 'choix');
-            inputChoix.setAttribute('value', choix);
-            form.appendChild(inputChoix);
-            
-            var inputDemandeur = document.createElement('input');
-            inputDemandeur.setAttribute('type', 'hidden');
-            inputDemandeur.setAttribute('name', 'demandeur');
-            inputDemandeur.setAttribute('value', donnees.demandeur);
-            form.appendChild(inputDemandeur);
-            
-            var inputIdDemande = document.createElement('input');
-            inputIdDemande.setAttribute('type', 'hidden');
-            inputIdDemande.setAttribute('name', 'idDemande');
-            inputIdDemande.setAttribute('value', donnees.idDemande);
-            form.appendChild(inputIdDemande);
-
-            // Ajouter le formulaire à la page
-            document.body.appendChild(form);
-
-            // Soumettre le formulaire
-            form.submit();
-
-            // Supprimer le formulaire après soumission
-            form.remove();
+            if (rowAttribute) {
+                try {
+                    var donnees = JSON.parse(atob(rowAttribute));
+                } catch (error) {
+                    console.error("Erreur lors du parsing JSON :", error);
+                }
+            } else {
+                console.error("Aucune donnée trouvée dans l'attribut data-row");
+            }
+            if(donnees.idDemande !== "" && donnees.demandeur !== "") {
+                if(element.id.includes("all")){
+                    addInputForm(form, choix, donnees.idDemande, donnees.demandeur, j);
+                }else{
+                    addInputForm(form, choix, donnees.idDemande, donnees.demandeur, 0);
+                } 
+            }
         }
+        
+        // Ajouter le formulaire à la page
+        document.body.appendChild(form);
+
+        // Soumettre le formulaire
+        form.submit();
+
+        // Supprimer le formulaire après soumission
+        form.remove();
     }
 }
 

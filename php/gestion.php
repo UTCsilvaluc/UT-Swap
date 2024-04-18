@@ -19,7 +19,7 @@ function redirect($url){
 <body>
     <?php include "header.php" ?>
     <?php
-    
+
     function updateSwapProf($choix, $demandeur, $idDemande, $connect){
         $sqlGetLogins = "SELECT d1.login, d2.login FROM swap s JOIN demande d1 ON d1.idDemande=s.idDemande JOIN demande d2 ON d2.idDemande=s.demandeur WHERE s.demandeur = ? AND s.idDemande = ?";
         $stmtGetLogins = $connect->prepare($sqlGetLogins);
@@ -33,18 +33,11 @@ function redirect($url){
         $sqlUpdateSwap = "UPDATE swap SET statut = ? WHERE idDemande = ? AND demandeur = ?";
         $stmtUpdateSwap = $connect->prepare($sqlUpdateSwap);
         $choix = $choix+3;
-        $stmtUpdateSwap->bind_param("sss", $choix, $idDemande, $demandeur);         
+        $stmtUpdateSwap->bind_param("sss", $choix, $idDemande, $demandeur);  
         $stmtUpdateSwap->execute();
     }
 
-    if (
-        isset($_POST['choix'], $_POST['demandeur'], $_POST['idDemande']) &&
-        (!empty($_POST['choix']) || validateInput($_POST['choix'],$connect) === "0") && !empty($_POST['demandeur']) && !empty($_POST['idDemande'])
-    ){
-        $connect = DBCredential();
-        updateSwapProf($_POST['choix'], $_POST['demandeur'], $_POST['idDemande'], $connect);
-        redirect("gestion.php");
-    }
+    
     function choixTouteDemande($codeUV, $choix){
         global $login;
         $connect = DBCredential();
@@ -152,6 +145,21 @@ function redirect($url){
             return $nbSwap;
         }
         return "0";
+    }
+
+    $changementSwap = false;
+    for($i = getNbSwapProfil("cours"); $i>=0; $i--){
+        if (
+            isset($_POST['choix'.$i], $_POST['demandeur'.$i], $_POST['idDemande'.$i]) &&
+            (!empty($_POST['choix'.$i]) || validateInput($_POST['choix'.$i],$connect) === "0") && !empty($_POST['demandeur'.$i]) && !empty($_POST['idDemande'.$i])
+        ){
+            $connect = DBCredential();
+            updateSwapProf($_POST['choix'.$i], $_POST['demandeur'.$i], $_POST['idDemande'.$i], $connect);
+            $changementSwap = true;
+        }
+    }
+    if($changementSwap){
+        redirect("gestion.php");
     }
 
     function getNbSwapUv($type, $codeUV){
@@ -268,6 +276,8 @@ function redirect($url){
             <div id="demandes_professeur_header" class="profil_header">
                 <span class="demandes_profil_titre"><span class="tictac"></span><h1>Mes demandes</h1></span>
                 <div class="demandes_gestion_filtre">
+                    <button onclick="choixProfesseurSwap(true, this)" id="button_accept_all" class="hidden"><img src="../svg/Vector_check_black.svg" alt="">Accepter</button>
+                    <button onclick="choixProfesseurSwap(false, this)" id="button_decline_all" class="hidden"><img src="../svg/Vector_none_black.svg" alt="">Refuser</button>
                     <button id="button_selection">Selectionner</button>
                 </div>
             </div>
@@ -299,7 +309,7 @@ function redirect($url){
 
                             $nom1 = ucfirst($row["nom1"]);
                             $prenom1 = ucfirst($row["prenom1"]);
-                            $branche2 = ucfirst($row["branche2"]);
+                            $branche1 = ucfirst($row["branche1"]);
                             $jour1 = $jours[$row["jour1"]];
                             $hDeb1 = formaterHeure($row["hDeb1"]);
                             $hFin1 = formaterHeure($row["hFin1"]);

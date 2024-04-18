@@ -1,14 +1,25 @@
 .demandes_gestion_filtre button{
     padding: 11px 20px;
-    border-radius: 15px;
-    border: 1px solid #32373B;
+    border-radius: 20px;
+    margin-right: 5px;
+    border: 1px solid lightgray;
     background-color: white;
     color: #32373B;
     box-sizing: border-box;
+    box-shadow: 5px 5px 15px 0px rgba(0,0,0,0.20);
+}
+
+.demandes_gestion_filtre button:last-of-type{
+    margin-right: 25px;
+}
+
+.demandes_gestion_filtre button img{
+    height: 10px;
+    margin-right: 8px;
 }
 
 .demandes_gestion_filtre .button_filtre_selected{
-    border: none;
+    border: 1px solid #32373B;
     background-color: #32373B;
     color: white;
 }
