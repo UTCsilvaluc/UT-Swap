@@ -96,13 +96,12 @@ main{
     display: flex;
     flex-direction: row;
     justify-content: center;
-    padding-top: 25px;
-    overflow: auto;
+    width: 100%;
     height: calc(100vh - var(--taille-header));
 }
 
 .demandesControl{
-    width: var(--taille-demande);
+    width: 100%;
     height:964px;
     display: flex;
     flex-direction: column;
@@ -111,15 +110,45 @@ main{
     align-items: center;
 }
 
-.demandes_filtre_parent{
+main{
+    overflow: auto;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-    width: 100%;
-    height: 70px;
-    background-color: #8a9cab;
-    -webkit-box-shadow: 0px -3px 15px 5px rgba(0,0,0,0.25); 
-    box-shadow: 0px -3px 15px 5px rgba(0,0,0,0.25);
+}
+main::-webkit-scrollbar-track
+{
+	border: 1px solid #d1d1d1;
+	border-radius: 10px;
+	background-color: white;
+}
+
+main::-webkit-scrollbar
+{
+	width:10px;
+	background-color:white;
+}
+
+main::-webkit-scrollbar-thumb
+{
+	border: 1px solid #d1d1d1;
+	border-radius: 10px;
+	background-color: #dfdfdf;
+}
+
+main > hr{
+    width: calc(280px + var(--taille-demande));
+    border: .5px solid rgb(222, 222, 222);
+}
+
+.demandes_filtre_parent{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: calc(280px + var(--taille-demande));
+    height: 50px;
+    margin-top: 25px;
 }
 
 .demandes_filtre{
@@ -151,10 +180,16 @@ main{
     border: none;
     outline: none;
     padding: 10px 15px;
-    width: 40%;
+    margin-left: 15px;
+    width: 200px;
     height: 15px;
-    border-radius: 5px;
-    background-color: #f7f7f7;
+    border-radius: 15px;
+    border: 1px solid #535b62;
+    background-color: white;
+}
+
+.filtreInput::placeholder{
+    color:#535b62;
 }
 
 .filtre_parent_label input{
@@ -181,9 +216,7 @@ main{
 }
 
 .researchLogoSvg{
-    background-color: #f7f7f7;
-    padding: 12px;
-    border-radius: 50%;
+    transform: translateX(-28px);
     width: 11px;
     height: 11px;
 }
@@ -223,18 +256,57 @@ main{
     justify-content: space-between;
 }
 
+
 .svgPage{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     height: 30px;
 
 }
-.rightPage{
-    height: 100%;
-    width: 100%;
+
+#pageList{
+    display: flex;
+    flex-direction: row;
+}
+.svgPage i{
+    border: 1px black outset;
+    border-radius: 1px;
+    padding: 8px;
+    margin: 2px;
     transition: scale 0.3s linear;
 }
+
+.svgPage i:hover{
+    background: #ffffff;
+    scale: 110%;
+    cursor: pointer;
+}
+
+#currentPage{
+    background: #ffffff;
+    color: #595e5e;
+}
+#justPage{
+    background: #363232;
+    color: white;
+}
+.pageClick{
+    border: 1px black outset;
+    margin: 5px 2px;
+    padding: 10px 10px;
+    font-family: "Droid Sans", sans-serif;
+    font-size: 70%;
+    transition: opacity 0.3s linear;
+
+}
+
+.pageClick:hover{
+    cursor: pointer;
+    opacity: 0.8;
+}
+
 .rightPage:hover{
     scale: 110%;
     opacity: 110%;
@@ -246,6 +318,8 @@ main{
 }
 
 .PageContent{
+    width: var(--taille-demande);
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-content: center;
@@ -259,8 +333,6 @@ main{
     transition: background-color 0s linear;
 }
 
-
-
 @media screen and (max-width: 1200px) {
 
     main{
@@ -269,6 +341,13 @@ main{
         align-items: center;
         justify-content: center;
         height: calc(100vh - var(--taille-header));
+    }
+
+    main > hr{
+        display: none;
+    }
+     .demandes_filtre_parent{
+        width: var(--taille-demande);
     }
 
     .demandesControl{
@@ -282,7 +361,9 @@ main{
     }
 
     .filtreInput{
-        background-color: #f0f0f0;
+        margin-left: 0;
+        border: none;
+        background-color: #f7f7f7;
     }
 
     .filtreInput, .demandes_rechercher{
@@ -386,7 +467,7 @@ main{
 
     #demande_container1{
         height: calc(85vh - var(--taille-header));
-        background-color: #f1f1f1;
+        background-color: #f7f7f7;
     }
     
 }
@@ -408,6 +489,14 @@ main{
 }
 
 @media screen and (max-width: 600px) {
+
+    .PageContent{
+        justify-content: unset;
+    }
+
+    .demandes_filtre_parent{
+        margin-top: 5px;
+    }
 
     .demandes_filtre{
         padding-left: 10px;
@@ -441,3 +530,5 @@ main{
     }
 
 }
+
+

@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="../css/demandes.css">
     <link rel="stylesheet" href="../css/demande_content.css">
     <link rel="stylesheet" href="../css/emploiDuTemps.css">
+    <script src="https://kit.fontawesome.com/30cc72a8f6.js" crossorigin="anonymous"></script>
     <title>Demandes - UT'Swap</title>
     <link rel="icon" href="../img/logo.png" type="image/x-icon">
 </head>
@@ -13,15 +14,10 @@
     <?php include "header.php" ?>
     <main>
         <div class="demandes_filtre_parent">
-            <div class="demandes_filtre">
-                <input class="filtreInput" type="text" name="codeUV" id="filtre_demandes_codeUV" placeholder="Chercher une UV" value="<?= $_GET['codeUV'] ?? ''; ?>" maxlength="4" minlength="4">
-                <input class="filtreInput" type="text" name="creneau" id="filtre_demandes_creneau" placeholder="Chercher un créneau" value="<?= $_GET['jour'] ?? ''; ?>">
-                <img src="../svg/search.svg" class="researchLogoSvg">
-                <div id="svg_filtre_parent" onclick="openFiltre(this)">
-                    <img src="../svg/FILTRE_FILTRE.svg" id="svgFiltre">
-                </div>
-            </div>
+            <input class="filtreInput" type="text" name="codeUV" id="filtre_demandes_codeUV" placeholder="Chercher une UV" value="<?= $_GET['codeUV'] ?? ''; ?>" maxlength="4" minlength="4">
+            <img src="../svg/search.svg" class="researchLogoSvg">
         </div>
+        <hr>
         <div class="main_conteneur">
             <div class="filtres" id="menuFiltre">
                 <div class="filtre_titre">
@@ -158,8 +154,11 @@
                             <?php } } ?>
                     </div>
                     <span class="svgPage">
-                        <img class="rightPage" src="../svg/fleche_gauche.svg" alt="" onclick="previousPage()">
-                        <img class="rightPage" src="../svg/fleche_droite.svg" alt="" onclick="nextPage()">
+                        <i class="fa-solid fa-angles-left" style="color: #3a4150;" onclick="firstPage()"></i>
+                        <i class="fa-solid fa-angle-left" style="color: #3a4150;" onclick="previousPage()"></i>
+                        <span id="pageList"></span>
+                        <i class="fa-solid fa-angle-right" style="color: #3a4150;" onclick="nextPage()"></i>
+                        <i class="fa-solid fa-angles-right" style="color: #3a4150;" onclick="lastPage()"></i>
                     </span>
             </div>
             </div>

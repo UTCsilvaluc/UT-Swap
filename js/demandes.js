@@ -189,6 +189,7 @@ function changeFilter(event){
     } else {
         sortByRecent();
     }
+    afficherPage(currentPage);
 }
 async function handlechangeFilter(event) {
     const pointsType = {"TD":1 , "TP":0.5,"CM":0}
@@ -665,8 +666,22 @@ function mettreAJourContenuProfil() {
 
 // Variables globales
 const divDemandeContainer = document.querySelector('.demande_container');
-const itemsPerPage = 5; // Nombre d'éléments à afficher par page
+const itemsPerPage = calculateNumberOfElements(window.innerHeight , 13) - 1; // Nombre d'éléments à afficher par page 68px hauteur une div demande
 let currentPage = 1;
+var spanNumberPage = document.getElementById("pageList");
+
+function calculateNumberOfElements(viewportHeight, headerHeight) {
+    var headerPixels = (headerHeight * viewportHeight) / 100;
+
+    // Calculer la hauteur disponible en pixels
+    var availableHeight = viewportHeight - headerPixels;
+
+    // Diviser la hauteur disponible par la hauteur d'un élément individuel (68px)
+    var numberOfElements = Math.floor(availableHeight / 68);
+
+    return numberOfElements;
+}
+
 
 function afficherPage(page) {
     var divDemandeElements = Array.from(divDemandeContainer.querySelectorAll('.div_demande'));
@@ -689,6 +704,54 @@ function afficherPage(page) {
             count++;
         }
     }
+    spanNumberPage.innerHTML = "";
+    var totalPages = Math.ceil(getVisibleElementCount() / itemsPerPage); // Nombre total de pages nécessaires
+
+    var startPage;
+    startPage = currentPage - 2 < 1 ? 1 : currentPage - 2;
+    if (totalPages <= 5) {
+        startPage = 1; // Si le nombre total de pages est inférieur ou égal à 5, commencer à partir de la première page
+    }
+    if (currentPage + 2 >= totalPages) {
+        startPage = totalPages - 4; // Si le nombre total de pages est supérieur à 5 et si currentPage est suffisamment proche de la fin, ajuster startPage
+    }
+
+    if (currentPage > 3 && totalPages > 5) {
+        startPage = currentPage - 2; // Si le nombre total de pages est supérieur à 5 et si currentPage n'est pas trop proche du début, ajuster startPage pour centrer la page courante
+    }
+
+    if (totalPages - startPage < 4) {
+        startPage = totalPages - 4; // Si le nombre total de pages est supérieur à 5 et si startPage est trop loin de la fin, l'ajuster pour garantir qu'il y ait au moins 5 pages affichées
+    }
+
+    // Limitez la boucle à 5 pages
+    var endPage = Math.min(startPage + 4, totalPages);
+    for (let i = startPage; i <= endPage; i++) {
+        var numberPage = document.createElement("h3");
+        numberPage.innerHTML = i;
+        numberPage.className = "pageClick";
+        if (i === currentPage) {
+            numberPage.id = "currentPage";
+        } else {
+            numberPage.id = "justPage";
+        }
+        numberPage.addEventListener("click", function() {
+            currentPage = i;
+            afficherPage(i);
+        });
+        spanNumberPage.appendChild(numberPage);
+    }
+
+}
+
+function firstPage(){
+    currentPage = 1;
+    afficherPage(currentPage)
+}
+
+function lastPage(){
+    currentPage = Math.ceil(getVisibleElementCount() / itemsPerPage);
+    afficherPage(currentPage);
 }
 
 // Fonction pour passer à la page suivante

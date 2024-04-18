@@ -119,13 +119,16 @@
 }
 
 #demandes_professeur_content{
+    display: flex;
+    justify-content: center;
+    width: 100%;
     height: 350px;
 }
 
 #demandes_professeur{
     display: flex;
     flex-direction: column;
-    width: 70vw;
+    width: 85%;
     height: 100%;
     overflow-x: auto;
     overflow-y: scroll;
@@ -145,6 +148,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    flex-shrink: 0;
     justify-content: space-between;
     background-color: white;
     overflow: hidden;
