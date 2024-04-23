@@ -53,9 +53,9 @@
                     <div class="filtre_parent" id="type">
                         <h1 class="filtre_entete">Type</h1>
                         <span class="filtre_span" id="spanType">
-                            <div class="filtre_parent_label"><label class="check" for="filtre_cours">CM</label><input type="checkbox" id="filtre_cours" onclick="changeTypeFilter(event)" checked></div>
-                            <div class="filtre_parent_label"><label class="check" for="filtre_td">TD</label><input type="checkbox" id="filtre_td" onclick="changeTypeFilter(event)" checked></div>
-                            <div class="filtre_parent_label"><label class="check" for="filtre_tp">TP</label><input type="checkbox" id="filtre_tp" onclick="changeTypeFilter(event)" checked></div>
+                            <div class="filtre_parent_label"><label class="check" for="filtre_CM">CM</label><input type="checkbox" id="filtre_CM" onclick="changeTypeFilter(event)" checked></div>
+                            <div class="filtre_parent_label"><label class="check" for="filtre_TD">TD</label><input type="checkbox" id="filtre_TD" onclick="changeTypeFilter(event)" checked></div>
+                            <div class="filtre_parent_label"><label class="check" for="filtre_TP">TP</label><input type="checkbox" id="filtre_TP" onclick="changeTypeFilter(event)" checked></div>
                     </div>
                     <div class="filtre_parent" id="jours">
                         <h1 class="filtre_entete">Semaine</h1>
