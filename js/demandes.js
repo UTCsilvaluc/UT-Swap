@@ -581,37 +581,41 @@ function calculDecimal(nombre) {
     return heuresDebut + minutesDebut / 60;
 }
 function resetFilter(){
-    document.getElementById('filterContainer1').innerHTML = "<div class=\"filtre_parent\" id=\"police\">\n" +
-        "                        <h1 class=\"filtre_entete\">Trier par</h1>\n" +
+    document.getElementById('filterContainer1').innerHTML = "<div class=\"filtre_parent\" id=\"filter\">\n" +
+        "                        <span class=\"alignTrier\">\n" +
+        "                            <h1 class=\"filtre_entete\">Trier par</h1>\n" +
+        "                            <img id=\"trierDecroissant\" src=\"../svg/filter_decroissant.png\" alt=\"\" onclick=\"inverserOrdre()\">\n" +
+        "                        </span>\n" +
         "                        <span class=\"filtre_span\">\n" +
-        "                            <h3 class=\"checkElement\" onclick=\"changeFilter(event)\" id=\"mainFilter\">Pertinence</h3>\n" +
-        "                            <h3 class=\"uncheckElement\" onclick=\"changeFilter(event))\">Date</h3>\n" +
-        "                            <h3 class=\"uncheckElement\" onclick=\"changeFilter(event)\">Demande</h3>\n" +
-        "                            <h3 class=\"uncheckElement\" onclick=\"changeFilter(event)\">Auteur</h3>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"check\"  for=\"filtre_recent\" id=\"mainFilter\" >Récent</label><input type=\"radio\" name=\"filterBy\" id=\"filtre_recent\" onclick=\"changeFilter(event)\" checked></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"uncheck\" for=\"filtre_pertinence\">Pertinence</label><input type=\"radio\" name=\"filterBy\" id=\"filtre_pertinence\" onclick=\"changeFilter(event)\"></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"uncheck\" for=\"filtre_date\">Date</label><input type=\"radio\" name=\"filterBy\" id=\"filtre_date\" onclick=\"changeFilter(event)\"></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"uncheck\" for=\"filtre_demande\">Demande</label><input type=\"radio\" name=\"filterBy\" id=\"filtre_demande\" onclick=\"changeFilter(event)\"></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"uncheck\" for=\"filtre_auteur\">Auteur</label><input type=\"radio\" name=\"filterBy\" id=\"filtre_auteur\" onclick=\"changeFilter(event)\"></div>\n" +
         "                        </span>\n" +
         "                    </div>\n" +
         "                    <div class=\"filtre_parent\" id=\"jours\">\n" +
         "                        <h1 class=\"filtre_entete\">Jour</h1>\n" +
         "                        <span class=\"filtre_span\" id=\"spanJour\">\n" +
-        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Lundi</h3>\n" +
-        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Mardi</h3>\n" +
-        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Mercredi</h3>\n" +
-        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Jeudi</h3>\n" +
-        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Vendredi</h3>\n" +
-        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Samedi</h3>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"check\" for=\"filtre_lundi\">Lundi</label><input type=\"checkbox\" id=\"filtre_lundi\" onclick=\"changeJour(event)\" checked></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"check\" for=\"filtre_mardi\">Mardi</label><input type=\"checkbox\" id=\"filtre_mardi\" onclick=\"changeJour(event)\" checked></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"check\" for=\"filtre_mercredi\">Mercredi</label><input type=\"checkbox\" id=\"filtre_mercredi\" onclick=\"changeJour(event)\" checked></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"check\" for=\"filtre_jeudi\">Jeudi</label><input type=\"checkbox\" id=\"filtre_jeudi\" onclick=\"changeJour(event)\" checked></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"check\" for=\"filtre_vendredi\">Vendredi</label><input type=\"checkbox\" id=\"filtre_vendredi\" onclick=\"changeJour(event)\" checked></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"check\" for=\"filtre_samedi\">Samedi</label><input type=\"checkbox\" id=\"filtre_samedi\" onclick=\"changeJour(event)\" checked></div>\n" +
         "                    </div>\n" +
         "                    <div class=\"filtre_parent\" id=\"type\">\n" +
         "                        <h1 class=\"filtre_entete\">Type</h1>\n" +
         "                        <span class=\"filtre_span\" id=\"spanType\">\n" +
-        "                            <h3 class=\"checkType\" onclick=\"changeTypeFilter(event)\">Cours</h3>\n" +
-        "                            <h3 class=\"checkType\" onclick=\"changeTypeFilter(event)\">TD</h3>\n" +
-        "                            <h3 class=\"checkType\" onclick=\"changeTypeFilter(event)\">TP</h3>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"check\" for=\"filtre_CM\">CM</label><input type=\"checkbox\" id=\"filtre_CM\" onclick=\"changeTypeFilter(event)\" checked></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"check\" for=\"filtre_TD\">TD</label><input type=\"checkbox\" id=\"filtre_TD\" onclick=\"changeTypeFilter(event)\" checked></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"check\" for=\"filtre_TP\">TP</label><input type=\"checkbox\" id=\"filtre_TP\" onclick=\"changeTypeFilter(event)\" checked></div>\n" +
         "                    </div>\n" +
         "                    <div class=\"filtre_parent\" id=\"jours\">\n" +
         "                        <h1 class=\"filtre_entete\">Semaine</h1>\n" +
         "                        <span class=\"filtre_span\" id=\"spanSemaine\">\n" +
-        "                            <h3 id=\"semaine-sA\" class=\"checkSemaine\" onclick=\"changeSemaine(event)\">A</h3>\n" +
-        "                            <h3 id=\"semaine-sB\" class=\"checkSemaine\" onclick=\"changeSemaine(event)\">B</h3>\n" +
+        "                            <div class=\"filtre_parent_label\"><label id=\"semaine-sA\" class=\"check\"  for=\"filtre_sA\">Semaine A</label><input type=\"checkbox\" id=\"filtre_sA\" onclick=\"changeSemaine(event)\" checked></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label id=\"semaine-sB\" class=\"check\" for=\"filtre_sB\">Semaine B</label><input type=\"checkbox\" id=\"filtre_sB\"  onclick=\"changeSemaine(event)\" checked></div>\n" +
         "                    </div>\n" +
         "                    <div class=\"filtre_parent\" id=\"heures\">\n" +
         "                        <h1>Horaires</h1>\n" +
