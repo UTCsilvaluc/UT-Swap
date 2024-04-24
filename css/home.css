@@ -1,0 +1,45 @@
+main{
+    overflow-x: hidden;
+}
+svg{
+    overflow: hidden;
+    background:100% linear-gradient(0deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.6) 100%), no-repeat center bottom 70%/100% url("../img/bg_home.jpg");
+  }
+
+path{
+    fill: white;
+}
+
+#text_intro{
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+    position: fixed;
+    left: 10%;
+    top:20%;
+    width: 80%;
+    color: white;
+}
+
+#text_intro h1, #text_intro p{
+    margin: 0;
+    width: 500px;
+}
+
+#text_intro button{
+    width: 200px;
+    height:40px;
+    border-radius: 20px;
+    margin-top: 10px;
+    border: none;
+    color: white;
+    background-color: #2B3445;
+}
+
+#text_intro p{
+    margin: 0;
+}
+
+#treemap{
+    width: fit-content;
+}

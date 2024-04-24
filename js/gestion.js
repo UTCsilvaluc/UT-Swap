@@ -240,10 +240,10 @@ var swap_info_pannel = document.getElementById("swap_info_pannel");
 document.addEventListener("click" , function (event){
     if ((!(event.target.closest("#uv_pannel")) && (uv_pannel.style.display != "none")) || event.target.id == "uv_button_enregistrer") {
         uv_pannel.style.display = "none";
-        history.replaceState({}, document.title, window.location.pathname);
         if(getGetValue("codeUV") === null){
             checkboxChangementGlobal.checked = !checkboxChangementGlobal.checked;
         }
+        history.replaceState({}, document.title, window.location.pathname);
     }
 
     if (!(event.target.closest("#swap_info_pannel")) && swap_info_pannel != null && swap_info_pannel.style.display != "none") {

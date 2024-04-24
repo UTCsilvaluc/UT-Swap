@@ -7,7 +7,7 @@ session_start();
 function DBCredential(){
     $dbhost = 'localhost';
     $dbuser = 'root';
-    $dbpass = '';
+    $dbpass = 'root';
     $dbname = 'ut_swap';
     $connect = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to mysql');
     mysqli_set_charset($connect, 'utf8');
@@ -229,7 +229,7 @@ if (
     <img class="logo" src="../img/logo23.png">
     <nav>
         <ul id="menu_liste_grand">
-            <li><a href="#">Home</a></li>
+            <li><a href="home.php">Home</a></li>
             <li><a href="emploiDuTemps.php">Swap</a></li>
             <li><a href="demandes.php">Demandes</a></li>
             <li><a href="profil.php">Profil</a></li>
@@ -360,7 +360,7 @@ if (
 <div id="menu_pannel">
     <div>
         <ul>
-            <li><a href="#">Home</a></li>
+            <li><a href="home.php">Home</a></li>
             <li><a href="emploiDuTemps.php">Swap</a></li>
             <li><a href="demandes.php">Demandes</a></li>
             <li><a href="profil.php">Profil</a></li>

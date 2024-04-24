@@ -352,6 +352,7 @@ function redirect($url){
                             $demande= array(
                                 "idDemande" => $idDemande,
                                 "demandeur" => $demandeur,
+                                "codeUV" => $codeUV,
                                 "statut" => $statut
                             );
                             
