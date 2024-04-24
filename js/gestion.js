@@ -353,3 +353,41 @@ function mettreAJourContenuProfil() {
 
 window.addEventListener('resize', mettreAJourContenuProfil);
 mettreAJourContenuProfil();
+
+function canDisplayRequest() {
+    var divs_demande = document.getElementsByClassName("demande_professeur");
+    var UV = document.getElementById("choiceUV").value;
+    var type = document.getElementById("choiceType").value;
+    var fil = document.getElementById("choiceFil").value;
+    var display = true;
+
+    Array.from(divs_demande).forEach(function(div) {
+        var rowAttribute = div.dataset.row;
+        if (rowAttribute) {
+            try {
+                var donnees = JSON.parse(atob(rowAttribute));
+            } catch (error) {
+                console.error("Erreur lors du parsing JSON :", error);
+            }
+        } else {
+            console.error("Aucune donnée trouvée dans l'attribut data-row");
+        }
+        if (UV != "all"){
+            if (donnees.codeUV != UV){
+                display = false;
+            }
+        }
+        if (type != "all"){
+            if (donnees.type != type){
+                display = false;
+            }
+        }
+        if (fil != "all"){
+            if (donnees.fil1 != fil && donnees.fil2 != fil){
+                display = false;
+            }
+        }
+        div.style.display = display ? 'flex' : 'none';
+        display = true;
+    });
+}

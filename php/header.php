@@ -187,7 +187,7 @@ function sendNotifications($loginNotif, $idDemande, $demandeur, $type_notif, $st
     }
 }
 function getResponsableByUv($uv){
-    $responsableLogin = "antjouglet";
+    $responsableLogin = "antjougl";
     $responsableNom = "Jouglet";
     $responsablePrénom = "Antoine";
     $responsableMail = "antoine.jouglet@utc.fr";

@@ -23,9 +23,9 @@ function copierLien(element) {
         heureFin = matchResult[2];
     }
     // Créer le lien avec les informations
-    var lien = "../php/demandes.php?uv=" + encodeURIComponent(uvType.split(" - ")[0]) +
+    var lien = "../php/demandes.php?codeUV=" + encodeURIComponent(uvType.split(" - ")[0]) +
         "&type=" + encodeURIComponent(uvType.split(" - ")[1]) +
-        "&hDeb=" + encodeURIComponent(heureDebut) +
+        "&hDebut=" + encodeURIComponent(heureDebut) +
         "&hFin=" + encodeURIComponent(heureFin);
 
     // Créer un élément textarea temporaire pour copier le texte dans le presse-papiers
@@ -178,18 +178,31 @@ function researchUV(event){
     }
 }
 function changeFilter(event){
+    const params = new URLSearchParams(window.location.search);
+    var filter = "";
+
     if (document.getElementById("filtre_pertinence").checked){
+        filter = "pertinence";
         handlechangeFilter();
     } else if (document.getElementById("filtre_date").checked){
+        filter = "date";
         sortBySchedule();
     } else if (document.getElementById("filtre_demande").checked){
+        filter = "demande";
         sortByDemand();
     } else if (document.getElementById("filtre_auteur").checked) {
+        filter = "auteur";
         sortByAuthor();
     } else {
+        filter = "recent";
         sortByRecent();
     }
     afficherPage(currentPage);
+    if (params.has("filtre")){
+        params.delete("filtre");
+    }
+    params.append("filtre" , filter);
+    history.replaceState({}, '', window.location.pathname + '?' + params.toString());
 }
 async function handlechangeFilter(event) {
     const pointsType = {"TD":1 , "TP":0.5,"CM":0}
@@ -429,6 +442,7 @@ function canDisplayCours(div) {
     var typeActifs = []; // Initialiser une liste pour stocker les jours actifs
     var display = true;
 
+
 // Créer un objet pour stocker la correspondance entre les jours et les nombres
     var joursMap = {
         "Lundi": 1,
@@ -482,6 +496,7 @@ function canDisplayCours(div) {
     return display;
 }
 function canDisplayCourses(event) {
+    var params = new URLSearchParams();
     var divs_demande = document.getElementsByClassName("div_demande");
     var liste_jours = document.getElementById("jours").getElementsByClassName('check');
     var liste_type = document.getElementById("type").getElementsByClassName("check");
@@ -491,6 +506,12 @@ function canDisplayCourses(event) {
     var typeActifs = []; // Initialiser une liste pour stocker les jours actifs
     var display = true;
 
+
+    params.append('hDebut' , heureDebut);
+    params.append('hFin' , heureFin);
+
+    params.append("A" , document.getElementById("semaine-sA").className === "check");
+    params.append("B" , document.getElementById("semaine-sB").className === "check");
 // Créer un objet pour stocker la correspondance entre les jours et les nombres
     var joursMap = {
         "Lundi": 1,
@@ -504,13 +525,16 @@ function canDisplayCourses(event) {
         var jour = liste_jours[i].innerHTML.trim(); // Récupérer le contenu HTML de l'élément et supprimer les espaces
         joursActifs.push(joursMap[jour]);
     }
+    params.append('jour' , JSON.stringify(joursActifs));
     for (var i = 0; i < liste_type.length; i++) {
         var type = liste_type[i].innerHTML.trim(); // Récupérer le contenu HTML de l'élément et supprimer les espaces
         typeActifs.push(type);
     }
+    params.append('type' , JSON.stringify(typeActifs));
     // Créer un nouvel objet URLSearchParams avec la chaîne de requête de l'URL actuelle
-    var params = new URLSearchParams(window.location.search);
-    var codeUV = params.get('codeUV');
+    var currentParams = new URLSearchParams(window.location.search);
+    var codeUV = currentParams.get('codeUV');
+    if (codeUV != null) params.append('codeUV' , codeUV);
     Array.from(divs_demande).forEach(function(div) {
         // Faites quelque chose avec chaque élément div ici
         var rowAttribute = div.dataset.row;
@@ -523,7 +547,6 @@ function canDisplayCourses(event) {
         } else {
             console.error("Aucune donnée trouvée dans l'attribut data-row");
         }
-
         if (codeUV != null){
             if (donnees.codeUV.toLowerCase() != codeUV.toLowerCase()){
                 display = false;
@@ -540,14 +563,15 @@ function canDisplayCourses(event) {
         }
         if (donnees.semaine === "A" && document.getElementById("semaine-sA").className === "uncheck"){
             display = false;
+
         } else if (donnees.semaine === "B" && document.getElementById("semaine-sB").className === "uncheck"){
             display = false;
         }
         div.style.display = display ? 'flex' : 'none';
         display = true;
     });
+    history.replaceState({}, '', window.location.pathname + '?' + params.toString());
     afficherPage(currentPage);
-
 }
 function calculDecimal(nombre) {
     var heuresMinutesDebut = nombre.split('h');
@@ -557,37 +581,41 @@ function calculDecimal(nombre) {
     return heuresDebut + minutesDebut / 60;
 }
 function resetFilter(){
-    document.getElementById('filterContainer1').innerHTML = "<div class=\"filtre_parent\" id=\"police\">\n" +
-        "                        <h1 class=\"filtre_entete\">Trier par</h1>\n" +
+    document.getElementById('filterContainer1').innerHTML = "<div class=\"filtre_parent\" id=\"filter\">\n" +
+        "                        <span class=\"alignTrier\">\n" +
+        "                            <h1 class=\"filtre_entete\">Trier par</h1>\n" +
+        "                            <img id=\"trierDecroissant\" src=\"../svg/filter_decroissant.png\" alt=\"\" onclick=\"inverserOrdre()\">\n" +
+        "                        </span>\n" +
         "                        <span class=\"filtre_span\">\n" +
-        "                            <h3 class=\"checkElement\" onclick=\"changeFilter(event)\" id=\"mainFilter\">Pertinence</h3>\n" +
-        "                            <h3 class=\"uncheckElement\" onclick=\"changeFilter(event))\">Date</h3>\n" +
-        "                            <h3 class=\"uncheckElement\" onclick=\"changeFilter(event)\">Demande</h3>\n" +
-        "                            <h3 class=\"uncheckElement\" onclick=\"changeFilter(event)\">Auteur</h3>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"check\"  for=\"filtre_recent\" id=\"mainFilter\" >Récent</label><input type=\"radio\" name=\"filterBy\" id=\"filtre_recent\" onclick=\"changeFilter(event)\" checked></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"uncheck\" for=\"filtre_pertinence\">Pertinence</label><input type=\"radio\" name=\"filterBy\" id=\"filtre_pertinence\" onclick=\"changeFilter(event)\"></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"uncheck\" for=\"filtre_date\">Date</label><input type=\"radio\" name=\"filterBy\" id=\"filtre_date\" onclick=\"changeFilter(event)\"></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"uncheck\" for=\"filtre_demande\">Demande</label><input type=\"radio\" name=\"filterBy\" id=\"filtre_demande\" onclick=\"changeFilter(event)\"></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"uncheck\" for=\"filtre_auteur\">Auteur</label><input type=\"radio\" name=\"filterBy\" id=\"filtre_auteur\" onclick=\"changeFilter(event)\"></div>\n" +
         "                        </span>\n" +
         "                    </div>\n" +
         "                    <div class=\"filtre_parent\" id=\"jours\">\n" +
         "                        <h1 class=\"filtre_entete\">Jour</h1>\n" +
         "                        <span class=\"filtre_span\" id=\"spanJour\">\n" +
-        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Lundi</h3>\n" +
-        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Mardi</h3>\n" +
-        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Mercredi</h3>\n" +
-        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Jeudi</h3>\n" +
-        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Vendredi</h3>\n" +
-        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Samedi</h3>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"check\" for=\"filtre_lundi\">Lundi</label><input type=\"checkbox\" id=\"filtre_lundi\" onclick=\"changeJour(event)\" checked></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"check\" for=\"filtre_mardi\">Mardi</label><input type=\"checkbox\" id=\"filtre_mardi\" onclick=\"changeJour(event)\" checked></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"check\" for=\"filtre_mercredi\">Mercredi</label><input type=\"checkbox\" id=\"filtre_mercredi\" onclick=\"changeJour(event)\" checked></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"check\" for=\"filtre_jeudi\">Jeudi</label><input type=\"checkbox\" id=\"filtre_jeudi\" onclick=\"changeJour(event)\" checked></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"check\" for=\"filtre_vendredi\">Vendredi</label><input type=\"checkbox\" id=\"filtre_vendredi\" onclick=\"changeJour(event)\" checked></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"check\" for=\"filtre_samedi\">Samedi</label><input type=\"checkbox\" id=\"filtre_samedi\" onclick=\"changeJour(event)\" checked></div>\n" +
         "                    </div>\n" +
         "                    <div class=\"filtre_parent\" id=\"type\">\n" +
         "                        <h1 class=\"filtre_entete\">Type</h1>\n" +
         "                        <span class=\"filtre_span\" id=\"spanType\">\n" +
-        "                            <h3 class=\"checkType\" onclick=\"changeTypeFilter(event)\">Cours</h3>\n" +
-        "                            <h3 class=\"checkType\" onclick=\"changeTypeFilter(event)\">TD</h3>\n" +
-        "                            <h3 class=\"checkType\" onclick=\"changeTypeFilter(event)\">TP</h3>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"check\" for=\"filtre_CM\">CM</label><input type=\"checkbox\" id=\"filtre_CM\" onclick=\"changeTypeFilter(event)\" checked></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"check\" for=\"filtre_TD\">TD</label><input type=\"checkbox\" id=\"filtre_TD\" onclick=\"changeTypeFilter(event)\" checked></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label class=\"check\" for=\"filtre_TP\">TP</label><input type=\"checkbox\" id=\"filtre_TP\" onclick=\"changeTypeFilter(event)\" checked></div>\n" +
         "                    </div>\n" +
         "                    <div class=\"filtre_parent\" id=\"jours\">\n" +
         "                        <h1 class=\"filtre_entete\">Semaine</h1>\n" +
         "                        <span class=\"filtre_span\" id=\"spanSemaine\">\n" +
-        "                            <h3 id=\"semaine-sA\" class=\"checkSemaine\" onclick=\"changeSemaine(event)\">A</h3>\n" +
-        "                            <h3 id=\"semaine-sB\" class=\"checkSemaine\" onclick=\"changeSemaine(event)\">B</h3>\n" +
+        "                            <div class=\"filtre_parent_label\"><label id=\"semaine-sA\" class=\"check\"  for=\"filtre_sA\">Semaine A</label><input type=\"checkbox\" id=\"filtre_sA\" onclick=\"changeSemaine(event)\" checked></div>\n" +
+        "                            <div class=\"filtre_parent_label\"><label id=\"semaine-sB\" class=\"check\" for=\"filtre_sB\">Semaine B</label><input type=\"checkbox\" id=\"filtre_sB\"  onclick=\"changeSemaine(event)\" checked></div>\n" +
         "                    </div>\n" +
         "                    <div class=\"filtre_parent\" id=\"heures\">\n" +
         "                        <h1>Horaires</h1>\n" +
@@ -607,6 +635,7 @@ function resetFilter(){
     Array.from(divs_demande).forEach(function(div) {
         div.style.display = 'flex';
     });
+    window.history.replaceState({}, document.title, window.location.pathname);
 }
 
 function ouvrirBaseDeDonnees() {
@@ -712,15 +741,15 @@ function afficherPage(page) {
     if (totalPages <= 5) {
         startPage = 1; // Si le nombre total de pages est inférieur ou égal à 5, commencer à partir de la première page
     }
-    if (currentPage + 2 >= totalPages) {
+    else if (currentPage + 2 >= totalPages) {
         startPage = totalPages - 4; // Si le nombre total de pages est supérieur à 5 et si currentPage est suffisamment proche de la fin, ajuster startPage
     }
 
-    if (currentPage > 3 && totalPages > 5) {
+    else if (currentPage > 3 && totalPages > 5) {
         startPage = currentPage - 2; // Si le nombre total de pages est supérieur à 5 et si currentPage n'est pas trop proche du début, ajuster startPage pour centrer la page courante
     }
 
-    if (totalPages - startPage < 4) {
+    else if (totalPages - startPage < 4) {
         startPage = totalPages - 4; // Si le nombre total de pages est supérieur à 5 et si startPage est trop loin de la fin, l'ajuster pour garantir qu'il y ait au moins 5 pages affichées
     }
 
@@ -784,6 +813,7 @@ function getVisibleElementCount() {
 
 // Afficher la première page au chargement de la page
 window.addEventListener('load', () => {
+    appliquerFiltres();
     afficherPage(currentPage);
 });
 
@@ -792,3 +822,66 @@ window.addEventListener('resize', mettreAJourContenuProfil);
 
 // Appeler la fonction une fois au chargement de la page
 mettreAJourContenuProfil();
+
+//Appliquer les paramètres utilisateur des filtres
+function appliquerFiltres() {
+    var joursMap = {
+        "lundi": 1,
+        "mardi": 2,
+        "mercredi": 3,
+        "jeudi": 4,
+        "vendredi": 5,
+        "samedi": 6
+    };
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('jour')){
+        const jours = params.get('jour');
+        Array.from(document.querySelectorAll("#spanJour input")).forEach(labelJour => {
+            if (!(jours.includes(joursMap[labelJour.id.slice(7)]))){
+                labelJour.click();
+            }
+        });
+    }
+    if (params.has("type")){
+        const types = params.get('type');
+        Array.from(document.querySelectorAll("#spanType input")).forEach(labelType => {
+            if (!(types.includes(labelType.id.slice(7)))){
+                labelType.click();
+            }
+        });
+    }
+    if (params.has("hDebut")){
+        document.getElementById("filtre-input-hdebut").value = params.get("hDebut").replace("h",":");
+    }
+    if (params.has("hFin")){
+        document.getElementById("filtre-input-hfin").value = params.get("hFin").replace("h",":");
+    }
+
+    if (params.has("A")){
+        if (params.get("A") == 'false'){
+            document.getElementById("filtre_sA").click();
+        }
+    }
+    if (params.has("B")){
+        if (params.get("B") == 'false'){
+            document.getElementById("filtre_sB").click();
+        }
+    }
+
+    if (params.has("filtre")){
+        var filtre = params.get("filtre");
+        document.getElementById(`filtre_${filtre}`).click();
+
+    }
+
+}
+
+// Écouteur d'événements pour les changements de filtres
+document.addEventListener('change', function(event) {
+    const element = event.target;
+    if (element.classList.contains('filtre')) {
+        mettreAJourURL();
+        appliquerFiltres();
+    }
+});
+

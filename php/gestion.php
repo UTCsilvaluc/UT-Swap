@@ -231,7 +231,8 @@ function redirect($url){
                     <h1 id="profil_id"><?= getProfil(); ?></h1>
                     <div id="profil_uv_parent">
                         <h1>UV(s):
-                            <div id="profil_uv"><?php 
+                            <div id="profil_uv">
+                                <?php
                                 $connect = DBCredential();
                                 $sqlUvs = "SELECT codeUV FROM uv WHERE responsable = ?";
                                 $stmtUvs = $connect->prepare($sqlUvs);
@@ -275,6 +276,41 @@ function redirect($url){
         <div id="demandes_professeur_professeur" class="profil_pannel">
             <div id="demandes_professeur_header" class="profil_header">
                 <span class="demandes_profil_titre"><span class="tictac"></span><h1>Mes demandes</h1></span>
+                <div>
+                    <label for="choiceUV">UV:</label>
+                    <select id="choiceUV" onchange="canDisplayRequest()">
+                    <option value="all">Toutes mes UV(s)</option>
+                    <?php
+                    // Supposons que $result soit votre tableau de résultats de la requête SQL
+                    $connect = DBCredential();
+                    $sqlUvs = "SELECT codeUV FROM uv WHERE responsable = ?";
+                    $stmtUvs = $connect->prepare($sqlUvs);
+                    $stmtUvs->bind_param("s", $login);
+                    $stmtUvs->execute();
+                    $result = $stmtUvs->get_result();
+                    $stmtUvs->close();
+                    foreach ($result as $demande) {
+                        // Assignation des valeurs du tableau à des variables
+                        $UV = $demande['codeUV'];
+
+                        ?>
+                        <option value=<?php echo "$UV"; ?>><?php echo "$UV"; ?></option>
+                    <?php }?>
+                </select>
+                <label for="choiceType">Type:</label>
+                <select id="choiceType" onchange="canDisplayRequest()">
+                    <option value="all">Tout type</option>
+                    <option value="TP">TP</option>
+                    <option value="TD">TD</option>
+                    <option value="CM">CM</option>
+                </select>
+                <label for="choiceFil">Filière:</label>
+                <select id="choiceFil" onchange="canDisplayRequest()">
+                    <option value="all">Toute filière</option>
+                    <option value="BR">Branche</option>
+                    <option value="TC">Tronc Commun</option>
+                </select>
+                </div>
                 <div class="demandes_gestion_filtre">
                     <button onclick="choixProfesseurSwap(true, this)" id="button_accept_all" class="hidden"><img src="../svg/Vector_check_black.svg" alt="">Accepter</button>
                     <button onclick="choixProfesseurSwap(false, this)" id="button_decline_all" class="hidden"><img src="../svg/Vector_none_black.svg" alt="">Refuser</button>
@@ -352,8 +388,11 @@ function redirect($url){
                             $demande= array(
                                 "idDemande" => $idDemande,
                                 "demandeur" => $demandeur,
+                                "statut" => $statut,
                                 "codeUV" => $codeUV,
-                                "statut" => $statut
+                                "type" => $type,
+                                "fil1" => $branche1,
+                                "fil2" => $branche2
                             );
                             
                             $data_row = htmlspecialchars(base64_encode(json_encode($demande)), ENT_QUOTES , 'UTF-8');
