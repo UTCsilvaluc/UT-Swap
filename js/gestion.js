@@ -2,6 +2,7 @@ var isSelectionning = false;
 var button_selection = document.getElementById("button_selection");
 var button_accept_all = document.getElementById("button_accept_all");
 var button_decline_all = document.getElementById("button_decline_all");
+var icon_select = document.getElementById("icon_select");
 
 button_selection.addEventListener("click", function() {
     isSelectionning = !isSelectionning;
@@ -11,9 +12,30 @@ button_selection.addEventListener("click", function() {
     button_accept_all.classList.toggle('hidden' , !isSelectionning);
     button_decline_all.classList.toggle('hidden' , !isSelectionning);
     button_selection.classList.toggle('button_filtre_selected' , isSelectionning);
+    if(isSelectionning){
+        icon_select.innerHTML = "toggle_on";
+    }else{
+        icon_select.innerHTML = "toggle_off";
+    }
+    
 });
 
+function openFiltre(event){
+    var conteneurFiltre = document.getElementById("menuFiltre");
+    conteneurFiltre.style.display = "flex";
+}
 
+function closeFiltre(event){
+    var conteneurFiltre = document.getElementById("menuFiltre");
+    conteneurFiltre.style.display = "none";
+}
+
+document.addEventListener("click" , function (event) {
+    var largeurFenetre = window.innerWidth;
+    if (!(event.target.closest("#menuFiltre")) && document.getElementById("menuFiltre") != "none" && !(event.target.closest(".svgFiltre")) && largeurFenetre < 1200){
+        closeFiltre();
+    }
+});
 
 function gestionUv(codeUV){
     history.replaceState({}, document.title, window.location.pathname);
@@ -344,6 +366,14 @@ function mettreAJourContenuProfil() {
         }
     });
 
+    if(largeurFenetre <= 900){
+        button_accept_all.innerHTML = '<img src="../svg/Vector_check_black.svg" alt="">';
+        button_decline_all.innerHTML = '<img src="../svg/Vector_none_black.svg" alt="">';
+    }else{
+        button_accept_all.innerHTML = '<img src="../svg/Vector_check_black.svg" alt="">Accepter';
+        button_decline_all.innerHTML = '<img src="../svg/Vector_none_black.svg" alt="">Refuser';
+    }
+    
     if(largeurFenetre <= 800){
         choix_uv_label.innerHTML = "Autoriser changements UV(s)";
     }else{

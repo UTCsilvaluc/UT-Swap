@@ -64,6 +64,10 @@ main{
     width: unset;
 }
 
+#filterContainer1 #heures .filtre_span{
+    gap:10px;
+}
+
 #filterContainer1 .filtre_entete{
     font-size: 24px;
 }
@@ -106,8 +110,13 @@ main{
     display: flex;
     flex-direction: column;
     background-color: #fff;
-    gap: 5px;
+    gap: 10px;
     align-items: center;
+}
+
+.demande_background_container{
+    background-color: white;
+    width: 100%;
 }
 
 main{
@@ -146,6 +155,7 @@ main > hr{
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
     width: calc(280px + var(--taille-demande));
     height: 50px;
     margin-top: 25px;
@@ -240,14 +250,9 @@ main > hr{
 #trierDecroissant{
     width: 30px;
     height: 30px;
-    transition: scale 0.3s linear;
-
+    margin-right: 5px;
 }
-#trierDecroissant:hover{
-    scale: 110%;
-    cursor: pointer;
 
-}
 .alignTrier{
     display: flex;
     width: 100%;
@@ -270,12 +275,24 @@ main > hr{
     display: flex;
     flex-direction: row;
 }
-.svgPage i{
-    border: 1px black outset;
+.svgPage span:not(#pageList){
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px #363232 solid;
+    background-color: #363232;
+    color: white;
     border-radius: 1px;
-    padding: 8px;
+    border-radius: 3px;
+    height: 35px;
+    width: 30px;
     margin: 2px;
     transition: scale 0.3s linear;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'wght' 300
 }
 
 .svgPage i:hover{
@@ -293,9 +310,14 @@ main > hr{
     color: white;
 }
 .pageClick{
-    border: 1px black outset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px #363232 solid;
+    height: 35px;
+    width: 30px;
     margin: 5px 2px;
-    padding: 10px 10px;
+    border-radius: 3px;
     font-family: "Droid Sans", sans-serif;
     font-size: 70%;
     font-style: oblique;
@@ -333,6 +355,10 @@ main > hr{
     transition: background-color 0s linear;
 }
 
+.svgFiltre{
+    display: none;
+}
+
 @media screen and (max-width: 1200px) {
 
     main{
@@ -343,11 +369,16 @@ main > hr{
         height: calc(100vh - var(--taille-header));
     }
 
+    .svgFiltre{
+        display: block;
+    }
+
     main > hr{
         display: none;
     }
-     .demandes_filtre_parent{
+    .demandes_filtre_parent{
         width: var(--taille-demande);
+        margin-top: 0px;
     }
 
     .demandesControl{
@@ -466,7 +497,16 @@ main > hr{
     }
 
     #demande_container1{
-        height: calc(85vh - var(--taille-header));
+        height: 100%;
+        padding: 0;
+        padding-right: 10px;
+        margin-top: 0;
+    }
+
+    .demande_background_container{
+        border-radius: 5px;
+        padding: 10px;
+        height: calc(80vh - var(--taille-header));
         background-color: #f7f7f7;
     }
     
@@ -510,11 +550,21 @@ main > hr{
     }
 
     .main_conteneur{
-        height: calc(100vh - var(--taille-header));
+        height: calc(100vh - 55px - var(--taille-header));
     }
-    
+
     #demande_container1{
+        border-top: none;
+        padding: 0px 10px;
+        margin-top: 5px;
+    }
+
+    .demande_background_container{
+        padding: 5px 10px;
+        border-top: 1px solid lightgrey;
+        box-sizing: border-box;
         background-color: white;
+        height: calc(100vh - 55px - var(--taille-header) - 49px);;
     }
 
     #menuFiltre{

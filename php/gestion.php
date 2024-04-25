@@ -12,7 +12,9 @@ function redirect($url){
     <link rel="stylesheet" href="../css/profil.css">
     <link rel="stylesheet" href="../css/gestion.css">
     <link rel="stylesheet" href="../css/demande_content.css">
+    <link rel="stylesheet" href="../css/filtre.css">
     <link rel="stylesheet" href="../css/mid_pannel.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <title>Gestion - UT'Swap</title>
     <link rel="icon" href="../img/logo.png" type="image/x-icon">
 </head>
@@ -217,11 +219,68 @@ function redirect($url){
         <?php
     }
     ?>
+    <div class="filtres" id="menuFiltre">
+        <div class="filtre_titre">
+            <h1>Filtrer par</h1>
+            <div id="filtre_croix">
+                <img src="../svg/black_cross.svg" alt="" id="CloseOpenFiltreMenu" onclick="closeFiltre(event)">
+            </div>
+        </div>
+        <div class="conteneur_filtre" id="filterContainer1">
+            <div class="filtre_parent" id="filter">
+                <h1 class="filtre_entete">UV</h1>
+                <span class="filtre_span">
+                    <select id="choiceUV" onchange="canDisplayRequest()">
+                        <option value="all">Toutes mes UV(s)</option>
+                        <?php
+                        // Supposons que $result soit votre tableau de résultats de la requête SQL
+                        $connect = DBCredential();
+                        $sqlUvs = "SELECT codeUV FROM uv WHERE responsable = ?";
+                        $stmtUvs = $connect->prepare($sqlUvs);
+                        $stmtUvs->bind_param("s", $login);
+                        $stmtUvs->execute();
+                        $result = $stmtUvs->get_result();
+                        $stmtUvs->close();
+                        foreach ($result as $demande) {
+                            // Assignation des valeurs du tableau à des variables
+                            $UV = $demande['codeUV'];
+
+                            ?>
+                            <option value=<?php echo "$UV"; ?>><?php echo "$UV"; ?></option>
+                        <?php } ?>
+                    </select>
+                </span>
+            </div>
+            <div class="filtre_parent" id="jours">
+                <h1 class="filtre_entete">Type</h1>
+                <span class="filtre_span" id="spanJour">
+                    <select id="choiceType" onchange="canDisplayRequest()">
+                        <option value="all">Tout type</option>
+                        <option value="TP">TP</option>
+                        <option value="TD">TD</option>
+                        <option value="CM">CM</option>
+                    </select>
+                </span>
+            </div>
+            <div class="filtre_parent" id="type">
+                <h1 class="filtre_entete">Branche</h1>
+                <span class="filtre_span" id="spanType">
+                    <select id="choiceFil" onchange="canDisplayRequest()">
+                        <option value="all">Toute filière</option>
+                        <option value="BR">Branche</option>
+                        <option value="TC">Tronc Commun</option>
+                    </select>
+                </span>
+            </div>
+        </div>
+    </div>
     <main>
         <div class="arc-de-cercle"></div>
         <img src="../svg/profil.svg" id="profil_image">
         <div id="fond_profil_image"></div>
+        
         <div id="profil_utilisateur" class="profil_pannel">
+            
             <div class="profil_header">
                 <span class="profil_titre"><span class="tictac"></span><h1>Mon profil</h1></span>
                 <button>Se déconnecter</button>
@@ -276,45 +335,12 @@ function redirect($url){
         <div id="demandes_professeur_professeur" class="profil_pannel">
             <div id="demandes_professeur_header" class="profil_header">
                 <span class="demandes_profil_titre"><span class="tictac"></span><h1>Mes demandes</h1></span>
-                <div>
-                    <label for="choiceUV">UV:</label>
-                    <select id="choiceUV" onchange="canDisplayRequest()">
-                    <option value="all">Toutes mes UV(s)</option>
-                    <?php
-                    // Supposons que $result soit votre tableau de résultats de la requête SQL
-                    $connect = DBCredential();
-                    $sqlUvs = "SELECT codeUV FROM uv WHERE responsable = ?";
-                    $stmtUvs = $connect->prepare($sqlUvs);
-                    $stmtUvs->bind_param("s", $login);
-                    $stmtUvs->execute();
-                    $result = $stmtUvs->get_result();
-                    $stmtUvs->close();
-                    foreach ($result as $demande) {
-                        // Assignation des valeurs du tableau à des variables
-                        $UV = $demande['codeUV'];
 
-                        ?>
-                        <option value=<?php echo "$UV"; ?>><?php echo "$UV"; ?></option>
-                    <?php }?>
-                </select>
-                <label for="choiceType">Type:</label>
-                <select id="choiceType" onchange="canDisplayRequest()">
-                    <option value="all">Tout type</option>
-                    <option value="TP">TP</option>
-                    <option value="TD">TD</option>
-                    <option value="CM">CM</option>
-                </select>
-                <label for="choiceFil">Filière:</label>
-                <select id="choiceFil" onchange="canDisplayRequest()">
-                    <option value="all">Toute filière</option>
-                    <option value="BR">Branche</option>
-                    <option value="TC">Tronc Commun</option>
-                </select>
-                </div>
                 <div class="demandes_gestion_filtre">
+                    <img class="svgFiltre" title="Filtrer les demandes" src="../svg/FILTRE_FILTRE.svg" onclick="openFiltre(event)">
                     <button onclick="choixProfesseurSwap(true, this)" id="button_accept_all" class="hidden"><img src="../svg/Vector_check_black.svg" alt="">Accepter</button>
                     <button onclick="choixProfesseurSwap(false, this)" id="button_decline_all" class="hidden"><img src="../svg/Vector_none_black.svg" alt="">Refuser</button>
-                    <button id="button_selection">Selectionner</button>
+                    <button id="button_selection"><span class="material-symbols-outlined" id="icon_select">toggle_off</span>Selectionner</button>
                 </div>
             </div>
             <div id="demandes_professeur_content">
@@ -481,7 +507,6 @@ function redirect($url){
                 </div>
             </div>
         </div>
-        
     </main>
     <?php
         if (

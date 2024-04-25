@@ -408,7 +408,7 @@ function changeJour(event){
 
 document.addEventListener("click" , function (event) {
     var largeurFenetre = window.innerWidth;
-    if (!(event.target.closest("#menuFiltre")) && document.getElementById("menuFiltre") != "none" && !(event.target.closest("#svg_filtre_parent")) && largeurFenetre < 1200){
+    if (!(event.target.closest("#menuFiltre")) && document.getElementById("menuFiltre") != "none" && !(event.target.closest(".svgFiltre")) && largeurFenetre < 1200){
         closeFiltre();
     }
 });
@@ -706,7 +706,7 @@ function calculateNumberOfElements(viewportHeight, headerHeight) {
     var availableHeight = viewportHeight - headerPixels;
 
     // Diviser la hauteur disponible par la hauteur d'un élément individuel (68px)
-    var numberOfElements = Math.floor(availableHeight / 68);
+    var numberOfElements = Math.floor(availableHeight / 60);
 
     return numberOfElements;
 }

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/emploiDuTemps.css">
+    <link rel="stylesheet" href="../css/filtre.css">
     <link rel="stylesheet" href="../css/mid_pannel.css">
     <title>Header avec Notification</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
