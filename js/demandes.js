@@ -18,19 +18,25 @@ function copierLien(element) {
     var heureFin;
     // Vérifier si des correspondances ont été trouvées
     if (matchResult) {
-
         heureDebut = matchResult[1];
         heureFin = matchResult[2];
     }
-    // Créer le lien avec les informations
-    var lien = "../php/demandes.php?codeUV=" + encodeURIComponent(uvType.split(" - ")[0]) +
-        "&type=" + encodeURIComponent(uvType.split(" - ")[1]) +
-        "&hDebut=" + encodeURIComponent(heureDebut) +
-        "&hFin=" + encodeURIComponent(heureFin);
+
+    // Récupérer les paramètres GET actuels de l'URL
+    var urlParams = new URLSearchParams(window.location.search);
+
+    // Ajouter les nouveaux paramètres
+    urlParams.set('codeUV', encodeURIComponent(uvType.split(" - ")[0]));
+    urlParams.set('type', encodeURIComponent(uvType.split(" - ")[1]));
+    urlParams.set('hDebut', encodeURIComponent(heureDebut));
+    urlParams.set('hFin', encodeURIComponent(heureFin));
+
+    // Reconstruire l'URL avec les nouveaux paramètres
+    var lien = "?" + urlParams.toString();
 
     // Créer un élément textarea temporaire pour copier le texte dans le presse-papiers
     var textarea = document.createElement('textarea');
-    textarea.value = lien;
+    textarea.value = window.location.origin + window.location.pathname + lien;
     document.body.appendChild(textarea);
     textarea.select();
     document.execCommand('copy');
@@ -40,6 +46,7 @@ function copierLien(element) {
     alert("Le lien a été copié dans le presse-papiers !");
     event.stopPropagation();
 }
+
 
 function clickDemande(element) {
 
@@ -530,6 +537,7 @@ function canDisplayCourses(event) {
         var type = liste_type[i].innerHTML.trim(); // Récupérer le contenu HTML de l'élément et supprimer les espaces
         typeActifs.push(type);
     }
+    console.log(JSON.stringify(typeActifs));
     params.append('type' , JSON.stringify(typeActifs));
     // Créer un nouvel objet URLSearchParams avec la chaîne de requête de l'URL actuelle
     var currentParams = new URLSearchParams(window.location.search);
@@ -581,7 +589,7 @@ function calculDecimal(nombre) {
     return heuresDebut + minutesDebut / 60;
 }
 function resetFilter(){
-    document.getElementById('filterContainer1').innerHTML = "<div class=\"filtre_parent\" id=\"filter\">\n" +
+    document.getElementById('filterContainer1').innerHTML = "                    <div class=\"filtre_parent\" id=\"filter\">\n" +
         "                        <span class=\"alignTrier\">\n" +
         "                            <h1 class=\"filtre_entete\">Trier par</h1>\n" +
         "                            <img id=\"trierDecroissant\" src=\"../svg/filter_decroissant.png\" alt=\"\" onclick=\"inverserOrdre()\">\n" +
@@ -630,12 +638,14 @@ function resetFilter(){
         "                    </div>\n" +
         "                    <div class=\"buttonFiltres\">\n" +
         "                        <button class=\"filtreButton\" id=\"appliquerFiltre\" onclick=\"resetFilter(event)\">Supprimer les filtres</button>\n" +
-        "                    </div>";
+        "                    </div>\n" +
+        "                </div>";
     var divs_demande = document.getElementsByClassName("div_demande");
     Array.from(divs_demande).forEach(function(div) {
         div.style.display = 'flex';
     });
     window.history.replaceState({}, document.title, window.location.pathname);
+    afficherPage(currentPage);
 }
 
 function ouvrirBaseDeDonnees() {
@@ -844,7 +854,9 @@ function appliquerFiltres() {
     }
     if (params.has("type")){
         const types = params.get('type');
+        console.log(types);
         Array.from(document.querySelectorAll("#spanType input")).forEach(labelType => {
+            console.log(labelType.id.slice(7));
             if (!(types.includes(labelType.id.slice(7)))){
                 labelType.click();
             }
@@ -880,7 +892,6 @@ function appliquerFiltres() {
 document.addEventListener('change', function(event) {
     const element = event.target;
     if (element.classList.contains('filtre')) {
-        mettreAJourURL();
         appliquerFiltres();
     }
 });
