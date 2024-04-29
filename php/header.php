@@ -130,7 +130,7 @@ function nombreEnJour($chiffre){
 function sendNotifications($loginNotif, $idDemande, $demandeur, $type_notif, $statut, $connect){
     
     date_default_timezone_set('Europe/Paris');
-    $sqlInsertNotif = "INSERT INTO notifications (loginEtu, typeNotif, idDemande, demandeur, contenuNotif, date, viewed) VALUES (?, ?, ?, ?, ?, NOW(), 0)";
+    $sqlInsertNotif = "INSERT INTO notifications (login, typeNotif, idDemande, demandeur, contenuNotif, date, viewed) VALUES (?, ?, ?, ?, ?, NOW(), 0)";
     $stmtInsertNotif = $connect->prepare($sqlInsertNotif);
     $sqlSelectDemande1 = "SELECT d.codeUV, d.type, d.jour, d.horaireDebut, d.horaireFin, d.semaine, p.nom, p.prenom FROM demande d JOIN etudiant e ON e.login = d.login JOIN personne p ON p.login = e.login WHERE d.idDemande = ?";
     $stmtSelectDemande1 = $connect->prepare($sqlSelectDemande1);
@@ -173,10 +173,12 @@ function sendNotifications($loginNotif, $idDemande, $demandeur, $type_notif, $st
         $contenu_notif = $personne1." a retourné sa veste.;La demande de swap du ".$type2.$semaine2." de ".$codeUV2." pour ".nombreEnJour($jour2)." ".date("H\hi", strtotime($horaireDebut2))."-".date("H\hi", strtotime($horaireFin2))." a été annulée;";
     } else if ($type_notif === 5){
         $contenu_notif = "Votre demande pour l'UV $codeUV2 de type $type1 a été annulée par " . $personne2 . " suite à un changement de son horaire...";
+    } else if ($type_notif === 6){
+        $contenu_notif = "Vous avez reçu un nouveau swap.;".$personne1." et ".$personne2." se sont mis d'accord pour échanger leur ".$type1." de ".$codeUV1."";
     }
 
     // si il la notif n'a pas été envoyé alors le faire
-    $sqlCheckNotif = "SELECT * FROM notifications WHERE loginEtu = ? AND typeNotif=? AND idDemande=? AND demandeur=? AND contenuNotif=?";
+    $sqlCheckNotif = "SELECT * FROM notifications WHERE login = ? AND typeNotif=? AND idDemande=? AND demandeur=? AND contenuNotif=?";
     $stmtCheckNotif = $connect->prepare($sqlCheckNotif);
     $stmtCheckNotif->bind_param("sssss", $loginNotif, $type_notif, $idDemande, $demandeur,$contenu_notif);
     $stmtCheckNotif->execute();
@@ -197,7 +199,7 @@ function getResponsableByUv($uv){
 if (isset($_POST['view'])){
     $view = validateInput($_POST['view'],$connect);
     if($view === "1"){
-        $sqlUpdateSwap = "UPDATE notifications SET viewed = 1 WHERE loginEtu = ? AND typeNotif != 1";
+        $sqlUpdateSwap = "UPDATE notifications SET viewed = 1 WHERE login = ? AND typeNotif != 1";
         $stmtUpdateSwap = $connect->prepare($sqlUpdateSwap);
         $stmtUpdateSwap->bind_param("s", $login);
         $stmtUpdateSwap->execute();
@@ -237,12 +239,12 @@ if (
             <li onclick="notificationClick()"><img class="notification" src="../svg/notif.svg">
                 <?php
                 $connect = DBCredential();
-                $sql = "SELECT * FROM notifications WHERE viewed = 0 AND loginEtu = ? AND typeNotif='1'";
+                $sql = "SELECT * FROM notifications WHERE viewed = 0 AND login = ? AND typeNotif='1'";
                 $stmt = $connect->prepare($sql);
                 $stmt->bind_param("s", $login);
                 $stmt->execute();
                 $resultat = $stmt->get_result();
-                $sql2 = "SELECT * FROM notifications WHERE viewed = 0 AND loginEtu = ? AND typeNotif='2';";
+                $sql2 = "SELECT * FROM notifications WHERE viewed = 0 AND login = ? AND typeNotif='2';";
                 $stmt2 = $connect->prepare($sql2);
                 $stmt2->bind_param("s", $login);
                 $stmt2->execute();
@@ -265,12 +267,12 @@ if (
             <li onclick="notificationClick()"><img class="notification" src="../svg/notif.svg">
                 <?php
                 $connect = DBCredential();
-                $sql1 = "SELECT * FROM notifications WHERE viewed = 0 AND loginEtu = ? AND typeNotif='1'";
+                $sql1 = "SELECT * FROM notifications WHERE viewed = 0 AND login = ? AND typeNotif='1'";
                 $stmt1 = $connect->prepare($sql1);
                 $stmt1->bind_param("s", $login);
                 $stmt1->execute();
                 $result = $stmt1->get_result();
-                $sql12 = "SELECT * FROM notifications WHERE viewed = 0 AND loginEtu = ? AND typeNotif='2';";
+                $sql12 = "SELECT * FROM notifications WHERE viewed = 0 AND login = ? AND typeNotif='2';";
                 $stmt12 = $connect->prepare($sql12);
                 $stmt12->bind_param("s", $login);
                 $stmt12->execute();
@@ -300,7 +302,7 @@ if (
     <div id="endroit_notification">
         <?php
         $connect = DBCredential();
-        $sqlSelectNotif = "SELECT idNotif, typeNotif, contenuNotif, idDemande, demandeur, date, viewed FROM notifications WHERE loginEtu=? ORDER BY date DESC;";
+        $sqlSelectNotif = "SELECT idNotif, typeNotif, contenuNotif, idDemande, demandeur, date, viewed FROM notifications WHERE login=? ORDER BY date DESC;";
         $stmtSelectNotif = $connect->prepare($sqlSelectNotif);
         $stmtSelectNotif->bind_param("s", $login);
         $stmtSelectNotif->execute();

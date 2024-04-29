@@ -332,16 +332,20 @@ function redirect($url){
                 </div>
             </div>
         </div>
-        <div id="demandes_professeur_professeur" class="profil_pannel">
+        <div id="demandes_professeur_parent" class="profil_pannel">
             <div id="demandes_professeur_header" class="profil_header">
                 <span class="demandes_profil_titre"><span class="tictac"></span><h1>Mes demandes</h1></span>
-
-                <div class="demandes_gestion_filtre">
+                <div id="demandes_professeur_bouton" class="demandes_gestion_filtre">
                     <img class="svgFiltre" title="Filtrer les demandes" src="../svg/FILTRE_FILTRE.svg" onclick="openFiltre(event)">
-                    <button onclick="choixProfesseurSwap(true, this)" id="button_accept_all" class="hidden"><img src="../svg/Vector_check_black.svg" alt="">Accepter</button>
-                    <button onclick="choixProfesseurSwap(false, this)" id="button_decline_all" class="hidden"><img src="../svg/Vector_none_black.svg" alt="">Refuser</button>
-                    <button id="button_selection"><span class="material-symbols-outlined" id="icon_select">toggle_off</span>Selectionner</button>
+                    <div id="demandes_professeur_bouton_selection">
+                        <div>
+                            <button onclick="choixProfesseurSwap(true, this)" id="button_accept_all" class="hidden"><img src="../svg/Vector_check_black.svg" alt="">Accepter</button>
+                            <button onclick="choixProfesseurSwap(false, this)" id="button_decline_all" class="hidden"><img src="../svg/Vector_none_black.svg" alt="">Refuser</button>
+                        </div>
+                        <button id="button_selection"><span class="material-symbols-outlined" id="icon_select">toggle_off</span>Selectionner</button>
+                    </div>
                 </div>
+                
             </div>
             <div id="demandes_professeur_content">
                 <div id="demandes_professeur" class="demandes_profil">

@@ -324,8 +324,10 @@ if(getGetValue("codeUV")){
     var uv_refus = document.getElementById("uv_demande_refus").querySelector("h2");
 }
 var choix_uv_label = document.getElementById("profil_choix_uv_parent").querySelector("label");
-
+var boutonContainer = document.getElementById("demandes_professeur_bouton");
+var contenuContainer = document.getElementById("demandes_professeur_content");
 var demandeProfesseurs = document.querySelectorAll('.demande_professeur');
+
 function mettreAJourContenuProfil() {
     var largeurFenetre = window.innerWidth;
     if(getGetValue("codeUV")){
@@ -378,6 +380,14 @@ function mettreAJourContenuProfil() {
         choix_uv_label.innerHTML = "Autoriser changements UV(s)";
     }else{
         choix_uv_label.innerHTML = "Autoriser les changements de groupe au sein de mes UV(s)";
+    }
+
+
+    if (largeurFenetre <= 600) {
+        contenuContainer.parentNode.insertBefore(boutonContainer, contenuContainer.nextSibling);
+    } else {
+        var parent = document.getElementById("demandes_professeur_header");
+        parent.insertBefore(boutonContainer, parent.children[1]); 
     }
 }
 

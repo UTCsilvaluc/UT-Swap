@@ -88,12 +88,12 @@ function updateSwapInsertNotif($choix, $demandeur, $idDemande, $id_notif, $login
     $horaireFin = $informationDemande["horaireFin"];
     $semaine = $informationDemande["semaine"];
 
-    $sqlCheckSwap = "SELECT d.login, n.demandeur FROM notifications n JOIN demande d ON d.idDemande=n.demandeur WHERE n.idDemande = ? AND n.demandeur = ? AND n.idNotif = ?";
+    $sqlCheckSwap = "SELECT d.login, n.demandeur, u.responsable FROM notifications n JOIN demande d ON d.idDemande=n.demandeur JOIN uv u ON u.codeUV = d.codeUV WHERE n.idDemande = ? AND n.demandeur = ? AND n.idNotif = ?";
     $stmtCheckSwap = $connect->prepare($sqlCheckSwap);
     $stmtCheckSwap->bind_param("sss", $idDemande, $demandeur, $idNotif);
     $stmtCheckSwap->execute();
     $stmtCheckSwap->store_result();
-    $stmtCheckSwap->bind_result($loginPersonne, $demandeur);
+    $stmtCheckSwap->bind_result($loginPersonne, $demandeur, $loginResponsable);
     $stmtCheckSwap->fetch();
 
     if($choix === "0"){
@@ -122,6 +122,7 @@ function updateSwapInsertNotif($choix, $demandeur, $idDemande, $id_notif, $login
         $stmtUpdateSwapAccept->execute();
 
         sendNotifications($loginPersonne, $idDemande, $demandeur, 2, $choix+1, $connect);
+        sendNotifications($loginResponsable, $idDemande, $demandeur, 6, null, $connect);
 
         $informationLogin = getInformationLogin($connect, $loginPersonne);
         $nom = $informationLogin["nom"];
