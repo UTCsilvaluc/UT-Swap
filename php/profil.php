@@ -171,7 +171,7 @@
                             }else if($statut == 1){
                                 $statutClass = "demande_faite_button_refus";
                                 $statutName = "Refusée";
-                            }else if($statut == 2){
+                            }else if($statut = 2){
                                 $statutClass = "demande_faite_button_accept";
                                 $statutName = "Acceptée";
                             }

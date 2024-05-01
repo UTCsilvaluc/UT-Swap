@@ -3,7 +3,6 @@ include "../utils/db_functions.php";
 include "../utils/header_utils.php";
 include "../utils/utils.php";
 session_start();
-
 function DBCredential(){
     $dbhost = 'localhost';
     $dbuser = 'root';
@@ -61,7 +60,6 @@ if(isset($_SESSION["login"]) && !empty($_SESSION['login'])){
     exit;
 }
 if(strpos($current_uri, "profil.php")){
-    echo "<script>console.log('lol')</script>";
     $sqlSelectProf = "SELECT * FROM professeur WHERE login = ?";
     $stmtSelectProf = $connect->prepare($sqlSelectProf);
     $stmtSelectProf->bind_param("s", $login);
@@ -127,67 +125,23 @@ function nombreEnJour($chiffre){
         return null;
     }
 }
-function sendNotifications($loginNotif, $idDemande, $demandeur, $type_notif, $statut, $connect){
-    
+function sendNotifications($loginNotif, $idDemande, $demandeur, $type_notif, $choix, $connect){
+
     date_default_timezone_set('Europe/Paris');
-    $sqlInsertNotif = "INSERT INTO notifications (login, typeNotif, idDemande, demandeur, contenuNotif, date, viewed) VALUES (?, ?, ?, ?, ?, NOW(), 0)";
-    $stmtInsertNotif = $connect->prepare($sqlInsertNotif);
-    $sqlSelectDemande1 = "SELECT d.codeUV, d.type, d.jour, d.horaireDebut, d.horaireFin, d.semaine, p.nom, p.prenom FROM demande d JOIN etudiant e ON e.login = d.login JOIN personne p ON p.login = e.login WHERE d.idDemande = ?";
-    $stmtSelectDemande1 = $connect->prepare($sqlSelectDemande1);
-    $stmtSelectDemande1->bind_param("s", $demandeur);
-    $stmtSelectDemande1->execute();
-    $stmtSelectDemande1->store_result();
-    $stmtSelectDemande1->bind_result($codeUV1, $type1, $jour1, $horaireDebut1, $horaireFin1, $semaine1, $nom1, $prenom1);
-    $stmtSelectDemande1->fetch();
-    $personne1= ucfirst($prenom1)." ".ucfirst($nom1);
-
-    $sqlSelectDemande2 = "SELECT d.codeUV, d.type, d.jour, d.horaireDebut, d.horaireFin, d.semaine, p.nom, p.prenom FROM demande d JOIN personne p ON p.login = d.login WHERE d.idDemande = ?";
-    $stmtSelectDemande2 = $connect->prepare($sqlSelectDemande2);
-    $stmtSelectDemande2->bind_param("s", $idDemande);
-    $stmtSelectDemande2->execute();
-    $stmtSelectDemande2->store_result();
-    $stmtSelectDemande2->bind_result($codeUV2, $type2, $jour2, $horaireDebut2, $horaireFin2, $semaine2, $nom2, $prenom2);
-    $stmtSelectDemande2->fetch();
-    $personne2= ucfirst($prenom2)." ".ucfirst($nom2);
-
-    if($semaine1 !== "null"){
-        $semaine1 = " en semaine ".$semaine1;
-    }else{
-        $semaine1 = null;
-    }
-    if($type_notif === 1){
-        $contenu_notif = "Vous avez une nouvelle demande de Swap !;".$personne1." serait intéréssé pour un Swap du ".$type1."".$semaine1." de ".$codeUV1." contre ".nombreEnJour($jour1)." de ".date("H\hi", strtotime($horaireDebut1))." à ".date("H\hi", strtotime($horaireFin1)).".";
-    }else if($type_notif === 2){
-        if($statut === 1){
-            $contenu_notif = "Votre demande de Swap a été refusée.;".$personne2." a refusé la demande de Swap du ".$type2."".$semaine1." de ".$codeUV2." le ".nombreEnJour($jour2)." de ".date("H\hi", strtotime($horaireDebut2))." à ".date("H\hi", strtotime($horaireFin2)).".";
-        }else if($statut === 2){
-            $contenu_notif = "Votre demande de Swap a été acceptée.;".$personne2." a accepté la demande de Swap du ".$type2."".$semaine1." de ".$codeUV2." le ".nombreEnJour($jour2)." de ".date("H\hi", strtotime($horaireDebut2))." à ".date("H\hi", strtotime($horaireFin2)).".";
-        }else if($statut === 3){
-            $contenu_notif = "Votre demande de Swap a été rejetée par le reponsable de l'UV.; Le responsable de l'UV a rejeté la demande de Swap du ".$type2." ".$semaine2." de ".$codeUV2.".";
-        }else if($statut === 4){
-            $contenu_notif = "Votre demande de Swap a été approuvée par le reponsable de l'UV.; Le responsable de l'UV a approuvé la demande de Swap du ".$type2." ".$semaine2." de ".$codeUV2.".";
-        }
-    }else if($type_notif === 3){
-        $contenu_notif = "Une nouvelle demande a été postée !"; //à continuer
-    }else if($type_notif === 4){
-        $contenu_notif = $personne1." a retourné sa veste.;La demande de swap du ".$type2.$semaine2." de ".$codeUV2." pour ".nombreEnJour($jour2)." ".date("H\hi", strtotime($horaireDebut2))."-".date("H\hi", strtotime($horaireFin2))." a été annulée;";
-    } else if ($type_notif === 5){
-        $contenu_notif = "Votre demande pour l'UV $codeUV2 de type $type1 a été annulée par " . $personne2 . " suite à un changement de son horaire...";
-    } else if ($type_notif === 6){
-        $contenu_notif = "Vous avez reçu un nouveau swap.;".$personne1." et ".$personne2." se sont mis d'accord pour échanger leur ".$type1." de ".$codeUV1."";
-    }
-
-    // si il la notif n'a pas été envoyé alors le faire
-    $sqlCheckNotif = "SELECT * FROM notifications WHERE login = ? AND typeNotif=? AND idDemande=? AND demandeur=? AND contenuNotif=?";
+    // si la notif n'a pas été envoyé alors le faire
+    $sqlCheckNotif = "SELECT * FROM notifications WHERE login = ? AND typeNotif=? AND idDemande=? AND demandeur=? AND choix=?";
     $stmtCheckNotif = $connect->prepare($sqlCheckNotif);
-    $stmtCheckNotif->bind_param("sssss", $loginNotif, $type_notif, $idDemande, $demandeur,$contenu_notif);
+    $stmtCheckNotif->bind_param("sssss", $loginNotif, $type_notif, $idDemande, $demandeur,$choix);
     $stmtCheckNotif->execute();
     $stmtCheckNotif->store_result();
     if ($stmtCheckNotif->num_rows === 0) {
-        $stmtInsertNotif->bind_param("sssss", $loginNotif, $type_notif, $idDemande, $demandeur, $contenu_notif);
+        $sqlInsertNotif = "INSERT INTO notifications (login, typeNotif, idDemande, demandeur, choix, date, viewed) VALUES (?, ?, ?, ?, ?, NOW(), 0)";
+        $stmtInsertNotif = $connect->prepare($sqlInsertNotif);
+        $stmtInsertNotif->bind_param("sssss", $loginNotif, $type_notif, $idDemande, $demandeur, $choix);
         $stmtInsertNotif->execute();
     }
 }
+
 function getResponsableByUv($uv){
     $responsableLogin = "antjougl";
     $responsableNom = "Jouglet";
@@ -219,6 +173,31 @@ if (
     exit();
 }
 
+//Fonction servant à générer un rond orange ou vert au dessus de l'icone de notification selon l'importance des notifs
+function notificationImportance(){
+    global $login;
+    $connect = DBCredential();
+    $sql = "SELECT * FROM notifications WHERE viewed = 0 AND login = ? AND (typeNotif=1 OR typeNotif=6)";
+    $stmt = $connect->prepare($sql);
+    $stmt->bind_param("s", $login);
+    $stmt->execute();
+    $resultat = $stmt->get_result();
+    $sql2 = "SELECT * FROM notifications WHERE viewed = 0 AND login = ? AND typeNotif IN (2,3,4,5);";
+    $stmt2 = $connect->prepare($sql2);
+    $stmt2->bind_param("s", $login);
+    $stmt2->execute();
+    $resultat2 = $stmt2->get_result();
+    if ($resultat->num_rows > 0 || $resultat2->num_rows > 0) {
+        $classeDiv = "cercle";
+        if ($resultat2->num_rows > 0) {
+            $classeDiv .= " orange";
+        }
+        if($resultat->num_rows > 0){
+            $classeDiv .= " vert";
+        }
+        echo '<div class="' . $classeDiv . '"></div>';
+    }
+}
 
 ?>
 <!DOCTYPE html>
@@ -236,57 +215,18 @@ if (
             <li><a href="demandes.php">Demandes</a></li>
             <li><a href="profil.php">Profil</a></li>
             <li><a href="#">Informations</a></li>
+            <!-- Code pour afficher s'il y a une notif importante ou non --> 
             <li onclick="notificationClick()"><img class="notification" src="../svg/notif.svg">
                 <?php
-                $connect = DBCredential();
-                $sql = "SELECT * FROM notifications WHERE viewed = 0 AND login = ? AND typeNotif='1'";
-                $stmt = $connect->prepare($sql);
-                $stmt->bind_param("s", $login);
-                $stmt->execute();
-                $resultat = $stmt->get_result();
-                $sql2 = "SELECT * FROM notifications WHERE viewed = 0 AND login = ? AND typeNotif='2';";
-                $stmt2 = $connect->prepare($sql2);
-                $stmt2->bind_param("s", $login);
-                $stmt2->execute();
-                $resultat2 = $stmt2->get_result();
-                if ($resultat->num_rows > 0 || $resultat2->num_rows > 0) {
-                    $classeDiv = "cercle";
-                    if ($resultat2->num_rows > 0) {
-                        $classeDiv .= " orange";
-                    }
-                    if($resultat->num_rows > 0){
-                        $classeDiv .= " vert";
-                    }
-                    echo '<div class="' . $classeDiv . '"></div>';
-                }
+                notificationImportance();
                 ?>
             </li>
             <li><button onclick="nouveauClick()" class="bouton_nouveau"><img src="../svg/plus.svg">Nouveau</button></li>
         </ul>
         <ul id="menu_liste_petit">
             <li onclick="notificationClick()"><img class="notification" src="../svg/notif.svg">
-                <?php
-                $connect = DBCredential();
-                $sql1 = "SELECT * FROM notifications WHERE viewed = 0 AND login = ? AND typeNotif='1'";
-                $stmt1 = $connect->prepare($sql1);
-                $stmt1->bind_param("s", $login);
-                $stmt1->execute();
-                $result = $stmt1->get_result();
-                $sql12 = "SELECT * FROM notifications WHERE viewed = 0 AND login = ? AND typeNotif='2';";
-                $stmt12 = $connect->prepare($sql12);
-                $stmt12->bind_param("s", $login);
-                $stmt12->execute();
-                $result2 = $stmt12->get_result();
-                if ($result->num_rows > 0 || $result2->num_rows > 0) {
-                    $classeDiv = "cercle";
-                    if ($result2->num_rows > 0) {
-                        $classeDiv .= " orange";
-                    }
-                    if($result->num_rows > 0){
-                        $classeDiv .= " vert";
-                    }
-                    echo '<div class="' . $classeDiv . '"></div>';
-                }
+            <?php
+                notificationImportance();
                 ?>
             </li>
             <li><img src="../svg/menu.svg" id="bouton_menu"></li>
@@ -301,59 +241,144 @@ if (
     </div>
     <div id="endroit_notification">
         <?php
+
         $connect = DBCredential();
-        $sqlSelectNotif = "SELECT idNotif, typeNotif, contenuNotif, idDemande, demandeur, date, viewed FROM notifications WHERE login=? ORDER BY date DESC;";
+        $sqlSelectNotif = "SELECT n.idNotif, n.typeNotif, n.choix, n.idDemande, n.demandeur, n.date, n.viewed, d1.codeUV, d1.type, d1.jour as jour1, d2.jour as jour2, d1.horaireDebut as hDeb1, d1.horaireFin as hFin1, d2.horaireDebut as hDeb2, d2.horaireFin as hFin2, d1.semaine as semaine1, d2.semaine as semaine2, p1.nom as nom1, p1.prenom as prenom1, p2.nom as nom2, p2.prenom as prenom2 FROM notifications n JOIN demande d1 ON d1.idDemande = n.idDemande JOIN personne p1 ON p1.login = d1.login JOIN demande d2 ON d2.idDemande = n.demandeur JOIN personne p2 ON p2.login = d2.login WHERE n.login=? ORDER BY n.date DESC;";
         $stmtSelectNotif = $connect->prepare($sqlSelectNotif);
         $stmtSelectNotif->bind_param("s", $login);
         $stmtSelectNotif->execute();
         $resultat = $stmtSelectNotif->get_result();
-
         // Vérifier s'il y a des résultats
         if ($resultat->num_rows > 0) {
             // Afficher les options du datalist
 
             foreach ($resultat as $row) {
+                $idNotif = $row["idNotif"];
+                $typeNotif = $row["typeNotif"];
+                $choix = $row["choix"];
+                $idDemande = $row["idDemande"];
+                $demandeur = $row["demandeur"];
+                $date = $row["date"];
+                $viewed = $row["viewed"];
+                $codeUV = $row["codeUV"];
+                $type = $row["type"];
+                $jour1 = $row["jour1"];
+                $jour2 = $row["jour2"];
+                $hDeb1 = $row["hDeb1"];
+                $hFin1 = $row["hFin1"];
+                $hDeb2 = $row["hDeb2"];
+                $hFin2 = $row["hFin2"];
+                $semaine1 = $row["semaine1"];
+                if($semaine1 !== "null"){
+                    $semaine1 = " en semaine ".$semaine1;
+                }else{
+                    $semaine1 = null;
+                }
+                $semaine2 = $row["semaine2"];
+                if($semaine2 !== "null"){
+                    $semaine2 = " en semaine ".$semaine2;
+                }else{
+                    $semaine2 = null;
+                }
+                $nom1 = $row["nom1"];
+                $prenom1 = $row["prenom1"];
+                $nom2 = $row["nom2"];
+                $prenom2 = $row["prenom2"];
+                $personne1= ucfirst($prenom1)." ".ucfirst($nom1);
+                $personne2= ucfirst($prenom2)." ".ucfirst($nom2);
                 echo '<div class="notif type_'. $row["typeNotif"];
-                if($row["viewed"]){
+                if($row["viewed"] === 1){
                     echo  ' viewed">';
                 }else{
                     echo '">';
                 }
-                echo '<div class="endroit_texte_notif">';
-                echo '<div class="user_importance_notification">';
-                echo '<div class="image_profil_notification">';
-                echo '<img src="../svg/profil.svg">';
-                echo '<div class="cercle"></div>';
-                echo '</div>';
-                echo '</div>';
                 $contenuNotif = explode(";", $row["contenuNotif"]);
-                $titre_notif = $contenuNotif[0];
-                $texte_notif = $contenuNotif[1];
                 if($row["typeNotif"] === "1"){
-                    echo '<form class="texte_notification" method="POST">';
-                    $idDemande = $row["idDemande"];
-                    $demandeur = $row["demandeur"];
-                    echo '<input type="hidden" name="idDemande" value="'.$idDemande.'">';
-                    echo '<input type="hidden" name="demandeur" value="'.$demandeur.'">';
-                    echo '<input type="hidden" name="id_notif" value="'.$row["idNotif"].'">';
-                    echo '<input type="hidden" class="choix_notification" name="choix" value="0">';
-                }else{
-                    echo '<div class="texte_notification">';
+                    if($row["viewed"] === 1){
+                        if($row["choix"] === 0){
+                            $choixTexte = "refusé";
+                            
+                        }else if($row["choix"] === 1){
+                            $choixTexte = "refusé";
+                        }
+                        $titre_notif = "Vous avez ".$choixTexte." la demande de Swap de ".$personne2.".";
+                        $texte_notif = "La demande de swap du ".$type.$semaine2." de ".$codeUV." pour ".nombreEnJour($jour2)." ".date("H\hi", strtotime($hDeb2))."-".date("H\hi", strtotime($hFin))." a été ".$choixTexte."e";
+                    }else{
+                        $titre_notif = "Vous avez une nouvelle demande de Swap !";
+                        $texte_notif = $personne2." serait intéréssé pour un Swap du ".$type."".$semaine2." de ".$codeUV." contre ".nombreEnJour($jour2)." de ".date("H\hi", strtotime($hDeb2))." à ".date("H\hi", strtotime($hFin2)).".";
+                    }
+                }else if($row["typeNotif"] === "2"){
+                    if($row["choix"] === 0){
+                        $titre_notif = "Votre demande de Swap a été refusée.";
+                        $texte_notif = $personne1." a refusé la demande de Swap du ".$type."".$semaine1." de ".$codeUV." le ".nombreEnJour($jour1)." de ".date("H\hi", strtotime($hDeb1))." à ".date("H\hi", strtotime($hFin1)).".";
+                    }else if($row["choix"] === 1){
+                        $titre_notif = "Votre demande de Swap a été acceptée.";
+                        $texte_notif = $personne1." a accepté la demande de Swap du ".$type."".$semaine1." de ".$codeUV." le ".nombreEnJour($jour1)." de ".date("H\hi", strtotime($hDeb1))." à ".date("H\hi", strtotime($hFin1)).".";
+                    }
+                }else if($row["typeNotif"] === "3"){
+                    if($row["choix"] === 0){
+                        $titre_notif = "Votre demande de Swap a été rejetée par le reponsable de l'UV.";
+                        $texte_notif = "Le responsable de l'UV a rejeté la demande de Swap du ".$type." de ".$codeUV.".";
+                    }else if($row["choix"] === 1){
+                        $titre_notif = "Votre demande de Swap a été approuvée par le reponsable de l'UV.";
+                        $texte_notif = "Le responsable de l'UV a approuvé la demande de Swap du ".$type." de ".$codeUV.".";
+                    }
+                }else if($row["typeNotif"] === "4"){
+                    $titre_notif = " a retourné sa veste.";
+                    $texte_notif = "La demande de swap du ".$type.$semaine2." de ".$codeUV." pour ".nombreEnJour($jour2)." ".date("H\hi", strtotime($hDeb2))."-".date("H\hi", strtotime($hFin2))." a été annulée;";
+                }else if($row["typeNotif"] === "5"){
+                    $titre_notif = "Votre demande de Swap a été annulée.";
+                    $texte_notif = "Votre demande pour le Swap du $type de $codeUV a été annulée par " . $personne1 . " suite à un changement de son horaire...";
+                }else if($row["typeNotif"] === "6"){
+                    $titre_notif = "Vous avez reçu un nouveau swap.";
+                    $texte_notif = $personne1." et ".$personne2." se sont mis d'accord pour échanger leur ".$type." de ".$codeUV."";
                 }
-                echo '<h1>'. $titre_notif .'</h1>';
-                echo '<p>'. $texte_notif .'<p>';
+                ?>
+                <div class="endroit_texte_notif">
+                    <div class="user_importance_notification">
+                        <div class="image_profil_notification">
+                            <img src="../svg/profil.svg">
+                            <div class="cercle"></div>
+                        </div>
+                    </div>
+                <?php
+                
+                
                 if($row["typeNotif"] === "1"){
-                    echo '<div><button class="bouton_refuser_notif">Refuser</button><button class="bouton_accepter_notif">Accepter</button></div>';
-                    echo '</form>';
+                    ?>
+                    <form class="texte_notification" method="POST">
+                        <input type="hidden" name="idDemande" value="<?= $idDemande ?>">
+                        <input type="hidden" name="demandeur" value="<?= $demandeur ?>">
+                        <input type="hidden" name="id_notif" value="<?= $row["idNotif"] ?>">
+                        <input type="hidden" class="choix_notification" name="choix" value="0">
+                    <?php
                 }else{
-                    echo '</div>';
+                    ?>
+                    <div class="texte_notification">
+                    <?php
                 }
-                echo '<div class="time_notification">';
-                echo '<p>il y a '. convertirTemps($row["date"]) .'</p>';
-                echo '</div>';
-                echo '</div>';
-                echo '<hr>';
-                echo '</div>';
+                ?>
+                    <h1><?= $titre_notif ?></h1>
+                    <p><?= $texte_notif ?></p>
+                <?php
+                if($row["typeNotif"] === "1"){
+                    ?>
+                        <div><button class="bouton_refuser_notif">Refuser</button><button class="bouton_accepter_notif">Accepter</button></div>
+                    </form>
+                    <?php
+                }else{
+                   ?>
+                   </div>
+                   <?php
+                }
+                ?>
+                        <div class="time_notification">
+                            <p>il y a <?= convertirTemps($row["date"]) ?></p>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+                <?php
             }
         }
         ?>
@@ -620,7 +645,7 @@ if (isset($_POST['update_choix']) && !(empty($_POST['update_choix']))) {
                 $type = $_SESSION['type'];
                 create_swap($connect , $idDemande , $offerId , $uv , $type , $login);
                 $loginNotif = getLoginById($connect , $offerId);
-                sendNotifications($loginNotif , $offerId , $idDemande , 1 , 0 , $connect);
+                sendNotifications($loginNotif , $offerId , $idDemande , 1 , null, $connect);
                 $_SESSION['reloadPage'] = "swapSuccess";
             } else {
                 if (!($hasSemaine)){
@@ -639,7 +664,7 @@ if (isset($_POST['update_choix']) && !(empty($_POST['update_choix']))) {
                 foreach ($rows as $row){
                     $idRequester = $row['demandeur'];
                     $loginNotif = getLoginById($connect , $idRequester);
-                    sendNotifications($loginNotif , $idDemande , $idRequester , 5 , 0 , $connect);
+                    sendNotifications($loginNotif , $idDemande , $idRequester , 5 , null, $connect);
                 }
                 updateSwapByDemandeur($connect , $idDemande , 1);
             }
@@ -853,7 +878,7 @@ if (
             if (hasCreneauAccepted($connect , $primaryKeyDemande) && $hasSemaine){
                 create_swap($connect , $primaryKeyDemande , $offerId , $uv , $type , $login);
                 $loginNotif = getLoginById($connect , $offerId);
-                sendNotifications($loginNotif , $offerId , $primaryKeyDemande , 1 , 0 , $connect);
+                sendNotifications($loginNotif , $offerId , $primaryKeyDemande , 1 , null, $connect);
             } else {
                 if (!($hasSemaine)){
                     echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_creneau_incompatible_semaine.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);</script>";

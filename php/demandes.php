@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/demandes.css">
     <link rel="stylesheet" href="../css/demande_content.css">
-    <link rel="stylesheet" href="../css/emploiDuTemps.css">
-    <script src="https://kit.fontawesome.com/30cc72a8f6.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../css/filtre.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <title>Demandes - UT'Swap</title>
     <link rel="icon" href="../img/logo.png" type="image/x-icon">
 </head>
@@ -14,8 +14,11 @@
     <?php include "header.php" ?>
     <main>
         <div class="demandes_filtre_parent">
-            <input class="filtreInput" type="text" name="codeUV" id="filtre_demandes_codeUV" placeholder="Chercher une UV" value="<?= $_GET['codeUV'] ?? ''; ?>" maxlength="4" minlength="4">
-            <img src="../svg/search.svg" class="researchLogoSvg">
+            <div>
+                <input class="filtreInput" type="text" name="codeUV" id="filtre_demandes_codeUV" placeholder="Chercher une UV" value="<?= $_GET['codeUV'] ?? ''; ?>" maxlength="4" minlength="4">
+                <img src="../svg/search.svg" class="researchLogoSvg">
+            </div>
+            <img class="svgFiltre" title="Filtrer les demandes" src="../svg/FILTRE_FILTRE.svg" onclick="openFiltre(event)">
         </div>
         <hr>
         <div class="main_conteneur">
@@ -53,9 +56,9 @@
                     <div class="filtre_parent" id="type">
                         <h1 class="filtre_entete">Type</h1>
                         <span class="filtre_span" id="spanType">
-                            <div class="filtre_parent_label"><label class="check" for="filtre_CM">CM</label><input type="checkbox" id="filtre_CM" onclick="changeTypeFilter(event)" checked></div>
-                            <div class="filtre_parent_label"><label class="check" for="filtre_TD">TD</label><input type="checkbox" id="filtre_TD" onclick="changeTypeFilter(event)" checked></div>
-                            <div class="filtre_parent_label"><label class="check" for="filtre_TP">TP</label><input type="checkbox" id="filtre_TP" onclick="changeTypeFilter(event)" checked></div>
+                            <div class="filtre_parent_label"><label class="check" for="filtre_CM">CM</label><input type="checkbox" id="filtre_cours" onclick="changeTypeFilter(event)" checked></div>
+                            <div class="filtre_parent_label"><label class="check" for="filtre_TD">TD</label><input type="checkbox" id="filtre_td" onclick="changeTypeFilter(event)" checked></div>
+                            <div class="filtre_parent_label"><label class="check" for="filtre_TP">TP</label><input type="checkbox" id="filtre_tp" onclick="changeTypeFilter(event)" checked></div>
                     </div>
                     <div class="filtre_parent" id="jours">
                         <h1 class="filtre_entete">Semaine</h1>
@@ -81,86 +84,88 @@
             </div>
             <div class="PageContent">
                 <div class="demandesControl">
-                    <div class="demande_container" id="demande_container1">
-                        <?php
-                        // Supposons que $result soit votre tableau de résultats de la requête SQL
-                        $connect = DBCredential();
-                        $stmt = $connect->prepare("SELECT d.idDemande , d.login , d.codeUV , d.type , d.jour ,  d.horaireDebut , d.horaireFin , d.salle , d.semaine , e.login , p.nom , p.prenom , (SELECT count(idDemande) FROM swap WHERE idDemande = d.idDemande) AS nbDemandes FROM demande as d JOIN etudiant as e ON e.login = d.login JOIN personne as p ON p.login = e.login WHERE demande = 1 AND d.login != ?");
-                        $stmt->bind_param("s" , $login);
-                        $isAvailable = $stmt->execute();
-                        $result = $stmt->get_result();
-                        $stmt->close();
+                    <div class="demande_background_container">
+                        <div class="demande_container" id="demande_container1">
+                            <?php
+                            // Supposons que $result soit votre tableau de résultats de la requête SQL
+                            $connect = DBCredential();
+                            $stmt = $connect->prepare("SELECT d.idDemande , d.login , d.codeUV , d.type , d.jour ,  d.horaireDebut , d.horaireFin , d.salle , d.semaine , e.login , p.nom , p.prenom , (SELECT count(idDemande) FROM swap WHERE idDemande = d.idDemande) AS nbDemandes FROM demande as d JOIN etudiant as e ON e.login = d.login JOIN personne as p ON p.login = e.login WHERE demande = 1 AND d.login != ?");
+                            $stmt->bind_param("s" , $login);
+                            $isAvailable = $stmt->execute();
+                            $result = $stmt->get_result();
+                            $stmt->close();
 
-                        /* Récupérer les demandes effectuées par l'étudiant pour ne pas les afficher. */
-                        $stmtGetSwap = $connect->prepare("SELECT s.idDemande FROM swap as s JOIN demande as d ON d.idDemande = s.demandeur WHERE d.login = ?");
-                        $stmtGetSwap->bind_param("s" , $login);
-                        $stmtGetSwap->execute();
-                        $idList = $stmtGetSwap->get_result();
-                        $listIdDemandeUser = array();
-                        foreach ($idList as $item) {
-                            $listIdDemandeUser[] = $item['idDemande'];
-                        }
-                        foreach ($result as $demande) {
-                            // Assignation des valeurs du tableau à des variables
-                            $idDemande = $demande['idDemande'];
-                            $UV = $demande['codeUV'];
-                            $type = $demande['type'];
-                            $jour = $demande['jour'];
-                            $hdebut = $demande['horaireDebut'];
-                            $hfin = $demande['horaireFin'];
-                            $salle = $demande['salle'];
-                            $semaine = $demande['semaine'];
-                            $nom = $demande['nom'];
-                            $prenom = $demande['prenom'];
-                            $login = $demande['login'];
-                            $nbDemandes = $demande["nbDemandes"];
-                            $jours = array(
-                                1 => 'Lundi',
-                                2 => 'Mardi',
-                                3 => 'Mercredi',
-                                4 => 'Jeudi',
-                                5 => 'Vendredi',
-                                6 => 'Samedi',
-                                7 => 'Dimanche'
-                            );
-                            $hdebut = substr($hdebut , 0 , 5);
-                            $hfin = substr($hfin , 0 , 5);
-                            $data_row = htmlspecialchars(base64_encode(json_encode($demande)), ENT_QUOTES , 'UTF-8');
-                            if (!(in_array($idDemande , $listIdDemandeUser))){
+                            /* Récupérer les demandes effectuées par l'étudiant pour ne pas les afficher. */
+                            $stmtGetSwap = $connect->prepare("SELECT s.idDemande FROM swap as s JOIN demande as d ON d.idDemande = s.demandeur WHERE d.login = ?");
+                            $stmtGetSwap->bind_param("s" , $login);
+                            $stmtGetSwap->execute();
+                            $idList = $stmtGetSwap->get_result();
+                            $listIdDemandeUser = array();
+                            foreach ($idList as $item) {
+                                $listIdDemandeUser[] = $item['idDemande'];
+                            }
+                            foreach ($result as $demande) {
+                                // Assignation des valeurs du tableau à des variables
+                                $idDemande = $demande['idDemande'];
+                                $UV = $demande['codeUV'];
+                                $type = $demande['type'];
+                                $jour = $demande['jour'];
+                                $hdebut = $demande['horaireDebut'];
+                                $hfin = $demande['horaireFin'];
+                                $salle = $demande['salle'];
+                                $semaine = $demande['semaine'];
+                                $nom = $demande['nom'];
+                                $prenom = $demande['prenom'];
+                                $login = $demande['login'];
+                                $nbDemandes = $demande["nbDemandes"];
+                                $jours = array(
+                                    1 => 'Lundi',
+                                    2 => 'Mardi',
+                                    3 => 'Mercredi',
+                                    4 => 'Jeudi',
+                                    5 => 'Vendredi',
+                                    6 => 'Samedi',
+                                    7 => 'Dimanche'
+                                );
+                                $hdebut = substr($hdebut , 0 , 5);
+                                $hfin = substr($hfin , 0 , 5);
+                                $data_row = htmlspecialchars(base64_encode(json_encode($demande)), ENT_QUOTES , 'UTF-8');
+                                if (!(in_array($idDemande , $listIdDemandeUser))){
 
-                                ?>
-                                <div class="div_demande" onclick="clickDemande(this)" data-row=<?php echo "$data_row"; ?>>
-                                    <div class="gauche_container">
-                                        <div class="rectangle_demande"></div>
-                                        <div class="infos_uv">
-                                            <h2><?php echo ($semaine == "null") ? "$UV - $type" : "$UV - $type $semaine"; ?></h2>
-                                            <h4><?php echo "$jours[$jour] $hdebut - $hfin | $salle"; ?></h4>
+                                    ?>
+                                    <div class="div_demande" onclick="clickDemande(this)" data-row=<?php echo "$data_row"; ?>>
+                                        <div class="gauche_container">
+                                            <div class="rectangle_demande"></div>
+                                            <div class="infos_uv">
+                                                <h2><?php echo ($semaine == "null") ? "$UV - $type" : "$UV - $type $semaine"; ?></h2>
+                                                <h4><?php echo "$jours[$jour] $hdebut - $hfin | $salle"; ?></h4>
+                                            </div>
+                                        </div>
+
+                                        <div class="infos_auteur">
+                            <span class="span_auteur">
+                                <p>Auteur:</p> <h5><?php echo "$nom $prenom"; ?></h5>
+                            </span>
+                                            <span class="span_nb_demandes">
+                                <p>Demande(s):</p> <h5><?php echo $nbDemandes; ?></h5>
+                            </span>
+                                        </div>
+
+                                        <div class="swap_div_container">
+                                            <img class="swap_icon" src="../svg/swap_icon.svg" alt="" onclick="copierLien(this)">
                                         </div>
                                     </div>
-
-                                    <div class="infos_auteur">
-                        <span class="span_auteur">
-                            <p>Auteur:</p> <h5><?php echo "$nom $prenom"; ?></h5>
-                        </span>
-                                        <span class="span_nb_demandes">
-                            <p>Demande(s):</p> <h5><?php echo $nbDemandes; ?></h5>
-                        </span>
-                                    </div>
-
-                                    <div class="swap_div_container">
-                                        <img class="swap_icon" src="../svg/swap_icon.svg" alt="" onclick="copierLien(this)">
-                                    </div>
-                                </div>
-                            <?php } } ?>
+                                <?php } } ?>
+                        </div>
                     </div>
                     <span class="svgPage">
-                        <i class="fa-solid fa-angles-left" style="color: #3a4150;" onclick="firstPage()"></i>
-                        <i class="fa-solid fa-angle-left" style="color: #3a4150;" onclick="previousPage()"></i>
+                        <span class="material-symbols-outlined" onclick="firstPage()">first_page</span>
+                        <span class="material-symbols-outlined" onclick="previousPage()">chevron_left</span>
                         <span id="pageList"></span>
-                        <i class="fa-solid fa-angle-right" style="color: #3a4150;" onclick="nextPage()"></i>
-                        <i class="fa-solid fa-angles-right" style="color: #3a4150;" onclick="lastPage()"></i>
+                        <span class="material-symbols-outlined" onclick="nextPage()">chevron_right</span>
+                        <span class="material-symbols-outlined" onclick="lastPage()">last_page</span>
                     </span>
-            </div>
+                </div>
             </div>
         </div>
     </main>

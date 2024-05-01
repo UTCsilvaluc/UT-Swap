@@ -289,11 +289,11 @@ nav .orange{
     border-radius: 50%;
 }
 
-#notification_pannel #endroit_notification .type_1:not(.viewed) .endroit_texte_notif .user_importance_notification .image_profil_notification .cercle{
+#notification_pannel #endroit_notification .notif:not(.viewed) .endroit_texte_notif .user_importance_notification .image_profil_notification .cercle{
     background-color: #3eff61;
 }
 
-#notification_pannel #endroit_notification .type_2:not(.viewed) .endroit_texte_notif .user_importance_notification .image_profil_notification .cercle{
+#notification_pannel #endroit_notification .notif:not(.viewed) .endroit_texte_notif .user_importance_notification .image_profil_notification .cercle{
     background-color: #ffab3e;
 }
 

@@ -30,8 +30,8 @@ function redirect($url){
         $stmtGetLogins->store_result();
         $stmtGetLogins->bind_result($loginIdDemande, $loginDemandeur);
         $stmtGetLogins->fetch();
-        sendNotifications($loginIdDemande, $idDemande, $demandeur, 2, $choix+3, $connect);
-        sendNotifications($loginDemandeur, $idDemande, $demandeur, 2, $choix+3, $connect);
+        sendNotifications($loginIdDemande, $idDemande, $demandeur, 3, $choix, $connect);
+        sendNotifications($loginDemandeur, $idDemande, $demandeur, 3, $choix, $connect);
         $sqlUpdateSwap = "UPDATE swap SET statut = ? WHERE idDemande = ? AND demandeur = ?";
         $stmtUpdateSwap = $connect->prepare($sqlUpdateSwap);
         $choix = $choix+3;
@@ -58,8 +58,8 @@ function redirect($url){
         
         if ($resultat->num_rows > 0) {
             foreach ($resultat as $row) {
-                sendNotifications($row["login1"], $row["idDemande"], $row["demandeur"], 2, $choix, $connect);
-                sendNotifications($row["login2"], $row["idDemande"], $row["demandeur"], 2, $choix, $connect);
+                sendNotifications($row["login1"], $row["idDemande"], $row["demandeur"], 3, $choix-3, $connect);
+                sendNotifications($row["login2"], $row["idDemande"], $row["demandeur"], 3, $choix-3, $connect);
             }
             if($codeUV != null){
                 $sqlUpdateSwap = "UPDATE swap s JOIN demande d1 ON d1.idDemande = s.idDemande JOIN uv u ON u.codeUV = d1.codeUV SET s.statut=? WHERE s.statut = 2 AND u.responsable = ? AND u.codeUV = ?";
@@ -227,7 +227,7 @@ function redirect($url){
             </div>
         </div>
         <div class="conteneur_filtre" id="filterContainer1">
-            <div class="filtre_parent" id="filter">
+            <div class="filtre_parent">
                 <h1 class="filtre_entete">UV</h1>
                 <span class="filtre_span">
                     <select id="choiceUV" onchange="canDisplayRequest()">
@@ -251,7 +251,7 @@ function redirect($url){
                     </select>
                 </span>
             </div>
-            <div class="filtre_parent" id="jours">
+            <div class="filtre_parent">
                 <h1 class="filtre_entete">Type</h1>
                 <span class="filtre_span" id="spanJour">
                     <select id="choiceType" onchange="canDisplayRequest()">
@@ -262,7 +262,7 @@ function redirect($url){
                     </select>
                 </span>
             </div>
-            <div class="filtre_parent" id="type">
+            <div class="filtre_parent">
                 <h1 class="filtre_entete">Branche</h1>
                 <span class="filtre_span" id="spanType">
                     <select id="choiceFil" onchange="canDisplayRequest()">

@@ -102,7 +102,7 @@ function updateSwapInsertNotif($choix, $demandeur, $idDemande, $id_notif, $login
         $stmtUpdateSwap = $connect->prepare($sqlUpdateSwap);
         $stmtUpdateSwap->bind_param("ss", $idDemande, $demandeur);            
         $stmtUpdateSwap->execute();
-        sendNotifications($loginPersonne, $idDemande, $demandeur, 2, $choix+1, $connect);
+        sendNotifications($loginPersonne, $idDemande, $demandeur, 2, $choix, $connect);
 
         $informationLogin = getInformationLogin($connect, $loginPersonne);
         $nom = $informationLogin["nom"];
@@ -121,7 +121,7 @@ function updateSwapInsertNotif($choix, $demandeur, $idDemande, $id_notif, $login
         $stmtUpdateSwapAccept->bind_param("ss", $idDemande, $demandeur);         
         $stmtUpdateSwapAccept->execute();
 
-        sendNotifications($loginPersonne, $idDemande, $demandeur, 2, $choix+1, $connect);
+        sendNotifications($loginPersonne, $idDemande, $demandeur, 2, $choix, $connect);
         sendNotifications($loginResponsable, $idDemande, $demandeur, 6, null, $connect);
 
         $informationLogin = getInformationLogin($connect, $loginPersonne);
@@ -160,7 +160,7 @@ function updateSwapInsertNotif($choix, $demandeur, $idDemande, $id_notif, $login
             $stmtUpdateSwap->execute();
 
             for($i=0;$i<count($listeLoginReçue);$i++){
-                sendNotifications($listeLoginReçue[$i], $idDemande, $listeDemandeurReçue[$i], 2, 1, $connect);
+                sendNotifications($listeLoginReçue[$i], $idDemande, $listeDemandeurReçue[$i], 2, 0, $connect);
                 
                 $informationLogin = getInformationLogin($connect, $listeLoginReçue[$i]);
                 $nom = $informationLogin["nom"];
