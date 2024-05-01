@@ -553,3 +553,39 @@ select{
     }
 
 }
+
+.profCheck {
+    cursor: pointer;
+    color: #555;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.profCheck input[type="checkbox"] {
+    display: none;
+}
+
+.profCheck .checkbox-custom {
+    width: 20px;
+    height: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    transition: background-color 0.3s, border-color 0.3s;
+    position: relative;
+    top: 3px;
+}
+
+.profCheck input[type="checkbox"]:checked + .checkbox-custom::after {
+    content: "\2713";
+    font-size: 14px;
+    color: #555;
+    position: absolute;
+    top: 2px;
+    left: 4px;
+}
+
+.profCheck input[type="checkbox"]:checked + .checkbox-custom {
+    background-color: #007bff;
+    border-color: #007bff;
+}

@@ -10,41 +10,50 @@ const joursSemaine = {
     "6": 'Samedi'
 };
 function copierLien(element) {
-    // Récupérer les informations sur la demande
-    var uvType = element.closest('.div_demande').querySelector('h2').innerText;
-    var horaires = element.closest('.div_demande').querySelector('h4').innerText;
-    var matchResult = horaires.match(/(\d{2}:\d{2}) - (\d{2}:\d{2})/);
-    var heureDebut;
-    var heureFin;
-    // Vérifier si des correspondances ont été trouvées
-    if (matchResult) {
-        heureDebut = matchResult[1];
-        heureFin = matchResult[2];
+
+    try {
+        var demandeDiv = element.closest('.div_demande');
+        // Vérifier si l'élément cliqué est le même que l'élément sur lequel l'événement est attaché
+        if (demandeDiv) {
+            var rowAttribute = demandeDiv.dataset.row;
+
+            if (rowAttribute) {
+                try {
+                    var donnees = JSON.parse(atob(rowAttribute));
+                } catch (error) {
+                    console.error("Erreur lors du parsing JSON :", error);
+                }
+
+                var urlParams = new URLSearchParams(window.location.search);
+                urlParams.set('codeUV', encodeURIComponent(donnees.codeUV));
+                urlParams.set('type', encodeURIComponent(donnees.type));
+                urlParams.set('hDebut', encodeURIComponent(donnees.horaireDebut.substring(0,5)));
+                urlParams.set('hFin', encodeURIComponent(donnees.horaireFin.substring(0,5)));
+                urlParams.set('jour', encodeURIComponent(donnees.jour));
+                var lien = "?" + urlParams.toString();
+
+                // Créer un élément textarea temporaire pour copier le texte dans le presse-papiers
+                var textarea = document.createElement('textarea');
+                textarea.value = window.location.origin + window.location.pathname + lien;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+
+                // Afficher un message ou effectuer d'autres actions si nécessaire
+                alert("Le lien a été copié dans le presse-papiers !");
+                event.stopPropagation();
+
+            } else {
+                console.error("Aucune donnée trouvée dans l'attribut data-row");
+            }
+
+        }
+
+    } catch (error) {
+        console.error(error);
     }
 
-    // Récupérer les paramètres GET actuels de l'URL
-    var urlParams = new URLSearchParams(window.location.search);
-
-    // Ajouter les nouveaux paramètres
-    urlParams.set('codeUV', encodeURIComponent(uvType.split(" - ")[0]));
-    urlParams.set('type', encodeURIComponent(uvType.split(" - ")[1]));
-    urlParams.set('hDebut', encodeURIComponent(heureDebut));
-    urlParams.set('hFin', encodeURIComponent(heureFin));
-
-    // Reconstruire l'URL avec les nouveaux paramètres
-    var lien = "?" + urlParams.toString();
-
-    // Créer un élément textarea temporaire pour copier le texte dans le presse-papiers
-    var textarea = document.createElement('textarea');
-    textarea.value = window.location.origin + window.location.pathname + lien;
-    document.body.appendChild(textarea);
-    textarea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textarea);
-
-    // Afficher un message ou effectuer d'autres actions si nécessaire
-    alert("Le lien a été copié dans le presse-papiers !");
-    event.stopPropagation();
 }
 
 
@@ -507,16 +516,15 @@ function canDisplayCourses(event) {
     var divs_demande = document.getElementsByClassName("div_demande");
     var liste_jours = document.getElementById("jours").getElementsByClassName('check');
     var liste_type = document.getElementById("type").getElementsByClassName("check");
-    var heureDebut = document.getElementById("filtre-input-hdebut").value.replace(":","h");
-    var heureFin = document.getElementById("filtre-input-hfin").value.replace(":","h");
+    var heureDebut = document.getElementById("filtre-input-hdebut").value;
+    var heureFin = document.getElementById("filtre-input-hfin").value;
+    params.append('hDebut' , encodeURIComponent(heureDebut));
+    params.append('hFin' , encodeURIComponent(heureFin));
+    heureDebut = heureDebut.replace(":","h");
+    heureFin = heureFin.replace(":","h");
     var joursActifs = []; // Initialiser une liste pour stocker les jours actifs
     var typeActifs = []; // Initialiser une liste pour stocker les jours actifs
     var display = true;
-
-
-    params.append('hDebut' , heureDebut);
-    params.append('hFin' , heureFin);
-
     params.append("A" , document.getElementById("semaine-sA").className === "check");
     params.append("B" , document.getElementById("semaine-sB").className === "check");
 // Créer un objet pour stocker la correspondance entre les jours et les nombres
@@ -863,10 +871,11 @@ function appliquerFiltres() {
         });
     }
     if (params.has("hDebut")){
-        document.getElementById("filtre-input-hdebut").value = params.get("hDebut").replace("h",":");
+        console.log(decodeURIComponent(params.get("hDebut")));
+        document.getElementById("filtre-input-hdebut").value = decodeURIComponent(params.get("hDebut"));
     }
     if (params.has("hFin")){
-        document.getElementById("filtre-input-hfin").value = params.get("hFin").replace("h",":");
+        document.getElementById("filtre-input-hfin").value = decodeURIComponent(params.get("hFin"));
     }
 
     if (params.has("A")){

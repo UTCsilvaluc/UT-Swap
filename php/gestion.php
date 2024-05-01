@@ -229,37 +229,31 @@ function redirect($url){
         <div class="conteneur_filtre" id="filterContainer1">
             <div class="filtre_parent">
                 <h1 class="filtre_entete">UV</h1>
-                <span class="filtre_span">
-                    <select id="choiceUV" onchange="canDisplayRequest()">
-                        <option value="all">Toutes mes UV(s)</option>
-                        <?php
-                        // Supposons que $result soit votre tableau de résultats de la requête SQL
-                        $connect = DBCredential();
-                        $sqlUvs = "SELECT codeUV FROM uv WHERE responsable = ?";
-                        $stmtUvs = $connect->prepare($sqlUvs);
-                        $stmtUvs->bind_param("s", $login);
-                        $stmtUvs->execute();
-                        $result = $stmtUvs->get_result();
-                        $stmtUvs->close();
-                        foreach ($result as $demande) {
-                            // Assignation des valeurs du tableau à des variables
-                            $UV = $demande['codeUV'];
+                <span class="filtre_span" id="spanUV">
+                    <?php
+                    // Supposons que $result soit votre tableau de résultats de la requête SQL
+                    $connect = DBCredential();
+                    $sqlUvs = "SELECT codeUV FROM uv WHERE responsable = ?";
+                    $stmtUvs = $connect->prepare($sqlUvs);
+                    $stmtUvs->bind_param("s", $login);
+                    $stmtUvs->execute();
+                    $result = $stmtUvs->get_result();
+                    $stmtUvs->close();
+                    foreach ($result as $demande) {
+                        // Assignation des valeurs du tableau à des variables
+                        $UV = $demande['codeUV'];
 
-                            ?>
-                            <option value=<?php echo "$UV"; ?>><?php echo "$UV"; ?></option>
-                        <?php } ?>
-                    </select>
+                        ?>
+                        <div class="filtre_parent_label"><label class="uvCheck" for=<?php echo "filtre_"."$UV";?>><?php echo "$UV"; ?></label><input onclick="changeUV(event)" type="checkbox" id=<?php echo "filtre_"."$UV";?> checked></div>
+                    <?php } ?>
                 </span>
             </div>
             <div class="filtre_parent">
                 <h1 class="filtre_entete">Type</h1>
-                <span class="filtre_span" id="spanJour">
-                    <select id="choiceType" onchange="canDisplayRequest()">
-                        <option value="all">Tout type</option>
-                        <option value="TP">TP</option>
-                        <option value="TD">TD</option>
-                        <option value="CM">CM</option>
-                    </select>
+                <span class="filtre_span" id="spanType">
+                    <div class="filtre_parent_label"><label class="typeCheck" for="filtre_CM">CM</label><input type="checkbox" id="filtre_CM" onclick="changeType(event)" checked></div>
+                    <div class="filtre_parent_label"><label class="typeCheck" for="filtre_TD">TD</label><input type="checkbox" id="filtre_TD" onclick="changeType(event)" checked></div>
+                    <div class="filtre_parent_label"><label class="typeCheck" for="filtre_TP">TP</label><input type="checkbox" id="filtre_TP" onclick="changeType(event)" checked></div>
                 </span>
             </div>
             <div class="filtre_parent">

@@ -394,13 +394,22 @@ function mettreAJourContenuProfil() {
 window.addEventListener('resize', mettreAJourContenuProfil);
 mettreAJourContenuProfil();
 
-function canDisplayRequest() {
+function canDisplayRequest(event) {
     var divs_demande = document.getElementsByClassName("demande_professeur");
-    var UV = document.getElementById("choiceUV").value;
-    var type = document.getElementById("choiceType").value;
-    var fil = document.getElementById("choiceFil").value;
+    var liste_uvs = document.getElementById("spanUV").getElementsByClassName('uvCheck');
+    var liste_type = document.getElementById("spanType").getElementsByClassName("typeCheck");
+    var UvsActifs = [];
+    var typeActifs = [];
     var display = true;
+    for (var i = 0; i < liste_type.length; i++) {
+        var type = liste_type[i].innerHTML.trim();
+        typeActifs.push(type);
+    }
 
+    for (var i = 0; i < liste_uvs.length; i++) {
+        var uv = liste_uvs[i].innerHTML.trim();
+        UvsActifs.push(uv);
+    }
     Array.from(divs_demande).forEach(function(div) {
         var rowAttribute = div.dataset.row;
         if (rowAttribute) {
@@ -412,22 +421,53 @@ function canDisplayRequest() {
         } else {
             console.error("Aucune donnée trouvée dans l'attribut data-row");
         }
-        if (UV != "all"){
-            if (donnees.codeUV != UV){
-                display = false;
-            }
+
+        if (!(UvsActifs.includes(donnees.codeUV))){
+            display = false;
         }
-        if (type != "all"){
-            if (donnees.type != type){
-                display = false;
-            }
+        if (!(typeActifs.includes(donnees.type))){
+            display = false;
         }
-        if (fil != "all"){
-            if (donnees.fil1 != fil && donnees.fil2 != fil){
-                display = false;
-            }
+        if (donnees.fil1 === "TC" || donnees.fil2 === "TC" && document.getElementById("filiere_tc").className === "filiereunCheck"){
+            display = false;
+
+        }
+        if (donnees.fil1 === "BR" || donnees.fil2 === "BR" && document.getElementById("filiere_br").className === "filiereunCheck"){
+            display = false;
+
         }
         div.style.display = display ? 'flex' : 'none';
         display = true;
     });
+}
+
+function changeType(event){
+    var labelForInput = document.querySelector('label[for="' + event.target.id + '"]');
+    if (labelForInput.className === "typeCheck"){
+        labelForInput.className = "typeunCheck";
+    } else {
+        labelForInput.className = "typeCheck";
+    }
+    canDisplayRequest(event);
+}
+
+function changeSemaine(event){
+    console.log(event.target)
+    var labelForInput = document.querySelector('label[for="' + event.target.id + '"]');
+    if (labelForInput.className === "filiereCheck"){
+        labelForInput.className = "filiereunCheck";
+    } else {
+        labelForInput.className = "filiereCheck";
+    }
+    canDisplayRequest(event);
+}
+
+function changeUV(event){
+    var labelForInput = document.querySelector('label[for="' + event.target.id + '"]');
+    if (labelForInput.className === "uvCheck"){
+        labelForInput.className = "uvUnCheck";
+    } else {
+        labelForInput.className = "uvCheck";
+    }
+    canDisplayRequest(event);
 }
