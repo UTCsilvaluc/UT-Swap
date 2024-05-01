@@ -199,14 +199,29 @@ document.getElementById("emploi_du_temps").addEventListener("mouseout" , functio
 
 });
 
-function addCreneau() {
+function addCreneau(event) {
+
     if(!suivreLaSouris){
         nouveauClick();
         texte_nouveau.innerHTML = "Ajouter un nouveau créneau";
         motivation.classList.toggle('hidden', true);
         bouton_ajouter_creneau.classList.toggle('hidden', false);
         bouton_non_submit.classList.toggle('hidden', true);
+        var divHeureCliquee = event.target.closest('.divHeure');
+        if (divHeureCliquee) {
+            var [heureDebut , heureFin] = calculerHeure(divHeureCliquee);
+            document.getElementById("input-hdebut1").value = heureDebut;
+            document.getElementById("input-hfin1").value = heureFin;
+        }
     }
+}
+function calculerHeure(divHeure) {
+    var parent = divHeure.parentElement;
+    var index = Array.prototype.indexOf.call(parent.children, divHeure);
+    var heureFormattee = formaterHeure(document.getElementById("hdebut").innerHTML.replace('h',':'));
+    var heureDebut = parseInt(heureFormattee.slice(0,2)) + index;
+
+    return [heureDebut.toString().padStart(2, '0') + ':00' , (heureDebut+1).toString().padStart(2, '0') + ':00'];
 }
 
 bouton_ajouter_creneau.addEventListener("click", function() {
@@ -322,9 +337,9 @@ var listeJour = [lundi, mardi, mercredi, jeudi, vendredi, samedi, dimanche];
 for (var i of listeJour) {
     for(var j=0; j<12 ; j++){
         if(j !== 11){
-            i.innerHTML += "<div class='divHeure' onclick=\"addCreneau()\"> <div class='dash' style='height:6vh'></div> </div>";
+            i.innerHTML += "<div class='divHeure' onclick=\"addCreneau(event)\"> <div class='dash' style='height:6vh'></div> </div>";
         }else{
-            i.innerHTML += "<div class='divHeure' onclick=\"addCreneau()\"> <div style='height:6vh'></div> </div>";
+            i.innerHTML += "<div class='divHeure' onclick=\"addCreneau(event)\"> <div style='height:6vh'></div> </div>";
         }
     }
 }
@@ -966,9 +981,9 @@ function customTime(event) {
         var nbHeures = parseInt(fin) - parseInt(debut);
         for (var j = 0; j < nbHeures; j++) {
             if(j !== nbHeures-1){
-                i.innerHTML += "<div class='divHeure' onclick=\"addCreneau()\"> <div class='dash' style='height:6vh'></div> </div>";
+                i.innerHTML += "<div class='divHeure' onclick=\"addCreneau(event)\"> <div class='dash' style='height:6vh'></div> </div>";
             }else{
-                i.innerHTML += "<div class='divHeure' onclick=\"addCreneau()\"> <div style='height:6vh'></div> </div>";
+                i.innerHTML += "<div class='divHeure' onclick=\"addCreneau(event)\"> <div style='height:6vh'></div> </div>";
             }
 
         }

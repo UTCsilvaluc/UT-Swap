@@ -227,49 +227,40 @@ function redirect($url){
             </div>
         </div>
         <div class="conteneur_filtre" id="filterContainer1">
-            <div class="filtre_parent" id="filter">
-                <h1 class="filtre_entete">UV</h1>
-                <span class="filtre_span">
-                    <select id="choiceUV" onchange="canDisplayRequest()">
-                        <option value="all">Toutes mes UV(s)</option>
-                        <?php
-                        // Supposons que $result soit votre tableau de résultats de la requête SQL
-                        $connect = DBCredential();
-                        $sqlUvs = "SELECT codeUV FROM uv WHERE responsable = ?";
-                        $stmtUvs = $connect->prepare($sqlUvs);
-                        $stmtUvs->bind_param("s", $login);
-                        $stmtUvs->execute();
-                        $result = $stmtUvs->get_result();
-                        $stmtUvs->close();
-                        foreach ($result as $demande) {
-                            // Assignation des valeurs du tableau à des variables
-                            $UV = $demande['codeUV'];
-
-                            ?>
-                            <option value=<?php echo "$UV"; ?>><?php echo "$UV"; ?></option>
-                        <?php } ?>
-                    </select>
-                </span>
-            </div>
             <div class="filtre_parent" id="jours">
-                <h1 class="filtre_entete">Type</h1>
-                <span class="filtre_span" id="spanJour">
-                    <select id="choiceType" onchange="canDisplayRequest()">
-                        <option value="all">Tout type</option>
-                        <option value="TP">TP</option>
-                        <option value="TD">TD</option>
-                        <option value="CM">CM</option>
-                    </select>
+                <h1 class="filtre_entete">UV</h1>
+                <span class="filtre_span" id="spanUV">
+                    <?php
+                    // Supposons que $result soit votre tableau de résultats de la requête SQL
+                    $connect = DBCredential();
+                    $sqlUvs = "SELECT codeUV FROM uv WHERE responsable = ?";
+                    $stmtUvs = $connect->prepare($sqlUvs);
+                    $stmtUvs->bind_param("s", $login);
+                    $stmtUvs->execute();
+                    $result = $stmtUvs->get_result();
+                    $stmtUvs->close();
+                    foreach ($result as $demande) {
+                        // Assignation des valeurs du tableau à des variables
+                        $UV = $demande['codeUV'];
+
+                        ?>
+                        <div class="filtre_parent_label"><label class="uvCheck" for=<?php echo "filtre_"."$UV";?>><?php echo "$UV"; ?></label><input onclick="changeUV(event)" type="checkbox" id=<?php echo "filtre_"."$UV";?> checked></div>
+                    <?php } ?>
                 </span>
             </div>
             <div class="filtre_parent" id="type">
-                <h1 class="filtre_entete">Branche</h1>
+                <h1 class="filtre_entete">Type</h1>
                 <span class="filtre_span" id="spanType">
-                    <select id="choiceFil" onchange="canDisplayRequest()">
-                        <option value="all">Toute filière</option>
-                        <option value="BR">Branche</option>
-                        <option value="TC">Tronc Commun</option>
-                    </select>
+                    <div class="filtre_parent_label"><label class="typeCheck" for="filtre_CM">CM</label><input type="checkbox" id="filtre_CM" onclick="changeType(event)" checked></div>
+                    <div class="filtre_parent_label"><label class="typeCheck" for="filtre_TD">TD</label><input type="checkbox" id="filtre_TD" onclick="changeType(event)" checked></div>
+                    <div class="filtre_parent_label"><label class="typeCheck" for="filtre_TP">TP</label><input type="checkbox" id="filtre_TP" onclick="changeType(event)" checked></div>
+                </span>
+            </div>
+            <div class="filtre_parent" id="type">
+                <h1 class="filtre_entete">Filière</h1>
+                <span class="filtre_span" id="spanFiliere">
+                    <div class="filtre_parent_label"><label id="filiere_tc" class="filiereCheck" for="filiere_tc">Tronc Commun</label><input type="checkbox" id="filiere_tc" onclick="changeSemaine(event)" checked></div>
+                    <div class="filtre_parent_label"><label id="filiere_br" class="filiereCheck" for="filiere_br">Branche</label><input type="checkbox" id="filiere_br" onclick="changeSemaine(event)" checked></div>
                 </span>
             </div>
         </div>
