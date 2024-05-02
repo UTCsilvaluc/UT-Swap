@@ -226,44 +226,41 @@ function redirect($url){
                 <img src="../svg/black_cross.svg" alt="" id="CloseOpenFiltreMenu" onclick="closeFiltre(event)">
             </div>
         </div>
-        <div class="conteneur_filtre" id="filterContainer1">
-            <div class="filtre_parent">
-                <h1 class="filtre_entete">UV</h1>
-                <span class="filtre_span" id="spanUV">
-                    <?php
-                    // Supposons que $result soit votre tableau de résultats de la requête SQL
-                    $connect = DBCredential();
-                    $sqlUvs = "SELECT codeUV FROM uv WHERE responsable = ?";
-                    $stmtUvs = $connect->prepare($sqlUvs);
-                    $stmtUvs->bind_param("s", $login);
-                    $stmtUvs->execute();
-                    $result = $stmtUvs->get_result();
-                    $stmtUvs->close();
-                    foreach ($result as $demande) {
-                        // Assignation des valeurs du tableau à des variables
-                        $UV = $demande['codeUV'];
+        <div class="conteneur_custom" id="filterContainer1">
+            <div class="custom_parent" id="UV">
+                <h1 class="custom_entete">UV</h1>
+                <span class="custom_span" id="spanUV">
+                <?php
+                // Supposons que $result soit votre tableau de résultats de la requête SQL
+                $connect = DBCredential();
+                $sqlUvs = "SELECT codeUV FROM uv WHERE responsable = ?";
+                $stmtUvs = $connect->prepare($sqlUvs);
+                $stmtUvs->bind_param("s", $login);
+                $stmtUvs->execute();
+                $result = $stmtUvs->get_result();
+                $stmtUvs->close();
+                foreach ($result as $demande) {
+                    // Assignation des valeurs du tableau à des variables
+                    $UV = $demande['codeUV'];
 
-                        ?>
-                        <div class="filtre_parent_label"><label class="uvCheck" for=<?php echo "filtre_"."$UV";?>><?php echo "$UV"; ?></label><input onclick="changeUV(event)" type="checkbox" id=<?php echo "filtre_"."$UV";?> checked></div>
-                    <?php } ?>
+                    ?>
+                        <h3 class="uvCheck" onclick="changeUV(event)"><?php echo "$UV";?></h3>
+                <?php } ?>
+                    </span>
+            </div>
+            <div class="custom_parent" id="type">
+                <h1 class="custom_entete">Type</h1>
+                <span class="custom_span" id="spanType">
+                    <h3 class="typeCheck" onclick="changeType(event)">CM</h3>
+                    <h3 class="typeCheck" onclick="changeType(event)">TD</h3>
+                    <h3 class="typeCheck" onclick="changeType(event)">TP</h3>
                 </span>
             </div>
-            <div class="filtre_parent">
-                <h1 class="filtre_entete">Type</h1>
-                <span class="filtre_span" id="spanType">
-                    <div class="filtre_parent_label"><label class="typeCheck" for="filtre_CM">CM</label><input type="checkbox" id="filtre_CM" onclick="changeType(event)" checked></div>
-                    <div class="filtre_parent_label"><label class="typeCheck" for="filtre_TD">TD</label><input type="checkbox" id="filtre_TD" onclick="changeType(event)" checked></div>
-                    <div class="filtre_parent_label"><label class="typeCheck" for="filtre_TP">TP</label><input type="checkbox" id="filtre_TP" onclick="changeType(event)" checked></div>
-                </span>
-            </div>
-            <div class="filtre_parent">
-                <h1 class="filtre_entete">Branche</h1>
-                <span class="filtre_span" id="spanType">
-                    <select id="choiceFil" onchange="canDisplayRequest()">
-                        <option value="all">Toute filière</option>
-                        <option value="BR">Branche</option>
-                        <option value="TC">Tronc Commun</option>
-                    </select>
+            <div class="custom_parent" id="filiere">
+                <h1 class="custom_entete">Filiere</h1>
+                <span class="custom_span" id="spanFil">
+                    <h3 class="filCheck" id="filiere_br" onclick="changeFil(event)">Branche</h3>
+                    <h3 class="filCheck" id="filiere_tc" onclick="changeFil(event)">Tronc Commun</h3>
                 </span>
             </div>
         </div>

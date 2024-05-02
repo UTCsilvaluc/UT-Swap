@@ -553,7 +553,7 @@ select{
     }
 
 }
-
+/*
 .profCheck {
     cursor: pointer;
     color: #555;
@@ -588,4 +588,85 @@ select{
 .profCheck input[type="checkbox"]:checked + .checkbox-custom {
     background-color: #007bff;
     border-color: #007bff;
+}*/
+
+.custom_span h3, .filtre_span h3{
+    margin-top: 5px;
+    font-size: 16px;
+    border: 1px black solid;
+    border-radius: 10px;
+    padding: 5px 30px;
+}
+.custom_span{
+    gap: 5px;
+    overflow: hidden;
+}
+.conteneur_custom, .conteneur_filtre{
+    overflow-y: auto;
+}
+
+.conteneur_custom .custom_parent:first-child, .conteneur_filtre .filtre_parent:first-child{
+    margin-top: 15px;
+}
+
+.conteneur_custom .custom_parent, .conteneur_filtre .filtre_parent{
+    margin-top: 0;
+    background: white;
+    margin-bottom: 10px;
+    padding-left: 15px;
+    border-bottom: 10px #EBEBEB solid;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-sizing: border-box;
+}
+
+
+.conteneur_custom .custom_span, .conteneur_filtre .filtre_span{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 15px;
+    flex-direction: row;
+    transform: translateX(5%);
+    width: 400px;
+    padding-bottom: 15px;
+    padding-left: 15px;
+}
+
+.custom_span input, .filtre_span input{
+    box-sizing: content-box;
+    border: 1px black solid;
+    cursor: pointer;
+    background-color: #ffffff;
+    padding:8px;
+    border-radius: 5px;
+}
+
+.divCustom input[type='time'], .divFiltre input[type='time']{
+    font-family: Jost;
+    font-style: oblique;
+    padding: 10px;
+    border: 2px black solid;
+    border-radius: 8px;
+    margin-right: 20px;
+}
+.uvCheck , .typeCheck , .filCheck{
+    background: #32373B;
+    color: white;
+    transition: background-color 0.3s linear; /* Transition de couleur de fond */
+}
+
+.uvunCheck , .typeunCheck , .filunCheck{
+    transition: background-color 0.3s linear; /* Transition de couleur de fond */
+}
+
+.uvCheck:hover , .typeCheck:hover , .filCheck:hover{
+    background: #444a4f;
+    cursor: pointer;
+}
+
+.uvunCheck:hover , .typeunCheck:hover , .filunCheck:hover{
+    background: #e3dfdf;
+    cursor: pointer;
 }
