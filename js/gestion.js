@@ -421,18 +421,16 @@ function canDisplayRequest(event) {
         } else {
             console.error("Aucune donnée trouvée dans l'attribut data-row");
         }
-
         if (!(UvsActifs.includes(donnees.codeUV))){
             display = false;
         }
         if (!(typeActifs.includes(donnees.type))){
             display = false;
         }
-        if (donnees.fil1 === "TC" || donnees.fil2 === "TC" && document.getElementById("filiere_tc").className === "filiereunCheck"){
+        if ((donnees.fil1 === "TC" || donnees.fil2 === "TC") && document.getElementById("filiere_tc").className === "filunCheck"){
             display = false;
-
         }
-        if (donnees.fil1 === "BR" || donnees.fil2 === "BR" && document.getElementById("filiere_br").className === "filiereunCheck"){
+        if ((donnees.fil1 === "BR" || donnees.fil2 === "BR") && document.getElementById("filiere_br").className === "filunCheck"){
             display = false;
 
         }
