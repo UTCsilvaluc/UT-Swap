@@ -20,6 +20,16 @@
     --couleur-shadow: rgba(0,0,0,0.30);
 }
 
+.choix-li-nouveau-panel{
+    display: block;
+    overflow: hidden;
+    flex-direction: column;
+    align-items: center;
+}
+.choix-li-nouveau-panel li{
+    float: left;
+    clear: both;
+}
 
 body {
     font-family: Jost, sans-serif;

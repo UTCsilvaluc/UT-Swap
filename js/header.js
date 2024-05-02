@@ -52,6 +52,8 @@ var bouton_menu = document.getElementById("bouton_menu");
 var boutons_confirmation = document.getElementById("boutons_confirmation");
 var menu_pannel = document.getElementById("menu_pannel");
 
+
+
 var largeurFenetre;
 var lastHeight;
 
@@ -359,6 +361,12 @@ function nouveauClick() {
     boutons_message.classList.toggle('hidden', true);
     message_pression.classList.toggle('hidden', true);
     checkbox.disabled = false;
+
+    /* Réinitialiser l'affichage du formulaire si changement.  */
+    document.getElementById("creneauFirstLine").classList.toggle("hidden" , false);
+    document.getElementById("creneauThirdLine").classList.toggle("hidden" , false);
+    document.getElementById("activiteFirstLine").classList.toggle("hidden" , true);
+    document.getElementById("activiteThirdLine").classList.toggle("hidden" , true);
 
     document.getElementById("sendSwap").classList.toggle('hidden' , true);
     document.getElementById("newDemandeSwap").classList.toggle('hidden' , false);
