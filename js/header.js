@@ -90,6 +90,13 @@ for(var element of input_hfin){
     });
 }
 
+function shakeElement(element){
+    element.classList.add("shake-element");
+    setTimeout(function() {
+        element.classList.remove("shake-element");
+    }, 200);
+}
+
 // Fonction pour convertir une heure au format HH:mm en minutes
 function convertirEnMinutes(heure) {
     var [heures, minutes] = heure.split(':').map(Number);

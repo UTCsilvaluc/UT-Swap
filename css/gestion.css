@@ -327,7 +327,55 @@ select{
     background-color: white;
 }
 
+#import_prof:not(.hidden){
+    -webkit-box-shadow: 0px 0px 15px 8px var(--couleur-shadow); 
+    box-shadow: 0px 0px 15px 8px var(--couleur-shadow);
+}
 
+#import_prof .mid_content textarea{
+    height: 65%;
+    margin-bottom: 10px;
+}
+
+#import_prof .mid_titre hr, #import_prof .mid_button hr{
+    width: 100%;
+}
+
+#import_prof.mid_pannel button{
+    margin: unset;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+}
+
+#import_prof .mid_button{
+    min-height:60px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    justify-content: space-evenly;
+}
+#import_prof .mid_button div{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap:25px;
+}
+
+.mid_button img{
+    height: 20px;
+}
+#import_personne_fraud_title{
+    padding:0;
+}
+
+#import_personne_fraud_container{
+    width: 45%;
+    height: 70%;
+    overflow: auto;
+}
 @media screen and (max-width: 1600px) {
 
     .demande_professeur .infos_etudiant_facultatif{
