@@ -6,7 +6,7 @@ session_start();
 function DBCredential(){
     $dbhost = 'localhost';
     $dbuser = 'root';
-    $dbpass = 'root';
+    $dbpass = '';
     $dbname = 'ut_swap';
     $connect = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to mysql');
     mysqli_set_charset($connect, 'utf8');
@@ -405,53 +405,76 @@ function notificationImportance(){
 
 <form action="#" method="post" id="nouveau_pannel">
     <div id="div_debut_nouveau">
-        <h1 id="newDemandeSwap" class="">Nouvelle demande de Swap</h1>
-        <h1 id="swapRecap" class="hidden">Récapitulatif : </h1>
+            <h1 id="newDemandeSwap" class="">Nouvelle demande de Swap</h1>
+            <h1 id="swapRecap" class="hidden">Récapitulatif : </h1>
         <hr>
     </div>
     <img src="../svg/croix.svg" id="croix_nouveau">
     <div id="div_milieu_nouveau">
         <ul id="ul_nouveau">
-            <li class="double-input">
-                <div>
-                    <label for="input-uv">Code d'UV:<p class="hidden">*</p></label>
-                    <input type="text" id="input-uv" list="uvs" name="uv" placeholder="Veuillez entrer le code de l'UV" >
-                    <p class="hidden">UV non valide</p>
-                    <?php
-                    $connect = DBCredential();
-                    $sql = "SELECT codeUV FROM uv";
-                    $resultat = $connect->query($sql);
+            <div id="creneauFirstLine">
+                <li class="double-input">
+                    <div id="creneauUV">
+                        <label for="input-uv">Code d'UV:<p class="hidden">*</p></label>
+                        <input type="text" id="input-uv" list="uvs" name="uv" placeholder="Veuillez entrer le code de l'UV" >
+                        <p class="hidden">UV non valide</p>
+                        <?php
+                        $connect = DBCredential();
+                        $sql = "SELECT codeUV FROM uv";
+                        $resultat = $connect->query($sql);
 
-                    // Vérifier s'il y a des résultats
-                    if ($resultat->num_rows > 0) {
-                        // Afficher les options du datalist
-                        echo '<datalist id="uvs">';
-                        while ($row = $resultat->fetch_assoc()) {
-                            echo '<option value="' . $row["codeUV"] . '">';
+                        // Vérifier s'il y a des résultats
+                        if ($resultat->num_rows > 0) {
+                            // Afficher les options du datalist
+                            echo '<datalist id="uvs">';
+                            while ($row = $resultat->fetch_assoc()) {
+                                echo '<option value="' . $row["codeUV"] . '">';
+                            }
+                            echo '</datalist>';
                         }
-                        echo '</datalist>';
-                    }
-                    ?>
-                </div>
-                <div>
-                    <label for="input-creneau">Créneau:<p class="hidden">*</p></label>
-                    <select id="input-creneau" name="creneau" >
-                        <option value="" disabled selected>Sélectionnez un créneau</option>
-                        <option value="lundi">Lundi</option>
-                        <option value="mardi">Mardi</option>
-                        <option value="mercredi">Mercredi</option>
-                        <option value="jeudi">Jeudi</option>
-                        <option value="vendredi">Vendredi</option>
-                        <option value="samedi">Samedi</option>
-                    </select>
-                    <p class="hidden">Créneau non valide</p>
-                </div>
-                <div class="nouveau_heure_triple">
-                    <label for="input-hdebut2">Heure début:<p class="hidden">*</p></label>
-                    <input type="time" class="input-hdebut" name="hdebut" id="input-hdebut2" >
-                    <p class="hidden">Heures non valide</p>
-                </div>
-            </li>
+                        ?>
+                    </div>
+                    <div>
+                        <label for="input-creneau">Créneau:<p class="hidden">*</p></label>
+                        <select id="input-creneau" name="creneau" >
+                            <option value="" disabled selected>Sélectionnez un créneau</option>
+                            <option value="lundi">Lundi</option>
+                            <option value="mardi">Mardi</option>
+                            <option value="mercredi">Mercredi</option>
+                            <option value="jeudi">Jeudi</option>
+                            <option value="vendredi">Vendredi</option>
+                            <option value="samedi">Samedi</option>
+                        </select>
+                        <p class="hidden">Créneau non valide</p>
+                    </div>
+                    <div class="nouveau_heure_triple">
+                        <label for="input-hdebut2">Heure début:<p class="hidden">*</p></label>
+                        <input type="time" class="input-hdebut" name="hdebut" id="input-hdebut2" >
+                        <p class="hidden">Heures non valide</p>
+                    </div>
+                </li>
+            </div>
+            <div id="activiteFirstLine" class="hidden">
+                <li class="double-input">
+                    <div id="divExteName">
+                        <label for="input-uv">Nom activité<p class="hidden">*</p></label>
+                        <input type="text" id="exteName" placeholder="Veuillez saisir le nom de l'activité">
+                    </div>
+                    <div>
+                        <label for="input-creneau">Créneau:<p class="hidden">*</p></label>
+                        <select id="input-creneau" name="creneau" >
+                            <option value="" disabled selected>Sélectionnez un créneau</option>
+                            <option value="lundi">Lundi</option>
+                            <option value="mardi">Mardi</option>
+                            <option value="mercredi">Mercredi</option>
+                            <option value="jeudi">Jeudi</option>
+                            <option value="vendredi">Vendredi</option>
+                            <option value="samedi">Samedi</option>
+                        </select>
+                        <p class="hidden">Créneau non valide</p>
+                    </div>
+                </li>
+            </div>
             <li class="double-input" id="nouveau_heure_double">
                 <div>
                     <label for="input-hdebut1">Heure début:<p class="hidden">*</p></label>
@@ -463,27 +486,37 @@ function notificationImportance(){
                     <input type="time" class="input-hfin" name="hfin" id="input-hfin1" >
                 </div>
             </li>
-            <li class="double-input">
-                <div>
-                    <label for="input-salle">Salle:<p class="hidden">*</p></label>
-                    <input type="text" id="input-salle" name="salle" placeholder="Veuillez entrer votre salle" >
-                    <p class="hidden">Salle non valide</p>
-                </div>
-                <div>
-                    <label for="input-type">Type:<p class="hidden">*</p></label>
-                    <select id="input-type" name="type" >
-                        <option value="" disabled selected>Sélectionnez un type</option>
-                        <option value="TD">TD</option>
-                        <option value="TP">TP</option>
-                        <option value="CM">Cours</option>
-                    </select>
-                    <p class="hidden">Type non valide</p>
-                </div>
-                <div class="nouveau_heure_triple">
-                    <label for="input-hfin2">Heure fin:<p class="hidden">*</p></label>
-                    <input type="time" class="input-hfin" name="hfin" id="input-hfin2" >
-                </div>
-            </li>
+            <div id="creneauThirdLine">
+                <li class="double-input">
+                    <div id="creneauSalle">
+                        <label for="input-salle">Salle:<p class="hidden">*</p></label>
+                        <input type="text" id="input-salle" name="salle" placeholder="Veuillez entrer votre salle" >
+                        <p class="hidden">Salle non valide</p>
+                    </div>
+                    <div id="creneauType">
+                        <label for="input-type">Type:<p class="hidden">*</p></label>
+                        <select id="input-type" name="type" >
+                            <option value="" disabled selected>Sélectionnez un type</option>
+                            <option value="TD">TD</option>
+                            <option value="TP">TP</option>
+                            <option value="CM">Cours</option>
+                        </select>
+                        <p class="hidden">Type non valide</p>
+                    </div>
+                    <div class="nouveau_heure_triple">
+                        <label for="input-hfin2">Heure fin:<p class="hidden">*</p></label>
+                        <input type="time" class="input-hfin" name="hfin" id="input-hfin2" >
+                    </div>
+                </li>
+            </div>
+            <div id="activiteThirdLine" class="hidden">
+                <li class="double-input">
+                    <div>
+                        <label for="input-lieu">Localisation:<p class="hidden">*</p></label>
+                        <input type="text" id="input-lieu" name="salle" placeholder="Veuillez entrer la localisation de l'activité" >
+                    </div>
+                </li>
+            </div>
             <li id="li_motivation">
                 <div>
                     <label for="input-motivation" id="label_motivation">Motivation: (facultatif)</label>
@@ -499,10 +532,16 @@ function notificationImportance(){
                     <span class="hidden" id="input-motivation-autre"><input type="text" name="motivation-autre" placeholder="Veuillez entrer votre motivation"></span>
                 </div>
             </li>
-            <li class="basique">
-                <input type="checkbox" id="input-semaine" name="semaine">
-                <label for="input-semaine">Une semaine sur deux</label>
-            </li>
+            <span class="choix-li-nouveau-panel">
+                <li class="basique">
+                    <input type="checkbox" id="input-isCours" name="isCours" onclick="insertActivity()">
+                    <label for="input-isCours">Ajouter un créneau externe</label>
+                </li>
+                <li class="basique">
+                    <input type="checkbox" id="input-semaine" name="semaine">
+                    <label for="input-semaine">Une semaine sur deux</label>
+                </li>
+            </span>
             <li class="basique hidden" id="choix-semaine">
                 <input type="radio" name="semainechoix" value="A" id="sA-choix" selected>
                 <label for="sA-choix">Semaine A</label>

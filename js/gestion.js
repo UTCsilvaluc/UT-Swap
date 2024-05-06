@@ -17,7 +17,7 @@ button_selection.addEventListener("click", function() {
     }else{
         icon_select.innerHTML = "toggle_off";
     }
-    
+
 });
 
 function openFiltre(event){
@@ -76,13 +76,13 @@ function addInputForm(form, choix, idDemande, demandeur, id){
     inputChoix.setAttribute('name', 'choix' + id);
     inputChoix.setAttribute('value', choix);
     form.appendChild(inputChoix);
-    
+
     var inputDemandeur = document.createElement('input');
     inputDemandeur.setAttribute('type', 'hidden');
     inputDemandeur.setAttribute('name', 'demandeur' + id);
     inputDemandeur.setAttribute('value', demandeur);
     form.appendChild(inputDemandeur);
-    
+
     var inputIdDemande = document.createElement('input');
     inputIdDemande.setAttribute('type', 'hidden');
     inputIdDemande.setAttribute('name', 'idDemande' + id);
@@ -94,7 +94,7 @@ function addInputForm(form, choix, idDemande, demandeur, id){
 function choixProfesseurSwap(choix, element){
     event.stopPropagation();
     var clickedElement = element.target;
-   
+
     // Vérifier si l'élément cliqué est le même que l'élément sur lequel l'événement est attaché
     if (clickedElement === element.currentTarget) {
         var form = document.createElement('form');
@@ -136,10 +136,10 @@ function choixProfesseurSwap(choix, element){
                     addInputForm(form, choix, donnees.idDemande, donnees.demandeur, j);
                 }else{
                     addInputForm(form, choix, donnees.idDemande, donnees.demandeur, 0);
-                } 
+                }
             }
         }
-        
+
         // Ajouter le formulaire à la page
         document.body.appendChild(form);
 
@@ -198,7 +198,7 @@ function afficherInfoSwap(element){
             var form = document.createElement('form');
             form.setAttribute('method', 'post');
             form.setAttribute('action', '');
-            
+
             var inputDemandeur = document.createElement('input');
             inputDemandeur.setAttribute('type', 'hidden');
             inputDemandeur.setAttribute('name', 'demandeur');
@@ -210,7 +210,7 @@ function afficherInfoSwap(element){
             inputAfficher.setAttribute('name', 'afficher');
             inputAfficher.setAttribute('value', true);
             form.appendChild(inputAfficher);
-            
+
             var inputIdDemande = document.createElement('input');
             inputIdDemande.setAttribute('type', 'hidden');
             inputIdDemande.setAttribute('name', 'idDemande');
@@ -230,13 +230,13 @@ function gererUVChoix(choix){
     var form = document.createElement('form');
     form.setAttribute('method', 'post');
     form.setAttribute('action', '');
-    
+
     var inputChoixSwap = document.createElement('input');
     inputChoixSwap.setAttribute('type', 'hidden');
     inputChoixSwap.setAttribute('name', 'choixSwap');
     inputChoixSwap.setAttribute('value', choix);
     form.appendChild(inputChoixSwap);
-    
+
     var inputCodeUV = document.createElement('input');
     inputCodeUV.setAttribute('type', 'hidden');
     inputCodeUV.setAttribute('name', 'codeUV');
@@ -296,7 +296,7 @@ uv_button_enregistrer_global.addEventListener("click", function() {
     var form = document.createElement('form');
     form.setAttribute('method', 'post');
     form.setAttribute('action', '');
-    
+
     var inputChoixSwap = document.createElement('input');
     inputChoixSwap.setAttribute('type', 'hidden');
     inputChoixSwap.setAttribute('name', 'choixChangement');
@@ -362,7 +362,7 @@ function mettreAJourContenuProfil() {
             if (buttonContainer.parentElement.classList.contains('top_container')) {
                 midContainer.parentNode.insertBefore(gaucheContainer, midContainer);
                 midContainer.parentNode.insertBefore(buttonContainer, midContainer.nextSibling);
-                
+
                 var topContainer = document.querySelector('.top_container');
                 topContainer.parentNode.removeChild(topContainer);
             }
@@ -376,7 +376,7 @@ function mettreAJourContenuProfil() {
         button_accept_all.innerHTML = '<img src="../svg/Vector_check_black.svg" alt="">Accepter';
         button_decline_all.innerHTML = '<img src="../svg/Vector_none_black.svg" alt="">Refuser';
     }
-    
+
     if(largeurFenetre <= 800){
         choix_uv_label.innerHTML = "Autoriser changements UV(s)";
     }else{
@@ -390,7 +390,7 @@ function mettreAJourContenuProfil() {
     } else {
         button_compat.innerHTML = "Test compatibilité";
         var parent = document.getElementById("demandes_professeur_header");
-        parent.insertBefore(boutonContainer, parent.children[1]); 
+        parent.insertBefore(boutonContainer, parent.children[1]);
     }
 }
 
@@ -424,18 +424,16 @@ function canDisplayRequest(event) {
         } else {
             console.error("Aucune donnée trouvée dans l'attribut data-row");
         }
-
         if (!(UvsActifs.includes(donnees.codeUV))){
             display = false;
         }
         if (!(typeActifs.includes(donnees.type))){
             display = false;
         }
-        if (donnees.fil1 === "TC" || donnees.fil2 === "TC" && document.getElementById("filiere_tc").className === "filiereunCheck"){
+        if ((donnees.fil1 === "TC" || donnees.fil2 === "TC") && document.getElementById("filiere_tc").className === "filunCheck"){
             display = false;
-
         }
-        if (donnees.fil1 === "BR" || donnees.fil2 === "BR" && document.getElementById("filiere_br").className === "filiereunCheck"){
+        if ((donnees.fil1 === "BR" || donnees.fil2 === "BR") && document.getElementById("filiere_br").className === "filunCheck"){
             display = false;
 
         }
@@ -445,32 +443,31 @@ function canDisplayRequest(event) {
 }
 
 function changeType(event){
-    var labelForInput = document.querySelector('label[for="' + event.target.id + '"]');
-    if (labelForInput.className === "typeCheck"){
-        labelForInput.className = "typeunCheck";
+    var target = event.target;
+    if (target.className === "typeCheck"){
+        target.className = "typeunCheck";
     } else {
-        labelForInput.className = "typeCheck";
+        target.className = "typeCheck";
     }
     canDisplayRequest(event);
 }
 
-function changeSemaine(event){
-    console.log(event.target)
-    var labelForInput = document.querySelector('label[for="' + event.target.id + '"]');
-    if (labelForInput.className === "filiereCheck"){
-        labelForInput.className = "filiereunCheck";
+function changeFil(event){
+    var target = event.target;
+    if (target.className === "filCheck"){
+        target.className = "filunCheck";
     } else {
-        labelForInput.className = "filiereCheck";
+        target.className = "filCheck";
     }
     canDisplayRequest(event);
 }
 
 function changeUV(event){
-    var labelForInput = document.querySelector('label[for="' + event.target.id + '"]');
-    if (labelForInput.className === "uvCheck"){
-        labelForInput.className = "uvUnCheck";
+    var target = event.target;
+    if (target.className === "uvCheck"){
+        target.className = "uvUnCheck";
     } else {
-        labelForInput.className = "uvCheck";
+        target.className = "uvCheck";
     }
     canDisplayRequest(event);
 }
