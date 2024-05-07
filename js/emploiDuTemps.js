@@ -389,113 +389,6 @@ function clearBorderRadius(){
     }
 }
 
-var dessus_edt = document.getElementById("dessus_edt");
-var taille_edt = document.querySelector(".conteneurHours").offsetWidth + document.querySelector("#emploi_du_temps").offsetWidth;
-
-dessus_edt.style.width = pxToVw(taille_edt) + "vw";
-
-function mettreAJourContenu() {
-    var listeJour = document.getElementsByClassName("jour");
-    var largeurFenetre = window.innerWidth;
-
-    // Changez le contenu en fonction de la largeur de la fenêtre
-    var exportTXT = document.getElementById('export_txt');
-    var exportPNG = document.getElementById('export_png');
-
-    var messageExport = document.getElementById('messageExport').parentElement.querySelector("label");
-    var messageUV = document.getElementById('messageUV').parentElement.querySelector("label");
-
-    if (largeurFenetre <= 600) {
-        dessus_edt.style.width = ""
-    }else{
-        dessus_edt = document.getElementById("dessus_edt");
-        taille_edt = document.querySelector(".conteneurHours").offsetWidth + document.querySelector("#emploi_du_temps").offsetWidth;
-        dessus_edt.style.width = pxToVw(taille_edt) + "vw";
-    }
-    
-    if (largeurFenetre <= 400) {
-        messageUV.innerHTML = "UV";
-        messageExport.innerHTML = "Export";
-        exportTXT.innerHTML = 'TXT';
-        exportPNG.innerHTML = 'PNG';
-    } else {
-        messageUV.innerHTML = "Message d'UV";
-        messageExport.innerHTML = "Message d'export";
-        exportTXT.innerHTML = 'Exporter TXT';
-        exportPNG.innerHTML = 'Exporter PNG';
-    }
-
-    if(largeurFenetre <= 600){
-        for(element of document.getElementsByClassName("jour_entier")){
-            element.style.display = "block";
-        }
-        for(element of document.getElementsByClassName("jour_mid")){
-            element.style.display = "none";
-        }
-        for(element of document.getElementsByClassName("jour_small")){
-            element.style.display = "none";
-        }
-
-        var nbJour = 0;
-        var taillePrec;
-        for(jour of listeJour){
-            if(jour.style.display != "none"){
-                nbJour++;
-            }
-            jour.style.display = "";
-            jour.style.border = 0;
-            jour.style.borderRadius = 0;
-            taillePrec = jour.offsetWidth;
-        }
-        clearBorderRadius();
-        changeCSSVar("taille-edt","12vw");
-    }else{
-        var firstDay = false;
-        for (var jour of listeJour){
-            if (jour.style.display != "none"){
-                jour.style.borderLeft = "0";
-            }
-            jour.style.border = "1px solid black";
-            jour.style.borderLeft = "";
-
-            if (firstDay === false && jour.style.display != "none"){
-                jour.style.borderLeft = "1px black solid";
-                firstDay = true;
-            }
-        }
-        setBorderRadius();
-    }
-
-    if(largeurFenetre <=450){
-        for(element of document.getElementsByClassName("jour_entier")){
-            element.style.display = "none";
-        }
-        for(element of document.getElementsByClassName("jour_mid")){
-            element.style.display = "block";
-        }
-        for(element of document.getElementsByClassName("jour_small")){
-            element.style.display = "none";
-        }
-    }
-
-    if(largeurFenetre <=300){
-        for(element of document.getElementsByClassName("jour_entier")){
-            element.style.display = "none";
-        }
-        for(element of document.getElementsByClassName("jour_mid")){
-            element.style.display = "none";
-        }
-        for(element of document.getElementsByClassName("jour_small")){
-            element.style.display = "block";
-        }
-    }
-}
-
-// Attacher la fonction au changement de taille de la fenêtre
-window.addEventListener('resize', mettreAJourContenu);
-
-// Appeler la fonction une fois au chargement de la page
-mettreAJourContenu();
 
 function calculDecimal(nombre) {
     var heuresMinutesDebut = nombre.split('h');
@@ -1059,14 +952,6 @@ document.addEventListener("click" , function (event) {
 });
 
 
-// Create a function for getting a variable value
-function myFunction_get() {
-    // Get the styles (properties and values) for the root
-    var rs = getComputedStyle(r);
-    // Alert the value of the --blue variable
-    alert("The value of --blue is: " + rs.getPropertyValue('--blue'));
-}
-
 // Create a function for setting a variable value
 function changeCSSVar(variable, valeur) {
     var r = document.querySelector(':root');
@@ -1084,65 +969,69 @@ function pxToVw(pxValue) {
 }
 
 function changeJour(event){
-    var listeJour = document.getElementsByClassName("jour");
-    var pushJour = [];
-    var nbJour = 0;
-    var taillePrec = null;
-    for (var jour of listeJour){
-        if (jour.style.display != "none"){
-            nbJour +=1;
-            taillePrec = jour.offsetWidth;
-        }
-    }
-
-    if (event.target.className == "check"){
-        changeCSSVar("taille-edt",pxToVw(taillePrec * nbJour / (nbJour-1)) + "vw");
-    }else{
-        changeCSSVar("taille-edt",pxToVw(taillePrec * nbJour / (nbJour+1)) + "vw");
-    }
-
-    var jour = event.target.innerHTML.toLowerCase();
-    document.getElementById(jour).style.display = "none";
-    var listeJour = document.getElementsByClassName("jour");
-    if (event.target.className == "check"){
-        event.target.className = "uncheck"
+    
+    if(window.innerWidth > 600){
+        var listeJour = document.getElementsByClassName("jour");
+        var pushJour = [];
+        var nbJour = 0;
+        var taillePrec = null;
         for (var jour of listeJour){
             if (jour.style.display != "none"){
-                jour.style.borderLeft = "1px black solid";
-                break;
+                nbJour +=1;
+                taillePrec = jour.offsetWidth;
             }
         }
-    } else {
-        event.target.className = "check"
-        document.getElementById(jour).style.display = "block";
-    }
 
-    var firstDay = false;
-    for (var jour of listeJour){
-        if (jour.style.display != "none"){
-            jour.style.borderLeft = "0";
+        if (event.target.className == "check"){
+            changeCSSVar("taille-edt",pxToVw(taillePrec * nbJour / (nbJour-1)) + "vw");
+        }else{
+            changeCSSVar("taille-edt",pxToVw(taillePrec * nbJour / (nbJour+1)) + "vw");
         }
-        if (firstDay === false && jour.style.display != "none"){
-            jour.style.borderLeft = "1px black solid";
-            firstDay = true;
+        var jour = event.target.innerHTML.toLowerCase();
+        document.getElementById(jour).style.display = "none";
+        var listeJour = document.getElementsByClassName("jour");
+        if (event.target.className == "check"){
+            event.target.className = "uncheck"
+            for (var jour of listeJour){
+                if (jour.style.display != "none"){
+                    jour.style.borderLeft = "1px black solid";
+                    break;
+                }
+            }
+        } else {
+            event.target.className = "check"
+            document.getElementById(jour).style.display = "block";
         }
+
+        var firstDay = false;
+        for (var jour of listeJour){
+            if (jour.style.display != "none"){
+                jour.style.borderLeft = "0";
+            }
+            if (firstDay === false && jour.style.display != "none"){
+                jour.style.borderLeft = "1px black solid";
+                firstDay = true;
+            }
+        }
+        Array.from(document.querySelectorAll("#spanJour .check")).forEach(jour => {
+            pushJour.push(jour.innerHTML);
+        });
+        recupererParametresUtilisateur()
+            .then(parametres => {
+                parametres.jours = pushJour;
+                return sauvegarderParametresUtilisateur(parametres);
+            })
+            .then(message => {
+                return recupererParametresUtilisateur();
+            })
+            .catch(error => console.error("Erreur :", error));
+    
+        clearBorderRadius();
+    
+        setBorderRadius();
     }
-    Array.from(document.querySelectorAll("#spanJour .check")).forEach(jour => {
-        pushJour.push(jour.innerHTML);
-    });
-    recupererParametresUtilisateur()
-        .then(parametres => {
-            parametres.jours = pushJour;
-            return sauvegarderParametresUtilisateur(parametres);
-        })
-        .then(message => {
-            return recupererParametresUtilisateur();
-        })
-        .catch(error => console.error("Erreur :", error));
-
-    clearBorderRadius();
-
-    setBorderRadius();
+    
+    
 }
 
 function changePolice(event){
@@ -1294,7 +1183,7 @@ function transformerEntreeCours(entree) {
     }
 }
 
-const dropArea = document.querySelector("#drag-image"),
+const dropArea = document.querySelector("#drag_file_edt"),
 dragText = dropArea.querySelector("h6"),
 button_input_file = dropArea.querySelector("button"),
 input_file = dropArea.querySelector("input");
@@ -1333,7 +1222,7 @@ function sendFile(){
     if (file) {
         resetEDT(event);
         document.getElementById("midFileError").classList.toggle("hidden", true);
-        document.getElementById("midfileInput").value = "";
+        document.getElementById("input_file_edt").value = "";
 
         const reader = new FileReader();
 
@@ -1741,3 +1630,169 @@ function insertActivity(){
     }
 
 }
+
+var dessus_edt = document.getElementById("dessus_edt");
+var taille_edt = document.querySelector(".conteneurHours").offsetWidth + document.querySelector("#emploi_du_temps").offsetWidth;
+
+var joursComplet = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+var joursAbrege = ['Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.', 'Dim.'];
+var joursTresAbrege = ['L', 'Ma', 'Me', 'J', 'V', 'S', 'D'];
+var jours = document.querySelectorAll('#menu_jour_edt li');
+dessus_edt.style.width = pxToVw(taille_edt) + "vw";
+
+function mettreAJourContenu() {
+    var listeJour = document.getElementsByClassName("jour");
+    var largeurFenetre = window.innerWidth;
+
+    // Changez le contenu en fonction de la largeur de la fenêtre
+    var exportTXT = document.getElementById('export_txt');
+    var exportPNG = document.getElementById('export_png');
+
+    var messageExport = document.getElementById('messageExport').parentElement.querySelector("label");
+    var messageUV = document.getElementById('messageUV').parentElement.querySelector("label");
+
+    if (largeurFenetre <= 600) {
+        dessus_edt.style.width = ""
+    }else{
+        dessus_edt = document.getElementById("dessus_edt");
+        taille_edt = document.querySelector(".conteneurHours").offsetWidth + document.querySelector("#emploi_du_temps").offsetWidth;
+        dessus_edt.style.width = pxToVw(taille_edt) + "vw";
+    }
+    
+    if (largeurFenetre <= 400) {
+        messageUV.innerHTML = "UV";
+        messageExport.innerHTML = "Export";
+        exportTXT.innerHTML = 'TXT';
+        exportPNG.innerHTML = 'PNG';
+    } else {
+        messageUV.innerHTML = "Message d'UV";
+        messageExport.innerHTML = "Message d'export";
+        exportTXT.innerHTML = 'Exporter TXT';
+        exportPNG.innerHTML = 'Exporter PNG';
+    }
+
+    if(largeurFenetre <= 600){
+        jours.forEach(function(jour, index) {
+            jour.textContent = joursComplet[index];
+        });
+
+        var nbJour = 0;
+        var taillePrec;
+        for(jour of listeJour){
+            if(jour.style.display != "none"){
+                nbJour++;
+            }
+            jour.style.display = "";
+            jour.style.border = "none";
+            jour.style.borderRadius ="none";
+            taillePrec = jour.offsetWidth;
+        }
+        clearBorderRadius();
+        changeCSSVar("taille-edt","12vw");
+    }else{
+        var premierJourVisible = true; // Variable pour garder une trace du premier jour visible
+
+        for (var jour of listeJour) {
+            if (jour.style.display !== "none") { // Vérifie si le jour est visible
+                if (premierJourVisible) { // Si c'est le premier élément visible
+                    jour.style.borderLeft = "1px solid black"; // Applique une bordure à gauche uniquement pour le premier élément visible
+                    premierJourVisible = false; // Met à jour la variable pour les éléments suivants
+                }
+                jour.style.borderTop = "1px solid black"; // Applique une bordure en haut
+                jour.style.borderRight = "1px solid black"; // Applique une bordure à droite
+                jour.style.borderBottom = "1px solid black"; // Applique une bordure en bas
+            }
+        }
+        setBorderRadius();
+    }
+
+    if(largeurFenetre <=450 && largeurFenetre > 300){
+        jours.forEach(function(jour, index) {
+            jour.textContent = joursAbrege[index];
+        });
+    }else if(largeurFenetre <=300){
+        jours.forEach(function(jour, index) {
+            jour.textContent = joursTresAbrege[index];
+        });
+    }
+}
+
+// Attacher la fonction au changement de taille de la fenêtre
+window.addEventListener('resize', mettreAJourContenu);
+
+// Appeler la fonction une fois au chargement de la page
+mettreAJourContenu();
+
+const dropZone = document.getElementById('dropZone_custom');
+const emploi_du_temps = document.getElementById('emploi_du_temps');
+
+var dragTextImageCustom = dropZone.querySelector("h6");
+var buttonImageCustom = dropZone.querySelector("button");
+var inputImageCustom = dropZone.querySelector("input");
+let fileImageCustom; 
+
+buttonImageCustom.onclick = ()=>{
+    inputImageCustom.click(); 
+}
+
+inputImageCustom.addEventListener("change", function(){
+    fileImageCustom = this.files[0];
+    dropZone.classList.add("active");
+    sendFileImageCustom();
+});
+
+dropZone.addEventListener("dragover", (event)=>{
+  event.preventDefault();
+  dropZone.classList.add("active");
+  dragTextImageCustom.textContent = "Relacher le fichier ici";
+});
+
+
+dropZone.addEventListener("dragleave", ()=>{
+    dropZone.classList.remove("active");
+    dragTextImageCustom.textContent = "Drag & Drop le fichier ici";
+}); 
+
+dropZone.addEventListener("drop", (event)=>{
+    event.preventDefault(); 
+    fileImageCustom = event.dataTransfer.files[0];
+    sendFileImageCustom(); 
+});
+
+function sendFileImageCustom(){
+    if (fileImageCustom) {
+        // Vérifier si le fichier est une image en vérifiant son type MIME
+        if (fileImageCustom.type.startsWith('image/')) {
+            // Si c'est une image, continuer le traitement avec image-compressor.js
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                changeCSSVar("bg-image", `url(${event.target.result})`)
+            };
+
+            reader.readAsDataURL(fileImageCustom);
+        } else {
+            // Si ce n'est pas une image, afficher un message d'erreur ou ignorer le fichier
+            console.error('Le fichier déposé n\'est pas une image.');
+        }
+    }
+}
+
+
+var sliderBlur = document.getElementById("range_blur");
+
+sliderBlur.addEventListener("input", function() {
+    changeCSSVar("bg-image-blur",sliderBlur.value+"px");
+});
+
+var sliderTop = document.getElementById("range_top");
+
+sliderTop.addEventListener("input", function() {
+    changeCSSVar("bg-position",sliderTop.value + "%");
+});
+
+var sliderBlack = document.getElementById("range_black");
+
+sliderBlack.addEventListener("input", function() {
+    changeCSSVar("bg-black",sliderBlack.value/10);
+});

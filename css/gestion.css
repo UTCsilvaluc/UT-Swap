@@ -281,6 +281,7 @@ select{
 #swap_info_pannel ::-webkit-scrollbar
 {
 	width: 8px;
+    height:10px;
 	background-color: #F5F5F5;
 }
 

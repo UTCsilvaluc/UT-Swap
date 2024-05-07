@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="../css/emploiDuTemps.css">
     <link rel="stylesheet" href="../css/filtre.css">
     <link rel="stylesheet" href="../css/mid_pannel.css">
-    <title>Header avec Notification</title>
+    <title>Swap - UT'Swap</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </head>
@@ -19,11 +19,11 @@ function changeInputType(){
     document.getElementById("midFileError").classList.toggle('hidden',true);
     if (document.getElementById("messageUV").checked){
         document.getElementById("textUV").classList.toggle('hidden', false);
-        document.getElementById("drag-image").classList.toggle('hidden', true);
+        document.getElementById("drag_file_edt").classList.toggle('hidden', true);
         document.getElementsByClassName("mid_button")[0].classList.toggle('hidden', false);
     } else {
         document.getElementById("textUV").classList.toggle('hidden', true);
-        document.getElementById("drag-image").classList.toggle('hidden', false);
+        document.getElementById("drag_file_edt").classList.toggle('hidden', false);
         document.getElementsByClassName("mid_button")[0].classList.toggle('hidden', true);
     }
 }
@@ -101,13 +101,13 @@ function exportEDT(type){
                         <div><img class="svgCustom" title="Personnaliser l'emploi du temps" src="../svg/custom.svg" id="custom_edt" onclick="openCustom(event)"></div>
                     </div>
                 <ul id="menu_jour_edt">
-                    <li class="jour_select" onclick="changerJour(this,'lundi')"><span class="jour_entier">Lundi</span><span class="jour_mid">Lun.</span><span class="jour_small">L.</span></li>
-                    <li onclick="changerJour(this,'mardi')"><span class="jour_entier">Mardi</span><span class="jour_mid">Mar.</span><span class="jour_small">Ma.</span></li>
-                    <li onclick="changerJour(this,'mercredi')"><span class="jour_entier">Mercredi</span><span class="jour_mid">Mer.</span><span class="jour_small">Me.</span></li>
-                    <li onclick="changerJour(this,'jeudi')"><span class="jour_entier">Jeudi</span><span class="jour_mid">Jeu.</span><span class="jour_small">J.</span></li>
-                    <li onclick="changerJour(this,'vendredi')"><span class="jour_entier">Vendredi</span><span class="jour_mid">Ven.</span><span class="jour_small">V.</span></li>
-                    <li onclick="changerJour(this,'samedi')"><span class="jour_entier">Samedi</span><span class="jour_mid">Sam.</span><span class="jour_small">S.</span></li>
-                    <li onclick="changerJour(this,'dimanche')"><span class="jour_entier">Dimanche</span><span class="jour_mid">Dim.</span><span class="jour_small">D.</span></li>
+                    <li class="jour_select" onclick="changerJour(this,'lundi')">Lundi</li>
+                    <li onclick="changerJour(this,'mardi')">Mardi</li>
+                    <li onclick="changerJour(this,'mercredi')">Mercredi</li>
+                    <li onclick="changerJour(this,'jeudi')">Jeudi</li>
+                    <li onclick="changerJour(this,'vendredi')">Vendredi</li>
+                    <li onclick="changerJour(this,'samedi')">Samedi</li>
+                    <li onclick="changerJour(this,'dimanche')">Dimanche</li>
                 </ul>
                 <div id="conteneur_edt">
                     <div id="ecran_edt"></div>
@@ -131,12 +131,11 @@ function exportEDT(type){
                             <p class="hidden" id="midFileError">Merci d'importer un fichier ou de sélectionner une autre méthode !</p>
                             <textarea class="" name="texteUV" id="textUV" cols="30" rows="10" placeholder="Veuillez renseigner le mail reçu comprenant la liste des inscriptions aux UVS"></textarea>
                             
-                            <div id="drag-image" class="hidden">
-                                <div id="drag-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                            <div id="drag_file_edt" class="hidden">
                                 <h6>Drag & Drop le fichier ici</h6>
                                 <span>OU</span>
                                 <button>Choisir un fichier</button>
-                                <input type="file" id="midfileInput" name="fileInput" accept=".txt" hidden>
+                                <input type="file" id="input_file_edt" name="fileInput" accept=".txt" hidden>
                             </div>
 
                             <span class="mid_input_local_save">
@@ -169,6 +168,8 @@ function exportEDT(type){
                     <div>
                         <div class="conteneurHours"></div>
                         <div id="emploi_du_temps">
+                            
+                            <div id="assombrissement"></div>
                             <div id="lundi" class="jour jour_select"><h1 class="titleday">Lundi</h1>
                                 <div class="endroit_cours">
                                 </div>
@@ -251,7 +252,31 @@ function exportEDT(type){
                             </div>
                         </span>
                     </div>
-
+                    <div class="custom_parent" id="image_bg">
+                        <h1 class="custom_entete">Image de fond</h1>
+                        <span class="custom_span">
+                            <div class="drop-zone" id="dropZone_custom">
+                                <h6>Drag &amp; Drop le fichier ici</h6>
+                                <span>OU</span>
+                                <button>Choisir un fichier</button>
+                                <input type="file" name="fileInputCustom" hidden="">
+                            </div>
+                            <div id="image_bg_settings">
+                                <div>
+                                    <p>Valeur du flou :</p>
+                                    <input type="range" min="0" max="10" value="0" id="range_blur">
+                                </div>
+                                <div>
+                                    <p>Opacité de l'image:</p>
+                                    <input type="range" min="0" max="8" value="0" id="range_black">
+                                </div>
+                                <div>
+                                    <p>Position de l'image:</p>
+                                    <input type="range" min="0" max="100" value="0" id="range_top">
+                                </div>
+                            </div>
+                        </span>
+                    </div>
                     <div class="custom_parent" id="heures">
                         <h1>Horaires</h1>
                         <span class="custom_span">
@@ -269,7 +294,7 @@ function exportEDT(type){
                 </div>
             </div>
         </div>
-
+        <script src="https://unpkg.com/image-compressor.js"></script>
         <div class="hoverCours" style="display: none; flex-direction: column ; position: absolute">
             <img class="hoverCoursIcon" id="swap" src="../svg/swap_icone.svg" alt="" onmouseenter="svgSwapEnter(event)" onmouseleave="svgSwapLeave(event)" onclick="posterSwap(event)">
             <img class="hoverCoursIcon" id="displace" src="../svg/deplacer_icone.svg" alt="" onmouseenter="svgpDisplaceEnter(event)" onmouseleave="svgDisplaceLeave(event)">

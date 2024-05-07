@@ -431,16 +431,19 @@ function isScrollbarVisible(element) {
 function mettreAJourContenuProfil() {
     var largeurFenetre = window.innerWidth;
     var label_motivation = document.getElementById("label_motivation");
-    
+    var choix_li_nouveau_panel = document.getElementById("choix-li-nouveau-panel");
+    var choix_semaine = document.getElementById("choix-semaine");
     var label_input_semaine = document.getElementById("input-semaine").parentElement.querySelector("label");
     if (largeurFenetre <= 350) {
         label_motivation.innerHTML = 'Motivation: (!)';
         label_motivation.title = 'Facultatif';
-        label_input_semaine.innerHTML = "Semaine 1/2";
+        choix_li_nouveau_panel.style.flexDirection = "column";
+        choix_semaine.style.flexDirection = "column";
     } else {
         label_motivation.innerHTML = 'Motivation: (facultatif)';
         label_motivation.title = '';
-        label_input_semaine.innerHTML = "Une semaine sur deux";
+        choix_li_nouveau_panel.style.flexDirection = "row";
+        choix_semaine.style.flexDirection = "row";
     }
     var bodyHasScrollbar = isScrollbarVisible(document.getElementById("div_milieu_nouveau"));
     if (bodyHasScrollbar) {

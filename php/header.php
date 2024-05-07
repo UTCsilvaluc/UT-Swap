@@ -6,7 +6,7 @@ session_start();
 function DBCredential(){
     $dbhost = 'localhost';
     $dbuser = 'root';
-    $dbpass = '';
+    $dbpass = 'root';
     $dbname = 'ut_swap';
     $connect = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to mysql');
     mysqli_set_charset($connect, 'utf8');
@@ -532,23 +532,26 @@ function notificationImportance(){
                     <span class="hidden" id="input-motivation-autre"><input type="text" name="motivation-autre" placeholder="Veuillez entrer votre motivation"></span>
                 </div>
             </li>
-            <span class="choix-li-nouveau-panel">
+            <div id="choix-li-nouveau-panel" class="nouveau_pannel_checkbox">
                 <li class="basique">
                     <input type="checkbox" id="input-isCours" name="isCours" onclick="insertActivity()">
-                    <label for="input-isCours">Ajouter un créneau externe</label>
+                    <label for="input-isCours">Créneau externe</label>
                 </li>
                 <li class="basique">
                     <input type="checkbox" id="input-semaine" name="semaine">
-                    <label for="input-semaine">Une semaine sur deux</label>
+                    <label for="input-semaine">Semaine 1/2</label>
                 </li>
-            </span>
-            <li class="basique hidden" id="choix-semaine">
-                <input type="radio" name="semainechoix" value="A" id="sA-choix" selected>
-                <label for="sA-choix">Semaine A</label>
-                <input type="radio" name="semainechoix" value="B" id="sB-choix">
-                <label for="sB-choix">Semaine B</label>
-
-            </li>
+            </div>
+            <div class="nouveau_pannel_checkbox hidden" id="choix-semaine">
+                <li class="basique">
+                    <input type="radio" name="semainechoix" value="A" id="sA-choix" selected>
+                    <label for="sA-choix">Semaine A</label>
+                </li>
+                <li class="basique" id="choix-semaine">
+                    <input type="radio" name="semainechoix" value="B" id="sB-choix">
+                    <label for="sB-choix">Semaine B</label>
+                </li>
+            </div>
         </ul>
 
         <div class="hidden">
