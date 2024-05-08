@@ -1,0 +1,88 @@
+div.main_info {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centrer verticalement les éléments */
+}
+
+.info_title {
+    text-align: center;
+    font-style: oblique;
+}
+#info_titre{
+    font-family: "Jost", sans-serif;
+    font-size: 22px;
+    font-weight: bold;
+}
+#info_menu_nav {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centrer verticalement */
+}
+
+#span_nav_menu {
+    text-align: center; /* Centrer le texte à l'intérieur du span */
+    display: flex;
+    flex-direction: row;
+    justify-content: center; /* Centrer horizontalement les éléments */
+    border-bottom: 1px black solid; /* Bordure sous toute la span */
+}
+
+#span_nav_menu h3{
+    transition: 0.3s linear opacity;
+
+}
+
+#span_nav_menu h3:hover{
+    cursor: pointer;
+    opacity: 90%;
+
+}
+
+h3.currentSpan {
+    padding-bottom: 5px;
+    border-bottom: 2px black solid; /* Bordure plus visible pour #currentSpan */
+}
+
+span#span_nav_menu h3{
+    font-style: initial;
+    color: #424141;
+}
+
+h3.currentSpan{
+    border-bottom: 3px black solid;
+    padding-bottom: 5px;
+}
+
+#span_nav_menu h3 {
+    margin: 0 20px; /* Ajouter une marge horizontale de 20px entre les éléments */
+    font-family: Jost;
+    font-size: 24px;
+    font-weight: normal;
+}
+
+div#info_menu_content{
+    width: 45%;
+    text-align: center;
+}
+
+span.content{
+    display: flex;
+    flex-direction: column;
+    text-align: justify;
+    vertical-align: center;
+    margin: 5px 0px;
+    width: 100%;
+}
+span.content h4{
+    margin: 10px 0px;
+    font-family: Jost;
+    font-size: 24px;
+    font-weight: bold;
+}
+span.content h5{
+    margin: 0 0 0 20px;
+    font-family: Jost, serif;
+    font-size: 15px;
+    font-weight: normal;
+}

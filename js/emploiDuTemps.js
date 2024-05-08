@@ -188,6 +188,7 @@ document.getElementById("emploi_du_temps").addEventListener("mousemove" , functi
             hoverCours.style.flexDirection = "column";
             hoverCours.style.width = "auto";
         }
+        document.getElementById("swap").classList.toggle("hidden" , typeMatiere === "ACT");
 
     }
 
@@ -208,6 +209,8 @@ function addCreneau(event) {
         motivation.classList.toggle('hidden', true);
         bouton_ajouter_creneau.classList.toggle('hidden', false);
         bouton_non_submit.classList.toggle('hidden', true);
+        document.getElementById("li-externe").classList.toggle("hidden" , false);
+        document.getElementById("li-semaine").classList.toggle("hidden" , false);
         var divHeureCliquee = event.target.closest('.divHeure');
         var divJour = event.target.closest('.jour');
         if (divHeureCliquee) {

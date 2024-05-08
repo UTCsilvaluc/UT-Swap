@@ -351,6 +351,9 @@ function nouveauClick() {
     document.getElementById("bouton_remplacer").classList.toggle('hidden', true)
     document.getElementById("message_changement_creneau").classList.toggle('hidden', true);
 
+    document.getElementById("li-externe").classList.toggle("hidden" , true);
+    document.getElementById("li-semaine").classList.toggle("hidden" , false);
+
     bouton_ajouter_creneau.classList.toggle('hidden', true);
     bouton_continuer.classList.toggle('hidden', true);
     motivation.classList.toggle('hidden', false);

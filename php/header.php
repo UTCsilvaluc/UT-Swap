@@ -6,7 +6,7 @@ session_start();
 function DBCredential(){
     $dbhost = 'localhost';
     $dbuser = 'root';
-    $dbpass = 'root';
+    $dbpass = '';
     $dbname = 'ut_swap';
     $connect = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('Error connecting to mysql');
     mysqli_set_charset($connect, 'utf8');
@@ -533,11 +533,11 @@ function notificationImportance(){
                 </div>
             </li>
             <div id="choix-li-nouveau-panel" class="nouveau_pannel_checkbox">
-                <li class="basique">
+                <li class="basique" id="li-externe">
                     <input type="checkbox" id="input-isCours" name="isCours" onclick="insertActivity()">
                     <label for="input-isCours">Créneau externe</label>
                 </li>
-                <li class="basique">
+                <li class="basique" id="li-semaine">
                     <input type="checkbox" id="input-semaine" name="semaine">
                     <label for="input-semaine">Semaine 1/2</label>
                 </li>
