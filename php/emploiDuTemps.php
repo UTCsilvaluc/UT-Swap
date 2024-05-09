@@ -295,7 +295,10 @@ function exportEDT(type){
             </div>
         </div>
         <script src="https://unpkg.com/image-compressor.js"></script>
-        <div class="hoverCours" style="display: none; flex-direction: column ; position: absolute">
+        <div class="hoverCoursLeft" id="leftHover" style="display: none; flex-direction: column ; position: absolute">
+            <img class="hoverCoursIcon" id="edit" src="../svg/Edit%20icon.svg" alt="" onmouseenter="svgEditEnter(event)" onmouseleave="svgEditLeave(event)" onclick="editCreneau(event)">
+        </div>
+        <div class="hoverCours" style="display: none; flex-direction: column ; position: absolute" id="rightHover">
             <img class="hoverCoursIcon" id="swap" src="../svg/swap_icone.svg" alt="" onmouseenter="svgSwapEnter(event)" onmouseleave="svgSwapLeave(event)" onclick="posterSwap(event)">
             <img class="hoverCoursIcon" id="displace" src="../svg/deplacer_icone.svg" alt="" onmouseenter="svgpDisplaceEnter(event)" onmouseleave="svgDisplaceLeave(event)">
             <img class="hoverCoursIcon" id="trash" src="../svg/supprimer_icone.svg" onmouseenter="svgpTrasheEnter(event)" onmouseleave="svgTrashLeave(event)" onclick="trashClick()">

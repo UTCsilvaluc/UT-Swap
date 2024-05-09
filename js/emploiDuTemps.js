@@ -21,6 +21,14 @@ function svgpTrasheEnter(event){
 
 }
 
+function svgEditEnter(event){
+    event.target.style.height = "33px";
+    event.target.style.width = "auto";
+    event.target.src = "../svg/edit_text.svg"
+    event.target.style.cursor = "pointer";
+
+}
+
 function svgSwapLeave(event){
     event.target.style.marginTop = "0";
     event.target.style.height = "33px";
@@ -41,6 +49,31 @@ function svgTrashLeave(event){
     event.target.style.width = "33px";
     event.target.src = "../svg/supprimer_icone.svg";
     event.target.style.cursor = "default";
+}
+
+function svgEditLeave(event){
+    event.target.style.height = "33px";
+    event.target.style.width = "auto";
+    event.target.src = "../svg/Edit%20icon.svg"
+    event.target.style.cursor = "pointer";
+
+}
+
+function editCreneau(event){
+    event.stopPropagation();
+    nouveauClick();
+    document.getElementById("bouton_update").classList.toggle("hidden" , false);
+    bouton_non_submit.classList.toggle("hidden" , true);
+    preremplirNouveauForm();
+}
+
+function updateCreneau(){
+    var coursID = localStorage.getItem("idCours");
+    document.getElementById("trash").style.display = "none";
+    document.getElementById("deleteCours").style.display = "flex";
+    deleteCours();
+    bouton_ajouter_creneau.click();
+
 }
 
 function trashClick(){
@@ -168,12 +201,18 @@ document.getElementById("emploi_du_temps").addEventListener("mousemove" , functi
         localStorage.setItem("semaine",semaine);
         localStorage.setItem("idCours" , coursElement.id)
 
-        hoverCours = document.getElementsByClassName("hoverCours")[0];
+        var hoverCours = document.getElementById("rightHover");
+        var hoverLeft = document.getElementById("leftHover");
         hoverCours.style.display = "flex";
         hoverCours.style.height = coursElement.offsetHeight + "px";
 
+        hoverLeft.style.display = "flex";
+        hoverLeft.style.height = coursElement.offsetHeight + "px";
+
         hoverCours.style.left = `${coursElement.getBoundingClientRect().x + coursElement.offsetWidth - 10}px`;
         hoverCours.style.top = `${coursElement.getBoundingClientRect().y}px`;
+        hoverLeft.style.left = `${coursElement.getBoundingClientRect().x + coursElement.offsetWidth - 250}px`;
+        hoverLeft.style.top = `${coursElement.getBoundingClientRect().y}px`;
 
 
         var largeurEcran = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
@@ -187,6 +226,14 @@ document.getElementById("emploi_du_temps").addEventListener("mousemove" , functi
         }else{
             hoverCours.style.flexDirection = "column";
             hoverCours.style.width = "auto";
+        }
+        var editElement = document.getElementById("edit");
+        if (typeMatiere === "ACT"){
+            hoverCours.appendChild(editElement);
+            editElement.src = "../svg/edit_icon_right.svg";
+        } else {
+            editElement.src = "../svg/Edit%20icon.svg";
+            hoverLeft.appendChild(editElement);
         }
         document.getElementById("swap").classList.toggle("hidden" , typeMatiere === "ACT");
 
@@ -232,7 +279,6 @@ function calculerHeure(divHeure) {
 
 bouton_ajouter_creneau.addEventListener("click", function() {
     event.preventDefault();
-    //deleteCours();
     nouveau_pannel = document.getElementById('nouveau_pannel');
 
     // Récupérer les valeurs des champs du formulaire
@@ -590,8 +636,10 @@ function colorChange(event){
 
 function stopHovering(){
     isHovering = false;
-    hoverCours = document.getElementsByClassName("hoverCours")[0];
+    var hoverCours = document.getElementById("rightHover");
+    var hoverLeft = document.getElementById("leftHover");
     hoverCours.style.display = "none";
+    hoverLeft.style.display = "none";
     document.getElementById("trash").style.display = "block";
     document.getElementById("deleteCours").style.display = "none";
 }
@@ -649,12 +697,12 @@ function suivreSouris(element, isCours) {
                 var texte = element.querySelector('h2.UV').textContent;
                 var regex = /^([A-Z0-9]+) - (ACT|TD|TP|CM)( A| B)?$/i;
                 var match = texte.match(regex);
-                var semaine = match[3] ? match[3] : null;
+                var semaine = match[3] ? match[3].replace(" ","") : null;
                 if (courses) {
                 await modifierAttributCoursByID(db, idCurrentCours, 'jour', parentJourElement.id);
                 await modifierAttributCoursByID(db, idCurrentCours, 'horaireDebut', heureDebut); /* Ajouter un 0 devant l'heure si < 10*/
                 await modifierAttributCoursByID(db, idCurrentCours, 'horaireFin', heureFin);
-                await modifierAttributCoursByID(db, idCurrentCours, 'semaine', semaine.replace(" ",""));
+                await modifierAttributCoursByID(db, idCurrentCours, 'semaine', semaine);
                 } else {
                     console.log("Erreur : aucun cours avec cet ID !")
                 }

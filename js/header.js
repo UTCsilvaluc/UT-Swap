@@ -16,6 +16,7 @@ var bouton_remplacer = document.getElementById("bouton_remplacer");
 var bouton_ajouter_creneau = document.getElementById("bouton_ajouter_creneau");
 var bouton_continuer = document.getElementById("bouton_continuer");
 var boutons_uv = document.getElementById("boutons_uv");
+var bouton_update = document.getElementById("bouton_update");
 
 var message_pression = document.getElementById("message_pression");
 var message_insertion = document.getElementById('message_insertion');
@@ -348,6 +349,7 @@ function nouveauClick() {
     message_impossible_uv.classList.toggle('hidden', true);
     message_creneau_deja_accepte.classList.toggle('hidden', true);
     bouton_impossible_uv.classList.toggle('hidden', true);
+    bouton_update.classList.toggle("hidden" , true);
     document.getElementById("bouton_remplacer").classList.toggle('hidden', true)
     document.getElementById("message_changement_creneau").classList.toggle('hidden', true);
 

@@ -646,6 +646,7 @@ function notificationImportance(){
         <button id="bouton_ajouter_creneau" class="hidden" id="bouton_ok">Ajouter</button>
         <button onclick="nouveauClick()" class="bouton_nouveau hidden" id="bouton_ok">OK !</button>
         <button id="bouton_non_submit">Poster</button>
+        <button id="bouton_update" class="hidden" onclick="updateCreneau(event)" type="button">Modifier</button>
         <div id="boutons_uv" >
             <button id="bouton_impossible_uv" onclick="nouveauClick()" type="reset" class="bouton_nouveau hidden" type="reset">Abandonner</button>
             <button id="bouton_remplacer" type="submit" class="hidden">Remplacer</button>
