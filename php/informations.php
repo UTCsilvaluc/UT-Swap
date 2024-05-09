@@ -96,36 +96,46 @@
                     </div>
                     <div id="FAQ" class="hidden">
                         <span class="content">
-                            <h4>UT’Swap c’est quoi ?</h4>
-                            <h5> UT'Swap, c'est une plateforme qui simplifie la vie étudiante en permettant l'échange facile de créneaux de cours entre étudiants. Gagne en flexibilité, optimise ton emploi du temps et personnalise ton expérience universitaire avec UT'Swap ! </h5>
+                            <span class="openContent">
+                                <h4>UT’Swap c’est quoi ?</h4>
+                                <img class="fleche_svg" src="../svg/right_arrow.svg" alt="">
+                            </span>
+                            <h5 class="hidden"> UT'Swap, c'est une plateforme qui simplifie la vie étudiante en permettant l'échange facile de créneaux de cours entre étudiants. Gagne en flexibilité, optimise ton emploi du temps et personnalise ton expérience universitaire avec UT'Swap ! </h5>
                         </span>
                         <span class="content">
-                            <h4>Où accepter ou refuser les demandes ? </h4>
-                            <h5>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus aliquid amet consequatur cumque dolores explicabo iste minima praesentium totam. Dolorem inventore ipsam itaque officiis provident quam qui quibusdam veniam voluptatem?</h5>
+                            <span class="openContent">
+                                <h4>UT’Swap c’est quoi ?</h4>
+                                <img class="fleche_svg" src="../svg/right_arrow.svg" alt="">
+                            </span>
+                            <h5 class="hidden"> UT'Swap, c'est une plateforme qui simplifie la vie étudiante en permettant l'échange facile de créneaux de cours entre étudiants. Gagne en flexibilité, optimise ton emploi du temps et personnalise ton expérience universitaire avec UT'Swap ! </h5>
                         </span>
                         <span class="content">
-                            <h4>Comment créer son emploi du temps ?</h4>
-                            <h5>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A accusamus accusantium aperiam blanditiis consequuntur, deleniti, doloribus dolorum error explicabo facere illum nam nisi odit officia qui, quis quod sequi sint!</h5>
+                            <span class="openContent">
+                                <h4>UT’Swap c’est quoi ? 2</h4>
+                                <img class="fleche_svg" src="../svg/right_arrow.svg" alt="">
+                            </span>
+                            <h5 class="hidden"> aUT'Swap, c'est une plateforme qui simplifie la vie étudiante en permettant l'échange facile de créneaux de cours entre étudiants. Gagne en flexibilité, optimise ton emploi du temps et personnalise ton expérience universitaire avec UT'Swap ! </h5>
                         </span>
                         <span class="content">
-                            <h4>Où voir toutes les demandes ?</h4>
-                            <h5>Nous avons pensé à tout, si personne ne souhaite de votre horaire, vous pourrez au moins le savoir de manière simple et efficace :) Plus besoin de nombreux messages sur Messenger, tout le monde n’aura qu’à refuser votre demande.... </h5>
+                            <span class="openContent">
+                                <h4>UT’Swap c’est quoi ? 3</h4>
+                                <img class="fleche_svg" src="../svg/right_arrow.svg" alt="">
+                            </span>
+                            <h5 class="hidden"> bUT'Swap, c'est une plateforme qui simplifie la vie étudiante en permettant l'échange facile de créneaux de cours entre étudiants. Gagne en flexibilité, optimise ton emploi du temps et personnalise ton expérience universitaire avec UT'Swap ! </h5>
                         </span>
                         <span class="content">
-                            <h4>Comment savoir quand une demande a été acceptée ?</h4>
-                            <h5>Nous avons pensé à tout, si personne ne souhaite de votre horaire, vous pourrez au moins le savoir de manière simple et efficace :) Plus besoin de nombreux messages sur Messenger, tout le monde n’aura qu’à refuser votre demande.... </h5>
+                            <span class="openContent">
+                                <h4>UT’Swap c’est quoi ? 4</h4>
+                                <img class="fleche_svg" src="../svg/right_arrow.svg" alt="">
+                            </span>
+                            <h5 class="hidden"> cUT'Swap, c'est une plateforme qui simplifie la vie étudiante en permettant l'échange facile de créneaux de cours entre étudiants. Gagne en flexibilité, optimise ton emploi du temps et personnalise ton expérience universitaire avec UT'Swap ! </h5>
                         </span>
                         <span class="content">
-                            <h4>Comment faire une demande d’échange ?</h4>
-                            <h5>Nous avons pensé à tout, si personne ne souhaite de votre horaire, vous pourrez au moins le savoir de manière simple et efficace :) Plus besoin de nombreux messages sur Messenger, tout le monde n’aura qu’à refuser votre demande.... </h5>
-                        </span>
-                        <span class="content">
-                            <h4>Où voir l’avancement de mes Swaps et de mes demandes ?</h4>
-                            <h5>Nous avons pensé à tout, si personne ne souhaite de votre horaire, vous pourrez au moins le savoir de manière simple et efficace :) Plus besoin de nombreux messages sur Messenger, tout le monde n’aura qu’à refuser votre demande.... </h5>
-                        </span>
-                        <span class="content">
-                            <h4>Comment personaliser mon emploi du temps ?</h4>
-                            <h5>Nous avons pensé à tout, si personne ne souhaite de votre horaire, vous pourrez au moins le savoir de manière simple et efficace :) Plus besoin de nombreux messages sur Messenger, tout le monde n’aura qu’à refuser votre demande.... </h5>
+                            <span class="openContent">
+                                <h4>UT’Swap c’est quoi ? 5</h4>
+                                <img class="fleche_svg" src="../svg/right_arrow.svg" alt="">
+                            </span>
+                            <h5 class="hidden"> dUT'Swap, c'est une plateforme qui simplifie la vie étudiante en permettant l'échange facile de créneaux de cours entre étudiants. Gagne en flexibilité, optimise ton emploi du temps et personnalise ton expérience universitaire avec UT'Swap ! </h5>
                         </span>
                     </div>
                 </div>

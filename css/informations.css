@@ -13,11 +13,17 @@ div.main_info {
     font-size: 22px;
     font-weight: bold;
 }
+div#info_menu{
+    display: flex;
+    justify-content: center; /* Centrer horizontalement */
+    align-items: center; /* Centrer verticalement */
+    width: 50%;
+}
 #info_menu_nav {
-    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center; /* Centrer verticalement */
+
 }
 
 #span_nav_menu {
@@ -62,17 +68,18 @@ h3.currentSpan{
 }
 
 div#info_menu_content{
-    width: 45%;
     text-align: center;
+    width: 100%;
+    margin-left: 80px;
 }
 
 span.content{
+    width: 100%;
     display: flex;
     flex-direction: column;
     text-align: justify;
     vertical-align: center;
     margin: 5px 0px;
-    width: 100%;
 }
 span.content h4{
     margin: 10px 0px;
@@ -85,4 +92,43 @@ span.content h5{
     font-family: Jost, serif;
     font-size: 15px;
     font-weight: normal;
+}
+
+.fleche_svg{
+    width: 25px;
+    height: 25px;
+}
+
+.fleche_svg_rotate{
+    transform: rotate(90deg);
+    width: 25px;
+    height: 25px;
+}
+
+span.openContent {
+    display: flex;
+    align-items: center; /* Aligner verticalement les éléments */
+    transition: scale 0.3s ease-in-out;
+}
+
+span.openContent h4 {
+    margin: 0; /* Supprimer les marges par défaut du h4 */
+}
+
+span.openContent:hover {
+    background: #fffdfd;
+    cursor: pointer;
+    scale: 101%;
+}
+
+span.openContent img.fleche_svg , span.openContent img.fleche_svg_rotate{
+    margin-left: auto; /* Ajouter une marge à gauche de l'image pour l'espacement */
+}
+
+
+.hidden {
+    display: none;
+    max-height: 0; /* Ajout d'une hauteur maximale pour permettre la transition */
+    overflow: hidden; /* Cacher tout contenu qui dépasse la hauteur maximale */
+    transition: max-height 0.5s ease; /* Ajouter une transition pour une animation douce */
 }

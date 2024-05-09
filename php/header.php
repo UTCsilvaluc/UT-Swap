@@ -214,7 +214,7 @@ function notificationImportance(){
             <li><a href="emploiDuTemps.php">Swap</a></li>
             <li><a href="demandes.php">Demandes</a></li>
             <li><a href="profil.php">Profil</a></li>
-            <li><a href="#">Informations</a></li>
+            <li><a href="informations.php">Informations</a></li>
             <!-- Code pour afficher s'il y a une notif importante ou non --> 
             <li onclick="notificationClick()"><img class="notification" src="../svg/notif.svg">
                 <?php
