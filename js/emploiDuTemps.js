@@ -24,7 +24,7 @@ function svgpTrasheEnter(event){
 function svgEditEnter(event){
     event.target.style.height = "33px";
     event.target.style.width = "auto";
-    event.target.src = "../svg/edit_text.svg"
+    event.target.src = localStorage.getItem("type") === "ACT" ? "../svg/edit_text.svg" : "../svg/modifier_creneau_reverse.svg";
     event.target.style.cursor = "pointer";
 
 }
@@ -62,6 +62,7 @@ function svgEditLeave(event){
 function editCreneau(event){
     event.stopPropagation();
     nouveauClick();
+    motivation.classList.toggle('hidden', true);
     document.getElementById("bouton_update").classList.toggle("hidden" , false);
     bouton_non_submit.classList.toggle("hidden" , true);
     preremplirNouveauForm();
@@ -265,6 +266,7 @@ function addCreneau(event) {
             document.getElementById("input-hdebut1").value = heureDebut;
             document.getElementById("input-hfin1").value = heureFin;
             document.getElementById("input-creneau").value = divJour.id.toString();
+            document.getElementById("input-creneau-externe").value = divJour.id.toString();
         }
     }
 }
@@ -291,6 +293,7 @@ bouton_ajouter_creneau.addEventListener("click", function() {
     let cours;
 
     if (document.getElementById("input-isCours").checked){
+        creneau = encodeURIComponent(input_creneau_externe.value);
         var activiteName = encodeURIComponent(document.getElementById("exteName").value);
         var activiteLoc = encodeURIComponent(document.getElementById("input-lieu").value);
         cours = new Cours(activiteName, hdebut, hfin, creneau, activiteLoc , semainechoix , null , encodeURIComponent("ACT"));
@@ -806,6 +809,12 @@ function preremplirNouveauForm(){
     var salle = localStorage.getItem("salle");
     var type = localStorage.getItem("type");
     var semaine = localStorage.getItem("semaine");
+    if (type === "ACT"){
+        document.getElementById("input-isCours").click();
+        document.getElementById("input-lieu").value = salle;
+        document.getElementById("exteName").value = codeUV;
+        input_creneau_externe.value = creneau;
+    }
     formulaire = document.getElementById("nouveau_pannel");
     formulaire.querySelector("#input-uv").value = codeUV;
     formulaire.querySelector("#input-creneau").value = creneau;
@@ -1076,9 +1085,9 @@ function changeJour(event){
                 return recupererParametresUtilisateur();
             })
             .catch(error => console.error("Erreur :", error));
-    
+
         clearBorderRadius();
-    
+
         setBorderRadius();
     }
     
@@ -1314,27 +1323,27 @@ async function importEDT(event) {
             resetEDT(event);
             for (var currentCours of allCourses) {
                 if (currentCours.length > 20) {
-                    if (currentCours.includes("/")){
+                    if (currentCours.includes("/")) {
                         const occurrences = (currentCours.match(/\//g) || []).length;
                         var listeInformations = currentCours.split(" ");
-                        var listeSansVide = listeInformations.filter(function(element) {
+                        var listeSansVide = listeInformations.filter(function (element) {
                             // Retourne true si l'élément n'est pas vide
                             return element.trim() !== "";
                         });
                         var codeUV = listeSansVide[0];
                         var type = listeSansVide[1];
                         var groupe = listeSansVide[2];
-                        for (var i = 0 ; i <= occurrences ; i++){
+                        for (var i = 0; i <= occurrences; i++) {
                             var currentSplitCourses = currentCours.split("/");
                             const parametre = (i === 0) ? ` ${currentSplitCourses[i]}` : `${codeUV} ${type} ${groupe} ${currentSplitCourses[i]}`;
                             var cours = transformerEntreeCours(parametre);
-                            if (cours != null){
+                            if (cours != null) {
                                 await createCours(cours);
                             }
                         }
                     } else {
                         var cours = transformerEntreeCours(currentCours);
-                        if (cours != null){
+                        if (cours != null) {
                             await createCours(cours);
                         }
                     }
@@ -1342,20 +1351,13 @@ async function importEDT(event) {
             }
             canClose = true;
         }
-        if (canClose){
+        if (canClose) {
             document.getElementById("importEDTID").style.display = "none";
             document.getElementById("textUV").value = "";
             document.getElementById("ecran_edt").style.display = "none";
         }
     } catch (error) {
         console.error(error);
-    }
-}
-
-function lineIsCours(line){
-    var detailsLine = line.split(" ");
-    if ((detailsLine[0].length === 4 || detailsLine[1].length === 4)){
-
     }
 }
 

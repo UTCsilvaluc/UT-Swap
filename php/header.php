@@ -461,8 +461,8 @@ function notificationImportance(){
                         <input type="text" id="exteName" placeholder="Veuillez saisir le nom de l'activité">
                     </div>
                     <div>
-                        <label for="input-creneau">Créneau:<p class="hidden">*</p></label>
-                        <select id="input-creneau" name="creneau" >
+                        <label for="input-creneau-externe">Créneau:<p class="hidden">*</p></label>
+                        <select id="input-creneau-externe" name="creneau" >
                             <option value="" disabled selected>Sélectionnez un créneau</option>
                             <option value="lundi">Lundi</option>
                             <option value="mardi">Mardi</option>

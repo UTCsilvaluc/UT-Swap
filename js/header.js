@@ -34,6 +34,7 @@ var input_salle = document.getElementById("input-salle");
 var input_hfin = document.getElementsByClassName("input-hfin");
 var input_hdebut = document.getElementsByClassName("input-hdebut");
 var input_creneau = document.getElementById("input-creneau");
+var input_creneau_externe = document.getElementById("input-creneau-externe");
 var input_motivation_autre = document.getElementById("input-motivation-autre");
 var input_motivation = document.getElementById("input-motivation");
 var input_uv = document.getElementById("input-uv");
