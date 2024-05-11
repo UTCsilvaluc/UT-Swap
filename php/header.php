@@ -214,7 +214,7 @@ function notificationImportance(){
             <li><a href="emploiDuTemps.php">Swap</a></li>
             <li><a href="demandes.php">Demandes</a></li>
             <li><a href="profil.php">Profil</a></li>
-            <li><a href="#">Informations</a></li>
+            <li><a href="informations.php">Informations</a></li>
             <!-- Code pour afficher s'il y a une notif importante ou non --> 
             <li onclick="notificationClick()"><img class="notification" src="../svg/notif.svg">
                 <?php
@@ -475,6 +475,58 @@ function notificationImportance(){
                     </div>
                 </li>
             </div>
+                        // Vérifier s'il y a des résultats
+                        if ($resultat->num_rows > 0) {
+                            // Afficher les options du datalist
+                            echo '<datalist id="uvs">';
+                            while ($row = $resultat->fetch_assoc()) {
+                                echo '<option value="' . $row["codeUV"] . '">';
+                            }
+                            echo '</datalist>';
+                        }
+                        ?>
+                    </div>
+                    <div>
+                        <label for="input-creneau">Créneau:<p class="hidden">*</p></label>
+                        <select id="input-creneau" name="creneau" >
+                            <option value="" disabled selected>Sélectionnez un créneau</option>
+                            <option value="lundi">Lundi</option>
+                            <option value="mardi">Mardi</option>
+                            <option value="mercredi">Mercredi</option>
+                            <option value="jeudi">Jeudi</option>
+                            <option value="vendredi">Vendredi</option>
+                            <option value="samedi">Samedi</option>
+                        </select>
+                        <p class="hidden">Créneau non valide</p>
+                    </div>
+                    <div class="nouveau_heure_triple">
+                        <label for="input-hdebut2">Heure début:<p class="hidden">*</p></label>
+                        <input type="time" class="input-hdebut" name="hdebut" id="input-hdebut2" >
+                        <p class="hidden">Heures non valide</p>
+                    </div>
+                </li>
+            </div>
+            <div id="activiteFirstLine" class="hidden">
+                <li class="double-input">
+                    <div id="divExteName">
+                        <label for="input-uv">Nom activité<p class="hidden">*</p></label>
+                        <input type="text" id="exteName" placeholder="Veuillez saisir le nom de l'activité">
+                    </div>
+                    <div>
+                        <label for="input-creneau-externe">Créneau:<p class="hidden">*</p></label>
+                        <select id="input-creneau-externe" name="creneau" >
+                            <option value="" disabled selected>Sélectionnez un créneau</option>
+                            <option value="lundi">Lundi</option>
+                            <option value="mardi">Mardi</option>
+                            <option value="mercredi">Mercredi</option>
+                            <option value="jeudi">Jeudi</option>
+                            <option value="vendredi">Vendredi</option>
+                            <option value="samedi">Samedi</option>
+                        </select>
+                        <p class="hidden">Créneau non valide</p>
+                    </div>
+                </li>
+            </div>
             <li class="double-input" id="nouveau_heure_double">
                 <div>
                     <label for="input-hdebut1">Heure début:<p class="hidden">*</p></label>
@@ -533,11 +585,11 @@ function notificationImportance(){
                 </div>
             </li>
             <div id="choix-li-nouveau-panel" class="nouveau_pannel_checkbox">
-                <li class="basique">
+                <li class="basique" id="li-externe">
                     <input type="checkbox" id="input-isCours" name="isCours" onclick="insertActivity()">
                     <label for="input-isCours">Créneau externe</label>
                 </li>
-                <li class="basique">
+                <li class="basique" id="li-semaine">
                     <input type="checkbox" id="input-semaine" name="semaine">
                     <label for="input-semaine">Semaine 1/2</label>
                 </li>
@@ -646,6 +698,7 @@ function notificationImportance(){
         <button id="bouton_ajouter_creneau" class="hidden" id="bouton_ok">Ajouter</button>
         <button onclick="nouveauClick()" class="bouton_nouveau hidden" id="bouton_ok">OK !</button>
         <button id="bouton_non_submit">Poster</button>
+        <button id="bouton_update" class="hidden" onclick="updateCreneau(event)" type="button">Modifier</button>
         <div id="boutons_uv" >
             <button id="bouton_impossible_uv" onclick="nouveauClick()" type="reset" class="bouton_nouveau hidden" type="reset">Abandonner</button>
             <button id="bouton_remplacer" type="submit" class="hidden">Remplacer</button>

@@ -16,6 +16,7 @@ var bouton_remplacer = document.getElementById("bouton_remplacer");
 var bouton_ajouter_creneau = document.getElementById("bouton_ajouter_creneau");
 var bouton_continuer = document.getElementById("bouton_continuer");
 var boutons_uv = document.getElementById("boutons_uv");
+var bouton_update = document.getElementById("bouton_update");
 
 var message_pression = document.getElementById("message_pression");
 var message_insertion = document.getElementById('message_insertion');
@@ -33,6 +34,7 @@ var input_salle = document.getElementById("input-salle");
 var input_hfin = document.getElementsByClassName("input-hfin");
 var input_hdebut = document.getElementsByClassName("input-hdebut");
 var input_creneau = document.getElementById("input-creneau");
+var input_creneau_externe = document.getElementById("input-creneau-externe");
 var input_motivation_autre = document.getElementById("input-motivation-autre");
 var input_motivation = document.getElementById("input-motivation");
 var input_uv = document.getElementById("input-uv");
@@ -348,8 +350,12 @@ function nouveauClick() {
     message_impossible_uv.classList.toggle('hidden', true);
     message_creneau_deja_accepte.classList.toggle('hidden', true);
     bouton_impossible_uv.classList.toggle('hidden', true);
+    bouton_update.classList.toggle("hidden" , true);
     document.getElementById("bouton_remplacer").classList.toggle('hidden', true)
     document.getElementById("message_changement_creneau").classList.toggle('hidden', true);
+
+    document.getElementById("li-externe").classList.toggle("hidden" , true);
+    document.getElementById("li-semaine").classList.toggle("hidden" , false);
 
     bouton_ajouter_creneau.classList.toggle('hidden', true);
     bouton_continuer.classList.toggle('hidden', true);
