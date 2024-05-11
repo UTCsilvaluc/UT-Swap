@@ -20,6 +20,11 @@
     --border-radius-edt: 10px;
     --taille-edt:12vw;
     --taille-conteneur-hours:50px;
+    --bg-image: none;
+    --bg-image-blur: 0px;
+    --bg-position : 49px;
+    --bg-black:0;
+    --color-bordure: black;
 }
 
 main{
@@ -50,7 +55,9 @@ main{
 }
 
 
-
+#jours{
+    display: block;
+}
 
 
 .conteneurHours{
@@ -74,7 +81,7 @@ main{
 }
 
 
-#drag-image:not(.hidden){
+#drag_file_edt:not(.hidden), #dropZone_custom:not(.hidden){
     display: flex;
     border: 1.5px dashed #c4c4c4;
     height:70%;
@@ -86,23 +93,25 @@ main{
     flex-direction: column;
     margin-bottom: 20px;
   }
-  #drag-image #drag-icon{
-    font-size: 30px;
-    color: #c4c4c4;
+  #dropZone_custom:not(.hidden){
+    height:100%;
+    min-height: 150px;
+    width: 100%;
+    margin:0;
   }
-  #drag-image h6{
+  #drag_file_edt h6, #dropZone_custom h6{
     text-align: center;
     margin:0;
     font-size: 20px;
     font-weight: 300;
     color: #242424;
   }
-  #drag-image span{
+  #drag_file_edt span, #dropZone_custom span{
     font-size: 14px;
     font-weight: 300;
     color: #c4c4c4;
   }
-  #drag-image button{
+  #drag_file_edt button, #dropZone_custom button{
     padding: 8px 10px;
     width:40%;
     height:25px;
@@ -119,19 +128,47 @@ main{
     cursor: pointer;
     transition:all 0.5s;
   }
-  
-  #drag-image button:hover{
+  #drag_file_edt button, #dropZone_custom button {
+    height: 40px;
+    width:50%;
+  }
+  #drag_file_edt button:hover, #dropZone_custom button:hover{
       background-color:#fff;
       border: 1px solid #32373B;
       color:#32373B;
   }
   
-  #drag-image img{
+  #drag_file_edt img, #dropZone_custom img{
     height: 100%;
     width: 100%;
     object-fit: cover;
     border-radius: 5px;
   }
+
+  #image_bg_settings {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#image_bg_settings > div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#image_bg_settings > div p {
+    margin: 0;
+    flex-grow: 0; /* Empêche le paragraphe de prendre plus d'espace que nécessaire */
+}
+
+#image_bg_settings > div input {
+    flex-grow: 1;
+    margin-left: 10px;
+    background-color: #242424;
+}
+
 
 .mid_content label{
     width: 40%;
@@ -184,6 +221,7 @@ main{
 }
 
 #emploi_du_temps .jour .endroit_cours{
+    border-right: 1px solid var(--color-bordure);
     position: relative;
     width: 100%;
     overflow: hidden;
@@ -216,7 +254,7 @@ div.divHeure{
 }
 
 div.divHeure:hover {
-    background-color: #e2edee; /* Nouvelle couleur de fond au survol */
+    background-color: #a9d9de53; /* Nouvelle couleur de fond au survol */
     cursor: pointer; /* Nouveau curseur au survol */
 }
 
@@ -240,11 +278,15 @@ div.divHeure:hover {
 }
 
 
-.divHeure:not(:last-child) .dash{
+.divHeure .dash{
     box-sizing: border-box;
-    border-bottom: 1px dashed black;
+    border-bottom: 1px dashed var(--color-bordure);
     margin: 0;
     padding: 0;
+}
+
+.divHeure:last-child .dash{
+    border-bottom: 0px
 }
 
 
@@ -281,16 +323,55 @@ div.divHeure:hover {
     box-sizing: border-box;
 }
 
-#conteneur_edt > div:nth-child(4){
+#conteneur_edt > div:nth-child(5){
     display: inline-flex;
     justify-content: center;
     width: 100vw;
     height: calc(100% - 100px);
 }
 
+#suppr_edt_pannel{
+    -webkit-box-shadow: 0px 0px 15px 8px var(--couleur-shadow); 
+    box-shadow: 0px 0px 15px 8px var(--couleur-shadow);
+}
+
+#suppr_edt_pannel h6{
+    text-align: center;
+    font-size: 17px;
+}
+
 #emploi_du_temps{
     display: flex;
     flex-direction: row;
+    height: fit-content;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+#emploi_du_temps::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 101%;
+    height: 101%;
+    background-size: cover;
+    background-position: center var(--bg-position);
+    background-repeat: no-repeat;
+    background-image: var(--bg-image);
+    filter: blur(var(--bg-image-blur));
+    z-index: -2; 
+}
+
+#assombrissement {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, var(--bg-black)); /* Couleur noire semi-transparente */
+    z-index: -1;
 }
 
 .jour:first-of-type {
@@ -311,6 +392,21 @@ div.divHeure:hover {
     border-top-right-radius: var(--border-radius-edt);
 }
 
+.drop-zone {
+    border: 2px dashed #ccc;
+    padding: 20px;
+    width: 300px;
+    height: 200px;
+    margin: 20px;
+}
+.container {
+    width: 300px;
+    height: 200px;
+    border: 1px solid black;
+    background-size: cover;
+    background-position: center;
+}
+
 @media screen and (max-height: 700px) {
     .divHeure div{
         min-height: 50px;
@@ -323,9 +419,21 @@ div.divHeure:hover {
 
 
 @media screen and (max-width: 600px) {
+    
+    #emploi_du_temps{
+        border-radius: 0px;
+    }
+
+    .divHeure:last-child .dash{
+        border-bottom: 1px dashed var(--color-bordure);
+    }
+
+    #jours{
+        display: none;
+    }
 
     div.divHeure:hover {
-        background-color: white;
+        background-color: #ffffff00; /* Nouvelle couleur de fond au survol */
     }
 
     .jour:not(div.jour_select){
@@ -364,7 +472,7 @@ div.divHeure:hover {
     }
 
     .divHeure:first-child .dash{
-        border-top: 1px dashed black;
+        border-top: 1px dashed var(--color-bordure);
     }
 
     :root{
@@ -375,7 +483,6 @@ div.divHeure:hover {
     #emploi_du_temps .jour{
         width: 100%;
         border:0;
-        border-bottom: 1px dashed black;
         box-sizing: border-box;
     }
 

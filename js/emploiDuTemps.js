@@ -114,7 +114,6 @@ function posterSwap(event){
     preremplirNouveauForm();
 
 }
-
 var isHovering = false;
 
 document.getElementById("emploi_du_temps").addEventListener("mousemove" , function (event) {
@@ -133,7 +132,8 @@ document.getElementById("emploi_du_temps").addEventListener("mousemove" , functi
         var texte = coursElement.querySelector('h2.UV').textContent;
 
 // Expression régulière pour extraire les informations
-        var regex = /^([A-Z0-9]+) - (TD|TP|CM)( A| B)?$/;
+        var regex = /^([A-Z0-9]+) - (ACT|TD|TP|CM)( A| B)?$/i;
+
 
 // Correspondance avec l'expression régulière
         var match = texte.match(regex);
@@ -208,10 +208,12 @@ function addCreneau(event) {
         bouton_ajouter_creneau.classList.toggle('hidden', false);
         bouton_non_submit.classList.toggle('hidden', true);
         var divHeureCliquee = event.target.closest('.divHeure');
+        var divJour = event.target.closest('.jour');
         if (divHeureCliquee) {
             var [heureDebut , heureFin] = calculerHeure(divHeureCliquee);
             document.getElementById("input-hdebut1").value = heureDebut;
             document.getElementById("input-hfin1").value = heureFin;
+            document.getElementById("input-creneau").value = divJour.id.toString();
         }
     }
 }
@@ -221,7 +223,7 @@ function calculerHeure(divHeure) {
     var heureFormattee = formaterHeure(document.getElementById("hdebut").innerHTML.replace('h',':'));
     var heureDebut = parseInt(heureFormattee.slice(0,2)) + index;
 
-    return [heureDebut.toString().padStart(2, '0') + ':00' , (heureDebut+1).toString().padStart(2, '0') + ':00'];
+    return [heureDebut.toString().padStart(2, '0') + ':00' , (heureDebut+2).toString().padStart(2, '0') + ':00'];
 }
 
 bouton_ajouter_creneau.addEventListener("click", function() {
@@ -230,21 +232,28 @@ bouton_ajouter_creneau.addEventListener("click", function() {
     nouveau_pannel = document.getElementById('nouveau_pannel');
 
     // Récupérer les valeurs des champs du formulaire
-    var type = encodeURIComponent(input_type.value);
-    var salle = encodeURIComponent(input_salle.value);
     var creneau = encodeURIComponent(input_creneau.value);
-    var uv = encodeURIComponent(input_uv.value);
-    var hfin = input_hfin[1].value;
+    var hfin = input_hfin[0].value;
     var hdebut = input_hdebut[1].value;
-
     var semainechoix = nouveau_pannel.querySelector('input[name="semainechoix"]:checked') ? nouveau_pannel.querySelector('input[name="semainechoix"]:checked').value : null;
-
     hdebut = hdebut.replace(":" , "h");
     hfin = hfin.replace(":" , "h");
-    let cours = new Cours(uv, hdebut, hfin, creneau, salle , semainechoix , null , type);
+    let cours;
+
+    if (document.getElementById("input-isCours").checked){
+        var activiteName = encodeURIComponent(document.getElementById("exteName").value);
+        var activiteLoc = encodeURIComponent(document.getElementById("input-lieu").value);
+        cours = new Cours(activiteName, hdebut, hfin, creneau, activiteLoc , semainechoix , null , encodeURIComponent("ACT"));
+    } else {
+        var type = encodeURIComponent(input_type.value);
+        var salle = encodeURIComponent(input_salle.value);
+        var uv = encodeURIComponent(input_uv.value);
+        cours = new Cours(uv, hdebut, hfin, creneau, salle , semainechoix , null , type);
+    }
     createCours(cours);
     tempsCurrentCours = null;
     nouveauClick();
+
 });
 
 function roundMinutes(valeur){
@@ -336,11 +345,7 @@ var cours;
 var listeJour = [lundi, mardi, mercredi, jeudi, vendredi, samedi, dimanche];
 for (var i of listeJour) {
     for(var j=0; j<12 ; j++){
-        if(j !== 11){
-            i.innerHTML += "<div class='divHeure' onclick=\"addCreneau(event)\"> <div class='dash' style='height:6vh'></div> </div>";
-        }else{
-            i.innerHTML += "<div class='divHeure' onclick=\"addCreneau(event)\"> <div style='height:6vh'></div> </div>";
-        }
+        i.innerHTML += "<div class='divHeure' onclick=\"addCreneau(event)\"> <div class='dash'style='height:6vh'></div> </div>";
     }
 }
 
@@ -379,113 +384,6 @@ function clearBorderRadius(){
     }
 }
 
-var dessus_edt = document.getElementById("dessus_edt");
-var taille_edt = document.querySelector(".conteneurHours").offsetWidth + document.querySelector("#emploi_du_temps").offsetWidth;
-
-dessus_edt.style.width = pxToVw(taille_edt) + "vw";
-
-function mettreAJourContenu() {
-    var listeJour = document.getElementsByClassName("jour");
-    var largeurFenetre = window.innerWidth;
-
-    // Changez le contenu en fonction de la largeur de la fenêtre
-    var exportTXT = document.getElementById('export_txt');
-    var exportPNG = document.getElementById('export_png');
-
-    var messageExport = document.getElementById('messageExport').parentElement.querySelector("label");
-    var messageUV = document.getElementById('messageUV').parentElement.querySelector("label");
-
-    if (largeurFenetre <= 600) {
-        dessus_edt.style.width = ""
-    }else{
-        dessus_edt = document.getElementById("dessus_edt");
-        taille_edt = document.querySelector(".conteneurHours").offsetWidth + document.querySelector("#emploi_du_temps").offsetWidth;
-        dessus_edt.style.width = pxToVw(taille_edt) + "vw";
-    }
-    
-    if (largeurFenetre <= 400) {
-        messageUV.innerHTML = "UV";
-        messageExport.innerHTML = "Export";
-        exportTXT.innerHTML = 'TXT';
-        exportPNG.innerHTML = 'PNG';
-    } else {
-        messageUV.innerHTML = "Message d'UV";
-        messageExport.innerHTML = "Message d'export";
-        exportTXT.innerHTML = 'Exporter TXT';
-        exportPNG.innerHTML = 'Exporter PNG';
-    }
-
-    if(largeurFenetre <= 600){
-        for(element of document.getElementsByClassName("jour_entier")){
-            element.style.display = "block";
-        }
-        for(element of document.getElementsByClassName("jour_mid")){
-            element.style.display = "none";
-        }
-        for(element of document.getElementsByClassName("jour_small")){
-            element.style.display = "none";
-        }
-
-        var nbJour = 0;
-        var taillePrec;
-        for(jour of listeJour){
-            if(jour.style.display != "none"){
-                nbJour++;
-            }
-            jour.style.display = "";
-            jour.style.border = 0;
-            jour.style.borderRadius = 0;
-            taillePrec = jour.offsetWidth;
-        }
-        clearBorderRadius();
-        changeCSSVar("taille-edt","12vw");
-    }else{
-        var firstDay = false;
-        for (var jour of listeJour){
-            if (jour.style.display != "none"){
-                jour.style.borderLeft = "0";
-            }
-            jour.style.border = "1px solid black";
-            jour.style.borderLeft = "";
-
-            if (firstDay === false && jour.style.display != "none"){
-                jour.style.borderLeft = "1px black solid";
-                firstDay = true;
-            }
-        }
-        setBorderRadius();
-    }
-
-    if(largeurFenetre <=450){
-        for(element of document.getElementsByClassName("jour_entier")){
-            element.style.display = "none";
-        }
-        for(element of document.getElementsByClassName("jour_mid")){
-            element.style.display = "block";
-        }
-        for(element of document.getElementsByClassName("jour_small")){
-            element.style.display = "none";
-        }
-    }
-
-    if(largeurFenetre <=300){
-        for(element of document.getElementsByClassName("jour_entier")){
-            element.style.display = "none";
-        }
-        for(element of document.getElementsByClassName("jour_mid")){
-            element.style.display = "none";
-        }
-        for(element of document.getElementsByClassName("jour_small")){
-            element.style.display = "block";
-        }
-    }
-}
-
-// Attacher la fonction au changement de taille de la fenêtre
-window.addEventListener('resize', mettreAJourContenu);
-
-// Appeler la fonction une fois au chargement de la page
-mettreAJourContenu();
 
 function calculDecimal(nombre) {
     var heuresMinutesDebut = nombre.split('h');
@@ -562,7 +460,6 @@ async function createCours(cours) {
             } else if (cours.jour == "dimanche") {
                 endroit_cours = dimanche;
             }
-
             const spanColor = document.getElementById("couleurSpan");
             if (!(cours.codeUV in coursColors) && cours.couleur == null) {
                 coursColors[cours.codeUV] = getRandomColor(colorList);
@@ -657,7 +554,7 @@ function colorChange(event){
     var Liste_cours = document.getElementsByClassName("cours");
     for (var cours of Liste_cours){
         var texte = cours.querySelector('h2.UV').textContent;
-        var regex = /^([A-Z0-9]+) - (TD|TP|CM)( A| B)?$/;
+        var regex = /^([A-Z0-9]+) - (ACT|TD|TP|CM)( A| B)?$/i;
         var match = texte.match(regex);
         var currentCode = match[1];
         if (currentCode == UV){
@@ -742,7 +639,7 @@ function suivreSouris(element, isCours) {
                 var heureFin = formaterHeure(heureElement[1].replace("h",":")).replace(":","h");
                 var coursElement = event.target;
                 var texte = element.querySelector('h2.UV').textContent;
-                var regex = /^([A-Z0-9]+) - (TD|TP|CM)( A| B)?$/;
+                var regex = /^([A-Z0-9]+) - (ACT|TD|TP|CM)( A| B)?$/i;
                 var match = texte.match(regex);
                 var semaine = match[3] ? match[3] : null;
                 if (courses) {
@@ -914,6 +811,20 @@ couleurInput.addEventListener('change', function(event) {
     }
 });
 
+var inputCouleurBorder = document.getElementById('inputCouleurBorder');
+var couleurInputBorder = document.getElementById('choix-couleur-border');
+
+inputCouleurBorder.addEventListener('click', function(event) {
+    couleurInputBorder.style.display = 'block';
+    couleurInputBorder.click();
+});
+
+couleurInputBorder.addEventListener('change', function(event) {
+    inputCouleurBorder.style.backgroundColor = event.target.value;
+    
+    changeCSSVar("color-bordure", event.target.value);
+});
+
 function customTime(event) {
     var liste_Cours = document.getElementsByClassName("cours");
     var cours = [];
@@ -955,7 +866,7 @@ function customTime(event) {
 
         var texte = coursElement.querySelector('h2.UV').textContent;
 
-        var regex = /^([A-Z0-9]+) - (TD|TP|CM)( A| B)?$/;
+        var regex = /^([A-Z0-9]+) - (ACT|TD|TP|CM)( A| B)?$/i;
 
         var match = texte.match(regex);
         var codeUV = match[1];
@@ -980,12 +891,7 @@ function customTime(event) {
         i.innerHTML = "";
         var nbHeures = parseInt(fin) - parseInt(debut);
         for (var j = 0; j < nbHeures; j++) {
-            if(j !== nbHeures-1){
-                i.innerHTML += "<div class='divHeure' onclick=\"addCreneau(event)\"> <div class='dash' style='height:6vh'></div> </div>";
-            }else{
-                i.innerHTML += "<div class='divHeure' onclick=\"addCreneau(event)\"> <div style='height:6vh'></div> </div>";
-            }
-
+            i.innerHTML += "<div class='divHeure' onclick=\"addCreneau(event)\"> <div class='dash'style='height:6vh'></div> </div>";
         }
     }
     for (var i = 0; i < cours.length; i++) {
@@ -1041,21 +947,21 @@ function resetEDT(event) {
     ];
 }
 
+var suppr_edt_pannel = document.getElementById("suppr_edt_pannel");
 document.addEventListener("click" , function (event) {
 
     if (!(event.target.closest("#menuCustom")) && document.getElementById("menuCustom") != "none" && event.target.id !== "custom_edt"){
         document.getElementById("menuCustom").style.display = "none";
     }
 
+    if (!(event.target.closest("#suppr_edt_pannel")) && document.getElementById("suppr_edt_pannel") != "none" && event.target.id !== "suppr_edt_button"){
+        suppr_edt_pannel.style.display = "none";
+    }
+
 });
 
-
-// Create a function for getting a variable value
-function myFunction_get() {
-    // Get the styles (properties and values) for the root
-    var rs = getComputedStyle(r);
-    // Alert the value of the --blue variable
-    alert("The value of --blue is: " + rs.getPropertyValue('--blue'));
+function supprimerEDT(){
+    suppr_edt_pannel.style.display="flex";
 }
 
 // Create a function for setting a variable value
@@ -1075,65 +981,67 @@ function pxToVw(pxValue) {
 }
 
 function changeJour(event){
-    var listeJour = document.getElementsByClassName("jour");
-    var pushJour = [];
-    var nbJour = 0;
-    var taillePrec = null;
-    for (var jour of listeJour){
-        if (jour.style.display != "none"){
-            nbJour +=1;
-            taillePrec = jour.offsetWidth;
-        }
-    }
-
-    if (event.target.className == "check"){
-        changeCSSVar("taille-edt",pxToVw(taillePrec * nbJour / (nbJour-1)) + "vw");
-    }else{
-        changeCSSVar("taille-edt",pxToVw(taillePrec * nbJour / (nbJour+1)) + "vw");
-    }
-
-    var jour = event.target.innerHTML.toLowerCase();
-    document.getElementById(jour).style.display = "none";
-    var listeJour = document.getElementsByClassName("jour");
-    if (event.target.className == "check"){
-        event.target.className = "uncheck"
+    
+    if(window.innerWidth > 600){
+        var listeJour = document.getElementsByClassName("jour");
+        var pushJour = [];
+        var nbJour = 0;
+        var taillePrec = null;
         for (var jour of listeJour){
             if (jour.style.display != "none"){
-                jour.style.borderLeft = "1px black solid";
-                break;
+                nbJour +=1;
+                taillePrec = jour.offsetWidth;
             }
         }
-    } else {
-        event.target.className = "check"
-        document.getElementById(jour).style.display = "block";
-    }
 
-    var firstDay = false;
-    for (var jour of listeJour){
-        if (jour.style.display != "none"){
-            jour.style.borderLeft = "0";
+        if (event.target.className == "check"){
+            changeCSSVar("taille-edt",pxToVw(taillePrec * nbJour / (nbJour-1)) + "vw");
+        }else{
+            changeCSSVar("taille-edt",pxToVw(taillePrec * nbJour / (nbJour+1)) + "vw");
         }
-        if (firstDay === false && jour.style.display != "none"){
-            jour.style.borderLeft = "1px black solid";
-            firstDay = true;
+        var jour = event.target.innerHTML.toLowerCase();
+        document.getElementById(jour).style.display = "none";
+        var listeJour = document.getElementsByClassName("jour");
+        if (event.target.className == "check"){
+            event.target.className = "uncheck"
+            for (var jour of listeJour){
+                if (jour.style.display != "none"){
+                    jour.style.borderLeft = "1px black solid";
+                    break;
+                }
+            }
+        } else {
+            event.target.className = "check";
+            document.getElementById(jour).style.display = "block";
+            var firstDay = true;
+            for (var jour of listeJour){
+                if (firstDay && jour.style.display != "none"){
+                    jour.style.borderLeft = "1px black solid";
+                    firstDay = false;
+                }else if (!firstDay && jour.style.display != "none"){
+                    jour.style.borderLeft = "none";
+                }
+            }
         }
+        Array.from(document.querySelectorAll("#spanJour .check")).forEach(jour => {
+            pushJour.push(jour.innerHTML);
+        });
+        recupererParametresUtilisateur()
+            .then(parametres => {
+                parametres.jours = pushJour;
+                return sauvegarderParametresUtilisateur(parametres);
+            })
+            .then(message => {
+                return recupererParametresUtilisateur();
+            })
+            .catch(error => console.error("Erreur :", error));
+    
+        clearBorderRadius();
+    
+        setBorderRadius();
     }
-    Array.from(document.querySelectorAll("#spanJour .check")).forEach(jour => {
-        pushJour.push(jour.innerHTML);
-    });
-    recupererParametresUtilisateur()
-        .then(parametres => {
-            parametres.jours = pushJour;
-            return sauvegarderParametresUtilisateur(parametres);
-        })
-        .then(message => {
-            return recupererParametresUtilisateur();
-        })
-        .catch(error => console.error("Erreur :", error));
-
-    clearBorderRadius();
-
-    setBorderRadius();
+    
+    
 }
 
 function changePolice(event){
@@ -1285,7 +1193,7 @@ function transformerEntreeCours(entree) {
     }
 }
 
-const dropArea = document.querySelector("#drag-image"),
+const dropArea = document.querySelector("#drag_file_edt"),
 dragText = dropArea.querySelector("h6"),
 button_input_file = dropArea.querySelector("button"),
 input_file = dropArea.querySelector("input");
@@ -1324,7 +1232,7 @@ function sendFile(){
     if (file) {
         resetEDT(event);
         document.getElementById("midFileError").classList.toggle("hidden", true);
-        document.getElementById("midfileInput").value = "";
+        document.getElementById("input_file_edt").value = "";
 
         const reader = new FileReader();
 
@@ -1715,5 +1623,194 @@ function supprimerFiltres() {
             console.log("Erreur dans la suppression des filtres...");
         }
     })
+}
+
+function insertActivity(){
+    if (document.getElementById("input-isCours").checked){
+        document.getElementById("creneauFirstLine").classList.toggle("hidden" , true);
+        document.getElementById("creneauThirdLine").classList.toggle("hidden" , true);
+        document.getElementById("activiteFirstLine").classList.toggle("hidden" , false);
+        document.getElementById("activiteThirdLine").classList.toggle("hidden" , false);
+    }
+    else {
+        document.getElementById("creneauFirstLine").classList.toggle("hidden" , false);
+        document.getElementById("creneauThirdLine").classList.toggle("hidden" , false);
+        document.getElementById("activiteFirstLine").classList.toggle("hidden" , true);
+        document.getElementById("activiteThirdLine").classList.toggle("hidden" , true);
+    }
 
 }
+
+var dessus_edt = document.getElementById("dessus_edt");
+var taille_edt = document.querySelector(".conteneurHours").offsetWidth + document.querySelector("#emploi_du_temps").offsetWidth;
+
+var joursComplet = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+var joursAbrege = ['Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.', 'Dim.'];
+var joursTresAbrege = ['L', 'Ma', 'Me', 'J', 'V', 'S', 'D'];
+var jours = document.querySelectorAll('#menu_jour_edt li');
+dessus_edt.style.width = pxToVw(taille_edt) + "vw";
+
+function mettreAJourContenu() {
+    var listeJour = document.getElementsByClassName("jour");
+    var largeurFenetre = window.innerWidth;
+
+    // Changez le contenu en fonction de la largeur de la fenêtre
+    var exportTXT = document.getElementById('export_txt');
+    var exportPNG = document.getElementById('export_png');
+
+    var messageExport = document.getElementById('messageExport').parentElement.querySelector("label");
+    var messageUV = document.getElementById('messageUV').parentElement.querySelector("label");
+
+    if (largeurFenetre <= 600) {
+        dessus_edt.style.width = ""
+    }else{
+        dessus_edt = document.getElementById("dessus_edt");
+        taille_edt = document.querySelector(".conteneurHours").offsetWidth + document.querySelector("#emploi_du_temps").offsetWidth;
+        dessus_edt.style.width = pxToVw(taille_edt) + "vw";
+    }
+    
+    if (largeurFenetre <= 400) {
+        messageUV.innerHTML = "UV";
+        messageExport.innerHTML = "Export";
+        exportTXT.innerHTML = 'TXT';
+        exportPNG.innerHTML = 'PNG';
+    } else {
+        messageUV.innerHTML = "Message d'UV";
+        messageExport.innerHTML = "Message d'export";
+        exportTXT.innerHTML = 'Exporter TXT';
+        exportPNG.innerHTML = 'Exporter PNG';
+    }
+    var taillePrec;
+
+    if(largeurFenetre <= 600){
+        jours.forEach(function(jour, index) {
+            jour.textContent = joursComplet[index];
+        });
+        for (var jour of listeJour){
+            if (jour.style.display != "none"){
+                jour.style.borderLeft = "none";
+            }
+        }
+
+        var nbJour = 0;
+        for(jour of listeJour){
+            if(jour.style.display != "none"){
+                nbJour++;
+            }
+            jour.style.display = "";
+            jour.style.borderRadius ="none";
+            taillePrec = jour.offsetWidth;
+        }
+        clearBorderRadius();
+    }else{
+        for (var jour of listeJour){
+            if (jour.style.display != "none"){
+                jour.style.borderLeft = "1px black solid";
+                break;
+            }
+        }
+        for (let i = listeJour.length - 1; i >= 0; i--) {
+            if (listeJour[i].style.display !== "none") {
+                listeJour[i].querySelector(".endroit_cours").style.borderRight = "none";
+                break;
+            }
+        }
+        var elementsCustom = document.getElementById("spanJour").getElementsByTagName("h3");
+        for(var element of elementsCustom){
+            if(element.className.includes("uncheck")){
+                document.getElementById(element.textContent.toLowerCase()).style.display = "none";
+            }
+        }
+        setBorderRadius();
+    }
+
+    if(largeurFenetre <=450 && largeurFenetre > 300){
+        jours.forEach(function(jour, index) {
+            jour.textContent = joursAbrege[index];
+        });
+    }else if(largeurFenetre <=300){
+        jours.forEach(function(jour, index) {
+            jour.textContent = joursTresAbrege[index];
+        });
+    }
+}
+
+// Attacher la fonction au changement de taille de la fenêtre
+window.addEventListener('resize', mettreAJourContenu);
+
+// Appeler la fonction une fois au chargement de la page
+mettreAJourContenu();
+
+const dropZone = document.getElementById('dropZone_custom');
+const emploi_du_temps = document.getElementById('emploi_du_temps');
+
+var dragTextImageCustom = dropZone.querySelector("h6");
+var buttonImageCustom = dropZone.querySelector("button");
+var inputImageCustom = dropZone.querySelector("input");
+let fileImageCustom; 
+
+buttonImageCustom.onclick = ()=>{
+    inputImageCustom.click(); 
+}
+
+inputImageCustom.addEventListener("change", function(){
+    fileImageCustom = this.files[0];
+    dropZone.classList.add("active");
+    sendFileImageCustom();
+});
+
+dropZone.addEventListener("dragover", (event)=>{
+  event.preventDefault();
+  dropZone.classList.add("active");
+  dragTextImageCustom.textContent = "Relacher le fichier ici";
+});
+
+
+dropZone.addEventListener("dragleave", ()=>{
+    dropZone.classList.remove("active");
+    dragTextImageCustom.textContent = "Drag & Drop le fichier ici";
+}); 
+
+dropZone.addEventListener("drop", (event)=>{
+    event.preventDefault(); 
+    fileImageCustom = event.dataTransfer.files[0];
+    sendFileImageCustom(); 
+});
+
+function sendFileImageCustom(){
+    if (fileImageCustom) {
+        // Vérifier si le fichier est une image en vérifiant son type MIME
+        if (fileImageCustom.type.startsWith('image/')) {
+            // Si c'est une image, continuer le traitement avec image-compressor.js
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                changeCSSVar("bg-image", `url(${event.target.result})`)
+            };
+
+            reader.readAsDataURL(fileImageCustom);
+        } else {
+            // Si ce n'est pas une image, afficher un message d'erreur ou ignorer le fichier
+            console.error('Le fichier déposé n\'est pas une image.');
+        }
+    }
+}
+
+
+var sliderBlur = document.getElementById("range_blur");
+
+sliderBlur.addEventListener("input", function() {
+    changeCSSVar("bg-image-blur",sliderBlur.value+"px");
+});
+
+var sliderTop = document.getElementById("range_top");
+
+sliderTop.addEventListener("input", function() {
+    changeCSSVar("bg-position",sliderTop.value + "%");
+});
+
+var sliderBlack = document.getElementById("range_black");
+
+sliderBlack.addEventListener("input", function() {
+    changeCSSVar("bg-black",sliderBlack.value/10);
+});

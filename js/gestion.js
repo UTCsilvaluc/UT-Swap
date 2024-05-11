@@ -17,7 +17,7 @@ button_selection.addEventListener("click", function() {
     }else{
         icon_select.innerHTML = "toggle_off";
     }
-    
+
 });
 
 function openFiltre(event){
@@ -76,13 +76,13 @@ function addInputForm(form, choix, idDemande, demandeur, id){
     inputChoix.setAttribute('name', 'choix' + id);
     inputChoix.setAttribute('value', choix);
     form.appendChild(inputChoix);
-    
+
     var inputDemandeur = document.createElement('input');
     inputDemandeur.setAttribute('type', 'hidden');
     inputDemandeur.setAttribute('name', 'demandeur' + id);
     inputDemandeur.setAttribute('value', demandeur);
     form.appendChild(inputDemandeur);
-    
+
     var inputIdDemande = document.createElement('input');
     inputIdDemande.setAttribute('type', 'hidden');
     inputIdDemande.setAttribute('name', 'idDemande' + id);
@@ -94,7 +94,7 @@ function addInputForm(form, choix, idDemande, demandeur, id){
 function choixProfesseurSwap(choix, element){
     event.stopPropagation();
     var clickedElement = element.target;
-   
+
     // Vérifier si l'élément cliqué est le même que l'élément sur lequel l'événement est attaché
     if (clickedElement === element.currentTarget) {
         var form = document.createElement('form');
@@ -136,10 +136,10 @@ function choixProfesseurSwap(choix, element){
                     addInputForm(form, choix, donnees.idDemande, donnees.demandeur, j);
                 }else{
                     addInputForm(form, choix, donnees.idDemande, donnees.demandeur, 0);
-                } 
+                }
             }
         }
-        
+
         // Ajouter le formulaire à la page
         document.body.appendChild(form);
 
@@ -198,7 +198,7 @@ function afficherInfoSwap(element){
             var form = document.createElement('form');
             form.setAttribute('method', 'post');
             form.setAttribute('action', '');
-            
+
             var inputDemandeur = document.createElement('input');
             inputDemandeur.setAttribute('type', 'hidden');
             inputDemandeur.setAttribute('name', 'demandeur');
@@ -210,7 +210,7 @@ function afficherInfoSwap(element){
             inputAfficher.setAttribute('name', 'afficher');
             inputAfficher.setAttribute('value', true);
             form.appendChild(inputAfficher);
-            
+
             var inputIdDemande = document.createElement('input');
             inputIdDemande.setAttribute('type', 'hidden');
             inputIdDemande.setAttribute('name', 'idDemande');
@@ -230,13 +230,13 @@ function gererUVChoix(choix){
     var form = document.createElement('form');
     form.setAttribute('method', 'post');
     form.setAttribute('action', '');
-    
+
     var inputChoixSwap = document.createElement('input');
     inputChoixSwap.setAttribute('type', 'hidden');
     inputChoixSwap.setAttribute('name', 'choixSwap');
     inputChoixSwap.setAttribute('value', choix);
     form.appendChild(inputChoixSwap);
-    
+
     var inputCodeUV = document.createElement('input');
     inputCodeUV.setAttribute('type', 'hidden');
     inputCodeUV.setAttribute('name', 'codeUV');
@@ -296,7 +296,7 @@ uv_button_enregistrer_global.addEventListener("click", function() {
     var form = document.createElement('form');
     form.setAttribute('method', 'post');
     form.setAttribute('action', '');
-    
+
     var inputChoixSwap = document.createElement('input');
     inputChoixSwap.setAttribute('type', 'hidden');
     inputChoixSwap.setAttribute('name', 'choixChangement');
@@ -327,6 +327,7 @@ var choix_uv_label = document.getElementById("profil_choix_uv_parent").querySele
 var boutonContainer = document.getElementById("demandes_professeur_bouton");
 var contenuContainer = document.getElementById("demandes_professeur_content");
 var demandeProfesseurs = document.querySelectorAll('.demande_professeur');
+var button_compat = document.getElementById("button_compat");
 
 function mettreAJourContenuProfil() {
     var largeurFenetre = window.innerWidth;
@@ -361,7 +362,7 @@ function mettreAJourContenuProfil() {
             if (buttonContainer.parentElement.classList.contains('top_container')) {
                 midContainer.parentNode.insertBefore(gaucheContainer, midContainer);
                 midContainer.parentNode.insertBefore(buttonContainer, midContainer.nextSibling);
-                
+
                 var topContainer = document.querySelector('.top_container');
                 topContainer.parentNode.removeChild(topContainer);
             }
@@ -375,7 +376,7 @@ function mettreAJourContenuProfil() {
         button_accept_all.innerHTML = '<img src="../svg/Vector_check_black.svg" alt="">Accepter';
         button_decline_all.innerHTML = '<img src="../svg/Vector_none_black.svg" alt="">Refuser';
     }
-    
+
     if(largeurFenetre <= 800){
         choix_uv_label.innerHTML = "Autoriser changements UV(s)";
     }else{
@@ -384,10 +385,12 @@ function mettreAJourContenuProfil() {
 
 
     if (largeurFenetre <= 600) {
+        button_compat.innerHTML = "Compatibilité";
         contenuContainer.parentNode.insertBefore(boutonContainer, contenuContainer.nextSibling);
     } else {
+        button_compat.innerHTML = "Test compatibilité";
         var parent = document.getElementById("demandes_professeur_header");
-        parent.insertBefore(boutonContainer, parent.children[1]); 
+        parent.insertBefore(boutonContainer, parent.children[1]);
     }
 }
 
@@ -421,18 +424,16 @@ function canDisplayRequest(event) {
         } else {
             console.error("Aucune donnée trouvée dans l'attribut data-row");
         }
-
         if (!(UvsActifs.includes(donnees.codeUV))){
             display = false;
         }
         if (!(typeActifs.includes(donnees.type))){
             display = false;
         }
-        if (donnees.fil1 === "TC" || donnees.fil2 === "TC" && document.getElementById("filiere_tc").className === "filiereunCheck"){
+        if ((donnees.fil1 === "TC" || donnees.fil2 === "TC") && document.getElementById("filiere_tc").className === "filunCheck"){
             display = false;
-
         }
-        if (donnees.fil1 === "BR" || donnees.fil2 === "BR" && document.getElementById("filiere_br").className === "filiereunCheck"){
+        if ((donnees.fil1 === "BR" || donnees.fil2 === "BR") && document.getElementById("filiere_br").className === "filunCheck"){
             display = false;
 
         }
@@ -442,32 +443,257 @@ function canDisplayRequest(event) {
 }
 
 function changeType(event){
-    var labelForInput = document.querySelector('label[for="' + event.target.id + '"]');
-    if (labelForInput.className === "typeCheck"){
-        labelForInput.className = "typeunCheck";
+    var target = event.target;
+    if (target.className === "typeCheck"){
+        target.className = "typeunCheck";
     } else {
-        labelForInput.className = "typeCheck";
+        target.className = "typeCheck";
     }
     canDisplayRequest(event);
 }
 
-function changeSemaine(event){
-    console.log(event.target)
-    var labelForInput = document.querySelector('label[for="' + event.target.id + '"]');
-    if (labelForInput.className === "filiereCheck"){
-        labelForInput.className = "filiereunCheck";
+function changeFil(event){
+    var target = event.target;
+    if (target.className === "filCheck"){
+        target.className = "filunCheck";
     } else {
-        labelForInput.className = "filiereCheck";
+        target.className = "filCheck";
     }
     canDisplayRequest(event);
 }
 
 function changeUV(event){
-    var labelForInput = document.querySelector('label[for="' + event.target.id + '"]');
-    if (labelForInput.className === "uvCheck"){
-        labelForInput.className = "uvUnCheck";
+    var target = event.target;
+    if (target.className === "uvCheck"){
+        target.className = "uvUnCheck";
     } else {
-        labelForInput.className = "uvCheck";
+        target.className = "uvCheck";
     }
     canDisplayRequest(event);
+}
+
+var import_prof = document.getElementById("import_prof");
+var import_mail = document.getElementById("import_mail");
+var import_personne_fraud_parent = document.getElementById("import_personne_fraud_parent");
+function openImport(){
+    import_prof.classList.toggle('hidden', false);
+    import_mail.classList.toggle('hidden', false);
+    import_personne_fraud_parent.classList.toggle('hidden', true);
+}
+
+document.addEventListener("click" , function (event) {
+
+    if (!(event.target.closest("#import_prof")) && !document.getElementById("import_prof").className.includes("hidden") && event.target.id != "button_import"){
+        import_prof.classList.toggle('hidden', true);
+    }
+});
+
+const regexEtudiant = /^\s*\d{3}\s+([\w\s-]+)\s+(\w{4})\s*$/;
+const regexCours =/^\s*(\w{4})\s+([\w\s]{3})\s*,\s*PL\.MAX=\s*(\d+)\s*,\s*LIBRES=\s*(\d+)\s*,\s*INSCRITS=\s*(\d+)\s*H=(\w+)\.\.\.\s*$/;
+const regexHoraireSalle = /(\d{2}:\d{2}-\d{2}:\d{2}),(\w+),S=(\w+)/;
+var coursAvecEtudiants;
+function changeImport(element){
+    coursAvecEtudiants = [];
+    var texte = element.value;
+    // Séparer les textes de cours en utilisant la séquence "+----------"
+    var cours = texte.split('+----------');
+    
+    
+    // Afficher les textes de cours séparés
+    for (let i = 0; i < cours.length; i++) {
+        const lines = cours[i].trim().split('\n');
+        let coursInfo = null;
+        let etudiants = [];
+    
+        // Parcourir chaque ligne du texte de cours
+        for (let j = 0; j < lines.length; j++) {
+            const ligne = lines[j].trim();
+    
+            // Vérifier si la ligne correspond à un étudiant
+            if (regexEtudiant.test(ligne)) {
+                const [, nom, branche] = ligne.match(regexEtudiant);
+                const nomSansEspaces = nom.trim();
+                etudiants.push({ nom: nomSansEspaces, branche });
+            } else if (regexCours.test(ligne)) {
+                // Si la ligne correspond aux informations du cours
+                const match = ligne.match(regexCours);
+                let detailsCours;
+                if (match[2].includes('D')) {
+                    detailsCours = 'TD';
+                } else if (match[2].includes('C')) {
+                    detailsCours = 'CM';
+                } else if (match[2].includes('P')) {
+                    detailsCours = 'TP';
+                } else {
+                    detailsCours = match[2];
+                }
+                coursInfo = {
+                    codeCours: match[1],
+                    type: detailsCours,
+                    plMax: parseInt(match[3]),
+                    placesLibres: parseInt(match[4]),
+                    inscrits: parseInt(match[5]),
+                    jourSemaine: match[6],
+                    etudiants: []
+                };
+            } else if (regexHoraireSalle.test(ligne)) {
+                // Si la ligne correspond à l'horaire et à la salle du cours
+                const [, horaire,, salle] = ligne.match(regexHoraireSalle);
+                coursInfo.horaire = horaire;
+                coursInfo.salle = salle;
+            }
+        }
+    
+        // Ajouter les étudiants au cours correspondant
+        if (coursInfo) {
+            coursInfo.etudiants = etudiants;
+            coursAvecEtudiants.push(coursInfo);
+        }
+    }
+}
+
+
+
+function trouverCours(heureDebut, heureFin, jour, type, codeCours, nom, prenom, branche) {
+    // Parcourir la liste des cours avec étudiants
+    heureDebut = heureDebut.replace("h",":");
+    heureFin = heureFin.replace("h",":");
+    const coursTrouve = coursAvecEtudiants.find(cours => {
+        return (
+            cours.type === type &&
+            cours.codeCours === codeCours &&
+            cours.jourSemaine === jour.toUpperCase() &&
+            cours.horaire === `${heureDebut}-${heureFin.replace("h",":")}`
+        );
+    });
+
+    // Vérification de la présence de l'élève dans le cours trouvé
+    if (coursTrouve) {
+        const etudiantPresent = coursTrouve.etudiants.find(etudiant => {
+            return (
+                etudiant.nom === `${nom.toUpperCase()} ${prenom.toUpperCase()}` &&
+                etudiant.branche.substring(0, 2) === branche.substring(0, 2).toUpperCase()
+            );
+        });
+
+        return !!etudiantPresent; // Convertit en booléen
+    }
+
+    return false; // Le cours n'a pas été trouvé
+}
+
+function checkSwap() {
+    var listeDemande = document.getElementsByClassName("demande_professeur");
+    var prenomsFrauduleux = [];
+
+    // Vider le contenu de l'élément mid_content
+    import_personne_fraud_parent.innerHTML = '';
+
+    for (let demande of listeDemande) {
+        var rowAttribute = demande.dataset.row;
+
+        if (rowAttribute) {
+            try {
+                var donnees = JSON.parse(atob(rowAttribute));
+            } catch (error) {
+                console.error("Erreur lors du parsing JSON :", error);
+            }
+
+            if (donnees.statut !== "" && donnees.statut == 2) {
+                if (donnees.etudiant1 && donnees.etudiant1.heureDebut && donnees.etudiant1.heureFin && donnees.etudiant1.jour && donnees.type && donnees.codeUV && donnees.etudiant1.nom && donnees.etudiant1.prenom && donnees.etudiant1.branche) {
+                    if (!trouverCours(donnees.etudiant1.heureDebut, donnees.etudiant1.heureFin, donnees.etudiant1.jour, donnees.type, donnees.codeUV, donnees.etudiant1.nom, donnees.etudiant1.prenom, donnees.etudiant1.branche)) {
+                        shakeElement(demande);
+                        demande.getElementsByClassName("infos_swap")[0].style.color = "red";
+                        var prenomNom = donnees.etudiant1.prenom + ' ' + donnees.etudiant1.nom;
+                        if (!prenomsFrauduleux.includes(prenomNom)) {
+                            prenomsFrauduleux.push(prenomNom);
+                        }
+                    }
+                }
+                if (donnees.etudiant2 && donnees.etudiant2.heureDebut && donnees.etudiant2.heureFin && donnees.etudiant2.jour && donnees.type && donnees.codeUV && donnees.etudiant2.nom && donnees.etudiant2.prenom && donnees.etudiant2.branche) {
+                    if (!trouverCours(donnees.etudiant2.heureDebut, donnees.etudiant2.heureFin, donnees.etudiant2.jour, donnees.type, donnees.codeUV, donnees.etudiant2.nom, donnees.etudiant2.prenom, donnees.etudiant2.branche)) {
+                        shakeElement(demande);
+                        demande.getElementsByClassName("infos_swap")[1].style.color = "red";
+                        var prenomNom = donnees.etudiant2.prenom + ' ' + donnees.etudiant2.nom;
+                        if (!prenomsFrauduleux.includes(prenomNom)) {
+                            prenomsFrauduleux.push(prenomNom);
+                        }
+                    }
+                }
+            }
+        } else {
+            console.error("Aucune donnée trouvée dans l'attribut data-row");
+        }
+    }
+
+    import_personne_fraud_parent.innerHTML = '<h1 id="import_personne_fraud_title">Il y a ' + prenomsFrauduleux.length + ' personnes frauduleuses:</h1>';
+
+    var frauduleuxListe = document.createElement('div');
+    frauduleuxListe.id = 'import_personne_fraud_container';
+    for (var i = 0; i < prenomsFrauduleux.length; i++) {
+        var div = document.createElement('div');
+        div.className = 'import_personne_fraud';
+        div.textContent = prenomsFrauduleux[i];
+        frauduleuxListe.appendChild(div);
+    }
+
+    import_personne_fraud_parent.appendChild(frauduleuxListe);
+
+    // Ajouter le contenu généré à l'élément mid_content
+    import_mail.classList.toggle('hidden', true);
+    import_personne_fraud_parent.classList.toggle('hidden', false);
+}
+function deplacerEtudiant(nom1, prenom1, branche1, nom2, prenom2, branche2, type, codeCours, jour, horaireDebut, horaireFin) {
+    // Rechercher le cours correspondant au code, au type, au jour et à l'horaire
+    var coursTrouve = coursAvecEtudiants.find(cours => cours.codeCours === codeCours && cours.type === type && cours.jourSemaine === jour.toUpperCase() && cours.horaire === `${horaireDebut.replace("h",":")}-${horaireFin.replace("h",":")}`);
+    nom1 = nom1.toUpperCase();
+    prenom1 = prenom1.toUpperCase();
+    nom2 = nom2.toUpperCase();
+    prenom2 = prenom2.toUpperCase();
+    if (coursTrouve) {
+        // Rechercher l'étudiant 2 dans le cours
+        var etudiant2 = coursTrouve.etudiants.find(etudiant => etudiant.nom === `${nom2} ${prenom2}` && etudiant.branche.substring(0, 2).toUpperCase() === branche2.substring(0, 2).toUpperCase());
+        if (etudiant2) {
+            // Remplacer l'étudiant 2 par l'étudiant 1
+            var index = coursTrouve.etudiants.indexOf(etudiant2);
+            coursTrouve.etudiants[index] = { nom: `${nom1} ${prenom1}`, branche: branche1 };
+            return; // Sortir de la fonction une fois le déplacement effectué
+        } else {
+            console.error(`Étudiant introuvable dans le cours (${codeCours} (${type}), ${jour}, ${horaireDebut}-${horaireFin})`);
+        }
+    } else {
+        console.error(`Aucun cours trouvé avec les caractéristiques spécifiées : ${codeCours} (${type}), ${jour.toUpperCase()}, ${horaireDebut.replace("h",":")}-${horaireFin.replace("h",":")}`);
+    }
+ }
+
+ function updateMail(){
+    var listeDemande = document.getElementsByClassName("demande_professeur");
+
+    // Vider le contenu de l'élément mid_content
+    import_personne_fraud_parent.innerHTML = '';
+
+    for (let demande of listeDemande) {
+        var rowAttribute = demande.dataset.row;
+
+        if (rowAttribute) {
+            try {
+                var donnees = JSON.parse(atob(rowAttribute));
+            } catch (error) {
+                console.error("Erreur lors du parsing JSON :", error);
+            }
+
+            if (donnees.statut !== "" && donnees.statut == 4) {
+                if (donnees.etudiant1 && donnees.etudiant1.heureDebut && donnees.etudiant1.heureFin && donnees.etudiant1.jour && donnees.type && donnees.codeUV && donnees.etudiant1.nom && donnees.etudiant1.prenom && donnees.etudiant1.branche && 
+                    donnees.etudiant2 && donnees.etudiant2.heureDebut && donnees.etudiant2.heureFin && donnees.etudiant2.jour && donnees.type && donnees.codeUV && donnees.etudiant2.nom && donnees.etudiant2.prenom && donnees.etudiant2.branche &&
+                    trouverCours(donnees.etudiant1.heureDebut, donnees.etudiant1.heureFin, donnees.etudiant1.jour, donnees.type, donnees.codeUV, donnees.etudiant1.nom, donnees.etudiant1.prenom, donnees.etudiant1.branche) && 
+                    trouverCours(donnees.etudiant2.heureDebut, donnees.etudiant2.heureFin, donnees.etudiant2.jour, donnees.type, donnees.codeUV, donnees.etudiant2.nom, donnees.etudiant2.prenom, donnees.etudiant2.branche)
+                ) {
+                    deplacerEtudiant(donnees.etudiant1.nom, donnees.etudiant1.prenom, donnees.etudiant1.branche, donnees.etudiant2.nom, donnees.etudiant2.prenom, donnees.etudiant2.branche, donnees.type, donnees.codeUV, donnees.etudiant2.jour, donnees.etudiant2.heureDebut, donnees.etudiant2.heureFin)
+                    deplacerEtudiant(donnees.etudiant2.nom, donnees.etudiant2.prenom, donnees.etudiant2.branche, donnees.etudiant1.nom, donnees.etudiant1.prenom, donnees.etudiant1.branche, donnees.type, donnees.codeUV, donnees.etudiant1.jour, donnees.etudiant1.heureDebut, donnees.etudiant1.heureFin)
+                }
+            }
+        } else {
+            console.error("Aucune donnée trouvée dans l'attribut data-row");
+        }
+    }
 }

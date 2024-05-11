@@ -327,6 +327,7 @@ function redirect($url){
             <div id="demandes_professeur_header" class="profil_header">
                 <span class="demandes_profil_titre"><span class="tictac"></span><h1>Mes demandes</h1></span>
                 <div id="demandes_professeur_bouton" class="demandes_gestion_filtre">
+                    <img class="svgFiltre" id="button_import" src="../svg/IMPORT_FILTRE.svg" title="Importer le mail des inscriptions" onclick="openImport(event)">
                     <img class="svgFiltre" title="Filtrer les demandes" src="../svg/FILTRE_FILTRE.svg" onclick="openFiltre(event)">
                     <div id="demandes_professeur_bouton_selection">
                         <div>
@@ -406,6 +407,26 @@ function redirect($url){
                                 }
                             }
 
+                            $etudiant1 = array(
+                                "nom" => $nom1,
+                                "prenom" => $prenom1,
+                                "branche" => $branche1,
+                                "jour" => $jour1,
+                                "heureDebut" => $hDeb1,
+                                "heureFin" => $hFin1
+                            );
+                            
+                            // Informations sur l'étudiant 2
+                            $etudiant2 = array(
+                                "nom" => $nom2,
+                                "prenom" => $prenom2,
+                                "branche" => $branche2,
+                                "jour" => $jour2,
+                                "heureDebut" => $hDeb2,
+                                "heureFin" => $hFin2
+                            );
+                            
+                            // Informations sur la demande
                             $demande= array(
                                 "idDemande" => $idDemande,
                                 "demandeur" => $demandeur,
@@ -413,9 +434,10 @@ function redirect($url){
                                 "codeUV" => $codeUV,
                                 "type" => $type,
                                 "fil1" => $branche1,
-                                "fil2" => $branche2
+                                "fil2" => $branche2,
+                                "etudiant1" => $etudiant1,
+                                "etudiant2" => $etudiant2
                             );
-                            
                             $data_row = htmlspecialchars(base64_encode(json_encode($demande)), ENT_QUOTES , 'UTF-8');
                             ?>
                             <div class="demande_professeur" onclick="demandeBehvior(this)" data-row=<?= $data_row ?>>
@@ -740,6 +762,33 @@ function redirect($url){
             </div>
         </div>
     </form>
+
+    <div class="mid_pannel hidden" id="import_prof">
+        <div class="mid_titre">
+            <h1>Ajouter le mail d'UV</h1>
+            <hr>
+        </div>
+        <img src="../svg/croix.svg" class="croix">
+        <div class="mid_content hidden" id="import_personne_fraud_parent">
+        </div>
+        <div class="mid_content" id="import_mail">
+            <p class="hidden" id="midFileError">Merci d'importer un fichier ou de sélectionner une autre méthode !</p>
+            <textarea class="" name="texteUV" id="textUV" cols="30" rows="10" onchange="changeImport(this)" placeholder="Veuillez renseigner le mail reçu comprenant la liste des étudiants inscrits aux UVS"></textarea>
+            
+            <span class="mid_input_local_save">
+                <input type="checkbox" name="localSave" id="localSave" checked>
+                <label for="localSave">Sauvegarder localement le mail</label>
+            </span>
+            
+        </div>
+        <div class="mid_button">
+            <hr>
+            <div>
+                <button onclick="checkSwap()" id="button_compat">Test compatibilité</button>
+                <img onclick="updateMail()" src="../svg/update.svg" alt="">
+            </div>
+        </div>
+    </div>
     <script src="../js/gestion.js"></script>
     <script src="../js/profil.js"></script>
 </body>

@@ -10,6 +10,7 @@ function redirect($url){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="../css/home.css">
     <title>Home - UT'Swap</title>
     <link rel="icon" href="../img/logo.png" type="image/x-icon">
@@ -59,8 +60,14 @@ function redirect($url){
                 </div>
             </div>
 
+            <div class="home_pannel" id="tips_home_parent">
+                <div>
+                    <img src="../img/prof.png">
+                    <p>UT'Swap fonctionne sur le principe de <span class="important_word">triple entente</span>, celle entre 2 étudiants et 1 responsable. Une <span class="important_word">demande</span> est la démarche d'un étudiant à un autre, même si celle-ci est acceptée le <span class="important_word">swap</span> ne l'est pas forcément. Il faudra attendre la <span class="important_word">réponse du reponsable d'UV</span> - Equipe UT'Swap</p>
+                </div>
+            </div>
 
-            <div class="home_pannel" id="video_home_parent">
+            <div class="home_pannel hidden" id="video_home_parent">
                 <h1 class="home_title">Vidéo tuto UT'Swap:</h1>
                 <div>
                     <iframe src="https://www.youtube.com/embed/7btKqhqQ4yc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>

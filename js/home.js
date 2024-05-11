@@ -81,12 +81,7 @@ function mettreAJourContenuProfil() {
     
 }
 
-function shakeElement(element){
-    element.classList.add("shake-element");
-    setTimeout(function() {
-        element.classList.remove("shake-element");
-    }, 200);
-}
+
 
 var codeUV_input_home = document.getElementById("codeUV_input_home");
 var type_input_home = document.getElementById("type_input_home");

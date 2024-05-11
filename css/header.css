@@ -20,6 +20,21 @@
     --couleur-shadow: rgba(0,0,0,0.30);
 }
 
+.nouveau_pannel_checkbox:not(.hidden){
+    width: 100%;
+    display: flex;
+    overflow: hidden;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap:10px
+}
+.nouveau_pannel_checkbox li{
+    float: left;
+    clear: both;
+    width: 47%;
+    white-space: nowrap;
+}
 
 body {
     font-family: Jost, sans-serif;
@@ -45,6 +60,7 @@ main::-webkit-scrollbar-track
 main::-webkit-scrollbar
 {
 	width: 12px;
+    height:12px;
 	background-color: #F5F5F5;
 }
 
@@ -209,6 +225,7 @@ nav .orange{
 #notification_pannel #endroit_notification::-webkit-scrollbar
 {
 	width: 12px;
+    height:12px;
 	background-color: #F5F5F5;
 }
 
@@ -438,6 +455,7 @@ nav .orange{
 #nouveau_pannel #div_milieu_nouveau::-webkit-scrollbar
 {
 	width: 8px;
+    height:8px;
 	background-color: #F5F5F5;
 }
 
@@ -457,6 +475,7 @@ nav .orange{
     list-style: none;
     padding: 0;
     margin: 0;
+    height: fit-content;
 }
 
 #nouveau_pannel li:not(.double-input):not(.basique):not(.hidden){
@@ -920,6 +939,11 @@ span.row h3{
 }
 
 @media screen and (max-width: 600px){
+
+    .nouveau_pannel_checkbox{
+        gap:0px;
+    }
+
     #notification_pannel{
         width: 100%;
     }
