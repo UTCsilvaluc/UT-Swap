@@ -475,10 +475,18 @@ function changeUV(event){
 var import_prof = document.getElementById("import_prof");
 var import_mail = document.getElementById("import_mail");
 var import_personne_fraud_parent = document.getElementById("import_personne_fraud_parent");
-function openImport(){
+async function openImport() {
     import_prof.classList.toggle('hidden', false);
     import_mail.classList.toggle('hidden', false);
     import_personne_fraud_parent.classList.toggle('hidden', true);
+    try {
+        const emailContent = await getMailBDD();
+        if (emailContent) {
+            document.getElementById("textUV").value = emailContent;
+        }
+    } catch (error) {
+        console.error("Une erreur s'est produite" , error);
+    }
 }
 
 document.addEventListener("click" , function (event) {
@@ -492,28 +500,35 @@ const regexEtudiant = /^\s*\d{3}\s+([\w\s-]+)\s+(\w{4})\s*$/;
 const regexCours =/^\s*(\w{4})\s+([\w\s]{3})\s*,\s*PL\.MAX=\s*(\d+)\s*,\s*LIBRES=\s*(\d+)\s*,\s*INSCRITS=\s*(\d+)\s*H=(\w+)\.\.\.\s*$/;
 const regexHoraireSalle = /(\d{2}:\d{2}-\d{2}:\d{2}),(\w+),S=(\w+)/;
 var coursAvecEtudiants;
-function changeImport(element){
+async function changeImport(element) {
     coursAvecEtudiants = [];
     var texte = element.value;
+    if (document.getElementById("localSave").checked){
+        try {
+            await saveMailBDD(texte);
+        } catch (error) {
+            console.error("Une erreur s'est produite:", error);
+        }
+    }
     // Séparer les textes de cours en utilisant la séquence "+----------"
     var cours = texte.split('+----------');
-    
-    
+
+
     // Afficher les textes de cours séparés
     for (let i = 0; i < cours.length; i++) {
         const lines = cours[i].trim().split('\n');
         let coursInfo = null;
         let etudiants = [];
-    
+
         // Parcourir chaque ligne du texte de cours
         for (let j = 0; j < lines.length; j++) {
             const ligne = lines[j].trim();
-    
+
             // Vérifier si la ligne correspond à un étudiant
             if (regexEtudiant.test(ligne)) {
                 const [, nom, branche] = ligne.match(regexEtudiant);
                 const nomSansEspaces = nom.trim();
-                etudiants.push({ nom: nomSansEspaces, branche });
+                etudiants.push({nom: nomSansEspaces, branche});
             } else if (regexCours.test(ligne)) {
                 // Si la ligne correspond aux informations du cours
                 const match = ligne.match(regexCours);
@@ -538,12 +553,12 @@ function changeImport(element){
                 };
             } else if (regexHoraireSalle.test(ligne)) {
                 // Si la ligne correspond à l'horaire et à la salle du cours
-                const [, horaire,, salle] = ligne.match(regexHoraireSalle);
+                const [, horaire, , salle] = ligne.match(regexHoraireSalle);
                 coursInfo.horaire = horaire;
                 coursInfo.salle = salle;
             }
         }
-    
+
         // Ajouter les étudiants au cours correspondant
         if (coursInfo) {
             coursInfo.etudiants = etudiants;
@@ -696,4 +711,87 @@ function deplacerEtudiant(nom1, prenom1, branche1, nom2, prenom2, branche2, type
             console.error("Aucune donnée trouvée dans l'attribut data-row");
         }
     }
+}
+
+/* Sauvegarde du mail en local */
+
+function ouvrirBaseDeDonnees() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('emailsDB', 1);
+
+        request.onerror = function(event) {
+            reject("Erreur lors de l'ouverture de la base de données: " + event.target.error);
+        };
+
+        request.onupgradeneeded = function(event) {
+            const db = event.target.result;
+            db.createObjectStore('emails', { keyPath: 'id', autoIncrement: true });
+        };
+
+        request.onsuccess = function(event) {
+            const db = event.target.result;
+            resolve(db);
+        };
+    });
+}
+
+function saveMailBDD(email) {
+    return new Promise((resolve, reject) => {
+        ouvrirBaseDeDonnees()
+            .then(db => {
+                const transaction = db.transaction(['emails'], 'readwrite');
+                const objectStore = transaction.objectStore('emails');
+
+                // Vider la base de données avant d'ajouter le nouvel email
+                const clearRequest = objectStore.clear();
+                clearRequest.onsuccess = function(event) {
+                    // Ajouter le nouvel email
+                    const request = objectStore.add({ email: email });
+
+                    request.onsuccess = function(event) {
+                        resolve("Email sauvegardé avec succès dans la base de données IndexedDB");
+                    };
+
+                    request.onerror = function(event) {
+                        reject("Erreur lors de la sauvegarde de l'email dans la base de données IndexedDB: " + event.target.error);
+                    };
+                };
+
+                clearRequest.onerror = function(event) {
+                    reject("Erreur lors de la suppression des données existantes dans la base de données IndexedDB: " + event.target.error);
+                };
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+}
+
+// Fonction pour récupérer l'email sauvegardé dans la base de données IndexedDB
+function getMailBDD() {
+    return new Promise((resolve, reject) => {
+        ouvrirBaseDeDonnees()
+            .then(db => {
+                const transaction = db.transaction(['emails'], 'readonly');
+                const objectStore = transaction.objectStore('emails');
+
+                const request = objectStore.getAll();
+
+                request.onsuccess = function(event) {
+                    const emails = event.target.result;
+                    if (emails && emails.length > 0) {
+                        resolve(emails[0].email);
+                    } else {
+                        resolve(null);
+                    }
+                };
+
+                request.onerror = function(event) {
+                    reject("Erreur lors de la récupération de l'email depuis la base de données IndexedDB: " + event.target.error);
+                };
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
 }
