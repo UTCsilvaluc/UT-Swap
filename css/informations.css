@@ -6,7 +6,6 @@ div.main_info {
 
 .info_title {
     text-align: center;
-    font-style: oblique;
 }
 #info_titre{
     font-family: "Jost", sans-serif;
@@ -15,28 +14,27 @@ div.main_info {
 }
 div#info_menu{
     display: flex;
+    flex-direction: column;
     justify-content: center; /* Centrer horizontalement */
     align-items: center; /* Centrer verticalement */
-    width: 50%;
+    width: 70%;
 }
 #info_menu_nav {
     display: flex;
     flex-direction: column;
     align-items: center; /* Centrer verticalement */
-
+    justify-content: center;
+    width: 100%;
 }
 
 #span_nav_menu {
-    text-align: center; /* Centrer le texte à l'intérieur du span */
     display: flex;
     flex-direction: row;
-    justify-content: center; /* Centrer horizontalement les éléments */
+    justify-content: space-between; /* Centrer horizontalement les éléments */
+    text-align: center; /* Centrer le texte à l'intérieur du span */
     border-bottom: 1px black solid; /* Bordure sous toute la span */
-}
-
-#span_nav_menu h3{
-    transition: 0.3s linear opacity;
-
+    width: 100%;
+    margin-bottom: 25px;
 }
 
 #span_nav_menu h3:hover{
@@ -51,8 +49,16 @@ h3.currentSpan {
 }
 
 span#span_nav_menu h3{
+    width: 25%;
+    transition: 0.3s linear opacity;
     font-style: initial;
     color: #424141;
+    padding: 10px 20px; /* Ajouter une marge horizontale de 20px entre les éléments */
+    margin:0px;
+    font-family: Jost;
+    font-size: 18px;
+    font-weight: normal;
+    white-space: nowrap;
 }
 
 h3.currentSpan{
@@ -60,17 +66,9 @@ h3.currentSpan{
     padding-bottom: 5px;
 }
 
-#span_nav_menu h3 {
-    margin: 0 20px; /* Ajouter une marge horizontale de 20px entre les éléments */
-    font-family: Jost;
-    font-size: 24px;
-    font-weight: normal;
-}
-
 div#info_menu_content{
     text-align: center;
-    width: 100%;
-    margin-left: 80px;
+    width: 85%;
 }
 
 span.content{
@@ -84,8 +82,7 @@ span.content{
 span.content h4{
     margin: 10px 0px;
     font-family: Jost;
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 22px;
 }
 span.content h5{
     margin: 0 0 0 20px;
@@ -94,9 +91,27 @@ span.content h5{
     font-weight: normal;
 }
 
+.faq_content{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: justify;
+    height: 50px;
+    font-family: Jost;
+    font-size: 20px;
+    font-weight: 100;
+}
+
+.faq_content h4{
+    font-weight:lighter;
+}
+
 .fleche_svg{
     width: 25px;
     height: 25px;
+    transition: transform 0.3s ease;
 }
 
 .fleche_svg_rotate{
@@ -105,30 +120,55 @@ span.content h5{
     height: 25px;
 }
 
-span.openContent {
+span.faq_openContent {
     display: flex;
     align-items: center; /* Aligner verticalement les éléments */
-    transition: scale 0.3s ease-in-out;
+    justify-content: space-between;
+    width: 100%;
+    cursor: pointer;
 }
 
-span.openContent h4 {
+span.faq_openContent h4 {
     margin: 0; /* Supprimer les marges par défaut du h4 */
 }
 
-span.openContent:hover {
-    background: #fffdfd;
-    cursor: pointer;
-    scale: 101%;
+span.faq_content h5 {
+    margin: 20px 0px;
+    width: 90%;
+    font-weight: lighter;
+    font-size: 16px;
+    max-height: 0; /* Ajout d'une hauteur maximale pour permettre la transition */
+    overflow: hidden; /* Cacher tout contenu qui dépasse la hauteur maximale */
+    transition: max-height 0.5s ease, margin 0.5s ease; /* Ajouter une transition pour une animation douce */
 }
-
-span.openContent img.fleche_svg , span.openContent img.fleche_svg_rotate{
-    margin-left: auto; /* Ajouter une marge à gauche de l'image pour l'espacement */
-}
-
 
 .hidden {
     display: none;
-    max-height: 0; /* Ajout d'une hauteur maximale pour permettre la transition */
-    overflow: hidden; /* Cacher tout contenu qui dépasse la hauteur maximale */
-    transition: max-height 0.5s ease; /* Ajouter une transition pour une animation douce */
+}
+
+@media screen and (max-width: 1200px) {
+    div#info_menu{
+        width: 90%;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    div#info_menu{
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 600px) {
+
+    #span_nav_menu{
+        margin-top: 10px;
+    }
+
+    span#span_nav_menu h3{
+        font-size: 14px;
+    }
+
+    .info_title{
+        display: none;
+    }
 }

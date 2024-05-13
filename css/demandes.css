@@ -120,7 +120,6 @@ main{
 }
 
 main{
-    overflow: auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -269,7 +268,6 @@ main > hr{
     justify-content: space-between;
     align-items: center;
     height: 30px;
-
 }
 
 #pageList{
@@ -367,7 +365,6 @@ main > hr{
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: calc(100vh - var(--taille-header));
     }
 
     .svgFiltre{
@@ -425,7 +422,7 @@ main > hr{
         display: none;
         -webkit-box-shadow: -5px 0px 15px 0px var(--couleur-shadow); 
         box-shadow: -5px 0px 15px 0px var(--couleur-shadow);
-        position: absolute;
+        position: fixed;
         margin-right: 0;
         height: calc(100% - var(--taille-header));
         width: 500px;
@@ -565,7 +562,7 @@ main > hr{
         border-top: 1px solid lightgrey;
         box-sizing: border-box;
         background-color: white;
-        height: calc(100vh - 55px - var(--taille-header) - 49px);;
+        height: fit-content;
     }
 
     #menuFiltre{

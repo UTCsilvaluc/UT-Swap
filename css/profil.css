@@ -488,7 +488,7 @@ main{
     align-items: center;
     justify-content:space-between;
     padding:0;
-    position: absolute;
+    position: fixed;
     top: calc(50vh + calc(var(--taille-header)/2));
     left: 50%;
     transform: translate(-50%, -50%);

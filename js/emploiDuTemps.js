@@ -18,14 +18,24 @@ function svgpTrasheEnter(event){
     event.target.style.width = "auto";
     event.target.src = "../svg/supprimer_texte.svg"
     event.target.style.cursor = "pointer";
+
 }
 
 function svgEditEnter(event){
+    var largeurEcran = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+    if (parseFloat(localStorage.getItem("height")) < 60 || largeurEcran < 750){
+        event.target.src = "../svg/modifier_creneau_reverse.svg";
+        event.target.style.position = "unset";
+        event.target.style.left = "unset";
+    }else{
+        event.target.src = "../svg/edit_text.svg";
+        event.target.style.position = "absolute";
+        event.target.style.left = "-75px";
+    }
     event.target.style.height = "33px";
     event.target.style.width = "auto";
-    event.target.src = localStorage.getItem("type") === "ACT" ? "../svg/edit_text.svg" : "../svg/modifier_creneau_reverse.svg";
     event.target.style.cursor = "pointer";
-
 }
 
 function svgSwapLeave(event){
@@ -48,6 +58,39 @@ function svgTrashLeave(event){
     event.target.style.width = "33px";
     event.target.src = "../svg/supprimer_icone.svg";
     event.target.style.cursor = "default";
+}
+
+function svgEditLeave(event){
+    event.target.style.height = "33px";
+    event.target.style.width = "33px";
+    var largeurEcran = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    if (parseFloat(localStorage.getItem("height")) < 60 || largeurEcran < 750){
+        event.target.src = "../svg/edit_icon_reverse.svg";
+    }else{
+        event.target.src = "../svg/edit_icon.svg";
+    }
+    event.target.style.position = "unset";
+    event.target.style.left = "unset";
+    event.target.style.cursor = "pointer";
+
+}
+
+function editCreneau(event){
+    event.stopPropagation();
+    nouveauClick();
+    motivation.classList.toggle('hidden', true);
+    document.getElementById("bouton_update").classList.toggle("hidden" , false);
+    bouton_non_submit.classList.toggle("hidden" , true);
+    preremplirNouveauForm();
+}
+
+function updateCreneau(){
+    var coursID = localStorage.getItem("idCours");
+    document.getElementById("trash").style.display = "none";
+    document.getElementById("deleteCours").style.display = "flex";
+    deleteCours();
+    bouton_ajouter_creneau.click();
+
 }
 
 function trashClick(){
@@ -121,6 +164,7 @@ function posterSwap(event){
     preremplirNouveauForm();
 
 }
+
 var isHovering = false;
 
 document.getElementById("emploi_du_temps").addEventListener("mousemove" , function (event) {
@@ -173,13 +217,20 @@ document.getElementById("emploi_du_temps").addEventListener("mousemove" , functi
         localStorage.setItem("type",typeMatiere);
         localStorage.setItem("semaine",semaine);
         localStorage.setItem("idCours" , coursElement.id)
+        localStorage.setItem("height" , coursElement.offsetHeight)
 
-        hoverCours = document.getElementsByClassName("hoverCours")[0];
+        var hoverCours = document.getElementById("rightHover");
+        var hoverLeft = document.getElementById("leftHover");
         hoverCours.style.display = "flex";
         hoverCours.style.height = coursElement.offsetHeight + "px";
 
+        hoverLeft.style.display = "flex";
+        hoverLeft.style.height = coursElement.offsetHeight + "px";
+
         hoverCours.style.left = `${coursElement.getBoundingClientRect().x + coursElement.offsetWidth - 10}px`;
         hoverCours.style.top = `${coursElement.getBoundingClientRect().y}px`;
+        hoverLeft.style.left = `${coursElement.getBoundingClientRect().x -  30}px`;
+        hoverLeft.style.top = `${coursElement.getBoundingClientRect().y}px`;
 
 
         var largeurEcran = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
@@ -190,10 +241,21 @@ document.getElementById("emploi_du_temps").addEventListener("mousemove" , functi
             hoverCours.style.left = `${coursElement.getBoundingClientRect().x}px`;
             hoverCours.style.height = "40px";
             hoverCours.style.width = coursElement.offsetWidth +"px";
+
+            hoverLeft.style.flexDirection = "row";
+            hoverLeft.style.top = `${coursElement.getBoundingClientRect().y + coursElement.offsetHeight}px`;
+            hoverLeft.style.left = `${coursElement.getBoundingClientRect().x}px`;
+            hoverLeft.style.height = "40px";
+            hoverLeft.style.width = coursElement.offsetWidth +"px";
+            hoverLeft.querySelector("img").src = "../svg/edit_icon_reverse.svg";
         }else{
             hoverCours.style.flexDirection = "column";
             hoverCours.style.width = "auto";
+            hoverLeft.style.flexDirection = "column";
+            hoverLeft.style.width = "auto";
+            hoverLeft.querySelector("img").src = "../svg/edit_icon.svg";
         }
+        document.getElementById("swap").classList.toggle("hidden" , typeMatiere === "ACT");
 
     }
 
@@ -214,6 +276,8 @@ function addCreneau(event) {
         motivation.classList.toggle('hidden', true);
         bouton_ajouter_creneau.classList.toggle('hidden', false);
         bouton_non_submit.classList.toggle('hidden', true);
+        document.getElementById("li-externe").classList.toggle("hidden" , false);
+        document.getElementById("li-semaine").classList.toggle("hidden" , false);
         var divHeureCliquee = event.target.closest('.divHeure');
         var divJour = event.target.closest('.jour');
         if (divHeureCliquee) {
@@ -221,6 +285,7 @@ function addCreneau(event) {
             document.getElementById("input-hdebut1").value = heureDebut;
             document.getElementById("input-hfin1").value = heureFin;
             document.getElementById("input-creneau").value = divJour.id.toString();
+            document.getElementById("input-creneau-externe").value = divJour.id.toString();
         }
     }
 }
@@ -235,7 +300,6 @@ function calculerHeure(divHeure) {
 
 bouton_ajouter_creneau.addEventListener("click", function() {
     event.preventDefault();
-    //deleteCours();
     nouveau_pannel = document.getElementById('nouveau_pannel');
 
     // Récupérer les valeurs des champs du formulaire
@@ -248,6 +312,7 @@ bouton_ajouter_creneau.addEventListener("click", function() {
     let cours;
 
     if (document.getElementById("input-isCours").checked){
+        creneau = encodeURIComponent(input_creneau_externe.value);
         var activiteName = encodeURIComponent(document.getElementById("exteName").value);
         var activiteLoc = encodeURIComponent(document.getElementById("input-lieu").value);
         cours = new Cours(activiteName, hdebut, hfin, creneau, activiteLoc , semainechoix , null , encodeURIComponent("ACT"));
@@ -589,8 +654,10 @@ function colorChange(event){
 
 function stopHovering(){
     isHovering = false;
-    hoverCours = document.getElementsByClassName("hoverCours")[0];
+    var hoverCours = document.getElementById("rightHover");
+    var hoverLeft = document.getElementById("leftHover");
     hoverCours.style.display = "none";
+    hoverLeft.style.display = "none";
     document.getElementById("trash").style.display = "block";
     document.getElementById("deleteCours").style.display = "none";
 }
@@ -648,12 +715,12 @@ function suivreSouris(element, isCours) {
                 var texte = element.querySelector('h2.UV').textContent;
                 var regex = /^([A-Z0-9]+) - (ACT|TD|TP|CM)( A| B)?$/i;
                 var match = texte.match(regex);
-                var semaine = match[3] ? match[3] : null;
+                var semaine = match[3] ? match[3].replace(" ","") : null;
                 if (courses) {
                 await modifierAttributCoursByID(db, idCurrentCours, 'jour', parentJourElement.id);
                 await modifierAttributCoursByID(db, idCurrentCours, 'horaireDebut', heureDebut); /* Ajouter un 0 devant l'heure si < 10*/
                 await modifierAttributCoursByID(db, idCurrentCours, 'horaireFin', heureFin);
-                await modifierAttributCoursByID(db, idCurrentCours, 'semaine', semaine.replace(" ",""));
+                await modifierAttributCoursByID(db, idCurrentCours, 'semaine', semaine);
                 } else {
                     console.log("Erreur : aucun cours avec cet ID !")
                 }
@@ -757,6 +824,12 @@ function preremplirNouveauForm(){
     var salle = localStorage.getItem("salle");
     var type = localStorage.getItem("type");
     var semaine = localStorage.getItem("semaine");
+    if (type === "ACT"){
+        document.getElementById("input-isCours").click();
+        document.getElementById("input-lieu").value = salle;
+        document.getElementById("exteName").value = codeUV;
+        input_creneau_externe.value = creneau;
+    }
     formulaire = document.getElementById("nouveau_pannel");
     formulaire.querySelector("#input-uv").value = codeUV;
     formulaire.querySelector("#input-creneau").value = creneau;
@@ -816,20 +889,6 @@ couleurInput.addEventListener('change', function(event) {
     for (let day of days){
         day.style.background = event.target.value;
     }
-});
-
-var inputCouleurBorder = document.getElementById('inputCouleurBorder');
-var couleurInputBorder = document.getElementById('choix-couleur-border');
-
-inputCouleurBorder.addEventListener('click', function(event) {
-    couleurInputBorder.style.display = 'block';
-    couleurInputBorder.click();
-});
-
-couleurInputBorder.addEventListener('change', function(event) {
-    inputCouleurBorder.style.backgroundColor = event.target.value;
-    
-    changeCSSVar("color-bordure", event.target.value);
 });
 
 function customTime(event) {
@@ -954,22 +1013,14 @@ function resetEDT(event) {
     ];
 }
 
-var suppr_edt_pannel = document.getElementById("suppr_edt_pannel");
 document.addEventListener("click" , function (event) {
 
     if (!(event.target.closest("#menuCustom")) && document.getElementById("menuCustom") != "none" && event.target.id !== "custom_edt"){
         document.getElementById("menuCustom").style.display = "none";
     }
 
-    if (!(event.target.closest("#suppr_edt_pannel")) && document.getElementById("suppr_edt_pannel") != "none" && event.target.id !== "suppr_edt_button"){
-        suppr_edt_pannel.style.display = "none";
-    }
-
 });
 
-function supprimerEDT(){
-    suppr_edt_pannel.style.display="flex";
-}
 
 // Create a function for setting a variable value
 function changeCSSVar(variable, valeur) {
@@ -986,6 +1037,21 @@ function pxToVw(pxValue) {
 
     return vwValue;
 }
+
+var inputCouleurBorder = document.getElementById('inputCouleurBorder');
+var couleurInputBorder = document.getElementById('choix-couleur-border');
+
+inputCouleurBorder.addEventListener('click', function(event) {
+    couleurInputBorder.style.display = 'block';
+    couleurInputBorder.click();
+});
+
+couleurInputBorder.addEventListener('change', function(event) {
+    inputCouleurBorder.style.backgroundColor = event.target.value;
+
+    changeCSSVar("color-bordure", event.target.value);
+});
+
 
 function changeJour(event){
     
@@ -1042,9 +1108,9 @@ function changeJour(event){
                 return recupererParametresUtilisateur();
             })
             .catch(error => console.error("Erreur :", error));
-    
+
         clearBorderRadius();
-    
+
         setBorderRadius();
     }
     
@@ -1124,6 +1190,7 @@ function menuExportEDT(event){
     ecran.style.display = "block";
 }
 
+var suppr_edt_pannel = document.getElementById("suppr_edt_pannel");
 document.addEventListener("click" , function (event){
     if (!(event.target.closest("#importEDTID")) && importElement.style.display != "none") {
         importElement.style.display = "none";
@@ -1133,7 +1200,15 @@ document.addEventListener("click" , function (event){
         exportElement.style.display = "none";
         ecran.style.display = "none";
     }
+
+    if (!(event.target.closest("#suppr_edt_pannel")) && document.getElementById("suppr_edt_pannel") != "none" && event.target.id !== "suppr_edt_button"){
+        suppr_edt_pannel.style.display = "none";
+    }
 })
+
+function supprimerEDT(){
+    suppr_edt_pannel.style.display="flex";
+}
 
 // Fonction pour transformer une entrée de cours en objet Cours
 function transformerEntreeCours(entree) {
@@ -1280,27 +1355,27 @@ async function importEDT(event) {
             resetEDT(event);
             for (var currentCours of allCourses) {
                 if (currentCours.length > 20) {
-                    if (currentCours.includes("/")){
+                    if (currentCours.includes("/")) {
                         const occurrences = (currentCours.match(/\//g) || []).length;
                         var listeInformations = currentCours.split(" ");
-                        var listeSansVide = listeInformations.filter(function(element) {
+                        var listeSansVide = listeInformations.filter(function (element) {
                             // Retourne true si l'élément n'est pas vide
                             return element.trim() !== "";
                         });
                         var codeUV = listeSansVide[0];
                         var type = listeSansVide[1];
                         var groupe = listeSansVide[2];
-                        for (var i = 0 ; i <= occurrences ; i++){
+                        for (var i = 0; i <= occurrences; i++) {
                             var currentSplitCourses = currentCours.split("/");
                             const parametre = (i === 0) ? ` ${currentSplitCourses[i]}` : `${codeUV} ${type} ${groupe} ${currentSplitCourses[i]}`;
                             var cours = transformerEntreeCours(parametre);
-                            if (cours != null){
+                            if (cours != null) {
                                 await createCours(cours);
                             }
                         }
                     } else {
                         var cours = transformerEntreeCours(currentCours);
-                        if (cours != null){
+                        if (cours != null) {
                             await createCours(cours);
                         }
                     }
@@ -1308,20 +1383,13 @@ async function importEDT(event) {
             }
             canClose = true;
         }
-        if (canClose){
+        if (canClose) {
             document.getElementById("importEDTID").style.display = "none";
             document.getElementById("textUV").value = "";
             document.getElementById("ecran_edt").style.display = "none";
         }
     } catch (error) {
         console.error(error);
-    }
-}
-
-function lineIsCours(line){
-    var detailsLine = line.split(" ");
-    if ((detailsLine[0].length === 4 || detailsLine[1].length === 4)){
-
     }
 }
 
@@ -1675,7 +1743,7 @@ function mettreAJourContenu() {
         taille_edt = document.querySelector(".conteneurHours").offsetWidth + document.querySelector("#emploi_du_temps").offsetWidth;
         dessus_edt.style.width = pxToVw(taille_edt) + "vw";
     }
-    
+
     if (largeurFenetre <= 400) {
         messageUV.innerHTML = "UV";
         messageExport.innerHTML = "Export";
@@ -1693,28 +1761,28 @@ function mettreAJourContenu() {
         jours.forEach(function(jour, index) {
             jour.textContent = joursComplet[index];
         });
-        for (var jour of listeJour){
-            if (jour.style.display != "none"){
-                jour.style.borderLeft = "none";
-            }
-        }
-
         var nbJour = 0;
-        for(jour of listeJour){
+        for (var jour of listeJour){
             if(jour.style.display != "none"){
                 nbJour++;
+                jour.style.borderLeft = "none";
             }
+            var divsHeure = jour.querySelectorAll('.divHeure');
+            divsHeure[divsHeure.length - 1].querySelector(".dash").style.borderBottom = "1px dashed var(--color-bordure)";
             jour.style.display = "";
             jour.style.borderRadius ="none";
             taillePrec = jour.offsetWidth;
         }
         clearBorderRadius();
     }else{
+        var firstDay = true;
         for (var jour of listeJour){
-            if (jour.style.display != "none"){
+            if (firstDay && jour.style.display != "none"){
                 jour.style.borderLeft = "1px black solid";
-                break;
+                firstDay = false;
             }
+            var divsHeure = jour.querySelectorAll('.divHeure');
+            divsHeure[divsHeure.length - 1].querySelector(".dash").style.borderBottom = "none";
         }
         for (let i = listeJour.length - 1; i >= 0; i--) {
             if (listeJour[i].style.display !== "none") {

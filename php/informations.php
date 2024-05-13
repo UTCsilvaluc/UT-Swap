@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link rel="stylesheet" href="../css/informations.css">
-    <title>Login - UT'Swap</title>
+    <title>Informations - UT'Swap</title>
     <link rel="icon" href="../img/logo.png" type="image/x-icon">
 </head>
 <body>
 <?php include "header.php" ?>
-<main>
-    <div class="main_info">
-        <div id="info_titre">
-            <h1 class="info_title">Page d'informations UT'SWAP</h1>
-        </div>
-        <div id="info_menu">
-            <div id="info_menu_nav">
+    <main>
+        <div class="main_info">
+            <div id="info_titre">
+                <h1 class="info_title">Page d'informations UT'SWAP</h1>
+            </div>
+            <div id="info_menu">
                 <span id="span_nav_menu">
                     <h3 class="currentSpan" id="span_RESUME" onclick="changeMenu('RESUME' , event)">UT'SWAP en quelques mots</h3>
                     <h3 class="other" id="span_HOW" onclick="changeMenu('HOW' , event)">Fonctionnement</h3>
@@ -95,43 +95,43 @@
                         </span>
                     </div>
                     <div id="FAQ" class="hidden">
-                        <span class="content">
-                            <span class="openContent">
+                        <span class="faq_content">
+                            <span class="faq_openContent">
                                 <h4>UT’Swap c’est quoi ?</h4>
                                 <img class="fleche_svg" src="../svg/right_arrow.svg" alt="">
                             </span>
                             <h5 class="hidden"> UT'Swap, c'est une plateforme qui simplifie la vie étudiante en permettant l'échange facile de créneaux de cours entre étudiants. Gagne en flexibilité, optimise ton emploi du temps et personnalise ton expérience universitaire avec UT'Swap ! </h5>
                         </span>
-                        <span class="content">
-                            <span class="openContent">
+                        <span class="faq_content">
+                            <span class="faq_openContent">
                                 <h4>UT’Swap c’est quoi ?</h4>
                                 <img class="fleche_svg" src="../svg/right_arrow.svg" alt="">
                             </span>
                             <h5 class="hidden"> UT'Swap, c'est une plateforme qui simplifie la vie étudiante en permettant l'échange facile de créneaux de cours entre étudiants. Gagne en flexibilité, optimise ton emploi du temps et personnalise ton expérience universitaire avec UT'Swap ! </h5>
                         </span>
-                        <span class="content">
-                            <span class="openContent">
+                        <span class="faq_content">
+                            <span class="faq_openContent">
                                 <h4>UT’Swap c’est quoi ? 2</h4>
                                 <img class="fleche_svg" src="../svg/right_arrow.svg" alt="">
                             </span>
                             <h5 class="hidden"> aUT'Swap, c'est une plateforme qui simplifie la vie étudiante en permettant l'échange facile de créneaux de cours entre étudiants. Gagne en flexibilité, optimise ton emploi du temps et personnalise ton expérience universitaire avec UT'Swap ! </h5>
                         </span>
-                        <span class="content">
-                            <span class="openContent">
+                        <span class="faq_content">
+                            <span class="faq_openContent">
                                 <h4>UT’Swap c’est quoi ? 3</h4>
                                 <img class="fleche_svg" src="../svg/right_arrow.svg" alt="">
                             </span>
                             <h5 class="hidden"> bUT'Swap, c'est une plateforme qui simplifie la vie étudiante en permettant l'échange facile de créneaux de cours entre étudiants. Gagne en flexibilité, optimise ton emploi du temps et personnalise ton expérience universitaire avec UT'Swap ! </h5>
                         </span>
-                        <span class="content">
-                            <span class="openContent">
+                        <span class="faq_content">
+                            <span class="faq_openContent">
                                 <h4>UT’Swap c’est quoi ? 4</h4>
                                 <img class="fleche_svg" src="../svg/right_arrow.svg" alt="">
                             </span>
                             <h5 class="hidden"> cUT'Swap, c'est une plateforme qui simplifie la vie étudiante en permettant l'échange facile de créneaux de cours entre étudiants. Gagne en flexibilité, optimise ton emploi du temps et personnalise ton expérience universitaire avec UT'Swap ! </h5>
                         </span>
-                        <span class="content">
-                            <span class="openContent">
+                        <span class="faq_content">
+                            <span class="faq_openContent">
                                 <h4>UT’Swap c’est quoi ? 5</h4>
                                 <img class="fleche_svg" src="../svg/right_arrow.svg" alt="">
                             </span>
@@ -140,16 +140,9 @@
                     </div>
                 </div>
             </div>
-
-
-            <div>
-
-            </div>
         </div>
 
-    </div>
-
-</main>
-<script src="../js/informations.js"></script>
-</body>
+        </main>
+        <script src="../js/informations.js"></script>
+    </body>
 </html>

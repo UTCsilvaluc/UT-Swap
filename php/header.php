@@ -292,7 +292,6 @@ function notificationImportance(){
                 }else{
                     echo '">';
                 }
-                $contenuNotif = explode(";", $row["contenuNotif"]);
                 if($row["typeNotif"] === "1"){
                     if($row["viewed"] === 1){
                         if($row["choix"] === 0){
@@ -391,7 +390,7 @@ function notificationImportance(){
             <li><a href="emploiDuTemps.php">Swap</a></li>
             <li><a href="demandes.php">Demandes</a></li>
             <li><a href="profil.php">Profil</a></li>
-            <li><a href="#">Informations</a></li>
+            <li><a href="informations.php">Informations</a></li>
         </ul>
         <hr>
         <a href="#">
@@ -423,58 +422,6 @@ function notificationImportance(){
                         $sql = "SELECT codeUV FROM uv";
                         $resultat = $connect->query($sql);
 
-                        // Vérifier s'il y a des résultats
-                        if ($resultat->num_rows > 0) {
-                            // Afficher les options du datalist
-                            echo '<datalist id="uvs">';
-                            while ($row = $resultat->fetch_assoc()) {
-                                echo '<option value="' . $row["codeUV"] . '">';
-                            }
-                            echo '</datalist>';
-                        }
-                        ?>
-                    </div>
-                    <div>
-                        <label for="input-creneau">Créneau:<p class="hidden">*</p></label>
-                        <select id="input-creneau" name="creneau" >
-                            <option value="" disabled selected>Sélectionnez un créneau</option>
-                            <option value="lundi">Lundi</option>
-                            <option value="mardi">Mardi</option>
-                            <option value="mercredi">Mercredi</option>
-                            <option value="jeudi">Jeudi</option>
-                            <option value="vendredi">Vendredi</option>
-                            <option value="samedi">Samedi</option>
-                        </select>
-                        <p class="hidden">Créneau non valide</p>
-                    </div>
-                    <div class="nouveau_heure_triple">
-                        <label for="input-hdebut2">Heure début:<p class="hidden">*</p></label>
-                        <input type="time" class="input-hdebut" name="hdebut" id="input-hdebut2" >
-                        <p class="hidden">Heures non valide</p>
-                    </div>
-                </li>
-            </div>
-            <div id="activiteFirstLine" class="hidden">
-                <li class="double-input">
-                    <div id="divExteName">
-                        <label for="input-uv">Nom activité<p class="hidden">*</p></label>
-                        <input type="text" id="exteName" placeholder="Veuillez saisir le nom de l'activité">
-                    </div>
-                    <div>
-                        <label for="input-creneau">Créneau:<p class="hidden">*</p></label>
-                        <select id="input-creneau" name="creneau" >
-                            <option value="" disabled selected>Sélectionnez un créneau</option>
-                            <option value="lundi">Lundi</option>
-                            <option value="mardi">Mardi</option>
-                            <option value="mercredi">Mercredi</option>
-                            <option value="jeudi">Jeudi</option>
-                            <option value="vendredi">Vendredi</option>
-                            <option value="samedi">Samedi</option>
-                        </select>
-                        <p class="hidden">Créneau non valide</p>
-                    </div>
-                </li>
-            </div>
                         // Vérifier s'il y a des résultats
                         if ($resultat->num_rows > 0) {
                             // Afficher les options du datalist
@@ -561,14 +508,12 @@ function notificationImportance(){
                     </div>
                 </li>
             </div>
-            <div id="activiteThirdLine" class="hidden">
-                <li class="double-input">
-                    <div>
-                        <label for="input-lieu">Localisation:<p class="hidden">*</p></label>
-                        <input type="text" id="input-lieu" name="salle" placeholder="Veuillez entrer la localisation de l'activité" >
-                    </div>
-                </li>
-            </div>
+            <li id="activiteThirdLine" class="hidden">
+                <div>
+                    <label for="input-lieu">Localisation:<p class="hidden">*</p></label>
+                    <input type="text" id="input-lieu" name="salle" placeholder="Veuillez entrer la localisation de l'activité" >
+                </div>
+            </li>
             <li id="li_motivation">
                 <div>
                     <label for="input-motivation" id="label_motivation">Motivation: (facultatif)</label>

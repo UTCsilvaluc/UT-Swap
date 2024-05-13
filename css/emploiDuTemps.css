@@ -27,10 +27,6 @@
     --color-bordure: black;
 }
 
-main{
-    overflow-y: scroll;
-    overflow-x: hidden;
-}
 
 #parent_edt{
     width: fit-content;
@@ -185,7 +181,7 @@ main{
 
 #ecran_edt{
     display: none;
-    position: absolute;
+    position: fixed;
     z-index: 1;
     background-color: rgba(0, 0, 0, 0.434);
     top: 0;
@@ -266,15 +262,27 @@ div.divHeure:hover {
 }
 
 .hoverCoursIcon{
-    transition: transform 0.3s ease;  /*Ajoute une transition de 0.5 seconde avec une accélération douce */
+    transition: transform 0.3s ease;
     height:33px;
     width: 33px;
 }
 
 /* Styles lorsqu'on survole l'élément SVG */
-.hoverCoursIcon:hover{
+.hoverCoursIcon:not(#edit):hover{
     transform: scale(120%) translateX(10px);
     cursor: pointer;
+}
+
+#leftHover{
+    position: relative;
+    align-items: center;
+    justify-content: center;
+}
+
+
+#edit:hover{
+    cursor: pointer;
+    transform: scale(120%);
 }
 
 
@@ -365,7 +373,7 @@ div.divHeure:hover {
 }
 
 #assombrissement {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;

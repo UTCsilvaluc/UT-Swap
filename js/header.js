@@ -309,7 +309,12 @@ function notificationClick(){
     nouveau_pannel.style.display = "none"
 
     notification_pannel.style.display = (notification_pannel.style.display === "none" || notification_pannel.style.display === "") ? "flex" : "none";
-
+    
+    if(largeurFenetre <= 600 && notification_pannel.style.display == "flex"){
+        document.body.style.overflow = "hidden";
+    }else{
+        document.body.style.overflow = "auto";
+    }
     menu_pannel.style.left = '-65%';
 };
 
@@ -451,6 +456,8 @@ function mettreAJourContenuProfil() {
         choix_li_nouveau_panel.style.flexDirection = "row";
         choix_semaine.style.flexDirection = "row";
     }
+
+
     var bodyHasScrollbar = isScrollbarVisible(document.getElementById("div_milieu_nouveau"));
     if (bodyHasScrollbar) {
         document.getElementById("ul_nouveau").style.justifyContent = "unset";
@@ -477,6 +484,8 @@ bouton_menu.addEventListener("click", function() {
     menu_pannel.style.left = (menu_pannel.style.left <= '0' || menu_pannel.style.left === "") ? "0" : '-65%';
 
     notification_pannel.style.display = "none";
+    
+    document.body.style.overflow = "auto";
 });
 
 var bouton_accepter_notif = document.getElementsByClassName("bouton_accepter_notif");

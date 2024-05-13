@@ -6,28 +6,61 @@ function changeMenu(name , event){
 }
 
 // Sélectionner tous les titres h4 dans la div FAQ
-const faqH4s = document.querySelectorAll('#FAQ h4');
+const faq_contents = document.querySelectorAll('.faq_content');
 
 // Pour chaque titre h4
-faqH4s.forEach(h4 => {
+faq_contents.forEach(faq_content => {
     // Ajouter un écouteur d'événement de clic
-    h4.addEventListener('click', () => {
+    faq_content.addEventListener('click', () => {
         // Récupérer le h5 associé
-        const parent = h4.closest(".content");
+        const parent = faq_content;
         const h5 = parent.querySelector('h5');
-        const svg = h4.nextElementSibling;
+        const svg = parent.querySelector("img");
+
+        svg.classList.toggle('fleche_svg_rotate');
 
         // Vérifier si le h5 est caché ou non
         if (h5.classList.contains('hidden')) {
-            // Afficher le h5 en faisant un défilement vers le bas avec une animation
+            // Retire la classe hidden pour afficher l'élément
             h5.classList.remove('hidden');
+            // Retire la propriété max-height pour afficher l'élément
             h5.style.maxHeight = h5.scrollHeight + 'px';
-            svg.className = "fleche_svg_rotate";
+            h5.style.margin="20px 0px";
+            parent.style.height="fit-content";
+            parent.style.marginTop = "10px";
         } else {
-            // Cacher le h5 en faisant un défilement vers le haut avec une animation
-            h5.style.maxHeight = null;
-            h5.classList.add('hidden');
-            svg.className = "fleche_svg"
+            // Cache l'élément
+            h5.style.maxHeight = 0;
+            h5.style.margin="5px 0px";
+
+            setTimeout(() => {
+                h5.classList.add('hidden');
+                parent.style.height="50px";
+                parent.style.marginTop = "0px";
+            }, 500);
         }
     });
 });
+
+function mettreAJourContenu() {
+    var largeurFenetre = window.innerWidth;
+    var span_RESUME = document.getElementById("span_RESUME");
+    var span_HOW = document.getElementById("span_HOW");
+    var span_MAJ = document.getElementById("span_MAJ");
+    var span_FAQ = document.getElementById("span_FAQ");
+    if(largeurFenetre <= 900){
+        span_RESUME.textContent = "UT'Swap";
+        span_MAJ.textContent = "MAJ";
+        span_HOW.textContent = "Fonct.";
+    }else{
+        span_HOW.textContent = "Fonctionnement";
+        span_RESUME.textContent = "UT'Swap en quelques mots";
+        span_MAJ.textContent = "Mise à jour et nouveautés";
+    }
+}
+
+// Attacher la fonction au changement de taille de la fenêtre
+window.addEventListener('resize', mettreAJourContenu);
+
+// Appeler la fonction une fois au chargement de la page
+mettreAJourContenu();

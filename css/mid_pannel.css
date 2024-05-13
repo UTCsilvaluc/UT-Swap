@@ -1,7 +1,7 @@
 
 .mid_pannel{
     display: flex;
-    position: absolute;
+    position: fixed;
     align-items: center;
     justify-content: space-between;
     flex-direction: column;

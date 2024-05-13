@@ -41,13 +41,13 @@ body {
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow-x: hidden;
-    overflow-y: hidden;
+    overflow: auto;
 }
 
 main {
+    height: 100%;
     width: 100%;
-    overflow-y: auto;
+    margin-top:var(--taille-header);
 }
 
 main::-webkit-scrollbar-track
@@ -79,12 +79,12 @@ header {
     align-items: center;
     background-color: #32373B;
     color: white;
-    position: relative;
+    position:fixed;
+    top:0;
     font-size: 18px;
     width: 100%;
     height: var(--taille-header);
     max-height: 100px;
-    position:relative;
     z-index: 4;
 }
 
@@ -171,7 +171,7 @@ nav .orange{
 
 #notification_pannel{
     display: none;
-    position: absolute;
+    position: fixed;
     flex-direction: column;
     justify-content: space-between;
     top: var(--taille-header);
@@ -385,7 +385,7 @@ nav .orange{
     align-items: center;
     justify-content:space-between;
     padding:0;
-    position: absolute;
+    position: fixed;
     top: calc(50vh + calc(var(--taille-header)/2)); /* La moitié de la hauteur de l'en-tête + ajustement */
     left: 50%;
     transform: translate(-50%, -50%);
@@ -717,11 +717,12 @@ p#message_uv_type , p#message_pression , p#message_impossible_uv , p#message_ins
     justify-content: space-between;
     overflow-y: auto;
     overflow-x: hidden;
-    position: absolute;
+    position: fixed;
     top: var(--taille-header);
     left: -65%;
     border-left: 1px solid rgb(219, 219, 219);
     width: 60%;
+    height: 100%;
     height: calc(100vh - var(--taille-header));
     z-index: 3;
     background-color: #fff;
