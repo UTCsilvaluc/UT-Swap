@@ -86,6 +86,100 @@ function svgEditLeave(event){
 
 }
 
+function canCreateCreneau(){
+    if (window.innerWidth <= 550 && window.innerHeight <= 550) {
+        input_hfin[0].value = input_hfin[1].value;
+        input_hdebut[1].value = input_hdebut[0].value;
+    } else {
+        input_hfin[1].value = input_hfin[0].value;
+        input_hdebut[0].value = input_hdebut[1].value;
+    }
+    var hfin = encodeURIComponent(input_hfin[1].value);
+    var hdebut = encodeURIComponent(input_hdebut[1].value);
+    if (!(input_isCours.checked)) {
+        var type = encodeURIComponent(input_type.value);
+        var salle = encodeURIComponent(input_salle.value);
+        var creneau = encodeURIComponent(input_creneau.value);
+        var uv = encodeURIComponent(input_uv.value);
+
+        if (type === "" || salle === "" || hfin === "" || hdebut === "" || creneau === "" || uv === "") {
+            for (var element of list_input) {
+                var pElement = element.parentNode.querySelector("p")
+                if (encodeURIComponent(element.value) === "") {
+                    pElement.classList.toggle('hidden', false);
+                } else {
+                    pElement.classList.toggle('hidden', true);
+                }
+            }
+            bouton_non_submit.classList.add("shake-element");
+            setTimeout(function () {
+                bouton_non_submit.classList.remove("shake-element");
+            }, 200);
+        } else if (uv.length != 4) {
+            input_uv.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', false);
+        } else if (!["TD", "TP", "CM"].includes(type)) {
+            input_uv.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+            input_type.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', false);
+        } else if (!["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"].includes(creneau)) {
+            input_type.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+            input_creneau.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', false);
+        } else if (hdebut >= hfin) {
+            input_creneau.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+            input_hdebut[0].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', false);
+            input_hdebut[1].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', false);
+        } else {
+            input_hdebut[0].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+            input_hdebut[1].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+            input_creneau.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+            input_type.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+            input_uv.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+            bouton_non_submit.classList.toggle('hidden', true);
+            for (var element of list_input) {
+                var pElement = element.parentNode.querySelector("p");
+                pElement.classList.toggle('hidden', true);
+            }
+            return true;
+        }
+    } else {
+        var lieu = encodeURIComponent(input_lieu.value);
+        var creneau = encodeURIComponent(input_creneau_externe.value);
+        var activite = encodeURIComponent(input_activity.value);
+        if (creneau === "" || lieu === "" || hfin === "" || hdebut === "" || activite === "") {
+            for (var element of list_input_exte) {
+                var pElement = element.parentNode.querySelector("p")
+                if (encodeURIComponent(element.value) === "") {
+                    pElement.classList.toggle('hidden', false);
+                } else {
+                    pElement.classList.toggle('hidden', true);
+                }
+            }
+            bouton_non_submit.classList.add("shake-element");
+            setTimeout(function () {
+                bouton_non_submit.classList.remove("shake-element");
+            }, 200);
+        } else if (!["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"].includes(creneau)) {
+            input_type.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+            input_creneau.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', false);
+        } else if (hdebut >= hfin) {
+            input_creneau.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+            input_hdebut[0].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', false);
+            input_hdebut[1].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', false);
+        } else {
+            input_hdebut[0].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+            input_hdebut[1].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+            input_creneau_externe.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+            input_type.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+            input_activity.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+            bouton_non_submit.classList.toggle('hidden', true);
+            for (var element of list_input_exte) {
+                var pElement = element.parentNode.querySelector("p");
+                pElement.classList.toggle('hidden', true);
+            }
+            return true;
+        }
+    }
+}
+
 function editCreneau(event){
     event.stopPropagation();
     nouveauClick();
@@ -112,17 +206,18 @@ function trashClick(){
 
 function deleteCours(){
     var coursID = localStorage.getItem("idCours");
-    var coursName = document.getElementById(coursID).querySelector("h2").innerHTML.split("-")[0].replaceAll(" " , "");
+    var coursName = document.getElementById(coursID).querySelector("h2").innerHTML.split("-")[0].replace(/\s+/g, ' ').trim();
     document.getElementById(coursID).remove();
     document.getElementsByClassName("hoverCours")[0].style.display = "none";
     var isExisting = false;
     for (var elem of document.getElementsByClassName("cours")){
-        if (coursName == elem.querySelector("h2").innerHTML.split("-")[0].replaceAll(" " , "")){
+        if (encodeURIComponent(coursName) == encodeURIComponent(elem.querySelector("h2").innerHTML.split("-")[0].replace(/\s+/g, ' ').trim())){
             isExisting = true;
         }
     }
+
     if (!(isExisting)){
-        document.getElementById(`colorSpan${coursName}`).remove();
+        document.getElementById(`colorSpan${encodeURIComponent(coursName)}`).remove();
         delete coursColors[coursName];
     }
 
@@ -195,7 +290,7 @@ document.getElementById("emploi_du_temps").addEventListener("mousemove" , functi
         var texte = coursElement.querySelector('h2.UV').textContent;
 
 // Expression régulière pour extraire les informations
-        var regex = /^([A-Z0-9]+) - (ACT|TD|TP|CM)( A| B)?$/i;
+        var regex = /^([A-Z0-9]+(?:\s+[A-Z0-9]+)*)\s*-\s*(ACT|TD|TP|CM)(?:\s+(A|B))?$/i;
 
 
 // Correspondance avec l'expression régulière
@@ -328,30 +423,31 @@ function calculerHeure(divHeure) {
 bouton_ajouter_creneau.addEventListener("click", function() {
     event.preventDefault();
     nouveau_pannel = document.getElementById('nouveau_pannel');
+    if (canCreateCreneau()){
+        // Récupérer les valeurs des champs du formulaire
+        var creneau = encodeURIComponent(input_creneau.value);
+        var hfin = input_hfin.value;
+        var hdebut = input_hdebut.value;
+        var semainechoix = nouveau_pannel.querySelector('input[name="semainechoix"]:checked') ? nouveau_pannel.querySelector('input[name="semainechoix"]:checked').value : null;
+        hdebut = hdebut.replace(":" , "h");
+        hfin = hfin.replace(":" , "h");
+        let cours;
 
-    // Récupérer les valeurs des champs du formulaire
-    var creneau = encodeURIComponent(input_creneau.value);
-    var hfin = input_hfin.value;
-    var hdebut = input_hdebut.value;
-    var semainechoix = nouveau_pannel.querySelector('input[name="semainechoix"]:checked') ? nouveau_pannel.querySelector('input[name="semainechoix"]:checked').value : null;
-    hdebut = hdebut.replace(":" , "h");
-    hfin = hfin.replace(":" , "h");
-    let cours;
-
-    if (document.getElementById("input-isCours").checked){
-        creneau = encodeURIComponent(input_creneau_externe.value);
-        var activiteName = encodeURIComponent(document.getElementById("exteName").value);
-        var activiteLoc = encodeURIComponent(document.getElementById("input-lieu").value);
-        cours = new Cours(activiteName, hdebut, hfin, creneau, activiteLoc , semainechoix , null , encodeURIComponent("ACT"));
-    } else {
-        var type = encodeURIComponent(input_type.value);
-        var salle = encodeURIComponent(input_salle.value);
-        var uv = encodeURIComponent(input_uv.value);
-        cours = new Cours(uv, hdebut, hfin, creneau, salle , semainechoix , null , type);
+        if (document.getElementById("input-isCours").checked){
+            creneau = encodeURIComponent(input_creneau_externe.value);
+            var activiteName = encodeURIComponent(document.getElementById("exteName").value.replace(/\s+/g, ' ').trim());
+            var activiteLoc = encodeURIComponent(document.getElementById("input-lieu").value);
+            cours = new Cours(activiteName, hdebut, hfin, creneau, activiteLoc , semainechoix , null , encodeURIComponent("ACT"));
+        } else {
+            var type = encodeURIComponent(input_type.value);
+            var salle = encodeURIComponent(input_salle.value);
+            var uv = encodeURIComponent(input_uv.value);
+            cours = new Cours(uv, hdebut, hfin, creneau, salle , semainechoix , null , type);
+        }
+        createCours(cours);
+        tempsCurrentCours = null;
+        nouveauClick();
     }
-    createCours(cours);
-    tempsCurrentCours = null;
-    nouveauClick();
 
 });
 
@@ -542,6 +638,9 @@ async function createCours(cours) {
     /* Retourne une promesse qui me permet d'attendre le sauvegarde d'un cours avant qu'un autre cours soit crée. Permet d'éviter le mélange des cours entre synchrone et asynchrone.*/
     return new Promise(async (resolve, reject) => {
         try {
+            if (cours.codeUV.includes(" ")){
+                cours.codeUV = encodeURIComponent(cours.codeUV);
+            }
             canSave = document.getElementById("localSave").checked;
             let endroit_cours;
             if (cours.jour == "lundi") {
@@ -559,15 +658,18 @@ async function createCours(cours) {
             } else if (cours.jour == "dimanche") {
                 endroit_cours = dimanche;
             }
+
             const spanColor = document.getElementById("couleurSpan");
-            if (!(cours.codeUV in coursColors) && cours.couleur == null) {
-                coursColors[cours.codeUV] = getRandomColor(colorList);
-                spanColor.innerHTML += `<span id=colorSpan${cours.codeUV} style='display: flex ; margin: 0 ; padding: 0 ; align-items: center ; gap: 10px'><h4>${cours.codeUV}: </h4> <input id='color${cours.codeUV}' value=${coursColors[cours.codeUV]}  type='color' onchange='colorChange(event)'></span>`;
-            } else if (cours.couleur && !(cours.codeUV in coursColors)) {
-                coursColors[cours.codeUV] = cours.couleur;
-                spanColor.innerHTML += `<span id=colorSpan${cours.codeUV} style='display: flex ; margin: 0 ; padding: 0 ; align-items: center ; gap: 10px'><h4>${cours.codeUV}: </h4> <input id='color${cours.codeUV}' value=${coursColors[cours.codeUV]}  type='color' onchange='colorChange(event)'></span>`;
+            if (!(`${encodeURIComponent(cours.codeUV)}` in coursColors) && cours.couleur == null) {
+                coursColors[`${encodeURIComponent(cours.codeUV)}`] = getRandomColor(colorList);
+                spanColor.innerHTML += `<spa id=colorSpan${cours.codeUV} style='display: flex ; margin: 0 ; padding: 0 ; align-items: center ; gap: 10px'><h4>${decodeURIComponent(cours.codeUV)}: </h4> <input id='color${cours.codeUV}' value=${coursColors[encodeURIComponent(cours.codeUV)]}  type='color' onchange='colorChange(event)'></spa>`;
+            } else if (cours.couleur && !(`${encodeURIComponent(cours.codeUV)}` in coursColors)) {
+                coursColors[`${encodeURIComponent(cours.codeUV)}`] = cours.couleur;
+                spanColor.innerHTML += `<spa id=colorSpan${cours.codeUV} style='display: flex ; margin: 0 ; padding: 0 ; align-items: center ; gap: 10px'><h4>${decodeURIComponent(cours.codeUV)}: </h4> <input id='color${cours.codeUV}' value=${coursColors[encodeURIComponent(cours.codeUV)]}  type='color' onchange='colorChange(event)'></spa>`;
             }
-            cours.couleur = coursColors[cours.codeUV];
+            cours.couleur = coursColors[`${encodeURIComponent(cours.codeUV)}`];
+            document.getElementById("couleurs").className = "custom_parent";
+
 
             if (cours.id === null && canSave) {
                 const db = await ouvrirBaseDeDonneesCours();
@@ -575,6 +677,7 @@ async function createCours(cours) {
                 cours.id = maxId + 1;
                 await ajouterCours(db, cours);
             }
+
 
             endroit_cours.innerHTML += `<div class="cours" id=${cours.id} onclick="suivreSouris(this, true)"><h2 class="UV"></h2><p class="horaire_cours">${cours.horaireDebut}-${cours.horaireFin}</p><p>${cours.salle}</p></div>`;
             const coursElement = endroit_cours.getElementsByClassName("cours")[endroit_cours.getElementsByClassName("cours").length - 1];
@@ -618,13 +721,13 @@ async function createCours(cours) {
             }
 
             if (cours.semaine == null) {
-                coursElement.getElementsByClassName("UV")[0].innerHTML = `${cours.codeUV} - ${cours.type}`;
+                coursElement.getElementsByClassName("UV")[0].innerHTML = `${decodeURIComponent(cours.codeUV)} - ${cours.type}`;
             } else {
                 if (cours.semaine === "B") {
                     coursElement.style.left = "50%";
-                    coursElement.getElementsByClassName("UV")[0].innerHTML = `${cours.codeUV} - ${cours.type} B`;
+                    coursElement.getElementsByClassName("UV")[0].innerHTML = `${decodeURIComponent(cours.codeUV)} - ${cours.type} B`;
                 } else {
-                    coursElement.getElementsByClassName("UV")[0].innerHTML = `${cours.codeUV} - ${cours.type} A`;
+                    coursElement.getElementsByClassName("UV")[0].innerHTML = `${decodeURIComponent(cours.codeUV)}} - ${cours.type} A`;
                 }
                 coursElement.style.width = "50%";
                 for (element of coursElement.children) {
@@ -653,9 +756,10 @@ function colorChange(event){
     var Liste_cours = document.getElementsByClassName("cours");
     for (var cours of Liste_cours){
         var texte = cours.querySelector('h2.UV').textContent;
-        var regex = /^([A-Z0-9]+) - (ACT|TD|TP|CM)( A| B)?$/i;
+        var regex = /^([A-Z0-9]+(?:\s+[A-Z0-9]+)*)\s*-\s*(ACT|TD|TP|CM)(?:\s+(A|B))?$/i;
         var match = texte.match(regex);
-        var currentCode = match[1];
+        var currentCode = encodeURIComponent(match[1]);
+        console.log(currentCode , UV);
         if (currentCode == UV){
             cours.style.background = event.target.value;
             coursColors[UV] = event.target.value;
@@ -717,7 +821,7 @@ function suivreSouris(element, isCours) {
                 var heureFin = formaterHeure(heureElement[1].replace("h",":")).replace(":","h");
                 var coursElement = event.target;
                 var texte = element.querySelector('h2.UV').textContent;
-                var regex = /^([A-Z0-9]+) - (ACT|TD|TP|CM)( A| B)?$/i;
+                var regex = /^([A-Z0-9]+(?:\s+[A-Z0-9]+)*)\s*-\s*(ACT|TD|TP|CM)(?:\s+(A|B))?$/i;
                 var match = texte.match(regex);
                 var semaine = match[3] ? match[3].replace(" ","") : null;
                 if (courses) {
@@ -935,7 +1039,7 @@ function customTime(event) {
 
         var texte = coursElement.querySelector('h2.UV').textContent;
 
-        var regex = /^([A-Z0-9]+) - (ACT|TD|TP|CM)( A| B)?$/i;
+        var regex = /^([A-Z0-9]+(?:\s+[A-Z0-9]+)*)\s*-\s*(ACT|TD|TP|CM)(?:\s+(A|B))?$/i;
 
         var match = texte.match(regex);
         var codeUV = match[1];
@@ -1006,6 +1110,7 @@ function resetEDT(event) {
         } catch (error) {
             console.error(error);
         }
+        suppr_edt_pannel.style.display="none";
     })();
     var colorList = [
         "#FF9292","#FFA792","#FFB692","#FFC592","#FFD992",
@@ -1524,9 +1629,15 @@ async function afficherTousLesCours() {
 
         // Récupérer tous les cours de la base de données
         const tousLesCours = await getAllCours(db);
+        var i = 0;
         tousLesCours.forEach(cours => {
             createCours(cours);
+            i++;
         });
+        console.log(i);
+        if (i === 0){
+            document.getElementById("couleurs").className = "hidden";
+        }
     } catch (error) {
         console.error(error);
     }
@@ -1560,6 +1671,10 @@ async function supprimerCoursByID(db , id) {
         request.onerror = function(event) {
             console.error("Erreur lors de la suppression du cours:", event.target.error);
         };
+
+        if (Array.from(document.getElementsByClassName("cours")).length === 0){
+            document.getElementById("couleurs").className = "hidden";
+        }
     } catch (error) {
         console.error(error);
     }

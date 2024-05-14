@@ -18,6 +18,7 @@ var bouton_continuer = document.getElementById("bouton_continuer");
 var boutons_uv = document.getElementById("boutons_uv");
 var bouton_update = document.getElementById("bouton_update");
 
+
 var message_pression = document.getElementById("message_pression");
 var message_insertion = document.getElementById('message_insertion');
 var message_impossible_uv = document.getElementById("message_impossible_uv");
@@ -34,7 +35,6 @@ var input_salle = document.getElementById("input-salle");
 var input_hfin = document.getElementById("input-hfin");
 var input_hdebut = document.getElementById("input-hdebut");
 var input_creneau = document.getElementById("input-creneau");
-var input_creneau_externe = document.getElementById("input-creneau-externe");
 var input_motivation_autre = document.getElementById("input-motivation-autre");
 var input_motivation = document.getElementById("input-motivation");
 var input_uv = document.getElementById("input-uv");
@@ -42,7 +42,10 @@ var motivation = document.getElementById("li_motivation");
 var texte_nouveau = document.getElementById("div_debut_nouveau").getElementsByTagName("h1")[0];
 var checkbox_semaine = document.getElementById('input-semaine');
 var choix_semaine = document.getElementById('choix-semaine');
-
+var input_isCours = document.getElementById("input-isCours");
+var input_creneau_externe = document.getElementById("input-creneau-externe");
+var input_activity = document.getElementById("exteName");
+var input_lieu = document.getElementById("input-lieu");
 var notifications = document.getElementsByClassName("notification");
 var notification_pannel = document.getElementById("notification_pannel");
 var nombreClickNotification = 0;
@@ -54,12 +57,10 @@ var bouton_menu = document.getElementById("bouton_menu");
 var boutons_confirmation = document.getElementById("boutons_confirmation");
 var menu_pannel = document.getElementById("menu_pannel");
 
-
-
 var largeurFenetre;
 
 var list_input=[input_creneau,input_type,input_salle,input_hfin,input_hdebut,input_uv];
-
+var list_input_exte=[input_activity,input_creneau_externe,input_hfin,input_hdebut,input_lieu];
 
 input_hfin.addEventListener('change', function() {
 
@@ -151,13 +152,20 @@ input_hdebut.addEventListener('change', function() {
         // Calculer la différence en minutes
         var differenceEnMinutes = convertirEnMinutes(this.value) + convertirEnMinutes(tempsCurrentCours);
 
-        console.log(convertirEnMinutes(tempsCurrentCours));
-        console.log(convertirEnFormatTime(differenceEnMinutes));
         // Mettre à jour la valeur du résultat
         input_hfin.value = convertirEnFormatTime(differenceEnMinutes);
     }
 });
 
+/* Permet de remettre à null la semaine quand on décoche semaine 1/2 */
+function resetSemaine(){
+    if(!(event.target.checked)){
+        var radios = document.getElementsByName('semainechoix');
+        for (var i = 0; i < radios.length; i++) {
+            radios[i].checked = false;
+        }
+    }
+}
 
 bouton_non_submit.addEventListener("click", function() {
     event.preventDefault();
