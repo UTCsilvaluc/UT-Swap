@@ -458,6 +458,7 @@ function notificationImportance(){
                     <div id="divExteName">
                         <label for="input-uv">Nom activité<p class="hidden">*</p></label>
                         <input type="text" id="exteName" placeholder="Veuillez saisir le nom de l'activité">
+                        <p class="hidden">Nom d'activité non valide</p>
                     </div>
                     <div>
                         <label for="input-creneau-externe">Créneau:<p class="hidden">*</p></label>
@@ -510,8 +511,9 @@ function notificationImportance(){
             </div>
             <li id="activiteThirdLine" class="hidden">
                 <div>
-                    <label for="input-lieu">Localisation:<p class="hidden">*</p></label>
+                    <label class="solo-label" for="input-lieu">Localisation:<p class="hidden">*</p></label>
                     <input type="text" id="input-lieu" name="salle" placeholder="Veuillez entrer la localisation de l'activité" >
+                    <p class="hidden">Localisation non valide</p>
                 </div>
             </li>
             <li id="li_motivation">
@@ -535,7 +537,7 @@ function notificationImportance(){
                     <label for="input-isCours">Créneau externe</label>
                 </li>
                 <li class="basique" id="li-semaine">
-                    <input type="checkbox" id="input-semaine" name="semaine">
+                    <input type="checkbox" id="input-semaine" name="semaine" onchange="resetSemaine(event)">
                     <label for="input-semaine">Semaine 1/2</label>
                 </li>
             </div>

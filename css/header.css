@@ -508,7 +508,11 @@ nav .orange{
 #nouveau_pannel .double-input div{
     width: 100%;
 }
-
+#nouveau_pannel div label.solo-label{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
 #nouveau_pannel li div label,
 #nouveau_pannel li div input,
 #nouveau_pannel li div select {
