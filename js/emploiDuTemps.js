@@ -25,13 +25,21 @@ function svgEditEnter(event){
     var largeurEcran = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 
     if (parseFloat(localStorage.getItem("height")) < 60 || largeurEcran < 750){
-        event.target.src = "../svg/modifier_creneau_reverse.svg";
-        event.target.style.position = "unset";
-        event.target.style.left = "unset";
+        if(localStorage.getItem("type") == "ACT"){
+            event.target.src = "../svg/edit_text_right.svg";
+        }else{
+            event.target.src = "../svg/modifier_creneau_reverse.svg";
+            event.target.style.position = "unset";
+            event.target.style.left = "unset";
+        }
     }else{
-        event.target.src = "../svg/edit_text.svg";
-        event.target.style.position = "absolute";
-        event.target.style.left = "-75px";
+        if(localStorage.getItem("type") != "ACT"){
+            event.target.src = "../svg/edit_text.svg";
+            event.target.style.position = "absolute";
+            event.target.style.left = "-75px";
+        }else{
+            event.target.src = "../svg/edit_text_right.svg";
+        }
     }
     event.target.style.height = "33px";
     event.target.style.width = "auto";
@@ -68,6 +76,9 @@ function svgEditLeave(event){
         event.target.src = "../svg/edit_icon_reverse.svg";
     }else{
         event.target.src = "../svg/edit_icon.svg";
+    }
+    if(localStorage.getItem("type") == "ACT"){
+        event.target.src = "../svg/edit_icon_right.svg";
     }
     event.target.style.position = "unset";
     event.target.style.left = "unset";
@@ -166,6 +177,7 @@ function posterSwap(event){
 }
 
 var isHovering = false;
+var editElement = document.getElementById("edit");
 
 document.getElementById("emploi_du_temps").addEventListener("mousemove" , function (event) {
     if ((event.target.className === "cours" || event.target.parentElement.className === "cours" ) && !isHovering){
@@ -228,32 +240,46 @@ document.getElementById("emploi_du_temps").addEventListener("mousemove" , functi
         hoverLeft.style.height = coursElement.offsetHeight + "px";
 
         hoverCours.style.left = `${coursElement.getBoundingClientRect().x + coursElement.offsetWidth - 10}px`;
-        hoverCours.style.top = `${coursElement.getBoundingClientRect().y}px`;
+        hoverCours.style.top = `${coursElement.getBoundingClientRect().y + window.scrollY}px`;
+        
         hoverLeft.style.left = `${coursElement.getBoundingClientRect().x -  30}px`;
-        hoverLeft.style.top = `${coursElement.getBoundingClientRect().y}px`;
+        hoverLeft.style.top = `${coursElement.getBoundingClientRect().y + window.scrollY}px`;
 
 
         var largeurEcran = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 
         if (parseFloat(coursElement.offsetHeight) < 60 || largeurEcran < 750){
             hoverCours.style.flexDirection = "row";
-            hoverCours.style.top = `${coursElement.getBoundingClientRect().y - 30}px`;
+            hoverCours.style.top = `${coursElement.getBoundingClientRect().y + window.scrollY - 30}px`;
             hoverCours.style.left = `${coursElement.getBoundingClientRect().x}px`;
             hoverCours.style.height = "40px";
             hoverCours.style.width = coursElement.offsetWidth +"px";
 
+            
             hoverLeft.style.flexDirection = "row";
-            hoverLeft.style.top = `${coursElement.getBoundingClientRect().y + coursElement.offsetHeight}px`;
+            hoverLeft.style.top = `${coursElement.getBoundingClientRect().y + window.scrollY + coursElement.offsetHeight}px`;
             hoverLeft.style.left = `${coursElement.getBoundingClientRect().x}px`;
             hoverLeft.style.height = "40px";
             hoverLeft.style.width = coursElement.offsetWidth +"px";
-            hoverLeft.querySelector("img").src = "../svg/edit_icon_reverse.svg";
+            if (typeMatiere !== "ACT"){
+                hoverLeft.appendChild(editElement);
+                editElement.src = "../svg/edit_icon_reverse.svg";
+            }else{
+                hoverCours.appendChild(editElement);
+                editElement.src = "../svg/edit_icon_right.svg";
+            }
         }else{
             hoverCours.style.flexDirection = "column";
             hoverCours.style.width = "auto";
             hoverLeft.style.flexDirection = "column";
             hoverLeft.style.width = "auto";
-            hoverLeft.querySelector("img").src = "../svg/edit_icon.svg";
+            if(typeMatiere === "ACT"){
+                hoverCours.appendChild(editElement);
+                editElement.src = "../svg/edit_icon_right.svg";
+            }else{
+                hoverLeft.appendChild(editElement);
+                editElement.src = "../svg/edit_icon.svg";
+            }
         }
         document.getElementById("swap").classList.toggle("hidden" , typeMatiere === "ACT");
 
@@ -282,11 +308,12 @@ function addCreneau(event) {
         var divJour = event.target.closest('.jour');
         if (divHeureCliquee) {
             var [heureDebut , heureFin] = calculerHeure(divHeureCliquee);
-            document.getElementById("input-hdebut1").value = heureDebut;
-            document.getElementById("input-hfin1").value = heureFin;
+            document.getElementById("input-hdebut").value = heureDebut;
+            document.getElementById("input-hfin").value = heureFin;
             document.getElementById("input-creneau").value = divJour.id.toString();
             document.getElementById("input-creneau-externe").value = divJour.id.toString();
         }
+        
     }
 }
 function calculerHeure(divHeure) {
@@ -304,8 +331,8 @@ bouton_ajouter_creneau.addEventListener("click", function() {
 
     // Récupérer les valeurs des champs du formulaire
     var creneau = encodeURIComponent(input_creneau.value);
-    var hfin = input_hfin[0].value;
-    var hdebut = input_hdebut[1].value;
+    var hfin = input_hfin.value;
+    var hdebut = input_hdebut.value;
     var semainechoix = nouveau_pannel.querySelector('input[name="semainechoix"]:checked') ? nouveau_pannel.querySelector('input[name="semainechoix"]:checked').value : null;
     hdebut = hdebut.replace(":" , "h");
     hfin = hfin.replace(":" , "h");
@@ -674,29 +701,6 @@ function convertirDecimalEnHeure(decimal) {
     return `${heures}h${String(minutes).padStart(2, '0')}`;
 }
 
-function calculerDifference() {
-    // Récupérer les valeurs des input time
-    var time1 = input_hdebut[1].value;
-    var time2 = input_hfin[1].value;
-    // Vérifier si les valeurs sont non vides
-    if (time1 && time2) {
-        // Convertir les valeurs en minutes
-        var minutes1 = convertirEnMinutes(time1);
-        var minutes2 = convertirEnMinutes(time2);
-
-        // Calculer la différence en minutes
-        var differenceMinutes = minutes2 - minutes1;
-
-        // Convertir la différence en heures et minutes
-        var heures = Math.floor(differenceMinutes / 60);
-        var minutes = differenceMinutes % 60;
-        // Mettre à jour le champ de résultat
-        return heures + ':' + (minutes < 10 ? '0' : '') + minutes;
-    }else{
-        return null;
-    }
-}
-
 var suivreLaSouris = false;
 var lastPosition;
 var tempsCurrentCours;
@@ -811,7 +815,7 @@ function suivreSouris(element, isCours) {
         input_type.disabled = true;
         input_creneau.disabled = true;
         preremplirNouveauForm();
-        tempsCurrentCours=calculerDifference();
+        tempsCurrentCours = null;
     }
 
 }
@@ -833,24 +837,23 @@ function preremplirNouveauForm(){
     formulaire = document.getElementById("nouveau_pannel");
     formulaire.querySelector("#input-uv").value = codeUV;
     formulaire.querySelector("#input-creneau").value = creneau;
-    formulaire.querySelector("#input-hdebut1").value = heureDebut;
-    formulaire.querySelector("#input-hfin1").value = heureFin;
-    formulaire.querySelector("#input-hdebut2").value = heureDebut;
-    formulaire.querySelector("#input-hfin2").value = heureFin;
+    formulaire.querySelector("#input-hdebut").value = heureDebut;
+    formulaire.querySelector("#input-hfin").value = heureFin;
+    tempsCurrentCours = calculerDifference();
     formulaire.querySelector("#input-salle").value = salle;
     formulaire.querySelector("#input-type").value = type;
     if (semaine !== 'null'){
-        checkbox = document.getElementById("input-semaine");
-        checkbox.checked = true;
-        document.getElementById("choix-semaine").className = "basique";
+        checkbox_semaine = document.getElementById("input-semaine");
+        checkbox_semaine.checked = true;
+        document.getElementById("choix-semaine").className = "nouveau_pannel_checkbox hidden";
         if (semaine === " A"){
             document.getElementById("sA-choix").checked = true;
         } else if(semaine === " B") {
             document.getElementById("sB-choix").checked = true;
         }
     } else {
-        checkbox.checked = false;
-        document.getElementById("choix-semaine").className = "basique hidden";
+        checkbox_semaine.checked = false;
+        document.getElementById("choix-semaine").className = "nouveau_pannel_checkbox hidden hidden";
     }
 }
 

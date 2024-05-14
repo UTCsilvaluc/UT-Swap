@@ -446,11 +446,6 @@ function notificationImportance(){
                         </select>
                         <p class="hidden">Créneau non valide</p>
                     </div>
-                    <div class="nouveau_heure_triple">
-                        <label for="input-hdebut2">Heure début:<p class="hidden">*</p></label>
-                        <input type="time" class="input-hdebut" name="hdebut" id="input-hdebut2" >
-                        <p class="hidden">Heures non valide</p>
-                    </div>
                 </li>
             </div>
             <div id="activiteFirstLine" class="hidden">
@@ -474,15 +469,15 @@ function notificationImportance(){
                     </div>
                 </li>
             </div>
-            <li class="double-input" id="nouveau_heure_double">
+            <li class="double-input">
                 <div>
-                    <label for="input-hdebut1">Heure début:<p class="hidden">*</p></label>
-                    <input type="time" class="input-hdebut" name="hdebut" id="input-hdebut1" >
+                    <label for="input-hdebut">Heure début:<p class="hidden">*</p></label>
+                    <input type="time" name="hdebut" id="input-hdebut" >
                     <p class="hidden">Heures non valide</p>
                 </div>
                 <div>
-                    <label for="input-hfin1">Heure fin:<p class="hidden">*</p></label>
-                    <input type="time" class="input-hfin" name="hfin" id="input-hfin1" >
+                    <label for="input-hfin">Heure fin:<p class="hidden">*</p></label>
+                    <input type="time" name="hfin" id="input-hfin" >
                 </div>
             </li>
             <div id="creneauThirdLine">
@@ -501,10 +496,6 @@ function notificationImportance(){
                             <option value="CM">Cours</option>
                         </select>
                         <p class="hidden">Type non valide</p>
-                    </div>
-                    <div class="nouveau_heure_triple">
-                        <label for="input-hfin2">Heure fin:<p class="hidden">*</p></label>
-                        <input type="time" class="input-hfin" name="hfin" id="input-hfin2" >
                     </div>
                 </li>
             </div>

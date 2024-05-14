@@ -31,8 +31,8 @@ var message_creneau_deja_accepte = document.getElementById("message_creneau_deja
 
 var input_type = document.getElementById("input-type");
 var input_salle = document.getElementById("input-salle");
-var input_hfin = document.getElementsByClassName("input-hfin");
-var input_hdebut = document.getElementsByClassName("input-hdebut");
+var input_hfin = document.getElementById("input-hfin");
+var input_hdebut = document.getElementById("input-hdebut");
 var input_creneau = document.getElementById("input-creneau");
 var input_creneau_externe = document.getElementById("input-creneau-externe");
 var input_motivation_autre = document.getElementById("input-motivation-autre");
@@ -40,7 +40,7 @@ var input_motivation = document.getElementById("input-motivation");
 var input_uv = document.getElementById("input-uv");
 var motivation = document.getElementById("li_motivation");
 var texte_nouveau = document.getElementById("div_debut_nouveau").getElementsByTagName("h1")[0];
-var checkbox = document.getElementById('input-semaine');
+var checkbox_semaine = document.getElementById('input-semaine');
 var choix_semaine = document.getElementById('choix-semaine');
 
 var notifications = document.getElementsByClassName("notification");
@@ -57,42 +57,33 @@ var menu_pannel = document.getElementById("menu_pannel");
 
 
 var largeurFenetre;
-var lastHeight;
 
-var list_input=[input_creneau,input_type,input_salle,input_hfin[0],input_hfin[1],input_hdebut[0],input_hdebut[1],input_uv];
+var list_input=[input_creneau,input_type,input_salle,input_hfin,input_hdebut,input_uv];
 
-for(var element of input_hfin){
-    element.addEventListener('change', function() {
 
-        var heureActuelle = this.value;
+input_hfin.addEventListener('change', function() {
 
-        var [heures, minutes] = heureActuelle.split(':');
+    var heureActuelle = this.value;
 
-        minutes = Math.round(minutes / 15) * 15;
+    var [heures, minutes] = heureActuelle.split(':');
 
-        if (minutes === 60) {
-            heures = parseInt(heures, 10) + 1;
-            minutes = 0;
-        }
+    minutes = Math.round(minutes / 15) * 15;
 
-        this.value = heures.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0');
-        for(var autre_element of input_hfin){
-            if (autre_element !== element) {
-                autre_element.value = event.target.value;
-            }
-        };
+    if (minutes === 60) {
+        heures = parseInt(heures, 10) + 1;
+        minutes = 0;
+    }
 
-        if(tempsCurrentCours){
-            for(var element_hdebut of input_hdebut){
-                // Calculer la différence en minutes
-                var differenceEnMinutes = convertirEnMinutes(this.value) - convertirEnMinutes(tempsCurrentCours);
+    this.value = heures.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0');
 
-                // Mettre à jour la valeur du résultat
-                element_hdebut.value = convertirEnFormatTime(differenceEnMinutes);
-            }
-        }
-    });
-}
+    if(tempsCurrentCours){
+        // Calculer la différence en minutes
+        var differenceEnMinutes = convertirEnMinutes(this.value) - convertirEnMinutes(tempsCurrentCours);
+
+        // Mettre à jour la valeur du résultat
+        input_hdebut.value = convertirEnFormatTime(differenceEnMinutes);
+    }
+});
 
 function shakeElement(element){
     element.classList.add("shake-element");
@@ -119,36 +110,53 @@ function convertirEnFormatTime(dureeEnMinutes) {
     return heuresFormat + ':' + minutesFormat;
 }
 
-for(var element of input_hdebut){
-    element.addEventListener('change', function() {
-        var heureActuelle = this.value;
+function calculerDifference() {
+    // Récupérer les valeurs des input time
+    var time1 = input_hdebut.value;
+    var time2 = input_hfin.value;
+    // Vérifier si les valeurs sont non vides
+    if (time1 && time2) {
+        // Convertir les valeurs en minutes
+        var minutes1 = convertirEnMinutes(time1);
+        var minutes2 = convertirEnMinutes(time2);
 
-        var [heures, minutes] = heureActuelle.split(':');
+        // Calculer la différence en minutes
+        var differenceMinutes = minutes2 - minutes1;
 
-        minutes = Math.round(minutes / 15) * 15;
-
-        if (minutes === 60) {
-            heures = parseInt(heures, 10) + 1;
-            minutes = 0;
-        }
-
-        this.value = heures.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0');
-        for(var autre_element of input_hdebut){
-            if (autre_element !== element) {
-                autre_element.value = event.target.value;
-            }
-        };
-        if(tempsCurrentCours){
-            for(var element_hfin of input_hfin){
-                // Calculer la différence en minutes
-                var differenceEnMinutes = convertirEnMinutes(this.value) + convertirEnMinutes(tempsCurrentCours);
-
-                // Mettre à jour la valeur du résultat
-                element_hfin.value = convertirEnFormatTime(differenceEnMinutes);
-            }
-        }
-    });
+        // Convertir la différence en heures et minutes
+        var heures = Math.floor(differenceMinutes / 60);
+        var minutes = differenceMinutes % 60;
+        // Mettre à jour le champ de résultat
+        return heures + ':' + (minutes < 10 ? '0' : '') + minutes;
+    }else{
+        return null;
+    }
 }
+
+
+input_hdebut.addEventListener('change', function() {
+    var heureActuelle = this.value;
+    var [heures, minutes] = heureActuelle.split(':');
+
+    minutes = Math.round(minutes / 15) * 15;
+
+    if (minutes === 60) {
+        heures = parseInt(heures, 10) + 1;
+        minutes = 0;
+    }
+
+    this.value = heures.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0');
+    
+    if(tempsCurrentCours){
+        // Calculer la différence en minutes
+        var differenceEnMinutes = convertirEnMinutes(this.value) + convertirEnMinutes(tempsCurrentCours);
+
+        console.log(convertirEnMinutes(tempsCurrentCours));
+        console.log(convertirEnFormatTime(differenceEnMinutes));
+        // Mettre à jour la valeur du résultat
+        input_hfin.value = convertirEnFormatTime(differenceEnMinutes);
+    }
+});
 
 
 bouton_non_submit.addEventListener("click", function() {
@@ -157,15 +165,8 @@ bouton_non_submit.addEventListener("click", function() {
     var salle = encodeURIComponent(input_salle.value);
     var creneau = encodeURIComponent(input_creneau.value);
     var uv = encodeURIComponent(input_uv.value);
-    if (window.innerWidth <= 550 && window.innerHeight <= 550) {
-        input_hfin[0].value = input_hfin[1].value;
-        input_hdebut[1].value = input_hdebut[0].value;
-    } else {
-        input_hfin[1].value = input_hfin[0].value;
-        input_hdebut[0].value = input_hdebut[1].value;
-    }
-    var hfin = encodeURIComponent(input_hfin[1].value);
-    var hdebut = encodeURIComponent(input_hdebut[1].value);
+    var hfin = encodeURIComponent(input_hfin.value);
+    var hdebut = encodeURIComponent(input_hdebut.value);
 
     if(type === "" || salle === "" || hfin === "" || hdebut === "" || creneau === "" || uv === ""){
         for(var element of list_input){
@@ -190,11 +191,9 @@ bouton_non_submit.addEventListener("click", function() {
         input_creneau.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', false);
     }else if(hdebut >= hfin){
         input_creneau.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
-        input_hdebut[0].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', false);
-        input_hdebut[1].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', false);
+        input_hdebut.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', false);
     } else{
-        input_hdebut[0].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
-        input_hdebut[1].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+        input_hdebut.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
         input_creneau.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
         input_type.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
         input_uv.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
@@ -220,14 +219,14 @@ bouton_non_submit.addEventListener("click", function() {
             titleDiv.innerHTML = `Récapitulatif : ${input_type.value} de ${input_uv.value}`
             document.getElementById("swapJour1").innerHTML = `${input_creneau.value[0].toUpperCase() + input_creneau.value.slice(1)}`
             document.getElementById("swapSalle1").innerHTML = `${input_salle.value}`
-            document.getElementById("swapCreneau1").innerHTML = `${input_hdebut[1].value} - ${input_hfin[1].value}`
+            document.getElementById("swapCreneau1").innerHTML = `${input_hdebut.value} - ${input_hfin.value}`
 
             document.getElementById("swapSalle2").innerHTML = `${localStorage.getItem("salle")}`
             document.getElementById("swapJour2").innerHTML = `${localStorage.getItem("jour")}`
             document.getElementById("swapCreneau2").innerHTML = `${localStorage.getItem("hdebut").slice(0,-3)} - ${localStorage.getItem("hfin").slice(0,-3)}`
 
 
-            if (checkbox.checked){
+            if (checkbox_semaine.checked){
                 const choixSemaine = document.querySelector('input[name="semainechoix"]:checked').value;
                 document.getElementById("spanSemaine1").classList.toggle("hidden" , false);
                 document.getElementById("spanSemaine2").classList.toggle("hidden" , false);
@@ -261,16 +260,15 @@ bouton_retour.addEventListener("click", function() {
     }
 });
 
-// Ajoutez un écouteur d'événements pour détecter les changements de la checkbox
-checkbox.addEventListener('change', function () {
-    // Modifiez la visibilité de l'élément en fonction de l'état de la checkbox
-    choix_semaine.classList.toggle('hidden', !checkbox.checked);
-    if (checkbox.checked) {
-        lastHeight= nouveau_pannel.scrollHeight;
+// Ajoutez un écouteur d'événements pour détecter les changements de la checkbox_semaine
+checkbox_semaine.addEventListener('change', function () {
+    // Modifiez la visibilité de l'élément en fonction de l'état de la checkbox_semaine
+    choix_semaine.classList.toggle('hidden', !checkbox_semaine.checked);
+    if (checkbox_semaine.checked) {
         document.getElementById("sA-choix").checked = true;
-        document.getElementById("div_milieu_nouveau").style.height = nouveau_pannel.scrollHeight + 10 + "px";
+        document.getElementById("div_milieu_nouveau").style.height = document.getElementById("div_milieu_nouveau").offsetHeight + 10 + "px";
     } else {
-        document.getElementById("div_milieu_nouveau").style.height = ""; // Ajustez ici la hauteur minimale souhaitée
+        document.getElementById("div_milieu_nouveau").style.height = "";
     }
 });
 
@@ -378,7 +376,7 @@ function nouveauClick() {
     ul_nouveau.classList.toggle('hidden', false);
     boutons_message.classList.toggle('hidden', true);
     message_pression.classList.toggle('hidden', true);
-    checkbox.disabled = false;
+    checkbox_semaine.disabled = false;
 
     /* Réinitialiser l'affichage du formulaire si changement.  */
     document.getElementById("creneauFirstLine").classList.toggle("hidden" , false);
@@ -403,8 +401,7 @@ function nouveauClick() {
     menu_pannel.style.left = '-65%';
 
     notification_pannel.style.display = "none";
-    input_hdebut[0].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
-    input_hdebut[1].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+    input_hdebut.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
     input_creneau.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
     input_type.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
     input_uv.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);

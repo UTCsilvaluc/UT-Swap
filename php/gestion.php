@@ -160,9 +160,6 @@ function redirect($url){
             $changementSwap = true;
         }
     }
-    if($changementSwap){
-        redirect("gestion.php");
-    }
 
     function getNbSwapUv($type, $codeUV){
         global $login;

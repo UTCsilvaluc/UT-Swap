@@ -257,7 +257,7 @@ div.divHeure:hover {
 .hoverCours{
     display: none;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-evenly;
     width: auto;
 }
 
@@ -276,9 +276,8 @@ div.divHeure:hover {
 #leftHover{
     position: relative;
     align-items: center;
-    justify-content: center;
+    justify-content: space-evenly;
 }
-
 
 #edit:hover{
     cursor: pointer;

@@ -526,14 +526,6 @@ nav .orange{
     margin-left: 4px;
 }
 
-#nouveau_pannel #nouveau_heure_double{
-    display: flex;
-}
-
-#nouveau_pannel .nouveau_heure_triple{
-    display: none;
-}
-
 #nouveau_pannel input,#nouveau_pannel select{
     box-sizing: content-box;
     cursor: pointer;
@@ -1102,14 +1094,6 @@ span.row h3{
         top: calc(50vh + calc(var(--taille-header)/2));
         width: 90%;
     }
-    
-    #nouveau_pannel #nouveau_heure_double{
-        display: none;
-    }
-
-    #nouveau_pannel .nouveau_heure_triple{
-        display: block;
-    }
 
     #nouveau_pannel .double-input div:first-child {
         margin-right: 0px;
@@ -1127,10 +1111,6 @@ span.row h3{
 @media screen and (max-height: 550px) {
     :root {
         --taille-header: 70px;
-    }
-
-    #nouveau_heure_double{
-        margin: 0;
     }
 
     #bouton_menu{
