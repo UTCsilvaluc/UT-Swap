@@ -87,15 +87,8 @@ function svgEditLeave(event){
 }
 
 function canCreateCreneau(){
-    if (window.innerWidth <= 550 && window.innerHeight <= 550) {
-        input_hfin[0].value = input_hfin[1].value;
-        input_hdebut[1].value = input_hdebut[0].value;
-    } else {
-        input_hfin[1].value = input_hfin[0].value;
-        input_hdebut[0].value = input_hdebut[1].value;
-    }
-    var hfin = encodeURIComponent(input_hfin[1].value);
-    var hdebut = encodeURIComponent(input_hdebut[1].value);
+    var hfin = encodeURIComponent(input_hfin.value);
+    var hdebut = encodeURIComponent(input_hdebut.value);
     if (!(input_isCours.checked)) {
         var type = encodeURIComponent(input_type.value);
         var salle = encodeURIComponent(input_salle.value);
@@ -125,11 +118,9 @@ function canCreateCreneau(){
             input_creneau.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', false);
         } else if (hdebut >= hfin) {
             input_creneau.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
-            input_hdebut[0].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', false);
-            input_hdebut[1].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', false);
+            input_hdebut.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', false);
         } else {
-            input_hdebut[0].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
-            input_hdebut[1].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+            input_hdebut.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
             input_creneau.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
             input_type.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
             input_uv.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
@@ -162,11 +153,9 @@ function canCreateCreneau(){
             input_creneau.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', false);
         } else if (hdebut >= hfin) {
             input_creneau.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
-            input_hdebut[0].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', false);
-            input_hdebut[1].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', false);
+            input_hdebut.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', false);
         } else {
-            input_hdebut[0].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
-            input_hdebut[1].parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
+            input_hdebut.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
             input_creneau_externe.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
             input_type.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
             input_activity.parentNode.getElementsByTagName("p")[1].classList.toggle('hidden', true);
