@@ -95,14 +95,15 @@ codeUV_input_home.addEventListener("change", function() {
 });
 
 function searchSwap(){
-    var type_input_home_value = type_input_home.value;
-    var codeUV_input_home_value = codeUV_input_home.value;
-    if(codeUV_input_home_value.length == 4){
-        if(["all", "TD", "TP", "CM"].includes(type_input_home_value)){
-            if(type_input_home_value == "all"){
-                window.location.href ='../php/demandes.php?codeUV=' + codeUV_input_home_value;
+    if(codeUV_input_home.value.length == 4){
+        if(["all", "TD", "TP", "CM"].includes(type_input_home.value)){
+            var urlParams = new URLSearchParams(window.location.search);
+            urlParams.set('codeUV', encodeURIComponent(codeUV_input_home.value));
+            if(type_input_home.value == "all"){
+                window.location.href ="../php/demandes.php?" + urlParams.toString();
             }else{
-                window.location.href ="../php/demandes.php?type="+ type_input_home_value +"&codeUV=" + codeUV_input_home_value;
+                urlParams.set('type', encodeURIComponent(type_input_home.value));
+                window.location.href = "../php/demandes.php?" + urlParams.toString();
             }
         }else{
             shakeElement(type_input_home);

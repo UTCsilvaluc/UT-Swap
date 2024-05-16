@@ -1963,3 +1963,9 @@ var sliderBlack = document.getElementById("range_black");
 sliderBlack.addEventListener("input", function() {
     changeCSSVar("bg-black",sliderBlack.value/10);
 });
+
+var sliderZoom = document.getElementById("range_zoom");
+
+sliderZoom.addEventListener("input", function() {
+    changeCSSVar("bg-size",sliderZoom.value + "%");
+});

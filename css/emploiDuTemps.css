@@ -23,6 +23,7 @@
     --bg-image: none;
     --bg-image-blur: 0px;
     --bg-position : 49px;
+    --bg-size: 100%;
     --bg-black:0;
     --color-bordure: black;
 }
@@ -364,7 +365,7 @@ div.divHeure:hover {
     left: 0;
     width: 101%;
     height: 101%;
-    background-size: cover;
+    background-size: var(--bg-size);
     background-position: center var(--bg-position);
     background-repeat: no-repeat;
     background-image: var(--bg-image);
@@ -373,7 +374,7 @@ div.divHeure:hover {
 }
 
 #assombrissement {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;

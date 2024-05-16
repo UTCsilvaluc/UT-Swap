@@ -865,7 +865,7 @@ function appliquerFiltres() {
         console.log(types);
         Array.from(document.querySelectorAll("#spanType input")).forEach(labelType => {
             console.log(labelType.id.slice(7));
-            if (!(types.includes(labelType.id.slice(7)))){
+            if (!(types.includes(labelType.id.slice(7).toUpperCase()))){
                 labelType.click();
             }
         });
@@ -904,4 +904,3 @@ document.addEventListener('change', function(event) {
         appliquerFiltres();
     }
 });
-

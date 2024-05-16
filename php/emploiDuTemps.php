@@ -298,6 +298,10 @@ function exportEDT(type){
                                     <p>Position de l'image:</p>
                                     <input type="range" min="0" max="100" value="0" id="range_top">
                                 </div>
+                                <div>
+                                    <p>Zoom de l'image:</p>
+                                    <input type="range" min="0" max="200" value="100" id="range_zoom">
+                                </div>
                             </div>
                         </span>
                     </div>
