@@ -27,66 +27,7 @@ function changeInputType(){
         document.getElementsByClassName("mid_button")[0].classList.toggle('hidden', true);
     }
 }
-function exportEDT(type){
-    // Capture l'élément en PNG
-    if (type === 'png'){
-        html2canvas(document.querySelector('#conteneur_edt > div:nth-child(4)')).then(function(canvas) {
-            // Convertit le canvas en image data URL
 
-            exportElement.style.display = "none";
-            ecran.style.display = "none";
-            var imageDataURL = canvas.toDataURL('image/png');
-            if(type === "png"){
-                // Crée un lien de téléchargement
-                var downloadLink = document.createElement('a');
-                downloadLink.href = imageDataURL;
-                downloadLink.download = document.getElementById("fileName").value + '.png';
-                document.body.appendChild(downloadLink);
-                downloadLink.click();
-                document.body.removeChild(downloadLink);
-            }
-        });
-    } else if (type === 'txt'){
-        var courses = document.getElementsByClassName("cours");
-        var line = '';
-        Array.from(courses).forEach(function (coursElement) {
-            var jour = coursElement.closest('.jour').id;
-            var texte = coursElement.querySelector('h2.UV').textContent;
-            var regex = /^([A-Z0-9]+) - (TD|TP|CM)( A| B)?$/;
-            var match = texte.match(regex);
-            var codeUV = match[1];
-            var typeMatiere = match[2];
-            var semaine = match[3] ? match[3].replace(/\s/g, "") : null;
-            var heuresText = coursElement.querySelector('.horaire_cours').textContent.trim();
-            var heuresSegments = heuresText.split('-');
-            var heureDebut = heuresSegments[0].trim();
-            var heureFin = heuresSegments[1].trim();
-            var salle = coursElement.querySelector('p:nth-of-type(2)').textContent.trim();
-            switch(type) {
-                case "TP":
-                    type = "P";
-                    break;
-                case "CM":
-                    type = "M";
-                    break;
-                case "TD":
-                    type = "D";
-                    break;
-                default:
-                    type=null;
-            }
-            line += `${codeUV};${typeMatiere};${semaine};${heureDebut};${heureFin};${salle};${jour}\n`;
-        })
-        const blob = new Blob([line], { type: "text/plain" });
-        var downloadLink = document.createElement('a');
-        const url = window.URL.createObjectURL(blob);
-        downloadLink.href = url;
-        downloadLink.download = document.getElementById("fileName").value + '.txt';
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-    }
-}
 
     </script>
     <main>

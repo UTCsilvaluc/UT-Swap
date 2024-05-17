@@ -1263,6 +1263,60 @@ function menuExportEDT(event){
     ecran.style.display = "block";
 }
 
+function exportEDT(type){
+    // Capture l'élément en PNG
+    if (type === 'png'){
+        html2canvas(document.getElementById("emploi_du_temps")).then(function(canvas) {
+            // Convertit le canvas en image data URL
+
+            exportElement.style.display = "none";
+            ecran.style.display = "none";
+            var imageDataURL = canvas.toDataURL('image/png');
+            if(type === "png"){
+                // Crée un lien de téléchargement
+                var downloadLink = document.createElement('a');
+                downloadLink.href = imageDataURL;
+                downloadLink.download = document.getElementById("fileName").value + '.png';
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            }
+        });
+    } else if (type === 'txt'){
+        var courses = document.getElementsByClassName("cours");
+        var line = '';
+        Array.from(courses).forEach(function (coursElement) {
+            var data = readRowAttribute(coursElement);
+            var type;
+            switch(data.type) {
+                case "TP":
+                    type = "P";
+                    break;
+                case "CM":
+                    type = "M";
+                    break;
+                case "TD":
+                    type = "D";
+                    break;
+                case "ACT":
+                    type="A";
+                    break;
+                default:
+                    type=null;
+            }
+            line += `${data.codeUV};${type};${data.semaine};${data.horaireDebut};${data.horaireFin};${data.salle};${data.jour}\n`;
+        })
+        const blob = new Blob([line], { type: "text/plain" });
+        var downloadLink = document.createElement('a');
+        const url = window.URL.createObjectURL(blob);
+        downloadLink.href = url;
+        downloadLink.download = document.getElementById("fileName").value + '.txt';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    }
+}
+
 var suppr_edt_pannel = document.getElementById("suppr_edt_pannel");
 document.addEventListener("click" , function (event){
     if (!(event.target.closest("#importEDTID")) && importElement.style.display != "none") {
