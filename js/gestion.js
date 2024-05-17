@@ -483,6 +483,7 @@ async function openImport() {
         const emailContent = await getMailBDD();
         if (emailContent) {
             document.getElementById("textUV").value = emailContent;
+            changeImport(document.getElementById("textUV"));
         }
     } catch (error) {
         console.error("Une erreur s'est produite" , error);
@@ -497,22 +498,16 @@ document.addEventListener("click" , function (event) {
 });
 
 const regexEtudiant = /^\s*\d{3}\s+([\w\s-]+)\s+(\w{4})\s*$/;
-const regexCours =/^\s*(\w{4})\s+([\w\s]{3})\s*,\s*PL\.MAX=\s*(\d+)\s*,\s*LIBRES=\s*(\d+)\s*,\s*INSCRITS=\s*(\d+)\s*H=(\w+)\.\.\.\s*$/;
+const regexCours = /^\s*(\w{4})\s+([\w\s]{3})\s*,\s*PL\.MAX=\s*(\d+)\s*,\s*LIBRES=\s*(\d+)\s*,\s*INSCRITS=\s*(\d+)\s*H=(\w+)\.\.\.\s*$/;
 const regexHoraireSalle = /(\d{2}:\d{2}-\d{2}:\d{2}),(\w+),S=(\w+)/;
-var coursAvecEtudiants;
+var etudiantsDict = {};
+
 async function changeImport(element) {
-    coursAvecEtudiants = [];
+
     var texte = element.value;
-    if (document.getElementById("localSave").checked){
-        try {
-            await saveMailBDD(texte);
-        } catch (error) {
-            console.error("Une erreur s'est produite:", error);
-        }
-    }
+
     // Séparer les textes de cours en utilisant la séquence "+----------"
     var cours = texte.split('+----------');
-
 
     // Afficher les textes de cours séparés
     for (let i = 0; i < cours.length; i++) {
@@ -528,7 +523,7 @@ async function changeImport(element) {
             if (regexEtudiant.test(ligne)) {
                 const [, nom, branche] = ligne.match(regexEtudiant);
                 const nomSansEspaces = nom.trim();
-                etudiants.push({nom: nomSansEspaces, branche});
+                etudiants.push({ nom: nomSansEspaces, branche });
             } else if (regexCours.test(ligne)) {
                 // Si la ligne correspond aux informations du cours
                 const match = ligne.match(regexCours);
@@ -546,10 +541,10 @@ async function changeImport(element) {
                     codeCours: match[1],
                     type: detailsCours,
                     plMax: parseInt(match[3]),
-                    placesLibres: parseInt(match[4]),
-                    inscrits: parseInt(match[5]),
-                    jourSemaine: match[6],
-                    etudiants: []
+                    plLibre: parseInt(match[4]),
+                    inscrit: parseInt(match[5]),
+                    num: match[2].split(" ")[1],
+                    jourSemaine: match[6]
                 };
             } else if (regexHoraireSalle.test(ligne)) {
                 // Si la ligne correspond à l'horaire et à la salle du cours
@@ -561,40 +556,42 @@ async function changeImport(element) {
 
         // Ajouter les étudiants au cours correspondant
         if (coursInfo) {
-            coursInfo.etudiants = etudiants;
-            coursAvecEtudiants.push(coursInfo);
+            // Mettre à jour le cours pour chaque étudiant
+            etudiants.forEach(etudiant => {
+                const key = `${coursInfo.codeCours}-${coursInfo.type}-${coursInfo.jourSemaine}-${coursInfo.horaire}-${coursInfo.salle}`;
+                if (!etudiantsDict[etudiant.nom]) {
+                    etudiantsDict[etudiant.nom] = { ...etudiant, cours: [] };
+                }
+                etudiantsDict[etudiant.nom].cours.push({ ...coursInfo });
+            });
         }
     }
 }
 
 
-
 function trouverCours(heureDebut, heureFin, jour, type, codeCours, nom, prenom, branche) {
-    // Parcourir la liste des cours avec étudiants
-    heureDebut = heureDebut.replace("h",":");
-    heureFin = heureFin.replace("h",":");
-    const coursTrouve = coursAvecEtudiants.find(cours => {
-        return (
-            cours.type === type &&
-            cours.codeCours === codeCours &&
-            cours.jourSemaine === jour.toUpperCase() &&
-            cours.horaire === `${heureDebut}-${heureFin.replace("h",":")}`
-        );
-    });
+    // Remplacer "h" par ":" dans les heures
+    heureDebut = heureDebut.replace("h", ":");
+    heureFin = heureFin.replace("h", ":");
 
-    // Vérification de la présence de l'élève dans le cours trouvé
-    if (coursTrouve) {
-        const etudiantPresent = coursTrouve.etudiants.find(etudiant => {
+    const nomComplet = `${nom.toUpperCase()} ${prenom.toUpperCase()}`;
+    const etudiantTrouve = etudiantsDict[nomComplet];
+
+    // Si l'étudiant est trouvé, vérifier ses cours
+    if (etudiantTrouve && etudiantTrouve.branche.substring(0, 2).toUpperCase() === branche.substring(0, 2).toUpperCase()) {
+        const coursTrouve = etudiantTrouve.cours.find(cours => {
             return (
-                etudiant.nom === `${nom.toUpperCase()} ${prenom.toUpperCase()}` &&
-                etudiant.branche.substring(0, 2) === branche.substring(0, 2).toUpperCase()
+                cours.type === type &&
+                cours.codeCours === codeCours &&
+                cours.jourSemaine === jour.toUpperCase() &&
+                cours.horaire === `${heureDebut}-${heureFin}`
             );
         });
 
-        return !!etudiantPresent; // Convertit en booléen
+        return !!coursTrouve; // Convertit en booléen
     }
 
-    return false; // Le cours n'a pas été trouvé
+    return false; // L'étudiant n'a pas été trouvé ou il n'est pas inscrit au cours avec les critères donnés
 }
 
 function checkSwap() {
@@ -658,30 +655,68 @@ function checkSwap() {
     import_mail.classList.toggle('hidden', true);
     import_personne_fraud_parent.classList.toggle('hidden', false);
 }
-function deplacerEtudiant(nom1, prenom1, branche1, nom2, prenom2, branche2, type, codeCours, jour, horaireDebut, horaireFin) {
-    // Rechercher le cours correspondant au code, au type, au jour et à l'horaire
-    var coursTrouve = coursAvecEtudiants.find(cours => cours.codeCours === codeCours && cours.type === type && cours.jourSemaine === jour.toUpperCase() && cours.horaire === `${horaireDebut.replace("h",":")}-${horaireFin.replace("h",":")}`);
-    nom1 = nom1.toUpperCase();
-    prenom1 = prenom1.toUpperCase();
-    nom2 = nom2.toUpperCase();
-    prenom2 = prenom2.toUpperCase();
-    if (coursTrouve) {
-        // Rechercher l'étudiant 2 dans le cours
-        var etudiant2 = coursTrouve.etudiants.find(etudiant => etudiant.nom === `${nom2} ${prenom2}` && etudiant.branche.substring(0, 2).toUpperCase() === branche2.substring(0, 2).toUpperCase());
-        if (etudiant2) {
-            // Remplacer l'étudiant 2 par l'étudiant 1
-            var index = coursTrouve.etudiants.indexOf(etudiant2);
-            coursTrouve.etudiants[index] = { nom: `${nom1} ${prenom1}`, branche: branche1 };
-            return; // Sortir de la fonction une fois le déplacement effectué
+
+function deplacerEtudiant(nom1, prenom1, branche1, nom2, prenom2, branche2, type1, codeCours1, jour1, horaireDebut1, horaireFin1, type2, codeCours2, jour2, horaireDebut2, horaireFin2) {
+    const nomComplet1 = `${nom1.toUpperCase()} ${prenom1.toUpperCase()}`;
+    const nomComplet2 = `${nom2.toUpperCase()} ${prenom2.toUpperCase()}`;
+
+    // Rechercher les étudiants 1 et 2 dans le dictionnaire
+    const etudiant1 = etudiantsDict[nomComplet1];
+    const etudiant2 = etudiantsDict[nomComplet2];
+
+    if (etudiant1 && etudiant2 && etudiant1.branche.substring(0, 2).toUpperCase() === branche1.substring(0, 2).toUpperCase() && etudiant2.branche.substring(0, 2).toUpperCase() === branche2.substring(0, 2).toUpperCase()) {
+        // Rechercher le cours correspondant à l'étudiant 1
+        const coursEtudiant1 = etudiant1.cours.find(cours => cours.codeCours === codeCours1 && cours.type === type1 && cours.jourSemaine === jour1.toUpperCase() && cours.horaire === `${horaireDebut1.replace("h", ":")}-${horaireFin1.replace("h", ":")}`);
+
+        // Rechercher le cours correspondant à l'étudiant 2
+        const coursEtudiant2 = etudiant2.cours.find(cours => cours.codeCours === codeCours2 && cours.type === type2 && cours.jourSemaine === jour2.toUpperCase() && cours.horaire === `${horaireDebut2.replace("h", ":")}-${horaireFin2.replace("h", ":")}`);
+
+        if (coursEtudiant1 && coursEtudiant2) {
+            // Conserver les valeurs de plMax et inscrit pour chaque cours
+            const plMax1 = coursEtudiant1.plMax;
+            const plLibre1 = coursEtudiant1.plLibre;
+            const inscrit1 = coursEtudiant1.inscrit;
+            const num1 = coursEtudiant1.num;
+
+            const plMax2 = coursEtudiant2.plMax;
+            const plLibre2 = coursEtudiant2.plLibre;
+            const inscrit2 = coursEtudiant2.inscrit;
+            const num2 = coursEtudiant2.num;
+
+            // Échanger les cours entre les étudiants
+            etudiant1.cours.splice(etudiant1.cours.indexOf(coursEtudiant1), 1, {
+                codeCours: codeCours2,
+                type: type2,
+                jourSemaine: jour2.toUpperCase(),
+                horaire: `${horaireDebut2.replace("h", ":")}-${horaireFin2.replace("h", ":")}`,
+                salle: coursEtudiant2.salle,
+                plMax: plMax2,
+                plLibre: plLibre2,
+                inscrit: inscrit2,
+                num : num2
+            });
+            etudiant2.cours.splice(etudiant2.cours.indexOf(coursEtudiant2), 1, {
+                codeCours: codeCours1,
+                type: type1,
+                jourSemaine: jour1.toUpperCase(),
+                horaire: `${horaireDebut1.replace("h", ":")}-${horaireFin1.replace("h", ":")}`,
+                salle: coursEtudiant1.salle,
+                plMax: plMax1,
+                plLibre: plLibre1,
+                inscrit: inscrit1,
+                num : num1
+            });
+            return;
         } else {
-            console.error(`Étudiant introuvable dans le cours (${codeCours} (${type}), ${jour}, ${horaireDebut}-${horaireFin})`);
+            console.error(`Aucun cours trouvé pour les étudiants ${nomComplet1} (${branche1}) ou ${nomComplet2} (${branche2}) correspondant aux informations fournies.`);
         }
     } else {
-        console.error(`Aucun cours trouvé avec les caractéristiques spécifiées : ${codeCours} (${type}), ${jour.toUpperCase()}, ${horaireDebut.replace("h",":")}-${horaireFin.replace("h",":")}`);
+        console.error(`Étudiant introuvable ou données d'inscription incorrectes.`);
     }
- }
+}
 
- function updateMail(){
+
+function updateMail(){
     var listeDemande = document.getElementsByClassName("demande_professeur");
 
     // Vider le contenu de l'élément mid_content
@@ -703,8 +738,11 @@ function deplacerEtudiant(nom1, prenom1, branche1, nom2, prenom2, branche2, type
                     trouverCours(donnees.etudiant1.heureDebut, donnees.etudiant1.heureFin, donnees.etudiant1.jour, donnees.type, donnees.codeUV, donnees.etudiant1.nom, donnees.etudiant1.prenom, donnees.etudiant1.branche) && 
                     trouverCours(donnees.etudiant2.heureDebut, donnees.etudiant2.heureFin, donnees.etudiant2.jour, donnees.type, donnees.codeUV, donnees.etudiant2.nom, donnees.etudiant2.prenom, donnees.etudiant2.branche)
                 ) {
-                    deplacerEtudiant(donnees.etudiant1.nom, donnees.etudiant1.prenom, donnees.etudiant1.branche, donnees.etudiant2.nom, donnees.etudiant2.prenom, donnees.etudiant2.branche, donnees.type, donnees.codeUV, donnees.etudiant2.jour, donnees.etudiant2.heureDebut, donnees.etudiant2.heureFin)
-                    deplacerEtudiant(donnees.etudiant2.nom, donnees.etudiant2.prenom, donnees.etudiant2.branche, donnees.etudiant1.nom, donnees.etudiant1.prenom, donnees.etudiant1.branche, donnees.type, donnees.codeUV, donnees.etudiant1.jour, donnees.etudiant1.heureDebut, donnees.etudiant1.heureFin)
+                    deplacerEtudiant(donnees.etudiant1.nom, donnees.etudiant1.prenom, donnees.etudiant1.branche, donnees.etudiant2.nom, donnees.etudiant2.prenom, donnees.etudiant2.branche, donnees.type, donnees.codeUV, donnees.etudiant1.jour, donnees.etudiant1.heureDebut, donnees.etudiant1.heureFin, donnees.type, donnees.codeUV, donnees.etudiant2.jour, donnees.etudiant2.heureDebut, donnees.etudiant2.heureFin)
+                    
+                    // Utilisation de la fonction pour générer le texte
+                    const texteGenere = genererTexte(etudiantsDict);
+                    document.getElementById("textUV").value = texteGenere;
                 }
             }
         } else {
@@ -712,6 +750,72 @@ function deplacerEtudiant(nom1, prenom1, branche1, nom2, prenom2, branche2, type
         }
     }
 }
+
+function genererTexte(etudiantsDict) {
+    let texte = "";
+    let coursVisites = new Set(); // Pour garder une trace des cours déjà traités par cet étudiant
+    let etudiantsInscritsCount = 0; 
+
+    // Convertir les étudiants en tableau et les trier par ordre alphabétique
+    const etudiantsSorted = Object.values(etudiantsDict).sort((a, b) => {
+        return a.nom.localeCompare(b.nom);
+    });
+
+    // Parcours de chaque étudiant dans etudiantsSorted
+    etudiantsSorted.forEach(etudiant => {
+        // Vérifier si l'étudiant a des cours
+        if (etudiant && etudiant.cours && etudiant.cours.length > 0) {
+            etudiant.cours.forEach(cours => {
+                const key = JSON.stringify({
+                    codeCours: cours.codeCours,
+                    type: cours.type,
+                    jourSemaine: cours.jourSemaine,
+                    horaire: cours.horaire,
+                    salle: cours.salle
+                });
+
+                // Vérifier si ce cours a déjà été traité pour éviter les doublons
+                if (!coursVisites.has(key)) {
+                    coursVisites.add(key);
+
+                    texte += "+----------\n";
+                    texte += ` ${cours.codeCours.padEnd(11)}${cours.type.substring(1,2)} ${cours.num.padEnd(4)},PL.MAX=${(cours.plMax === 0 ? '0' : cours.plMax.toString()).padStart(3)} ,LIBRES=${(cours.plLibre === 0 ? '0' : cours.plLibre.toString()).padStart(3)} ,INSCRITS=${(cours.inscrit === 0 ? '0' : cours.inscrit.toString()).padStart(3)}  H=${cours.jourSemaine}...\n`;
+                    texte += `${cours.horaire},F1,S=${cours.salle}\n\n`;
+                    etudiantsInscritsCount = 0;
+
+                    // Filtrer les étudiants inscrits à ce cours
+                    const etudiantsDansCeCours = etudiantsSorted.filter(e =>
+                        e.cours.some(c => c.codeCours === cours.codeCours && c.type === cours.type && c.jourSemaine === cours.jourSemaine && c.horaire === cours.horaire && c.salle === cours.salle)
+                    );
+
+                    // Supprimer les valeurs undefined dans les noms des étudiants
+                    etudiantsDansCeCours.forEach((etudiant, index) => {
+                        const numero = (index + 1).toString().padStart(3, '0'); // Assurer que le numéro soit toujours en trois chiffres
+                        const nom = etudiant.nom || '';
+                        const nomPrenom = `${nom}`.padEnd(25);
+                        const branche = etudiant.branche || '';
+                        texte += ` ${numero}   ${nomPrenom}${branche}\n`;
+
+                        // Incrémenter le compteur d'étudiants inscrits
+                        etudiantsInscritsCount++;
+
+                        // Ajouter un saut de ligne supplémentaire après chaque groupe de quatre étudiants inscrits
+                        if (etudiantsInscritsCount % 4 === 0) {
+                            texte += "\n";
+                        }
+                    });
+
+                    texte += "\n1\n\n";
+                }
+            });
+        }
+    });
+
+    return texte;
+}
+
+
+
 
 /* Sauvegarde du mail en local */
 

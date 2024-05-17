@@ -46,7 +46,7 @@ function redirect($url){
             <div id="input_home_parent">
                 <div id="input_home_title">
                     <h1>Trouvez votre prochain swap:</h1>
-                    <p>Recherchez votre swap parmis des demandes de TD, TP, cours majistraux et ce pour tous les jours de la semaine</p>
+                    <p>Recherchez votre swap parmi des demandes de TD, TP, cours magistraux et ce pour tous les jours de la semaine</p>
                 </div>
                 <div id="input_home">
                     <input type="text" id="codeUV_input_home" placeholder="Chercher une UV" maxlength='4'>

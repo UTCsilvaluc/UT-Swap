@@ -109,14 +109,10 @@ function clickDemande(element) {
                         if (cours.type === donnees.type && cours.codeUV === donnees.codeUV){
                             input_salle.value = cours.salle;
                             input_creneau.value = cours.jour.toLowerCase();
-                            Array.from(input_hdebut).map(element => {
-                                const [heures, minutes] = cours.horaireDebut.split('h');
-                                element.value = `${heures.padStart(2,'0')}:${minutes}`;
-                            });
-                            Array.from(input_hfin).map(element => {
-                                const [heures, minutes] = cours.horaireFin.split('h');
-                                element.value = `${heures.padStart(2,'0')}:${minutes}`;
-                            });
+                            const [heuresDebut, minutesDebut] = cours.horaireDebut.split('h');
+                            input_hdebut.value = `${heuresDebut.padStart(2,'0')}:${minutesDebut}`;
+                            const [heuresFin, minutesFin] = cours.horaireFin.split('h');
+                            input_hfin.value = `${heuresFin.padStart(2,'0')}:${minutesFin}`;
                         }
                     });
 
