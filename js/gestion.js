@@ -505,6 +505,7 @@ var etudiantsDict = {};
 async function changeImport(element) {
 
     var texte = element.value;
+    await saveMailBDD(texte);
 
     // Séparer les textes de cours en utilisant la séquence "+----------"
     var cours = texte.split('+----------');
