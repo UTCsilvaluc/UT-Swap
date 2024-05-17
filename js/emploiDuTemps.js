@@ -1113,7 +1113,15 @@ inputCouleurBorder.addEventListener('click', function(event) {
 
 couleurInputBorder.addEventListener('change', function(event) {
     inputCouleurBorder.style.backgroundColor = event.target.value;
-
+    recupererParametresUtilisateur()
+        .then(parametres => {
+            parametres.couleurBordure = event.target.value;
+            return sauvegarderParametresUtilisateur(parametres);
+        })
+        .then(message => {
+            return recupererParametresUtilisateur();
+        })
+        .catch(error => console.error("Erreur :", error));
     changeCSSVar("color-bordure", event.target.value);
 });
 
@@ -1480,6 +1488,10 @@ if (window.indexedDB){
                     day.style.background = parametres.couleurEntete;
                 }
             }
+            if (parametres.couleurBordure){
+                inputCouleurBorder.style.background = parametres.couleurBordure;
+                changeCSSVar("color-bordure", parametres.couleurBordure);
+            }
             Array.from(document.querySelectorAll("#spanJour h3")).forEach(jour => {
                 if ((parametres.jours.includes((jour.innerHTML))) && jour.className === "uncheck"){
                     jour.click();
@@ -1720,7 +1732,7 @@ function ouvrirBaseDeDonneesFiltre() {
             objectStore.transaction.oncomplete = function() {
                 // Initialisation des valeurs par défaut
                 const parametresObjectStore = db.transaction('parametres', 'readwrite').objectStore('parametres');
-                parametresObjectStore.add({ utilisateur: 'utilisateur', jours: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'], horaireDebut: '08:00', horaireFin: '20:00', police: 'Jost', couleurEntete: '#CCCCCC' });
+                parametresObjectStore.add({ utilisateur: 'utilisateur', jours: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'], horaireDebut: '08:00', horaireFin: '20:00', police: 'Jost', couleurEntete: '#CCCCCC', couleurBordure: '#CCCCCC' });
             };
         };
     });
