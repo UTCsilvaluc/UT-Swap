@@ -1379,24 +1379,7 @@ function exportEDT(type){
         var line = '';
         Array.from(courses).forEach(function (coursElement) {
             var data = readRowAttribute(coursElement);
-            var type;
-            switch(data.type) {
-                case "TP":
-                    type = "P";
-                    break;
-                case "CM":
-                    type = "M";
-                    break;
-                case "TD":
-                    type = "D";
-                    break;
-                case "ACT":
-                    type="A";
-                    break;
-                default:
-                    type=null;
-            }
-            line += `${data.codeUV};${type};${data.semaine};${data.horaireDebut};${data.horaireFin};${data.salle};${data.jour}\n`;
+            line += `${data.codeUV};${data.type};${data.semaine};${data.horaireDebut};${data.horaireFin};${data.salle};${data.jour}\n`;
         })
         const blob = new Blob([line], { type: "text/plain" });
         var downloadLink = document.createElement('a');
