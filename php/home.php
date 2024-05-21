@@ -63,7 +63,7 @@ function redirect($url){
             <div class="home_pannel" id="tips_home_parent">
                 <div>
                     <img src="../img/prof.png">
-                    <p>UT'Swap fonctionne sur le principe de <span class="important_word">triple entente</span>, celle entre 2 étudiants et 1 responsable. Une <span class="important_word">demande</span> est la démarche d'un étudiant à un autre, même si celle-ci est acceptée le <span class="important_word">swap</span> ne l'est pas forcément. Il faudra attendre la <span class="important_word">réponse du reponsable d'UV</span> - Equipe UT'Swap</p>
+                    <p>UT'Swap fonctionne sur le principe de <span class="important_word">triple entente</span>, celle entre 2 étudiants et 1 responsable. Une <span class="important_word">demande</span> est la démarche d'un étudiant à un autre, même si celle-ci est acceptée le <span class="important_word">swap</span> ne l'est pas forcément. Il faudra attendre la <span class="important_word">réponse du reponsable d'UV</span></p>
                 </div>
             </div>
 

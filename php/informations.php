@@ -26,7 +26,7 @@
                     <div id="RESUME" class="visible">
                         <span class="content">
                             <h4>Qui et pourquoi ?</h4>
-                            <h5> Le projet UT'Swap a été réalisé dans le cadre de l’UV TX00 fondé par Silva Lucas et Dompnier Lucas à l’aide du SIMDE . Dès notre entrée à l’UTC, nous avons été confronté à la difficulté d’échanger des créneaux de Cours/TD/TP, nous avons donc eu l’idée de simplifier la tâche de tout le monde aussi bien des étudiants comme des enseignants en regroupant tout le processus au sein d’une même plateforme. </h5>
+                            <h5>Le projet UT'Swap a été réalisé dans le cadre de l’UV TX00, fondé par Silva Lucas et Dompnier Lucas, avec l’aide du SIMDE. Dès notre entrée à l’UTC, nous avons été confrontés à la difficulté d’échanger des créneaux de cours/TD/TP. Nous avons donc eu l’idée de simplifier la tâche de tout le monde, aussi bien des étudiants que des enseignants, en regroupant tout le processus au sein d’une même plateforme.</h5>
                         </span>
                         <span class="content">
                             <h4>UT’Swap, en quelques mots...</h4>
@@ -34,29 +34,29 @@
                         </span>
                         <span class="content">
                             <h4>Plus de 1000 échanges effectués</h4>
-                            <h5>UT’Swap c’est plus de 1000 étudiants sauvés en leur permettant de trouver l’horaire qui leur convient. N’attendez plus et soyez le prochain à trouver le votre, il n’attend que vous !</h5>
+                            <h5>UT’Swap, c’est plus de 1000 étudiants sauvés en leur permettant de trouver l’horaire qui leur convient. N’attendez plus et soyez le prochain à trouver le vôtre, il n’attend que vous !</h5>
                         </span>
                         <span class="content">
                             <h4>Notre mission</h4>
-                            <h5>Afin de réussir, chacun se doit d’optimiser au mieux son temps. Ainsi, nous avons vocation à favoriser le succès de chacun à l’UTC en permettant aux étudiants comme aux enseignants de gagner un temps précieux dans les démarches de changement de créneaux. </h5>
+                            <h5>Afin de réussir, chacun se doit d’optimiser au mieux son temps. Ainsi, nous avons pour vocation de favoriser le succès de chacun à l’UTC en permettant aux étudiants comme aux enseignants de gagner un temps précieux dans les démarches de changement de créneaux.</h5>
                         </span>
                     </div>
                     <div id="HOW" class="hidden">
                         <span class="content">
                             <h4>Un créneau ne vous convient pas ?</h4>
-                            <h5> Vous avez besoin de libérer un créneau afin de pouvoir pratiquer une activité, vous voulez optimiser votre emploi du temps ou simplement éviter de vous réveiller tous les matins à 8h ? Proposez simplement votre horaire sur la page SWAP, vous avez la possibilité d’intéragir avec votre emploi du temps afin de sélectionner le cours à échanger. Ensuite, si un étudiant est intéressé par votre horaire, il pourra vous proposer le sien en échange et il ne restera plus qu’à accepter ou refuser la proposition, c’est simple n’est-ce pas ? </h5>
+                            <h5>Vous avez besoin de libérer un créneau afin de pouvoir pratiquer une activité, vous voulez optimiser votre emploi du temps ou simplement éviter de vous réveiller tous les matins à 8h ? Proposez simplement votre horaire sur la page SWAP. Vous avez la possibilité d'interagir avec votre emploi du temps afin de sélectionner le cours à échanger. Ensuite, si un étudiant est intéressé par votre horaire, il pourra vous proposer le sien en échange et il ne restera plus qu’à accepter ou refuser la proposition. C’est simple, n'est-ce pas ? </h5>
                         </span>
                         <span class="content">
                             <h4>Un horaire m’intéresse </h4>
-                            <h5>Dans la partie demandes, vous pouvez voir toutes les propositions d’échanges effectuées par des étudiants. Si un créneau vous plaît, il suffit de cliquer dessus puis formuler votre requête. Pour cela, vous avez simplement besoin de renseigner les informations liées à votre horaire puis le tour est joué. Enfin, l’étudiant n’aura qu’à décliner ou accepter votre demande.</h5>
+                            <h5>Dans la partie demandes, vous pouvez voir toutes les propositions d'échanges effectuées par des étudiants. Si un créneau vous plaît, il suffit de cliquer dessus puis de formuler votre requête. Pour cela, vous avez simplement besoin de renseigner les informations liées à votre horaire, puis le tour est joué. Enfin, l'étudiant n'aura qu’à décliner ou accepter votre demande.</h5>
                         </span>
                         <span class="content">
                             <h4>Je suis responsable d’UV ? </h4>
-                            <h5>Nous pensons aussi à vous, en tant que responsable d’une UV, notre objectif est de vous simplifier la tâche. Terminé les nombreux mails des étudiants afin de vouloir changer un créneau, vous avez maintenant la possibilité de tout gérer depuis une interface simple et pratique. Refuser une demande n’aura jamais été aussi simple !</h5>
+                            <h5>Nous pensons aussi à vous, en tant que responsable d’une UV. Notre objectif est de vous simplifier la tâche. Terminé les nombreux e-mails des étudiants voulant changer un créneau, vous avez maintenant la possibilité de tout gérer depuis une interface simple et pratique. Refuser une demande n'aura jamais été aussi simple !</h5>
                         </span>
                         <span class="content">
                             <h4>Personne ne veut de mon horaire...</h4>
-                            <h5>Nous avons pensé à tout, si personne ne souhaite de votre horaire, vous pourrez au moins le savoir de manière simple et efficace :) Plus besoin de nombreux messages sur Messenger, tout le monde n’aura qu’à refuser votre demande.... </h5>
+                            <h5>Nous avons pensé à tout. Si personne ne souhaite votre horaire, vous pourrez au moins le savoir de manière simple et efficace :) Plus besoin de nombreux messages sur Messenger, tout le monde n'aura qu’à refuser votre demande... </h5>
                         </span>
                     </div>
                     <div id="MAJ" class="hidden">
