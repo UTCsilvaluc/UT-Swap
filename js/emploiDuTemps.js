@@ -1113,7 +1113,15 @@ inputCouleurBorder.addEventListener('click', function(event) {
 
 couleurInputBorder.addEventListener('change', function(event) {
     inputCouleurBorder.style.backgroundColor = event.target.value;
-
+    recupererParametresUtilisateur()
+        .then(parametres => {
+            parametres.couleurBordure = event.target.value;
+            return sauvegarderParametresUtilisateur(parametres);
+        })
+        .then(message => {
+            return recupererParametresUtilisateur();
+        })
+        .catch(error => console.error("Erreur :", error));
     changeCSSVar("color-bordure", event.target.value);
 });
 
@@ -1211,7 +1219,97 @@ function closeCustom(event){
 
 function supprimerCustom(){
     var couleurSpan = document.getElementById("couleurSpan").innerHTML;
-    document.getElementById("filterContainer1").innerHTML = '<div class="conteneur_custom" id="filterContainer1"><div class="custom_parent" id="police"><h1 class="custom_entete">Police</h1><span class="custom_span"><h3 class="checkPolice" onclick="changePolice(event)" id="mainPolice">Jost</h3><h3 class="uncheckPolice" onclick="changePolice(event)">Times New Roman</h3><h3 class="uncheckPolice" onclick="changePolice(event)">Comic Sans MS</h3></span></div><div class="custom_parent" id="jours"><h1 class="custom_entete">Jour</h1><span class="custom_span" id="spanJour"><h3 class="check" onclick="changeJour(event)">Lundi</h3><h3 class="check" onclick="changeJour(event)">Mardi</h3><h3 class="check" onclick="changeJour(event)">Mercredi</h3><h3 class="check" onclick="changeJour(event)">Jeudi</h3><h3 class="check" onclick="changeJour(event)">Vendredi</h3><h3 class="check" onclick="changeJour(event)">Samedi</h3><h3 class="uncheck" onclick="changeJour(event)">Dimanche</h3></div><div class="custom_parent" id="couleurs"><h1 class="custom_entete">Couleurs</h1><span><span class="custom_span" id="couleurSpan"></span></span></div><div class="custom_parent" id="couleur_entete"><h1 class="custom_entete">Couleur entête</h1><span class="custom_span"><div class="inputCouleur" id="inputCouleur" style=""><span style="margin-left: 20px"><input class="colorChoice" type="color" id="choix-couleur" name="choix-couleur" style="position: absolute; ; width: 2px ; height: 2px"></span></div></span></div><div class="custom_parent" id="langue"><h1>Langue</h1><span class="custom_span"><h3>Anglais</h3><h3>Français</h3><h3>Espagnol</h3></span></div><div class="custom_parent" id="heures"><h1>Horaires</h1><span class="custom_span"><div><input type="time" id="custom-input-hdebut" name="hdebut" value="08:00" required onchange="customTime(event)"></div><div><input type="time" id="custom-input-hfin" name="hfin" value="20:00" required onchange="customTime(event)"></div></span></div><div class="buttonCustoms"><button class="customButton" id="appliquerCustom" onclick="supprimerCustom(event)">Supprimer les customs</button></div></div>';
+    document.getElementById("filterContainer1").innerHTML = "<div class=\"conteneur_custom\" id=\"filterContainer1\">\n" +
+        "                    <div class=\"custom_parent\" id=\"police\">\n" +
+        "                        <h1 class=\"custom_entete\">Police</h1>\n" +
+        "                        <span class=\"custom_span\">\n" +
+        "                            <h3 class=\"checkElement\" onclick=\"changePolice(event)\" id=\"mainPolice\">Jost</h3>\n" +
+        "                            <h3 class=\"uncheckElement\" onclick=\"changePolice(event)\" id=\"Kantumruy\">Kantumruy</h3>\n" +
+        "                            <h3 class=\"uncheckElement\" onclick=\"changePolice(event)\" id=\"Times New Roman\">Times New Roman</h3>\n" +
+        "                            <h3 class=\"uncheckElement\" onclick=\"changePolice(event)\" id=\"Comic Sans MS\">Comic Sans MS</h3>\n" +
+        "                        </span>\n" +
+        "                    </div>\n" +
+        "                    <div class=\"custom_parent\" id=\"jours\">\n" +
+        "                        <h1 class=\"custom_entete\">Jour</h1>\n" +
+        "                        <span class=\"custom_span\" id=\"spanJour\">\n" +
+        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Lundi</h3>\n" +
+        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Mardi</h3>\n" +
+        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Mercredi</h3>\n" +
+        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Jeudi</h3>\n" +
+        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Vendredi</h3>\n" +
+        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Samedi</h3>\n" +
+        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Dimanche</h3>\n" +
+        "                        </div>\n" +
+        "                    <div class=\"custom_parent\" id=\"couleurs\">\n" +
+        "                        <h1 class=\"custom_entete\">Couleurs</h1>\n" +
+        "                        <span>\n" +
+        "                            <span class=\"custom_span\" id=\"couleurSpan\"></span>\n" +
+        "                        </span>\n" +
+        "                    </div>\n" +
+        "                    <div class=\"custom_parent\" id=\"couleur_entete\">\n" +
+        "                        <h1 class=\"custom_entete\">Couleur entête</h1>\n" +
+        "                        <span class=\"custom_span\">\n" +
+        "                            <div class=\"inputCouleur\" id=\"inputCouleur\" style=\"\">\n" +
+        "                                <span style=\"margin-left: 20px\">\n" +
+        "                                    <input class=\"colorChoice\" type=\"color\" id=\"choix-couleur\" name=\"choix-couleur\" style=\"position: absolute; ; width: 2px ; height: 2px\">\n" +
+        "                                </span>\n" +
+        "                            </div>\n" +
+        "                        </span>\n" +
+        "                    </div>\n" +
+        "                    <div class=\"custom_parent\" id=\"couleur_entete\">\n" +
+        "                        <h1 class=\"custom_entete\">Couleur bordure</h1>\n" +
+        "                        <span class=\"custom_span\">\n" +
+        "                            <div class=\"inputCouleur\" id=\"inputCouleurBorder\" style=\"\">\n" +
+        "                                <span style=\"margin-left: 20px\">\n" +
+        "                                    <input class=\"colorChoice\" type=\"color\" id=\"choix-couleur-border\" name=\"choix-couleur-border\" style=\"position: absolute; ; width: 2px ; height: 2px\">\n" +
+        "                                </span>\n" +
+        "                            </div>\n" +
+        "                        </span>\n" +
+        "                    </div>\n" +
+        "                    <div class=\"custom_parent\" id=\"image_bg\">\n" +
+        "                        <h1 class=\"custom_entete\">Image de fond</h1>\n" +
+        "                        <span class=\"custom_span\">\n" +
+        "                            <div class=\"drop-zone\" id=\"dropZone_custom\">\n" +
+        "                                <h6>Drag &amp; Drop le fichier ici</h6>\n" +
+        "                                <span>OU</span>\n" +
+        "                                <button>Choisir un fichier</button>\n" +
+        "                                <input type=\"file\" name=\"fileInputCustom\" hidden=\"\">\n" +
+        "                            </div>\n" +
+        "                            <div id=\"image_bg_settings\">\n" +
+        "                                <div>\n" +
+        "                                    <p>Valeur du flou :</p>\n" +
+        "                                    <input type=\"range\" min=\"0\" max=\"10\" value=\"0\" id=\"range_blur\">\n" +
+        "                                </div>\n" +
+        "                                <div>\n" +
+        "                                    <p>Opacité de l'image:</p>\n" +
+        "                                    <input type=\"range\" min=\"0\" max=\"8\" value=\"0\" id=\"range_black\">\n" +
+        "                                </div>\n" +
+        "                                <div>\n" +
+        "                                    <p>Position de l'image:</p>\n" +
+        "                                    <input type=\"range\" min=\"0\" max=\"100\" value=\"0\" id=\"range_top\">\n" +
+        "                                </div>\n" +
+        "                                <div>\n" +
+        "                                    <p>Zoom de l'image:</p>\n" +
+        "                                    <input type=\"range\" min=\"0\" max=\"200\" value=\"100\" id=\"range_zoom\">\n" +
+        "                                </div>\n" +
+        "                            </div>\n" +
+        "                        </span>\n" +
+        "                    </div>\n" +
+        "                    <div class=\"custom_parent\" id=\"heures\">\n" +
+        "                        <h1>Horaires</h1>\n" +
+        "                        <span class=\"custom_span\">\n" +
+        "                            <div>\n" +
+        "                                <input type=\"time\" id=\"custom-input-hdebut\" name=\"hdebut\" value=\"08:00\" required onchange=\"customTime(event)\">\n" +
+        "                            </div>\n" +
+        "                            <div>\n" +
+        "                                <input type=\"time\" id=\"custom-input-hfin\" name=\"hfin\" value=\"20:00\" required onchange=\"customTime(event)\">\n" +
+        "                            </div>\n" +
+        "                        </span>\n" +
+        "                    </div>\n" +
+        "                    <div class=\"buttonCustoms\">\n" +
+        "                        <button class=\"customButton\" id=\"appliquerCustom\" onclick=\"supprimerCustom(event)\">Supprimer les customs</button>\n" +
+        "                    </div>\n" +
+        "                </div>"
     document.body.style.fontFamily = `Jost , sans-serif`;
     document.getElementById("spanJour").querySelectorAll("h3").forEach(function (jour){
         var elementJour = document.getElementById(jour.innerHTML.toLowerCase());
@@ -1228,6 +1326,8 @@ function supprimerCustom(){
         }
     })
     document.getElementById("custom-input-hfin").value = "20:00";
+    inputCouleurBorder.value = "#000000";
+    changeCSSVar("color-bordure", "#000000");
     var input = document.getElementById("custom-input-hdebut");
     input.value = "08:00";
     var event = new Event('change');
@@ -1253,6 +1353,43 @@ function menuExportEDT(event){
     exportElement.style.display = "flex";
     event.stopPropagation();
     ecran.style.display = "block";
+}
+
+function exportEDT(type){
+    // Capture l'élément en PNG
+    if (type === 'png'){
+        html2canvas(document.getElementById("emploi_du_temps")).then(function(canvas) {
+            // Convertit le canvas en image data URL
+
+            exportElement.style.display = "none";
+            ecran.style.display = "none";
+            var imageDataURL = canvas.toDataURL('image/png');
+            if(type === "png"){
+                // Crée un lien de téléchargement
+                var downloadLink = document.createElement('a');
+                downloadLink.href = imageDataURL;
+                downloadLink.download = document.getElementById("fileName").value + '.png';
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            }
+        });
+    } else if (type === 'txt'){
+        var courses = document.getElementsByClassName("cours");
+        var line = '';
+        Array.from(courses).forEach(function (coursElement) {
+            var data = readRowAttribute(coursElement);
+            line += `${data.codeUV};${data.type};${data.semaine};${data.horaireDebut};${data.horaireFin};${data.salle};${data.jour}\n`;
+        })
+        const blob = new Blob([line], { type: "text/plain" });
+        var downloadLink = document.createElement('a');
+        const url = window.URL.createObjectURL(blob);
+        downloadLink.href = url;
+        downloadLink.download = document.getElementById("fileName").value + '.txt';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    }
 }
 
 var suppr_edt_pannel = document.getElementById("suppr_edt_pannel");
@@ -1479,6 +1616,10 @@ if (window.indexedDB){
                 for (let day of days){
                     day.style.background = parametres.couleurEntete;
                 }
+            }
+            if (parametres.couleurBordure){
+                inputCouleurBorder.style.background = parametres.couleurBordure;
+                changeCSSVar("color-bordure", parametres.couleurBordure);
             }
             Array.from(document.querySelectorAll("#spanJour h3")).forEach(jour => {
                 if ((parametres.jours.includes((jour.innerHTML))) && jour.className === "uncheck"){
@@ -1720,7 +1861,7 @@ function ouvrirBaseDeDonneesFiltre() {
             objectStore.transaction.oncomplete = function() {
                 // Initialisation des valeurs par défaut
                 const parametresObjectStore = db.transaction('parametres', 'readwrite').objectStore('parametres');
-                parametresObjectStore.add({ utilisateur: 'utilisateur', jours: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'], horaireDebut: '08:00', horaireFin: '20:00', police: 'Jost', couleurEntete: '#CCCCCC' });
+                parametresObjectStore.add({ utilisateur: 'utilisateur', jours: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'], horaireDebut: '08:00', horaireFin: '20:00', police: 'Jost', couleurEntete: '#CCCCCC', couleurBordure: '#000000' });
             };
         };
     });
