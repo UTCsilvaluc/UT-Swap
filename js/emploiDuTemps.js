@@ -977,14 +977,13 @@ function customTime(event) {
 
     var debut = parseInt(document.getElementById("custom-input-hdebut").value);
     var fin = parseInt(document.getElementById("custom-input-hfin").value);
+    console.log(debut , fin);
 
     let conteneurHours = document.getElementsByClassName("conteneurHours")[0];
     conteneurHours.className = "conteneurHours";
     conteneurHours.innerHTML = "";
 
     for (var heure = parseInt(debut) ; heure <= parseInt(fin) ; heure++){
-
-
         let textHour = document.createElement("h4");
         textHour.innerHTML = `${heure}h00`;
         if(heure !== parseInt(fin)){
@@ -1007,7 +1006,6 @@ function customTime(event) {
         /* Informations sur un cours */
         var coursElement = element;
         var data = readRowAttribute(coursElement);
-
         if (parseInt(debut) <= parseInt(data.horaireDebut) && parseInt(fin) >= parseInt(data.horaireFin)){
             var currentCours = new Cours(data.codeUV , data.horaireDebut , data.horaireFin , data.jour , data.salle , data.semaine , null , data.type , data.id);
             cours.push(currentCours);
