@@ -791,7 +791,6 @@ function suivreSouris(element, isCours) {
                 var heureDebut = formaterHeure(heureElement[0].replace("h", ":")).replace(":", "h");
                 var heureFin = formaterHeure(heureElement[1].replace("h", ":")).replace(":", "h");
                 var data = readRowAttribute(element);
-                console.log(data);
                 if (courses) {
                     await modifierAttributCoursByID(db, idCurrentCours, 'jour', parentJourElement.id);
                     await modifierAttributCoursByID(db, idCurrentCours, 'horaireDebut', heureDebut); /* Ajouter un 0 devant l'heure si < 10*/
@@ -804,8 +803,6 @@ function suivreSouris(element, isCours) {
                 } else {
                     console.log("Erreur : aucun cours avec cet ID !");
                 }
-
-                console.log("Données mises à jour : ", data.horaireDebut, data.horaireFin);
             } catch (error) {
                 console.error(error);
             }
