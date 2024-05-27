@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../css/profil.css">
     <link rel="stylesheet" href="../css/mid_pannel.css">
     <title>Profil - UT'Swap</title>
-    <link rel="icon" href="../img/logo.png" type="image/x-icon">
+    <link rel="icon" href="../img/logo_mini.png" type="image/x-icon">
 </head>
 <body>
     <?php include "header.php" ?>
@@ -419,6 +419,7 @@
             </div>
         </div>
     </main>
+    <?php include "footer.php" ?>
     <div id="swap_pannel" class="mid_pannel">
         <div id="swap_header" class="mid_titre">
             <?php

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link rel="stylesheet" href="../css/informations.css">
     <title>Informations - UT'Swap</title>
-    <link rel="icon" href="../img/logo.png" type="image/x-icon">
+    <link rel="icon" href="../img/logo_mini.png" type="image/x-icon">
 </head>
 <body>
 <?php include "header.php" ?>
@@ -17,10 +17,10 @@
             </div>
             <div id="info_menu">
                 <span id="span_nav_menu">
-                    <h3 class="currentSpan" id="span_RESUME" onclick="changeMenu('RESUME' , event)">UT'SWAP en quelques mots</h3>
-                    <h3 class="other" id="span_HOW" onclick="changeMenu('HOW' , event)">Fonctionnement</h3>
-                    <h3 class="other" id="span_MAJ" onclick="changeMenu('MAJ' , event)">Mise à jour et nouveautés</h3>
-                    <h3 class="other" id="span_FAQ" onclick="changeMenu('FAQ' , event)">FAQ</h3>
+                    <a class="currentSpan" id="span_RESUME" href="#RESUME" onclick="changeMenu('RESUME' , event)">UT'SWAP en quelques mots</a>
+                    <a class="other" id="span_HOW" href="#HOW" onclick="changeMenu('HOW' , event)">Fonctionnement</a>
+                    <a class="other" id="span_MAJ" href="#MAJ" onclick="changeMenu('MAJ' , event)">Mise à jour et nouveautés</a>
+                    <a class="other" id="span_FAQ" href="#FAQ" onclick="changeMenu('FAQ' , event)">FAQ</a>
                 </span>
                 <div id="info_menu_content">
                     <div id="RESUME" class="visible">
@@ -143,6 +143,7 @@
         </div>
 
         </main>
+        <?php include "footer.php" ?>
         <script src="../js/informations.js"></script>
     </body>
 </html>

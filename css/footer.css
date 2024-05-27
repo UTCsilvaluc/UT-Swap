@@ -1,0 +1,62 @@
+footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    height: 50px;
+    width:90%;
+    border-top: 1px solid #cdcdcd;
+    margin: 0 5%;
+}
+
+footer p {
+    color: #32373baa;
+    text-align: center;
+}
+
+footer a {
+    color: #32373baa;
+    text-decoration: none;
+}
+
+#footer_links {
+    display: flex;
+    align-items: center; /* Centrer verticalement les liens et les boules */
+    gap: 10px; /* Espace entre les éléments */
+}
+
+#instagram::before{
+    font-family: 'FontAwesome';
+    content:"\f16d";
+    font-size: 25px;
+    color: #32373baa;
+}
+
+#facebook::before{
+    font-family: 'FontAwesome';
+    content:"\f082";
+    font-size: 25px;
+    color: #32373baa;
+}
+
+#footer_links a::after {
+    content: "";
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    background: #32373baa;
+    border-radius: 50%;
+    margin-left: 15px;
+    margin-right: 5px;
+    margin-bottom: 3px;
+    vertical-align: middle;
+}
+
+#footer_links a:last-child::after {
+    content: none; /* Pas de cercle après le dernier lien */
+}
+
+#footer_social{
+    display: flex;
+    gap:10px;
+}

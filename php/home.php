@@ -13,7 +13,7 @@ function redirect($url){
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="../css/home.css">
     <title>Home - UT'Swap</title>
-    <link rel="icon" href="../img/logo.png" type="image/x-icon">
+    <link rel="icon" href="../img/logo_mini.png" type="image/x-icon">
 </head>
 <body>
     <?php include "header.php" ?>
@@ -116,6 +116,7 @@ function redirect($url){
         
     </main>
 
+    <?php include "footer.php" ?>
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script>var data = {

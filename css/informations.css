@@ -1,3 +1,4 @@
+
 div.main_info {
     display: flex;
     flex-direction: column;
@@ -37,18 +38,18 @@ div#info_menu{
     margin-bottom: 25px;
 }
 
-#span_nav_menu h3:hover{
+#span_nav_menu a:hover{
     cursor: pointer;
     opacity: 90%;
 
 }
 
-h3.currentSpan {
+a.currentSpan {
     padding-bottom: 5px;
     border-bottom: 2px black solid; /* Bordure plus visible pour #currentSpan */
 }
 
-span#span_nav_menu h3{
+span#span_nav_menu a{
     width: 25%;
     transition: 0.3s linear opacity;
     font-style: initial;
@@ -58,10 +59,11 @@ span#span_nav_menu h3{
     font-family: Jost;
     font-size: 18px;
     font-weight: normal;
+    text-decoration: none;
     white-space: nowrap;
 }
 
-h3.currentSpan{
+a.currentSpan{
     border-bottom: 3px black solid;
     padding-bottom: 5px;
 }
@@ -164,7 +166,7 @@ span.faq_content h5 {
         margin-top: 10px;
     }
 
-    span#span_nav_menu h3{
+    span#span_nav_menu a{
         font-size: 14px;
     }
 

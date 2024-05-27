@@ -227,6 +227,7 @@ function afficherInfoSwap(element){
 
 function gererUVChoix(choix){
 
+    event.preventDefault();
     var form = document.createElement('form');
     form.setAttribute('method', 'post');
     form.setAttribute('action', '');
@@ -266,6 +267,7 @@ document.addEventListener("click" , function (event){
             checkboxChangementGlobal.checked = !checkboxChangementGlobal.checked;
         }
         history.replaceState({}, document.title, window.location.pathname);
+        
     }
 
     if (!(event.target.closest("#swap_info_pannel")) && swap_info_pannel != null && swap_info_pannel.style.display != "none") {

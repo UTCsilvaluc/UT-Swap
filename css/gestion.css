@@ -1,3 +1,7 @@
+main{
+    margin-bottom: 50px;
+}
+
 .demandes_gestion_filtre{
     display: flex;
     align-items: center;

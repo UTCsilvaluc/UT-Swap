@@ -301,7 +301,7 @@ function notificationImportance(){
                             $choixTexte = "refusé";
                         }
                         $titre_notif = "Vous avez ".$choixTexte." la demande de Swap de ".$personne2.".";
-                        $texte_notif = "La demande de swap du ".$type.$semaine2." de ".$codeUV." pour ".nombreEnJour($jour2)." ".date("H\hi", strtotime($hDeb2))."-".date("H\hi", strtotime($hFin))." a été ".$choixTexte."e";
+                        $texte_notif = "La demande de swap du ".$type.$semaine2." de ".$codeUV." pour ".nombreEnJour($jour2)." ".date("H\hi", strtotime($hDeb2))."-".date("H\hi", strtotime($hFin2))." a été ".$choixTexte."e";
                     }else{
                         $titre_notif = "Vous avez une nouvelle demande de Swap !";
                         $texte_notif = $personne2." serait intéréssé pour un Swap du ".$type."".$semaine2." de ".$codeUV." contre ".nombreEnJour($jour2)." de ".date("H\hi", strtotime($hDeb2))." à ".date("H\hi", strtotime($hFin2)).".";

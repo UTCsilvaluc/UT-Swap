@@ -9,6 +9,7 @@
     <title>Swap - UT'Swap</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <link rel="icon" href="../img/logo_mini.png" type="image/x-icon">
 </head>
 <body>
     <?php
@@ -120,7 +121,7 @@ function changeInputType(){
                             <button onclick="exportEDT('txt')" id="export_txt">Exporter TXT</button>
                         </div>
                     </div>
-                    <div>
+                    <div id="emploi_du_temps_parent">
                         <div class="conteneurHours"></div>
                         <div id="emploi_du_temps">
                             

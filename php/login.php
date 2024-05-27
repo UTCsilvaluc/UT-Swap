@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="../css/login.css">
     <link rel="stylesheet" href="../css/mid_pannel.css">
     <title>Login - UT'Swap</title>
-    <link rel="icon" href="../img/logo.png" type="image/x-icon">
+    <link rel="icon" href="../img/logo_mini.png" type="image/x-icon">
 </head>
 <body>
     <?php include "header.php" ?>

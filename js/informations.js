@@ -1,38 +1,43 @@
-function changeMenu(name , event){
-    document.getElementsByClassName("currentSpan")[0].className = "other";
-    event.target.className = "currentSpan";
-    document.getElementsByClassName("visible")[0].className = "hidden";
-    document.getElementById(name).className = "visible";
+
+function changeMenu(name, event) {
+    if (event) {
+        event.preventDefault();
+    }
+    const currentSpan = document.querySelector(".currentSpan");
+    if (currentSpan) {
+        currentSpan.className = "other";
+    }
+    const targetLink = document.querySelector(`a[href="#${name}"]`);
+    if (targetLink) {
+        targetLink.className = "currentSpan";
+    }
+    const visibleSection = document.querySelector(".visible");
+    if (visibleSection) {
+        visibleSection.className = "hidden";
+    }
+    const targetSection = document.getElementById(name);
+    if (targetSection) {
+        targetSection.className = "visible";
+    }
+    window.location.hash = name;
 }
 
-// Sélectionner tous les titres h4 dans la div FAQ
 const faq_contents = document.querySelectorAll('.faq_content');
-
-// Pour chaque titre h4
 faq_contents.forEach(faq_content => {
-    // Ajouter un écouteur d'événement de clic
     faq_content.addEventListener('click', () => {
-        // Récupérer le h5 associé
         const parent = faq_content;
         const h5 = parent.querySelector('h5');
         const svg = parent.querySelector("img");
-
         svg.classList.toggle('fleche_svg_rotate');
-
-        // Vérifier si le h5 est caché ou non
         if (h5.classList.contains('hidden')) {
-            // Retire la classe hidden pour afficher l'élément
             h5.classList.remove('hidden');
-            // Retire la propriété max-height pour afficher l'élément
             h5.style.maxHeight = h5.scrollHeight + 'px';
             h5.style.margin="20px 0px";
             parent.style.height="fit-content";
             parent.style.marginTop = "10px";
         } else {
-            // Cache l'élément
             h5.style.maxHeight = 0;
             h5.style.margin="5px 0px";
-
             setTimeout(() => {
                 h5.classList.add('hidden');
                 parent.style.height="50px";
@@ -59,8 +64,18 @@ function mettreAJourContenu() {
     }
 }
 
-// Attacher la fonction au changement de taille de la fenêtre
 window.addEventListener('resize', mettreAJourContenu);
-
-// Appeler la fonction une fois au chargement de la page
 mettreAJourContenu();
+
+function handleHashChange() {
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+        const targetLink = document.querySelector(`a[href="#${hash}"]`);
+        if (targetLink) {
+            targetLink.click(); // Simule un clic sur le lien correspondant au fragment d'ancrage
+        }
+    }
+}
+
+window.addEventListener('load', handleHashChange);
+window.addEventListener('hashchange', handleHashChange);

@@ -16,7 +16,7 @@ function redirect($url){
     <link rel="stylesheet" href="../css/mid_pannel.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <title>Gestion - UT'Swap</title>
-    <link rel="icon" href="../img/logo.png" type="image/x-icon">
+    <link rel="icon" href="../img/logo_mini.png" type="image/x-icon">
 </head>
 <body>
     <?php include "header.php" ?>
@@ -522,6 +522,7 @@ function redirect($url){
             </div>
         </div>
     </main>
+    <?php include "footer.php" ?>
     <?php
         if (
             isset($_POST['afficher'], $_POST['demandeur'], $_POST['idDemande']) &&

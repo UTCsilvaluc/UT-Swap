@@ -28,6 +28,10 @@
     --color-bordure: black;
 }
 
+html body{
+    overflow-x: hidden;
+}
+
 
 #parent_edt{
     width: fit-content;

@@ -1125,10 +1125,10 @@ couleurInputBorder.addEventListener('change', function(event) {
     changeCSSVar("color-bordure", event.target.value);
 });
 
-
+var changeJourTailleFenetre=window.innerWidth;
 function changeJour(event){
     
-    if(window.innerWidth > 600){
+    if(changeJourTailleFenetre > 600){
         var listeJour = document.getElementsByClassName("jour");
         var pushJour = [];
         var nbJour = 0;
@@ -1358,7 +1358,7 @@ function menuExportEDT(event){
 function exportEDT(type){
     // Capture l'élément en PNG
     if (type === 'png'){
-        html2canvas(document.getElementById("emploi_du_temps")).then(function(canvas) {
+        html2canvas(document.getElementById("emploi_du_temps_parent")).then(function(canvas) {
             // Convertit le canvas en image data URL
 
             exportElement.style.display = "none";
@@ -2013,7 +2013,6 @@ function mettreAJourContenu() {
         }
         setBorderRadius();
     }
-
     if(largeurFenetre <=450 && largeurFenetre > 300){
         jours.forEach(function(jour, index) {
             jour.textContent = joursAbrege[index];
@@ -2028,8 +2027,11 @@ function mettreAJourContenu() {
 // Attacher la fonction au changement de taille de la fenêtre
 window.addEventListener('resize', mettreAJourContenu);
 
-// Appeler la fonction une fois au chargement de la page
-mettreAJourContenu();
+window.onload = function() {
+    setTimeout(() => {
+    mettreAJourContenu();
+    }, 50);
+};
 
 const dropZone = document.getElementById('dropZone_custom');
 const emploi_du_temps = document.getElementById('emploi_du_temps');

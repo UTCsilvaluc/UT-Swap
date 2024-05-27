@@ -292,6 +292,10 @@ main{
     height:410px;
 }
 
+#swap_impossible{
+    height: 300px;
+}
+
 #swap_impossible_header, #swap_impossible_header div{
     display: flex;
     flex-direction: row;

@@ -103,16 +103,10 @@ function updateSwapInsertNotif($choix, $demandeur, $idDemande, $id_notif, $login
         $stmtUpdateSwap->bind_param("ss", $idDemande, $demandeur);            
         $stmtUpdateSwap->execute();
         sendNotifications($loginPersonne, $idDemande, $demandeur, 2, $choix, $connect);
-
-        $informationLogin = getInformationLogin($connect, $loginPersonne);
-        $nom = $informationLogin["nom"];
-        $prénom = $informationLogin["prénom"];
-        $semaine = $semaine !== "null" ? ' en semaine ' . $semaine : null;
-        $nouveauContenuNotif = "Vous avez ".$choixTexte." la demande de Swap de ".$nom." ".$prénom.".;La demande de swap du ".$type.$semaine." de ".$codeUV." pour ".nombreEnJour($jour)." ".date("H\hi", strtotime($horaireDebut))."-".date("H\hi", strtotime($horaireFin))." a été ".$choixTexte."e";
-        $sqlUpdateNotif = "UPDATE notifications SET contenuNotif = ?, viewed=1 WHERE idNotif = ?";
         
+        $sqlUpdateNotif = "UPDATE notifications SET viewed=1, choix=0 WHERE idNotif = ?";
         $stmtUpdateNotif = $connect->prepare($sqlUpdateNotif);
-        $stmtUpdateNotif->bind_param("ss", $nouveauContenuNotif, $idNotif);
+        $stmtUpdateNotif->bind_param("s", $idNotif);
         $stmtUpdateNotif->execute();
     } else if($choix === "1"){
         $sqlUpdateSwapAccept = "UPDATE swap SET statut = 2 WHERE idDemande = ? AND demandeur = ?";
@@ -124,15 +118,9 @@ function updateSwapInsertNotif($choix, $demandeur, $idDemande, $id_notif, $login
         sendNotifications($loginPersonne, $idDemande, $demandeur, 2, $choix, $connect);
         sendNotifications($loginResponsable, $idDemande, $demandeur, 6, null, $connect);
 
-        $informationLogin = getInformationLogin($connect, $loginPersonne);
-        $nom = $informationLogin["nom"];
-        $prénom = $informationLogin["prénom"];
-        $semaine = $semaine !== "null" ? ' en semaine ' . $semaine : null;
-        $nouveauContenuNotif = "Vous avez ".$choixTexte." la demande de Swap de ".ucfirst($nom)." ".ucfirst($prénom).".;La demande de swap du ".$type.$semaine." de ".$codeUV." pour ".nombreEnJour($jour)." ".date("H\hi", strtotime($horaireDebut))."-".date("H\hi", strtotime($horaireFin))." a été ".$choixTexte."e";
-        $sqlUpdateNotif = "UPDATE notifications SET contenuNotif = ?, viewed=1 WHERE idNotif = ?";
-        
+        $sqlUpdateNotif = "UPDATE notifications SET viewed=1, choix=1 WHERE idNotif = ?";
         $stmtUpdateNotif = $connect->prepare($sqlUpdateNotif);
-        $stmtUpdateNotif->bind_param("ss", $nouveauContenuNotif, $idNotif);
+        $stmtUpdateNotif->bind_param("s", $idNotif);
         $stmtUpdateNotif->execute();
 
         
@@ -162,16 +150,9 @@ function updateSwapInsertNotif($choix, $demandeur, $idDemande, $id_notif, $login
             for($i=0;$i<count($listeLoginReçue);$i++){
                 sendNotifications($listeLoginReçue[$i], $idDemande, $listeDemandeurReçue[$i], 2, 0, $connect);
                 
-                $informationLogin = getInformationLogin($connect, $listeLoginReçue[$i]);
-                $nom = $informationLogin["nom"];
-                $prénom = $informationLogin["prénom"];
-
-                $semaine = $semaine !== "null" ? ' en semaine ' . $semaine : null;
-                $nouveauContenuNotif = "Vous avez refusé la demande de Swap de ".ucfirst($nom)." ".ucfirst($prénom).".;La demande de swap du ".$type.$semaine." de ".$codeUV." pour ".nombreEnJour($jour)." ".date("H\hi", strtotime($horaireDebut))."-".date("H\hi", strtotime($horaireFin))." a été refusée";
-                $sqlUpdateNotif = "UPDATE notifications SET contenuNotif = ?, viewed=1 WHERE idNotif = ?";
-                
+                $sqlUpdateNotif = "UPDATE notifications SET viewed=1, choix=0 WHERE idNotif = ?";
                 $stmtUpdateNotif = $connect->prepare($sqlUpdateNotif);
-                $stmtUpdateNotif->bind_param("ss", $nouveauContenuNotif, $listeIdNotifReçue[$i]);
+                $stmtUpdateNotif->bind_param("s", $listeIdNotifReçue[$i]);
                 $stmtUpdateNotif->execute();
             }
         }
@@ -200,16 +181,10 @@ function updateSwapInsertNotif($choix, $demandeur, $idDemande, $id_notif, $login
             $stmtDeleteSwap->bind_param("sssss", $idDemande, $login, $loginPersonne, $codeUV ,$type);
             $stmtDeleteSwap->execute();
             for($i=0;$i<count($listeLoginFaite);$i++){
-                $informationLogin = getInformationLogin($connect, $listeLoginDemandeurFaite[$i]);
-                $nom = $informationLogin["nom"];
-                $prénom = $informationLogin["prénom"];
 
-                $semaine = $semaine !== "null" ? ' en semaine ' . $semaine : null;
-                $nouveauContenuNotif = ucfirst($nom)." ".$prénom." a retourné sa veste.;La demande de swap du ".$type.$semaine." de ".$codeUV." pour ".nombreEnJour($jour)." ".date("H\hi", strtotime($horaireDebut))."-".date("H\hi", strtotime($horaireFin))." a été annulée";
-                $sqlUpdateNotif = "UPDATE notifications SET contenuNotif = ?, viewed=1 WHERE idNotif = ?";
-                
+                $sqlUpdateNotif = "UPDATE notifications SET typeNotif=4 ,viewed=0 WHERE idNotif = ?";
                 $stmtUpdateNotif = $connect->prepare($sqlUpdateNotif);
-                $stmtUpdateNotif->bind_param("ss", $nouveauContenuNotif, $listeIdNotifFaite[$i]);
+                $stmtUpdateNotif->bind_param("s", $listeIdNotifFaite[$i]);
                 $stmtUpdateNotif->execute();
             }
         }
@@ -235,17 +210,9 @@ function cancelSwapFait($idDemande, $demandeur, $login, $connect){
     $stmtDeleteSwap->bind_param("ss", $idDemande, $demandeur);
     $stmtDeleteSwap->execute();
 
-    $informationLogin = getInformationLogin($connect, $login);
-    $nom = $informationLogin["nom"];
-    $prénom = $informationLogin["prénom"];
-
-
-    $semaine = $semaine !== "null" ? ' en semaine ' . $semaine : null;
-    $nouveauContenuNotif = ucfirst($nom)." ".$prénom." a retourné sa veste.;La demande de swap du ".$type.$semaine." de ".$codeUV." pour ".nombreEnJour($jour)." ".date("H\hi", strtotime($horaireDebut))."-".date("H\hi", strtotime($horaireFin))." a été annulée";
-    $sqlUpdateNotif = "UPDATE notifications SET contenuNotif = ?, viewed=1 WHERE idNotif = ?";
-    
+    $sqlUpdateNotif = "UPDATE notifications SET typeNotif=4 ,viewed=0 WHERE idNotif = ?";
     $stmtUpdateNotif = $connect->prepare($sqlUpdateNotif);
-    $stmtUpdateNotif->bind_param("ss", $nouveauContenuNotif, $idNotif);
+    $stmtUpdateNotif->bind_param("s", $idNotif);
     $stmtUpdateNotif->execute();
 }
 

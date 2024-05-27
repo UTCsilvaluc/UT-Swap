@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../css/filtre.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <title>Demandes - UT'Swap</title>
-    <link rel="icon" href="../img/logo.png" type="image/x-icon">
+    <link rel="icon" href="../img/logo_mini.png" type="image/x-icon">
 </head>
 <body>
     <?php include "header.php" ?>
@@ -169,7 +169,6 @@
             </div>
         </div>
     </main>
-
     <script src="../js/demandes.js"></script>
 </body>
 
