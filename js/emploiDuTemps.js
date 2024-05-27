@@ -657,8 +657,6 @@ async function createCours(cours) {
             endroit_cours.innerHTML += `<div class="cours" data-row=${encodedData} id=${cours.id} onclick="suivreSouris(this, true)"><h2 class="UV"></h2><p class="horaire_cours">${cours.horaireDebut}-${cours.horaireFin}</p><p>${cours.salle}</p></div>`;
             const coursElement = endroit_cours.getElementsByClassName("cours")[endroit_cours.getElementsByClassName("cours").length - 1];
 
-            /* Ajout du data-row dans la div */
-            var encodedData = btoa(JSON.stringify(cours));
             const tailleEDT = getOffsetHeight(endroit_cours);
             const heureDebutEDT = parseInt(document.getElementById("hdebut").innerHTML.split("h")[0]);
             const heureFinEDT = parseInt(document.getElementById("hfin").innerHTML.split("h")[0]);
@@ -790,17 +788,20 @@ function suivreSouris(element, isCours) {
                 const idCurrentCours = parseInt(element.id);
                 const courses = await getCoursByID(db, idCurrentCours);
                 var heureElement = element.getElementsByTagName('p')[0].innerHTML.split("-");
-                var heureDebut = formaterHeure(heureElement[0].replace("h",":")).replace(":","h");
-                var heureFin = formaterHeure(heureElement[1].replace("h",":")).replace(":","h");
+                var heureDebut = formaterHeure(heureElement[0].replace("h", ":")).replace(":", "h");
+                var heureFin = formaterHeure(heureElement[1].replace("h", ":")).replace(":", "h");
                 var data = readRowAttribute(element);
-
                 if (courses) {
                     await modifierAttributCoursByID(db, idCurrentCours, 'jour', parentJourElement.id);
                     await modifierAttributCoursByID(db, idCurrentCours, 'horaireDebut', heureDebut); /* Ajouter un 0 devant l'heure si < 10*/
                     await modifierAttributCoursByID(db, idCurrentCours, 'horaireFin', heureFin);
                     await modifierAttributCoursByID(db, idCurrentCours, 'semaine', data.semaine);
+                    data.horaireDebut = heureDebut;
+                    data.horaireFin = heureFin;
+                    data.jour = parentJourElement.id.toLowerCase();
+                    element.dataset.row = btoa(JSON.stringify(data));
                 } else {
-                    console.log("Erreur : aucun cours avec cet ID !")
+                    console.log("Erreur : aucun cours avec cet ID !");
                 }
             } catch (error) {
                 console.error(error);
@@ -843,9 +844,6 @@ function suivreSouris(element, isCours) {
                     // Ajoutez le cours au jour survolé
                     var endroitCours = jour.querySelector(".endroit_cours");
                     endroitCours.appendChild(coursEnDeplacement);
-                    function getCurrentDay(){
-                        return jour;
-                    }
                 }
             });
             var data = readRowAttribute(coursEnDeplacement);
@@ -979,14 +977,13 @@ function customTime(event) {
 
     var debut = parseInt(document.getElementById("custom-input-hdebut").value);
     var fin = parseInt(document.getElementById("custom-input-hfin").value);
+    console.log(debut , fin);
 
     let conteneurHours = document.getElementsByClassName("conteneurHours")[0];
     conteneurHours.className = "conteneurHours";
     conteneurHours.innerHTML = "";
 
     for (var heure = parseInt(debut) ; heure <= parseInt(fin) ; heure++){
-
-
         let textHour = document.createElement("h4");
         textHour.innerHTML = `${heure}h00`;
         if(heure !== parseInt(fin)){
@@ -1009,7 +1006,6 @@ function customTime(event) {
         /* Informations sur un cours */
         var coursElement = element;
         var data = readRowAttribute(coursElement);
-
         if (parseInt(debut) <= parseInt(data.horaireDebut) && parseInt(fin) >= parseInt(data.horaireFin)){
             var currentCours = new Cours(data.codeUV , data.horaireDebut , data.horaireFin , data.jour , data.salle , data.semaine , null , data.type , data.id);
             cours.push(currentCours);
@@ -1379,6 +1375,7 @@ function exportEDT(type){
         var line = '';
         Array.from(courses).forEach(function (coursElement) {
             var data = readRowAttribute(coursElement);
+            console.log(data);
             line += `${data.codeUV};${data.type};${data.semaine};${data.horaireDebut};${data.horaireFin};${data.salle};${data.jour}\n`;
         })
         const blob = new Blob([line], { type: "text/plain" });

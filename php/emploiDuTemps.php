@@ -251,10 +251,10 @@ function changeInputType(){
                         <h1>Horaires</h1>
                         <span class="custom_span">
                             <div>
-                                <input type="time" id="custom-input-hdebut" name="hdebut" value="08:00" required onchange="customTime(event)">
+                                <input type="time" id="custom-input-hdebut" name="hdebut" value="08:00" required onblur="customTime(event)">
                             </div>
                             <div>
-                                <input type="time" id="custom-input-hfin" name="hfin" value="20:00" required onchange="customTime(event)">
+                                <input type="time" id="custom-input-hfin" name="hfin" value="20:00" required onblur="customTime(event)">
                             </div>
                         </span>
                     </div>
