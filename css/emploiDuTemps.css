@@ -130,7 +130,7 @@ html body{
     transition:all 0.5s;
   }
 
-#drag_file_edt button, #dropZone_custom button {
+#dropZone_custom button {
     height: 40px;
     width:50%;
   }

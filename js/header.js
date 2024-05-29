@@ -374,6 +374,11 @@ function nouveauClick() {
     input_salle.disabled = false
     input_uv.disabled = false
     input_type.disabled = false
+    input_creneau.disabled = false;
+    checkbox_semaine.disabled = false;
+    document.getElementById("input-isCours").disabled = false;
+    document.getElementById("sA-choix").disabled = false;
+    document.getElementById("sB-choix").disabled = false;
     bouton_ok.classList.toggle('hidden', true);
     boutons_confirmation.classList.toggle("hidden" , true);
     message_creneau_incompatible_semaine.classList.toggle("hidden" , true)
@@ -384,7 +389,6 @@ function nouveauClick() {
     ul_nouveau.classList.toggle('hidden', false);
     boutons_message.classList.toggle('hidden', true);
     message_pression.classList.toggle('hidden', true);
-    checkbox_semaine.disabled = false;
 
     /* Réinitialiser l'affichage du formulaire si changement.  */
     document.getElementById("creneauFirstLine").classList.toggle("hidden" , false);

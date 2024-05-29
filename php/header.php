@@ -443,6 +443,7 @@ function notificationImportance(){
                             <option value="jeudi">Jeudi</option>
                             <option value="vendredi">Vendredi</option>
                             <option value="samedi">Samedi</option>
+                            <option value="dimanche">Dimanche</option>
                         </select>
                         <p class="hidden">Créneau non valide</p>
                     </div>
@@ -739,7 +740,6 @@ if (
     if($motivationAutre != null){
         $raison = "";
     }
-
     if(!in_array($raison, ["sport", "association", "incompatibilité", "santé", ""])){
         header("Location: erreur.php");
         exit();

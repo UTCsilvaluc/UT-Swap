@@ -22,6 +22,22 @@ function changeMenu(name, event) {
     window.location.hash = name;
 }
 
+const mainInfo = document.querySelector('div.main_info');
+const headerHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--taille-header'));
+const maxHeight = window.innerHeight - headerHeight;
+
+function adjustHeight() {
+    // Réinitialise la hauteur pour obtenir la hauteur du contenu réel
+    mainInfo.style.height = 'auto';
+
+    // Vérifie si la hauteur du contenu dépasse la hauteur maximale
+    if (mainInfo.scrollHeight > maxHeight) {
+        mainInfo.style.height = 'fit-content'; // S'adapte au contenu
+    } else {
+        mainInfo.style.height = `${maxHeight}px`; // Utilise la hauteur maximale disponible
+    }
+}
+
 const faq_contents = document.querySelectorAll('.faq_content');
 faq_contents.forEach(faq_content => {
     faq_content.addEventListener('click', () => {
@@ -29,6 +45,7 @@ faq_contents.forEach(faq_content => {
         const h5 = parent.querySelector('h5');
         const svg = parent.querySelector("img");
         svg.classList.toggle('fleche_svg_rotate');
+        adjustHeight();
         if (h5.classList.contains('hidden')) {
             h5.classList.remove('hidden');
             h5.style.maxHeight = h5.scrollHeight + 'px';

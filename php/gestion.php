@@ -271,7 +271,7 @@ function redirect($url){
             
             <div class="profil_header">
                 <span class="profil_titre"><span class="tictac"></span><h1>Mon profil</h1></span>
-                <button>Se déconnecter</button>
+                <button onclick="deconnexion()">Se déconnecter</button>
             </div>
             <div id="profil_content">
                 <div id="profil_texte">

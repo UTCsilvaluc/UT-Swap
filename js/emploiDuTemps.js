@@ -664,8 +664,8 @@ async function createCours(cours) {
             const heuresDecimalesDebut = calculDecimal(cours.horaireDebut);
             const heuresDecimalesFin = calculDecimal(cours.horaireFin);
             const tempsCours = heuresDecimalesFin - heuresDecimalesDebut;
-            const pourcentageTop = calculPourcentage(heuresDecimalesDebut - heureDebutEDT, nbHeureEDT, tailleEDT);
-            const pourcentageHeight = calculPourcentage(tempsCours, nbHeureEDT, tailleEDT);
+            const pourcentageTop = arrondirPourcentage(calculPourcentage(heuresDecimalesDebut - heureDebutEDT, nbHeureEDT, tailleEDT));
+            const pourcentageHeight = arrondirPourcentage(calculPourcentage(tempsCours, nbHeureEDT, tailleEDT));
 
             coursElement.style.height = `${pourcentageHeight}%`;
             coursElement.style.overflow = "hidden";
@@ -673,26 +673,12 @@ async function createCours(cours) {
             coursElement.style.background = cours.couleur;
 
             if (pourcentageHeight < 5) {
-                coursElement.style.flexDirection = "row";
-                coursElement.style.gap = "4px";
-                coursElement.style.justifyContent = "center";
-                for (element of coursElement.children) {
-                    element.style.fontSize = `${pourcentageHeight * 6.5}%`;
-                }
-                coursElement.getElementsByClassName("UV")[0].style.fontSize = `${pourcentageHeight * 8}%`;
+                
+                ajusterTailleTexte(coursElement, true, `${pourcentageHeight * 6.5}%`, `${pourcentageHeight * 8}%`);
             } else if (pourcentageHeight < 10) {
-                coursElement.style.flexDirection = "row";
-                coursElement.style.gap = "4px";
-                coursElement.style.justifyContent = "center";
-                for (element of coursElement.children) {
-                    element.style.fontSize = `${pourcentageHeight * 4.5}%`;
-                }
-                coursElement.getElementsByClassName("UV")[0].style.fontSize = `${pourcentageHeight * 6}%`;
+                ajusterTailleTexte(coursElement, true, `${pourcentageHeight * 4.5}%`, `${pourcentageHeight * 6}%`);
             } else {
-                for (element of coursElement.children) {
-                    element.style.fontSize = `${pourcentageHeight * 3}%`;
-                }
-                coursElement.getElementsByClassName("UV")[0].style.fontSize = `${pourcentageHeight * 4.5}%`;
+                ajusterTailleTexte(coursElement, false, `${pourcentageHeight * 3}%`, `${pourcentageHeight * 4.5}%`);
             }
             if (cours.semaine == null) {
                 coursElement.getElementsByClassName("UV")[0].innerHTML = cours.type !== "ACT" ? `${decodeURIComponent(cours.codeUV)} - ${cours.type}` : `${decodeURIComponent(cours.codeUV)}`;
@@ -711,10 +697,7 @@ async function createCours(cours) {
             }
 
             if (pourcentageHeight > 20) {
-                for (element of coursElement.children) {
-                    element.style.fontSize = '10px';
-                }
-                coursElement.getElementsByClassName("UV")[0].style.fontSize = '12px';
+                ajusterTailleTexte(coursElement, false, "10px", "12px");
             }
 
             resolve(cours); // Résoudre la promesse une fois que tout est terminé avec succès
@@ -722,6 +705,24 @@ async function createCours(cours) {
             reject(error); // Rejeter la promesse en cas d'erreur
         }
     });
+}
+
+// Fonction pour arrondir les pourcentages
+function arrondirPourcentage(pourcentage) {
+    return Math.round(pourcentage * 100) / 100;
+}
+
+// Fonction pour ajuster la taille du texte
+function ajusterTailleTexte(coursElement, isRow, fontSize1, fontSize2) {
+    if(isRow){
+        coursElement.style.flexDirection = "row";
+        coursElement.style.gap = "4px";
+        coursElement.style.justifyContent = "center";
+    }
+    for (let element of coursElement.children) {
+        element.style.fontSize = fontSize1;
+    }
+    coursElement.getElementsByClassName("UV")[0].style.fontSize = fontSize2;
 }
 
 
@@ -774,6 +775,17 @@ function convertirDecimalEnHeure(decimal) {
     }
 
     return `${heures}h${String(minutes).padStart(2, '0')}`;
+}
+
+// Fonction pour arrondir les heures aux quarts d'heure les plus proches
+function arrondirQuartHeure(heure) {
+    var [h, m] = heure.split("h").map(Number);
+    m = Math.round(m / 15) * 15;
+    if (m === 60) {
+        h += 1;
+        m = 0;
+    }
+    return `${h}h${m.toString().padStart(2, '0')}`;
 }
 
 var suivreLaSouris = false;
@@ -831,6 +843,9 @@ function suivreSouris(element, isCours) {
             if(lastPosition != newPosition && lastPosition !== null){
                 var heureDebutCours = convertirDecimalEnHeure(heureDebutEDT + (newPosition * nbHeureEDT / coursEnDeplacement.parentElement.offsetHeight));
                 var heureFinCours = convertirDecimalEnHeure(heureDebutEDT + ((newPosition + coursEnDeplacement.offsetHeight) * nbHeureEDT / coursEnDeplacement.parentElement.offsetHeight));
+                
+                heureDebutCours = arrondirQuartHeure(heureDebutCours);
+                heureFinCours = arrondirQuartHeure(heureFinCours);
                 coursEnDeplacement.getElementsByClassName("horaire_cours")[0].innerHTML = formaterHeure(heureDebutCours.replace("h",":")) + "-" + formaterHeure(heureFinCours.replace("h",":"));
             }
             lastPosition = newPosition;
@@ -884,13 +899,17 @@ function suivreSouris(element, isCours) {
             document.addEventListener("mousemove", gestionnaireSouris);
         }
     }else if(!isCours){
-        addCreneau();
+        addCreneau(event);
         input_salle.disabled = true;
         input_uv.disabled = true;
         input_type.disabled = true;
         input_creneau.disabled = true;
         preremplirNouveauForm();
         tempsCurrentCours = null;
+        checkbox_semaine.disabled = true
+        document.getElementById("input-isCours").disabled = true;
+        document.getElementById("sA-choix").disabled = true;
+        document.getElementById("sB-choix").disabled = true;
     }
 
 }

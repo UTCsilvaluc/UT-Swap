@@ -100,42 +100,35 @@
                                 <h4>UT’Swap c’est quoi ?</h4>
                                 <img class="fleche_svg" src="../svg/right_arrow.svg" alt="">
                             </span>
-                            <h5 class="hidden"> UT'Swap, c'est une plateforme qui simplifie la vie étudiante en permettant l'échange facile de créneaux de cours entre étudiants. Gagne en flexibilité, optimise ton emploi du temps et personnalise ton expérience universitaire avec UT'Swap ! </h5>
+                            <h5 class="hidden">UT'Swap, c'est une plateforme qui simplifie la vie étudiante en permettant l'échange facile de créneaux de cours entre étudiants. Gagne en flexibilité, optimise ton emploi du temps et personnalise ton expérience universitaire avec UT'Swap !</h5>
                         </span>
                         <span class="faq_content">
                             <span class="faq_openContent">
-                                <h4>UT’Swap c’est quoi ?</h4>
+                                <h4>Où accepter ou refuser les demandes de swap ?</h4>
                                 <img class="fleche_svg" src="../svg/right_arrow.svg" alt="">
                             </span>
-                            <h5 class="hidden"> UT'Swap, c'est une plateforme qui simplifie la vie étudiante en permettant l'échange facile de créneaux de cours entre étudiants. Gagne en flexibilité, optimise ton emploi du temps et personnalise ton expérience universitaire avec UT'Swap ! </h5>
+                            <h5 class="hidden">Pour accepter ou refuser une demande de swap, vous avez deux options: soit vous ouvrez l'onglet des notifications en appuyant sur la cloche dans la barre de navigation. Soit vous vous rendez sur la page profil où vous pourrez y retrouver tes demandes faites et celles reçues, vous n'aurez qu'à survoler la demande pour pouvoir l'accepter ou la refuser !</h5>
                         </span>
                         <span class="faq_content">
                             <span class="faq_openContent">
-                                <h4>UT’Swap c’est quoi ? 2</h4>
+                                <h4>Comment créer son emploi du temps ?</h4>
                                 <img class="fleche_svg" src="../svg/right_arrow.svg" alt="">
                             </span>
-                            <h5 class="hidden"> aUT'Swap, c'est une plateforme qui simplifie la vie étudiante en permettant l'échange facile de créneaux de cours entre étudiants. Gagne en flexibilité, optimise ton emploi du temps et personnalise ton expérience universitaire avec UT'Swap ! </h5>
+                            <h5 class="hidden">Pour créer votre emploi du temps, rien de plus simple, vous n'avez qu'à vous rendre sur la page swap puis vous avez deux options: Soit vous créez chacun de vos créneaux un par un en appuyant directement sur la fenêtre de l'emploi du temps. Soit vous appuyez sur la petite icône d'importation (celle la plus à gauche) et vous copiez collez le mail "vos inscriptions" que vous avez du recevoir en début de semestre !</h5>
                         </span>
                         <span class="faq_content">
                             <span class="faq_openContent">
-                                <h4>UT’Swap c’est quoi ? 3</h4>
+                                <h4>Où voir l'avancement de mes swaps et de mes demandes ?</h4>
                                 <img class="fleche_svg" src="../svg/right_arrow.svg" alt="">
                             </span>
-                            <h5 class="hidden"> bUT'Swap, c'est une plateforme qui simplifie la vie étudiante en permettant l'échange facile de créneaux de cours entre étudiants. Gagne en flexibilité, optimise ton emploi du temps et personnalise ton expérience universitaire avec UT'Swap ! </h5>
+                            <h5 class="hidden">Pour voir l'avancement de vos swaps et de vos demandes vous pouvez regarder dans l'onglet des notifications en cliquant sur la cloche dans la barre de navigation ou alors vous pouvez vous rendre dû la page profil. Sur cette page vous pourrez retrouver toutes les informations concernant vos demandes et vos swaps.</h5>
                         </span>
                         <span class="faq_content">
                             <span class="faq_openContent">
-                                <h4>UT’Swap c’est quoi ? 4</h4>
+                                <h4>Comment faire une demande d'échange de créneau ?</h4>
                                 <img class="fleche_svg" src="../svg/right_arrow.svg" alt="">
                             </span>
-                            <h5 class="hidden"> cUT'Swap, c'est une plateforme qui simplifie la vie étudiante en permettant l'échange facile de créneaux de cours entre étudiants. Gagne en flexibilité, optimise ton emploi du temps et personnalise ton expérience universitaire avec UT'Swap ! </h5>
-                        </span>
-                        <span class="faq_content">
-                            <span class="faq_openContent">
-                                <h4>UT’Swap c’est quoi ? 5</h4>
-                                <img class="fleche_svg" src="../svg/right_arrow.svg" alt="">
-                            </span>
-                            <h5 class="hidden"> dUT'Swap, c'est une plateforme qui simplifie la vie étudiante en permettant l'échange facile de créneaux de cours entre étudiants. Gagne en flexibilité, optimise ton emploi du temps et personnalise ton expérience universitaire avec UT'Swap ! </h5>
+                            <h5 class="hidden">Pour réaliser une demande d'échange de créneau, vous avez juste à cliquer sur la demande de swap dont vous avez besoin sur la page "demandes" accessible via la barre de navigation, puis à rentrer les informations concernant votre propre créneau. À savoir que cette dernière étape ne sera à faire que dans le cas où vous n'avez pas encore créé votre emploi du temps.</h5>
                         </span>
                     </div>
                 </div>
