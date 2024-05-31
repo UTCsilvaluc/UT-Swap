@@ -107,7 +107,7 @@
                                 <h4>Où accepter ou refuser les demandes de swap ?</h4>
                                 <img class="fleche_svg" src="../svg/right_arrow.svg" alt="">
                             </span>
-                            <h5 class="hidden">Pour accepter ou refuser une demande de swap, vous avez deux options: soit vous ouvrez l'onglet des notifications en appuyant sur la cloche dans la barre de navigation. Soit vous vous rendez sur la page profil où vous pourrez y retrouver tes demandes faites et celles reçues, vous n'aurez qu'à survoler la demande pour pouvoir l'accepter ou la refuser !</h5>
+                            <h5 class="hidden">Pour accepter ou refuser une demande de swap, vous avez deux options: soit vous ouvrez l'onglet des notifications en appuyant sur la cloche dans la barre de navigation. Soit vous vous rendez sur la page profil où vous pourrez y retrouver vos demandes faites et celles reçues, vous n'aurez alors qu'à survoler la demande pour pouvoir l'accepter ou la refuser !</h5>
                         </span>
                         <span class="faq_content">
                             <span class="faq_openContent">
