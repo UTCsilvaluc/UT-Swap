@@ -337,8 +337,7 @@ document.getElementById("croix_nouveau").addEventListener("click", function() {
 });
 
 document.addEventListener("click" , function (event) {
-
-    if (!(event.target.closest("#nouveau_pannel")) && !(event.target.closest(".infos_auteur")) && !(event.target.closest(".gauche_container")) && document.getElementById("nouveau_pannel") != "none" && event.target.className != "bouton_nouveau" && event.target.parentNode.className != "bouton_nouveau" && event.target.className !== "dash" && event.target.id !== "displace" && event.target.className != "div_demande"){
+    if (!(event.target.closest("#nouveau_pannel")) && !(event.target.closest(".infos_auteur")) && !(event.target.closest(".gauche_container")) && document.getElementById("nouveau_pannel") != "none" && event.target.className != "bouton_nouveau" && event.target.parentNode && event.target.parentNode.className != "bouton_nouveau" && event.target.className !== "dash" && event.target.id !== "displace" && event.target.className != "div_demande"){
         document.getElementById("nouveau_pannel").style.display = "none";
     }
 

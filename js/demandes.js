@@ -106,6 +106,7 @@ function clickDemande(element) {
                     // Récupérer tous les cours de la base de données
                     const tousLesCours = await getAllCours(db);
                     tousLesCours.forEach(cours => {
+                        console.log(cours);
                         if (cours.type === donnees.type && cours.codeUV === donnees.codeUV){
                             input_salle.value = cours.salle;
                             input_creneau.value = cours.jour.toLowerCase();
@@ -541,7 +542,6 @@ function canDisplayCourses(event) {
         var type = liste_type[i].innerHTML.trim(); // Récupérer le contenu HTML de l'élément et supprimer les espaces
         typeActifs.push(type);
     }
-    console.log(JSON.stringify(typeActifs));
     params.append('type' , JSON.stringify(typeActifs));
     // Créer un nouvel objet URLSearchParams avec la chaîne de requête de l'URL actuelle
     var currentParams = new URLSearchParams(window.location.search);
@@ -858,16 +858,13 @@ function appliquerFiltres() {
     }
     if (params.has("type")){
         const types = params.get('type');
-        console.log(types);
         Array.from(document.querySelectorAll("#spanType input")).forEach(labelType => {
-            console.log(labelType.id.slice(7));
             if (!(types.includes(labelType.id.slice(7).toUpperCase()))){
                 labelType.click();
             }
         });
     }
     if (params.has("hDebut")){
-        console.log(decodeURIComponent(params.get("hDebut")));
         document.getElementById("filtre-input-hdebut").value = decodeURIComponent(params.get("hDebut"));
     }
     if (params.has("hFin")){

@@ -617,6 +617,7 @@ async function createCours(cours) {
                 cours.codeUV = encodeURIComponent(cours.codeUV);
             }
             canSave = document.getElementById("localSave").checked;
+            if (cours.type !== "ACT"){cours.codeUV = cours.codeUV.toUpperCase()}
             let endroit_cours;
             if (cours.jour == "lundi") {
                 endroit_cours = lundi;
@@ -996,7 +997,6 @@ function customTime(event) {
 
     var debut = parseInt(document.getElementById("custom-input-hdebut").value);
     var fin = parseInt(document.getElementById("custom-input-hfin").value);
-    console.log(debut , fin);
 
     let conteneurHours = document.getElementsByClassName("conteneurHours")[0];
     conteneurHours.className = "conteneurHours";
@@ -1394,7 +1394,6 @@ function exportEDT(type){
         var line = '';
         Array.from(courses).forEach(function (coursElement) {
             var data = readRowAttribute(coursElement);
-            console.log(data);
             line += `${data.codeUV};${data.type};${data.semaine};${data.horaireDebut};${data.horaireFin};${data.salle};${data.jour}\n`;
         })
         const blob = new Blob([line], { type: "text/plain" });
@@ -1533,6 +1532,7 @@ function sendFile(){
         resetEDT(event);
         document.getElementById("midFileError").classList.toggle("hidden", true);
         document.getElementById("input_file_edt").value = "";
+        coursColors = {};
 
         const reader = new FileReader();
 
