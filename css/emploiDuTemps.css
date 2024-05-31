@@ -6,11 +6,26 @@
 }
 
 @font-face {
-    font-family: 'Kantumruy';
-    src: url('../KantumruyPro-SemiBold.ttf');
+    font-family: 'Poppins';
+    src: url('../fonts/Poppins-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
+
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('../fonts/OpenDyslexic-Regular.otf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'FredokaOne';
+    src: url('../fonts/FredokaOne.otf');
+    font-weight: normal;
+    font-style: normal;
+}
+
 
 :root {
     --taille-header: 13vh;

@@ -305,14 +305,13 @@ main{
     display: flex;
     align-items: center;
     border-radius: 10px;
-    color: rgb(196, 42, 42);
-    border: 1px solid rgb(196, 42, 42);
-    background-color:#ffb0b0;
+    border: none;
+    background-color: white;
 }
 
 .demande_trash{
     margin-left: 5px;
-    width: 10px;
+    width: 20px;
 }
 
 .demande_faite_detail,
