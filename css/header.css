@@ -306,11 +306,11 @@ nav .orange{
     border-radius: 50%;
 }
 
-#notification_pannel #endroit_notification .notif:not(.viewed) .endroit_texte_notif .user_importance_notification .image_profil_notification .cercle{
+#notification_pannel #endroit_notification .notif:not(.viewed) .endroit_texte_notif .user_importance_notification .image_profil_notification .vert{
     background-color: #3eff61;
 }
 
-#notification_pannel #endroit_notification .notif:not(.viewed) .endroit_texte_notif .user_importance_notification .image_profil_notification .cercle{
+#notification_pannel #endroit_notification .notif:not(.viewed) .endroit_texte_notif .user_importance_notification .image_profil_notification .orange{
     background-color: #ffab3e;
 }
 

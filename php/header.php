@@ -337,7 +337,9 @@ function notificationImportance(){
                     <div class="user_importance_notification">
                         <div class="image_profil_notification">
                             <img src="../svg/profil.svg">
-                            <div class="cercle"></div>
+                            <?php
+                                notificationImportance();
+                            ?>
                         </div>
                     </div>
                 <?php
@@ -504,7 +506,7 @@ function notificationImportance(){
             <li id="activiteThirdLine" class="hidden">
                 <div>
                     <label class="solo-label" for="input-lieu">Localisation:<p class="hidden">*</p></label>
-                    <input type="text" id="input-lieu" name="salle" placeholder="Veuillez entrer la localisation de l'activité" >
+                    <input type="text" id="input-lieu" placeholder="Veuillez entrer la localisation de l'activité" >
                     <p class="hidden">Localisation non valide</p>
                 </div>
             </li>

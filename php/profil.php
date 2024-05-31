@@ -221,7 +221,7 @@
                             <?php
                             if($statut == 0){
                                 ?>
-                                        <button class="demande_trash_parent" onclick="cancelDemandeFaite(this)">Supprimer<img class="demande_trash" src="../svg/TRASH_FILTRE.svg"></button>
+                                        <button class="demande_trash_parent" onclick="cancelDemandeFaite(this)"><img class="demande_trash" src="../svg/TRASH_FILTRE.svg"></button>
                                     <?php
                             }else{
                                 ?>

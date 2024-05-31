@@ -107,13 +107,7 @@ function redirect($url){
                     
                 </div>
             </div>
-
-            
-
         </div>
-        
-
-        
     </main>
 
     <?php include "footer.php" ?>

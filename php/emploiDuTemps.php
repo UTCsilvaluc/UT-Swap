@@ -176,7 +176,8 @@ function changeInputType(){
                         <h1 class="custom_entete">Police</h1>
                         <span class="custom_span">
                             <h3 class="checkElement" onclick="changePolice(event)" id="mainPolice">Jost</h3>
-                            <h3 class="uncheckElement" onclick="changePolice(event)" id="Kantumruy">Kantumruy</h3>
+                            <h3 class="uncheckElement" onclick="changePolice(event)" id="Poppins">Poppins</h3>
+                            <h3 class="uncheckElement" onclick="changePolice(event)" id="OpenDys">OpenDyslexic</h3>
                             <h3 class="uncheckElement" onclick="changePolice(event)" id="Times New Roman">Times New Roman</h3>
                             <h3 class="uncheckElement" onclick="changePolice(event)" id="Comic Sans MS">Comic Sans MS</h3>
                         </span>
