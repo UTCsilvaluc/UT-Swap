@@ -143,10 +143,10 @@ function sendNotifications($loginNotif, $idDemande, $demandeur, $type_notif, $ch
 }
 
 function getResponsableByUv($uv){
-    $responsableLogin = "antjougl";
-    $responsableNom = "Jouglet";
-    $responsablePrénom = "Antoine";
-    $responsableMail = "antoine.jouglet@utc.fr";
+    $responsableLogin = "responuv";
+    $responsableNom = "Silva";
+    $responsablePrénom = "Lucas";
+    $responsableMail = "lucas.silva@utc.fr";
     return array('login' => $responsableLogin, 'nom' => $responsableNom,'prénom' => $responsablePrénom, 'mail' => $responsableMail);
 }
 
@@ -673,8 +673,8 @@ if (isset($_POST['update_choix']) && !(empty($_POST['update_choix']))) {
         }else {
             echo "Erreur lors de l'insertion des données : " . $stmtCheckInsertion->error;
         }
-        $offerId = $_SESSION['swap'];
         if (isset($_SESSION['swap'])){
+            $offerId = $_SESSION['swap'];
             $hasSemaine = checkIfCreneauHasSemaine($connect , $idDemande , $offerId);
             if (hasCreneauAccepted($connect , $idDemande) && $hasSemaine){
                 $uv = $_SESSION['uv'];

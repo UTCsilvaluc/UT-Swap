@@ -336,20 +336,40 @@ document.getElementById("croix_nouveau").addEventListener("click", function() {
 
 });
 
-document.addEventListener("click" , function (event) {
-    if (!(event.target.closest("#nouveau_pannel")) && !(event.target.closest(".infos_auteur")) && !(event.target.closest(".gauche_container")) && document.getElementById("nouveau_pannel") != "none" && event.target.className != "bouton_nouveau" && event.target.parentNode && event.target.parentNode.className != "bouton_nouveau" && event.target.className !== "dash" && event.target.id !== "displace" && event.target.className != "div_demande"){
-        document.getElementById("nouveau_pannel").style.display = "none";
+document.addEventListener("click", function(event) {
+    // Vérifie si l'événement est déclenché par l'utilisateur
+    if (!event.isTrusted) {
+        return;
     }
 
-    if (!(event.target.closest("#notification_pannel")) && document.getElementById("notification_pannel") != "none" && event.target.className != "notification"){
-        document.getElementById("notification_pannel").style.display = "none";
-    }
+    if (message_insertion.classList) {
+        if (!(event.target.closest("#nouveau_pannel")) &&
+            !(event.target.closest(".infos_auteur")) &&
+            !(event.target.closest(".gauche_container")) &&
+            document.getElementById("nouveau_pannel").style.display != "none" &&
+            event.target.className != "bouton_nouveau" &&
+            event.target.parentNode &&
+            event.target.parentNode.className != "bouton_nouveau" &&
+            event.target.className !== "dash" &&
+            event.target.id !== "displace" &&
+            event.target.className != "div_demande") {
+            document.getElementById("nouveau_pannel").style.display = "none";
+        }
 
-    if (!(event.target.closest("#menu_pannel")) && document.getElementById("menu_pannel") != "none" && event.target.id != "bouton_menu"){
-        document.getElementById("menu_pannel").style.left = '-65%';
-    }
+        if (!(event.target.closest("#notification_pannel")) &&
+            document.getElementById("notification_pannel").style.display != "none" &&
+            event.target.className != "notification") {
+            document.getElementById("notification_pannel").style.display = "none";
+        }
 
+        if (!(event.target.closest("#menu_pannel")) &&
+            document.getElementById("menu_pannel").style.left != "-65%" &&
+            event.target.id != "bouton_menu") {
+            document.getElementById("menu_pannel").style.left = '-65%';
+        }
+    }
 });
+
 function nouveauClick() {
    
     choix_semaine.classList.toggle('hidden', true);
@@ -363,7 +383,7 @@ function nouveauClick() {
     bouton_update.classList.toggle("hidden" , true);
     document.getElementById("bouton_remplacer").classList.toggle('hidden', true)
     document.getElementById("message_changement_creneau").classList.toggle('hidden', true);
-
+    document.getElementById('message_meme_creneau_existant').classList.toggle('hidden' , true);
     document.getElementById("li-externe").classList.toggle("hidden" , true);
     document.getElementById("li-semaine").classList.toggle("hidden" , false);
 

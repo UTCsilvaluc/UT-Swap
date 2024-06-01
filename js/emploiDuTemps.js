@@ -1533,6 +1533,13 @@ function sendFile(){
         document.getElementById("midFileError").classList.toggle("hidden", true);
         document.getElementById("input_file_edt").value = "";
         coursColors = {};
+        colorList = [
+            "#FF9292","#FFA792","#FFB692","#FFC592","#FFD992",
+            "#FFE692","#FFFD92","#EAFF92","#CAFF92","#B5FF92",
+            "#97FF92","#92FFB5","#92FFD6","#92FFFD","#92EAFF",
+            "#92CCFF","#92AEFF","#9792FF","#A492FF","#C092FF",
+            "#D792FF","#EA92FF","#FF92EA","#FF92D6","#FF92BF"
+        ];
 
         const reader = new FileReader();
 
@@ -1569,6 +1576,13 @@ async function importEDT(event) {
         var canClose = false;
         var allCourses = document.getElementById("textUV").value.split("\n");
         coursColors = {};
+        colorList = [
+            "#FF9292","#FFA792","#FFB692","#FFC592","#FFD992",
+            "#FFE692","#FFFD92","#EAFF92","#CAFF92","#B5FF92",
+            "#97FF92","#92FFB5","#92FFD6","#92FFFD","#92EAFF",
+            "#92CCFF","#92AEFF","#9792FF","#A492FF","#C092FF",
+            "#D792FF","#EA92FF","#FF92EA","#FF92D6","#FF92BF"
+        ];
         if (document.getElementById("messageUV").checked) {
             resetEDT(event);
             for (var currentCours of allCourses) {
