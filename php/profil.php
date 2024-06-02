@@ -83,7 +83,7 @@
         <div id="profil_utilisateur" class="profil_pannel">
             <div class="profil_header">
                 <span class="profil_titre"><span class="tictac"></span><h1>Mon profil</h1></span>
-                <button onclick="deconnexion()">Se déconnecter</button>
+                <button onclick="window.location.href = 'logout.php'">Se déconnecter</button>
             </div>
             <div id="profil_content">
                 <div id="profil_texte">

@@ -545,3 +545,27 @@ function updateReason(){
         input_motivation_autre.classList.toggle('hidden' , true);
     }
 }
+
+function getCookie(name) {
+    let cookieArr = document.cookie.split(";");
+    for (let i = 0; i < cookieArr.length; i++) {
+        let cookiePair = cookieArr[i].split("=");
+        if (name === cookiePair[0].trim()) {
+            return decodeURIComponent(cookiePair[1]);
+        }
+    }
+    return null;
+}
+window.onload = function() {
+    checkCookies();
+};
+function checkCookies() {
+    let uuid = getCookie("uuid");
+    if (!uuid) {
+        document.getElementById("nouveauLiNew").classList.toggle("hidden" , true);
+        document.getElementById("nouveauLiLog").classList.toggle("hidden" , false);
+    } else {
+        document.getElementById("nouveauLiNew").classList.toggle("hidden" , false);
+        document.getElementById("nouveauLiLog").classList.toggle("hidden" , true);
+    }
+}

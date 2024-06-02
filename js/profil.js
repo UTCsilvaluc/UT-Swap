@@ -1,15 +1,4 @@
-function deconnexion(){
-    // Créez une requête XMLHttpRequest
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "logout.php", true);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            // Redirigez l'utilisateur après la déconnexion
-            window.location.href = "login.php";
-        }
-    };
-    xhr.send();
-}
+
 
 function scrollToElement(type,next) {
     var container = document.getElementById('demandes_'+type+'es');
