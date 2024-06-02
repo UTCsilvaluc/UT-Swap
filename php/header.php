@@ -49,17 +49,17 @@ if (isset($_POST['login'], $_POST['nom'], $_POST['prenom']) && !empty($_POST['lo
         $_SESSION["login"] = $loginEtu;
     }
 }
+$login;
 
-// Vérifier si les cookies sont définis
-if (isset($_COOKIE['uuid'])) {
-    //Vérifier en BDD si uuid existe et profil, si n'existe pas l'insérer sinon continuer.
-    // Les cookies sont définis, récupérer les valeurs
-    $uuid = $_COOKIE['uuid'];
-    $login = $_COOKIE['login'];
-    consoleLog($login);
+$current_uri = $_SERVER['REQUEST_URI'];
+
+if(isset($_SESSION["login"]) && !empty($_SESSION['login'])){
+    $login = $_SESSION["login"];
+}else if(strpos($current_uri, "login.php") === false){
+    header("Location: login.php");
+    exit;
 }
-
-/*if(strpos($current_uri, "profil.php")){
+if(strpos($current_uri, "profil.php")){
     $sqlSelectProf = "SELECT * FROM professeur WHERE login = ?";
     $stmtSelectProf = $connect->prepare($sqlSelectProf);
     $stmtSelectProf->bind_param("s", $login);
@@ -69,7 +69,7 @@ if (isset($_COOKIE['uuid'])) {
         header("Location: gestion.php");
         exit;
     }
-}*/
+}
 
 function jourEnNombre($jour) {
     $jours = array(
@@ -221,8 +221,7 @@ function notificationImportance(){
                 notificationImportance();
                 ?>
             </li>
-            <li id="nouveauLiNew"><button onclick="nouveauClick()" class="bouton_nouveau"><img src="../svg/plus.svg">Nouveau</button></li>
-            <li id="nouveauLiLog" class="hidden"><button onclick="window.location.href='redirectAuth.php'" class="bouton_nouveau"><img src="../svg/plus.svg">Connexion</button></li>
+            <li><button onclick="nouveauClick()" class="bouton_nouveau"><img src="../svg/plus.svg">Nouveau</button></li>
         </ul>
         <ul id="menu_liste_petit">
             <li onclick="notificationClick()"><img class="notification" src="../svg/notif.svg">
