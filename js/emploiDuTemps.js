@@ -1555,6 +1555,7 @@ function sendFile(){
             "#92CCFF","#92AEFF","#9792FF","#A492FF","#C092FF",
             "#D792FF","#EA92FF","#FF92EA","#FF92D6","#FF92BF"
         ];
+
         const reader = new FileReader();
 
         reader.onload = async function(e) {

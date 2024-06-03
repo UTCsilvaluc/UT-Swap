@@ -343,15 +343,20 @@ document.addEventListener("click" , function (event) {
         document.getElementById("nouveau_pannel").style.display = "none";
     }
 
-    if (!(event.target.closest("#notification_pannel")) && document.getElementById("notification_pannel") != "none" && event.target.className != "notification"){
-        document.getElementById("notification_pannel").style.display = "none";
-    }
+        if (!(event.target.closest("#notification_pannel")) &&
+            document.getElementById("notification_pannel").style.display != "none" &&
+            event.target.className != "notification") {
+            document.getElementById("notification_pannel").style.display = "none";
+        }
 
-    if (!(event.target.closest("#menu_pannel")) && document.getElementById("menu_pannel") != "none" && event.target.id != "bouton_menu"){
-        document.getElementById("menu_pannel").style.left = '-65%';
+        if (!(event.target.closest("#menu_pannel")) &&
+            document.getElementById("menu_pannel").style.left != "-65%" &&
+            event.target.id != "bouton_menu") {
+            document.getElementById("menu_pannel").style.left = '-65%';
+        }
     }
-
 });
+
 function nouveauClick() {
     choix_semaine.classList.toggle('hidden', true);
     document.getElementById("div_milieu_nouveau").style.height = "";
@@ -364,7 +369,7 @@ function nouveauClick() {
     bouton_update.classList.toggle("hidden" , true);
     document.getElementById("bouton_remplacer").classList.toggle('hidden', true)
     document.getElementById("message_changement_creneau").classList.toggle('hidden', true);
-
+    document.getElementById('message_meme_creneau_existant').classList.toggle('hidden' , true);
     document.getElementById("li-externe").classList.toggle("hidden" , true);
     document.getElementById("li-semaine").classList.toggle("hidden" , false);
 
