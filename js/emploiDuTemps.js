@@ -1084,7 +1084,7 @@ function resetEDT(event) {
         }
         suppr_edt_pannel.style.display="none";
     })();
-    var colorList = [
+    colorList = [
         "#FF9292","#FFA792","#FFB692","#FFC592","#FFD992",
         "#FFE692","#FFFD92","#EAFF92","#CAFF92","#B5FF92",
         "#97FF92","#92FFB5","#92FFD6","#92FFFD","#92EAFF",
@@ -1095,7 +1095,9 @@ function resetEDT(event) {
 
 document.addEventListener("click" , function (event) {
 
-    if (event.isSimulated) return;
+    if (!event.isTrusted) {
+        return;
+    }
     if (!(event.target.closest("#menuCustom")) && document.getElementById("menuCustom") != "none" && event.target.id !== "custom_edt"){
         document.getElementById("menuCustom").style.display = "none";
     }
@@ -1411,7 +1413,9 @@ function exportEDT(type){
 var suppr_edt_pannel = document.getElementById("suppr_edt_pannel");
 document.addEventListener("click" , function (event){
     
-    if (event.isSimulated) return;
+    if (!event.isTrusted) {
+        return;
+    }
     if (!(event.target.closest("#importEDTID")) && importElement.style.display != "none") {
         importElement.style.display = "none";
         ecran.style.display = "none";

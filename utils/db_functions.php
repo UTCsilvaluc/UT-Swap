@@ -223,6 +223,7 @@ function insert_demande($connect, $login, $uv, $type, $jour, $hdebut, $hfin, $sa
         if (!$insertion) {
             throw new Exception("Erreur de préparation de la requête");
         }
+        
         // Vérifier si c'est une demande de swap
         $demande = (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande'])) ? 0 : 1;
         $insertion->bind_param("sssissssssi", $login, $uv, $type, $jour, $hdebut, $hfin, $salle, $semaineChoix, $raison, $motivationAutre, $demande);

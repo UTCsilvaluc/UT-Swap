@@ -338,22 +338,24 @@ document.getElementById("croix_nouveau").addEventListener("click", function() {
 
 document.addEventListener("click" , function (event) {
 
-    if (event.isSimulated) return;
+    if (!event.isTrusted) {
+        return;
+    }
+
     if (!(event.target.closest("#nouveau_pannel")) && !(event.target.closest(".infos_auteur")) && !(event.target.closest(".gauche_container")) && document.getElementById("nouveau_pannel") != "none" && event.target.className != "bouton_nouveau" && event.target.parentNode && event.target.parentNode.className != "bouton_nouveau" && event.target.className !== "dash" && event.target.id !== "displace" && event.target.className != "div_demande"){
         document.getElementById("nouveau_pannel").style.display = "none";
     }
 
-        if (!(event.target.closest("#notification_pannel")) &&
-            document.getElementById("notification_pannel").style.display != "none" &&
-            event.target.className != "notification") {
-            document.getElementById("notification_pannel").style.display = "none";
-        }
+    if (!(event.target.closest("#notification_pannel")) &&
+        document.getElementById("notification_pannel").style.display != "none" &&
+        event.target.className != "notification") {
+        document.getElementById("notification_pannel").style.display = "none";
+    }
 
-        if (!(event.target.closest("#menu_pannel")) &&
-            document.getElementById("menu_pannel").style.left != "-65%" &&
-            event.target.id != "bouton_menu") {
-            document.getElementById("menu_pannel").style.left = '-65%';
-        }
+    if (!(event.target.closest("#menu_pannel")) &&
+        document.getElementById("menu_pannel").style.left != "-65%" &&
+        event.target.id != "bouton_menu") {
+        document.getElementById("menu_pannel").style.left = '-65%';
     }
 });
 
