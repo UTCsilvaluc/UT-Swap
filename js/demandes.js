@@ -114,7 +114,22 @@ function clickDemande(element) {
                             input_hdebut.value = `${heuresDebut.padStart(2,'0')}:${minutesDebut}`;
                             const [heuresFin, minutesFin] = cours.horaireFin.split('h');
                             input_hfin.value = `${heuresFin.padStart(2,'0')}:${minutesFin}`;
+                            if (cours.semaine !== null){
+                                checkbox_semaine = document.getElementById("input-semaine");
+                                checkbox_semaine.checked = true;
+                                document.getElementById("choix-semaine").className = "nouveau_pannel_checkbox";//modif
+                                if (cours.semaine === "A"){
+                                    document.getElementById("sA-choix").checked = true;
+                                } else if(cours.semaine === "B") {
+                                    document.getElementById("sB-choix").checked = true;
+                                }
+                            } else {
+                                checkbox_semaine.checked = false;
+                                document.getElementById("choix-semaine").className = "nouveau_pannel_checkbox hidden hidden";
+                            }
                         }
+
+
                     });
 
                 }

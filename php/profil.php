@@ -54,7 +54,7 @@
         }else if($type === "refus"){
             $sqlNbSwap = "SELECT count(*) FROM `swap` s JOIN demande d1 ON d1.idDemande=s.idDemande JOIN demande d2 ON d2.idDemande = s.demandeur WHERE (d1.login = ? OR d2.login = ?) AND s.statut=3";
         }else if($type === "attente"){
-            $sqlNbSwap = "SELECT count(*) FROM `demande` d WHERE d.login = ? AND idDemande NOT IN (SELECT s.idDemande FROM `swap` s JOIN demande d1 ON d1.idDemande=s.idDemande WHERE d1.login = ? AND s.statut>=2) AND demande = 1 AND idDemande NOT IN (SELECT s.demandeur FROM `swap` s JOIN demande d1 ON d1.idDemande=s.demandeur WHERE d1.login = ? AND s.statut>=2)";
+            $sqlNbSwap = "SELECT count(*)FROM `demande` d WHERE d.login = ? AND idDemande NOT IN (SELECT s.idDemande FROM `swap` s JOIN demande d1 ON d1.idDemande=s.idDemande WHERE d1.login = ? AND s.statut>=2) AND idDemande NOT IN (SELECT s.demandeur FROM `swap` s JOIN demande d1 ON d1.idDemande=s.demandeur WHERE d1.login = ? AND s.statut>=2)";
         }
         $stmtNbSwap = $connect->prepare($sqlNbSwap);
         if($type === "attente"){

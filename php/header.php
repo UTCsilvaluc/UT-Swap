@@ -3,6 +3,9 @@ include "../utils/db_functions.php";
 include "../utils/header_utils.php";
 include "../utils/utils.php";
 session_start();
+function redirect($url){
+    echo "<script>window.location.href = '".$url."';</script>";
+}
 function DBCredential(){
     $dbhost = 'localhost';
     $dbuser = 'root';
@@ -56,7 +59,7 @@ $current_uri = $_SERVER['REQUEST_URI'];
 if(isset($_SESSION["login"]) && !empty($_SESSION['login'])){
     $login = $_SESSION["login"];
 }else if(strpos($current_uri, "login.php") === false){
-    header("Location: login.php");
+    redirect("login.php");
     exit;
 }
 if(strpos($current_uri, "profil.php")){
@@ -66,7 +69,7 @@ if(strpos($current_uri, "profil.php")){
     $stmtSelectProf->execute();
     $stmtSelectProf->store_result();
     if ($stmtSelectProf->num_rows !== 0) {
-        header("Location: gestion.php");
+        redirect("gestion.php");
         exit;
     }
 }
@@ -169,7 +172,7 @@ if (
     unset($_POST['demandeur']);
     unset($_POST['idDemande']);
     unset($_POST['id_notif']);
-    header("Location: ".$_SERVER['PHP_SELF']);
+    redirect(" ".$_SERVER['PHP_SELF']);
     exit();
 }
 
@@ -298,7 +301,7 @@ function notificationImportance(){
                             $choixTexte = "refusé";
                             
                         }else if($row["choix"] === 1){
-                            $choixTexte = "refusé";
+                            $choixTexte = "accepté";
                         }
                         $titre_notif = "Vous avez ".$choixTexte." la demande de Swap de ".$personne2.".";
                         $texte_notif = "La demande de swap du ".$type.$semaine2." de ".$codeUV." pour ".nombreEnJour($jour2)." ".date("H\hi", strtotime($hDeb2))."-".date("H\hi", strtotime($hFin2))." a été ".$choixTexte."e";
@@ -742,20 +745,17 @@ if (
     if($motivationAutre != null){
         $raison = "";
     }
-    if(!in_array($raison, ["sport", "association", "incompatibilité", "santé", ""])){
-        header("Location: erreur.php");
-        exit();
-    }else if(strlen($uv) != 4){
-        header("Location: erreur.php");
+    if(strlen($uv) != 4){
+        redirect("erreur.php");
         exit();
     }else if(!in_array($type,array("TD","TP","CM"))){
-        header("Location: erreur.php");
+        redirect("erreur.php");
         exit();
     }else if(!in_array($creneau,array("lundi","mardi","mercredi","jeudi","vendredi","samedi"))){
-        header("Location: erreur.php");
+        redirect("erreur.php");
         exit();
     }else if($hdebut >= $hfin){
-        header("Location: erreur.php");
+        redirect("erreur.php");
         exit();
     }else{
         // Récupérez la valeur de la case à cocher
