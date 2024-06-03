@@ -313,6 +313,10 @@ div.divHeure:hover {
     padding: 0;
 }
 
+.divHeure div, .conteneurHours h4{
+    max-height: 75px;
+}
+
 .divHeure:last-child .dash{
     border-bottom: 0px
 }
