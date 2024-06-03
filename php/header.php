@@ -6,6 +6,9 @@ include "../utils/db_functions.php";
 include "../utils/header_utils.php";
 include "../utils/utils.php";
 session_start();
+function redirect($url){
+    echo "<script>window.location.href = '".$url."';</script>";
+}
 function DBCredential(){
     $dbhost = 'localhost';
     $dbuser = 'root';
@@ -59,6 +62,7 @@ $current_uri = $_SERVER['REQUEST_URI'];
 if(isset($_SESSION["login"]) && !empty($_SESSION['login'])){
     $login = $_SESSION["login"];
 }else if(strpos($current_uri, "login.php") === false){
+    redirect("login.php");
     redirect("login.php");
     exit;
 }
@@ -301,6 +305,7 @@ function notificationImportance(){
                             $choixTexte = "refusé";
                             
                         }else if($row["choix"] === 1){
+                            $choixTexte = "accepté";
                             $choixTexte = "accepté";
                         }
                         $titre_notif = "Vous avez ".$choixTexte." la demande de Swap de ".$personne2.".";
@@ -747,14 +752,19 @@ if (
     }
     if(strlen($uv) != 4){
         redirect("erreur.php");
+    if(strlen($uv) != 4){
+        redirect("erreur.php");
         exit();
     }else if(!in_array($type,array("TD","TP","CM"))){
+        redirect("erreur.php");
         redirect("erreur.php");
         exit();
     }else if(!in_array($creneau,array("lundi","mardi","mercredi","jeudi","vendredi","samedi"))){
         redirect("erreur.php");
+        redirect("erreur.php");
         exit();
     }else if($hdebut >= $hfin){
+        redirect("erreur.php");
         redirect("erreur.php");
         exit();
     }else{
