@@ -115,6 +115,19 @@ window.addEventListener('resize', mettreAJourContenuProfil);
 // Appeler la fonction une fois au chargement de la page
 mettreAJourContenuProfil();
 
+var demandes_faite_titre = document.getElementsByClassName("demande_faite_titre");
+for(var demande_faite_titre of demandes_faite_titre){
+    if(demande_faite_titre.querySelectorAll("h2")[2].innerHTML.length > 2){
+        demande_faite_titre.style.fontSize = "14px";
+    }
+}
+var demandes_reçue_titre = document.getElementsByClassName("demande_reçue_titre");
+for(var demande_reçue_titre of demandes_reçue_titre){
+    if(demande_reçue_titre.querySelectorAll("h2")[2].innerHTML.length > 2){
+        demande_reçue_titre.style.fontSize = "14px";
+    }
+}
+
 
 var swap_pannel = document.getElementById("swap_pannel");
 function openSwapPannel(type){
@@ -148,7 +161,6 @@ function cancelDemandeFaite(element){
         if (rowAttribute) {
             try {
                 var donnees = JSON.parse(atob(rowAttribute));
-                console.log(donnees);
             } catch (error) {
                 console.error("Erreur lors du parsing JSON :", error);
             }

@@ -9,6 +9,10 @@ main{
     gap:10px
 }
 
+#demandes_professeur_content .message_aucune_demande{
+    height: 100%;
+}
+
 .demandes_gestion_filtre button:not(.hidden){
     display: flex;
     align-items: center;

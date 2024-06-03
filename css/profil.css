@@ -214,6 +214,7 @@ main{
 }
 
 .message_aucune_demande{
+    box-sizing: border-box;
     width: 100%;
     height: 100px;
     padding:20px;
@@ -287,6 +288,20 @@ main{
 
 .demande_faite_button_refus,
 .demande_reçue_button_refus {
+    background-color: #FF7E7E;
+    color: #992929;
+    border: 1px solid #992929;
+}
+
+.demande_faite_button_approuv,
+.demande_reçue_button_approuv {
+    background-color: #aeffa0;
+    color: #52b524;
+    border: 1px solid #52b524;
+}
+
+.demande_faite_button_rejet,
+.demande_reçue_button_rejet {
     background-color: #FF7E7E;
     color: #992929;
     border: 1px solid #992929;

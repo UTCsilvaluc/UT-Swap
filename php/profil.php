@@ -54,7 +54,7 @@
         }else if($type === "refus"){
             $sqlNbSwap = "SELECT count(*) FROM `swap` s JOIN demande d1 ON d1.idDemande=s.idDemande JOIN demande d2 ON d2.idDemande = s.demandeur WHERE (d1.login = ? OR d2.login = ?) AND s.statut=3";
         }else if($type === "attente"){
-            $sqlNbSwap = "SELECT count(*) FROM `demande` d WHERE d.login = ? AND idDemande NOT IN (SELECT s.idDemande FROM `swap` s JOIN demande d1 ON d1.idDemande=s.idDemande WHERE d1.login = ? AND s.statut>=2) AND demande = 1 AND idDemande NOT IN (SELECT s.demandeur FROM `swap` s JOIN demande d1 ON d1.idDemande=s.demandeur WHERE d1.login = ? AND s.statut>=2)";
+            $sqlNbSwap = "SELECT count(*)FROM `demande` d WHERE d.login = ? AND idDemande NOT IN (SELECT s.idDemande FROM `swap` s JOIN demande d1 ON d1.idDemande=s.idDemande WHERE d1.login = ? AND s.statut>=2) AND idDemande NOT IN (SELECT s.demandeur FROM `swap` s JOIN demande d1 ON d1.idDemande=s.demandeur WHERE d1.login = ? AND s.statut>=2)";
         }
         $stmtNbSwap = $connect->prepare($sqlNbSwap);
         if($type === "attente"){
@@ -127,7 +127,7 @@
                 <div id="demandes_faites" class="demandes_profil">
                     <?php 
                     $connect = DBCredential();
-                    $sqlDemandeFaite = "SELECT s.statut,s.idDemande, s.demandeur, p.nom, p.prenom, d1.codeUV as codeUV1, d1.type as type1, d1.jour as jour1, d1.horaireDebut as hdeb1, d1.horaireFin as hfin1, d1.salle as salle1, d1.semaine as semaine1, d2.raison as raison, d2.codeUV as codeUV2, d2.type as type2, d2.jour as jour2, d2.horaireDebut as hdeb2, d2.horaireFin as hfin2, d2.salle as salle2, d2.semaine as semaine2 FROM `swap` s JOIN demande d1 ON d1.idDemande = s.idDemande JOIN demande d2 ON d2.idDemande=s.demandeur JOIN personne p ON p.login = d1.login WHERE d2.login= ? AND s.statut <= 2 ORDER BY CASE statut WHEN 0 THEN 1 WHEN 2 THEN 2 WHEN 1 THEN 3 ELSE 4 END;";
+                    $sqlDemandeFaite = "SELECT s.statut,s.idDemande, s.demandeur, p.nom, p.prenom, d1.codeUV as codeUV1, d1.type as type1, d1.jour as jour1, d1.horaireDebut as hdeb1, d1.horaireFin as hfin1, d1.salle as salle1, d1.semaine as semaine1, d2.raison as raison, d2.codeUV as codeUV2, d2.type as type2, d2.jour as jour2, d2.horaireDebut as hdeb2, d2.horaireFin as hfin2, d2.salle as salle2, d2.semaine as semaine2 FROM `swap` s JOIN demande d1 ON d1.idDemande = s.idDemande JOIN demande d2 ON d2.idDemande=s.demandeur JOIN personne p ON p.login = d1.login WHERE d2.login= ? ORDER BY CASE statut WHEN 0 THEN 1 WHEN 2 THEN 2 WHEN 1 THEN 3 ELSE 4 END;";
                     $stmtDemandeFaite = $connect->prepare($sqlDemandeFaite);
                     $stmtDemandeFaite->bind_param("s", $login);
                     $stmtDemandeFaite->execute();
@@ -171,9 +171,15 @@
                             }else if($statut == 1){
                                 $statutClass = "demande_faite_button_refus";
                                 $statutName = "Refusée";
-                            }else if($statut = 2){
+                            }else if($statut == 2){
                                 $statutClass = "demande_faite_button_accept";
                                 $statutName = "Acceptée";
+                            }else if($statut == 3){
+                                $statutClass = "demande_faite_button_rejet";
+                                $statutName = "Rejetée";
+                            }else if($statut = 4){
+                                $statutClass = "demande_faite_button_approuv";
+                                $statutName = "Approuvée";
                             }
                             $idDemande = $row["idDemande"];
                             $demandeur = $row["demandeur"];
@@ -186,18 +192,7 @@
                             <div class="demande_faite" data-row=<?= $data_row; ?>>
                                 <div class="demande_faite_front">
                                     <div class="demande_faite_header">
-                            <?php
-                            if($semaine1 !== null){
-                                ?>
-                                        <span class="demande_faite_titre" style="font-size:14px">
-                                <?php
-                            }else{
-                                ?>
-                                        <span class="demande_faite_titre">
-                                <?php
-                            }
-                            ?>
-                                        <h2><?= $codeUV1 ?></h2><h2>-</h2><h2><?= $type1 . $semaine1 ?></h2></span>
+                                        <span class="demande_faite_titre"><h2><?= $codeUV1 ?></h2><h2>-</h2><h2><?= $type1 . $semaine1 ?></h2></span>
                                         <button class="<?= $statutClass ?>"><?= $statutName ?></button>
                                     </div>
                                     <span class="demande_faite_detail"><?= $jour1 . " " . $hDeb1 . "-" . $hFin1 . " " . $salle1 ?></span>
@@ -205,18 +200,7 @@
                                 </div>
                                 <div class="demande_faite_back">
                                     <div class="demande_faite_header">
-                            <?php
-                            if($semaine2 !== null){
-                                ?>
-                                        <span class="demande_faite_titre" style="font-size:14px">
-                                <?php
-                            }else{
-                                ?>
-                                        <span class="demande_faite_titre">
-                                <?php
-                            }
-                            ?>
-                                        <h2><?= $codeUV2 ?></h2><h2>-</h2><h2><?= $type2 . $semaine2 ?></h2></span>
+                                        <span class="demande_faite_titre"><h2><?= $codeUV2 ?></h2><h2>-</h2><h2><?= $type2 . $semaine2 ?></h2></span>
                                         
                             <?php
                             if($statut == 0){
@@ -261,7 +245,7 @@
                 <div id="demandes_reçues" class="demandes_profil">
                 <?php 
                     $connect = DBCredential();
-                    $sqlDemandeFaite = "SELECT s.statut, s.idDemande, s.demandeur, p.nom, p.prenom, d1.codeUV as codeUV1, d1.type as type1, d1.jour as jour1, d1.horaireDebut as hdeb1, d1.horaireFin as hfin1, d1.salle as salle1, d1.semaine as semaine1, d1.raison, d2.codeUV as codeUV2, d2.type as type2, d2.jour as jour2, d2.horaireDebut as hdeb2, d2.horaireFin as hfin2, d2.salle as salle2, d2.semaine as semaine2 FROM `swap` s JOIN demande d1 ON d1.idDemande = s.demandeur JOIN demande d2 ON d2.idDemande=s.idDemande JOIN personne p ON p.login = d1.login WHERE d2.login= ? AND s.statut <= 2 ORDER BY CASE statut WHEN 0 THEN 1 WHEN 2 THEN 2 WHEN 1 THEN 3 ELSE 4 END;";
+                    $sqlDemandeFaite = "SELECT s.statut, s.idDemande, s.demandeur, p.nom, p.prenom, d1.codeUV as codeUV1, d1.type as type1, d1.jour as jour1, d1.horaireDebut as hdeb1, d1.horaireFin as hfin1, d1.salle as salle1, d1.semaine as semaine1, d1.raison, d2.codeUV as codeUV2, d2.type as type2, d2.jour as jour2, d2.horaireDebut as hdeb2, d2.horaireFin as hfin2, d2.salle as salle2, d2.semaine as semaine2 FROM `swap` s JOIN demande d1 ON d1.idDemande = s.demandeur JOIN demande d2 ON d2.idDemande=s.idDemande JOIN personne p ON p.login = d1.login WHERE d2.login= ? ORDER BY CASE statut WHEN 0 THEN 1 WHEN 2 THEN 2 WHEN 1 THEN 3 ELSE 4 END;";
                     $stmtDemandeFaite = $connect->prepare($sqlDemandeFaite);
                     $stmtDemandeFaite->bind_param("s", $login);
                     $stmtDemandeFaite->execute();
@@ -308,6 +292,12 @@
                             }else if($statut == 2){
                                 $statutClass = "demande_reçue_button_accept";
                                 $statutName = "Acceptée";
+                            }else if($statut == 3){
+                                $statutClass = "demande_reçue_button_rejet";
+                                $statutName = "Rejetée";
+                            }else if($statut = 4){
+                                $statutClass = "demande_reçue_button_approuv";
+                                $statutName = "Approuvée";
                             }
 
                             $idDemande = $row["idDemande"];
@@ -353,18 +343,7 @@
                                     ?>
                                     <div class="demande_reçue_back">
                                         <div class="demande_reçue_header">
-                                <?php
-                                if($semaine1 !== null){
-                                    ?>
-                                            <span class="demande_reçue_titre" style="font-size:14px">
-                                    <?php
-                                }else{
-                                    ?>
-                                            <span class="demande_reçue_titre">
-                                    <?php
-                                }
-                                ?>
-                                            <h2><?= $codeUV1 ?></h2><h2>-</h2><h2><?= $type1 . $semaine1 ?></h2></span>
+                                            <span class="demande_reçue_titre"><h2><?= $codeUV1 ?></h2><h2>-</h2><h2><?= $type1 . $semaine1 ?></h2></span>
                                             <button class="<?= $statutClass ?>"><?= $statutName ?></button>
                                         </div>
                                         <span class="demande_reçue_motif"><span class="demande_reçue_motif_titre">Motif:</span><span><?= $raison ?></span></span>
@@ -379,18 +358,7 @@
                                     ?>
                                     <div class="demande_reçue_back">
                                         <div class="demande_reçue_header">
-                                <?php
-                                if($semaine2 !== null){
-                                    ?>
-                                            <span class="demande_reçue_titre" style="font-size:14px">
-                                    <?php
-                                }else{
-                                    ?>
-                                            <span class="demande_reçue_titre">
-                                    <?php
-                                }
-                                ?>
-                                            <h2><?= $codeUV2 ?></h2><h2>-</h2><h2><?= $type2 . $semaine2 ?></h2></span>
+                                            <span class="demande_reçue_titre"><h2><?= $codeUV2 ?></h2><h2>-</h2><h2><?= $type2 . $semaine2 ?></h2></span>
                                             <button class="<?= $statutClass ?>"><?= $statutName ?></button>
                                         </div>
                                         <span class="demande_reçue_detail"><?= $jour2 . " " . $hDeb2 . "-" . $hFin2 . " " . $salle2 ?></span>

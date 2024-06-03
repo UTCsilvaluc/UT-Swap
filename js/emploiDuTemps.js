@@ -1143,10 +1143,9 @@ couleurInputBorder.addEventListener('change', function(event) {
     changeCSSVar("color-bordure", event.target.value);
 });
 
-var changeJourTailleFenetre=window.innerWidth;
 function changeJour(event){
     
-    if(changeJourTailleFenetre > 600){
+    if(window.innerWidth > 600){
         var listeJour = document.getElementsByClassName("jour");
         var pushJour = [];
         var nbJour = 0;

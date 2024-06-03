@@ -24,7 +24,7 @@ function changeMenu(name, event) {
 
 const mainInfo = document.querySelector('div.main_info');
 const headerHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--taille-header'));
-const maxHeight = window.innerHeight - headerHeight;
+const maxHeight = window.innerHeight - headerHeight - 50;
 
 function adjustHeight() {
     // Réinitialise la hauteur pour obtenir la hauteur du contenu réel

@@ -1,9 +1,3 @@
-<?php
-function redirect($url){
-    echo "<script>window.location.href = '".$url."';</script>";
-}
-?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -408,6 +402,7 @@ function redirect($url){
                                 "nom" => $nom1,
                                 "prenom" => $prenom1,
                                 "branche" => $branche1,
+                                "semaine" => $semaine1,
                                 "jour" => $jour1,
                                 "heureDebut" => $hDeb1,
                                 "heureFin" => $hFin1
@@ -418,6 +413,7 @@ function redirect($url){
                                 "nom" => $nom2,
                                 "prenom" => $prenom2,
                                 "branche" => $branche2,
+                                "semaine" => $semaine2,
                                 "jour" => $jour2,
                                 "heureDebut" => $hDeb2,
                                 "heureFin" => $hFin2
