@@ -15,22 +15,6 @@
     <?php
     include "header.php";
     ?>
-    <script>
-function changeInputType(){
-    document.getElementById("midFileError").classList.toggle('hidden',true);
-    if (document.getElementById("messageUV").checked){
-        document.getElementById("textUV").classList.toggle('hidden', false);
-        document.getElementById("drag_file_edt").classList.toggle('hidden', true);
-        document.getElementsByClassName("mid_button")[0].classList.toggle('hidden', false);
-    } else {
-        document.getElementById("textUV").classList.toggle('hidden', true);
-        document.getElementById("drag_file_edt").classList.toggle('hidden', false);
-        document.getElementsByClassName("mid_button")[0].classList.toggle('hidden', true);
-    }
-}
-
-
-    </script>
     <main>
         <div id="parent_edt">
             <div class="edt" style="display:flex ;">
@@ -100,7 +84,7 @@ function changeInputType(){
                             </span>
                             
                         </div>
-                        <div class="mid_button">
+                        <div class="mid_button" id="button_importEDT">
                             <hr>
                             <button onclick="importEDT(event)">Ajouter</button>
                         </div>

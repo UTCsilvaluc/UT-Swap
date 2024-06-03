@@ -638,10 +638,10 @@ async function createCours(cours) {
             const spanColor = document.getElementById("couleurSpan");
             if (!(`${encodeURIComponent(cours.codeUV)}` in coursColors) && cours.couleur == null) {
                 coursColors[`${encodeURIComponent(cours.codeUV)}`] = getRandomColor(colorList);
-                spanColor.innerHTML += `<spa id=colorSpan${cours.codeUV} style='display: flex ; margin: 0 ; padding: 0 ; align-items: center ; gap: 10px'><h4>${decodeURIComponent(cours.codeUV)}: </h4> <input id='color${cours.codeUV}' value=${coursColors[encodeURIComponent(cours.codeUV)]}  type='color' onchange='colorChange(event)'></spa>`;
+                spanColor.innerHTML += `<span id=colorSpan${cours.codeUV} style='display: flex ; margin: 0 ; padding: 0 ; align-items: center ; gap: 10px'><h4>${decodeURIComponent(cours.codeUV)}: </h4> <input id='color${cours.codeUV}' value=${coursColors[encodeURIComponent(cours.codeUV)]}  type='color' onchange='colorChange(event)'></span>`;
             } else if (cours.couleur && !(`${encodeURIComponent(cours.codeUV)}` in coursColors)) {
                 coursColors[`${encodeURIComponent(cours.codeUV)}`] = cours.couleur;
-                spanColor.innerHTML += `<spa id=colorSpan${cours.codeUV} style='display: flex ; margin: 0 ; padding: 0 ; align-items: center ; gap: 10px'><h4>${decodeURIComponent(cours.codeUV)}: </h4> <input id='color${cours.codeUV}' value=${coursColors[encodeURIComponent(cours.codeUV)]}  type='color' onchange='colorChange(event)'></spa>`;
+                spanColor.innerHTML += `<span id=colorSpan${cours.codeUV} style='display: flex ; margin: 0 ; padding: 0 ; align-items: center ; gap: 10px'><h4>${decodeURIComponent(cours.codeUV)}: </h4> <input id='color${cours.codeUV}' value=${coursColors[encodeURIComponent(cours.codeUV)]}  type='color' onchange='colorChange(event)'></span>`;
             }
             cours.couleur = coursColors[`${encodeURIComponent(cours.codeUV)}`];
             document.getElementById("couleurs").className = "custom_parent";
@@ -1095,6 +1095,7 @@ function resetEDT(event) {
 
 document.addEventListener("click" , function (event) {
 
+    if (event.isSimulated) return;
     if (!(event.target.closest("#menuCustom")) && document.getElementById("menuCustom") != "none" && event.target.id !== "custom_edt"){
         document.getElementById("menuCustom").style.display = "none";
     }
@@ -1409,6 +1410,8 @@ function exportEDT(type){
 
 var suppr_edt_pannel = document.getElementById("suppr_edt_pannel");
 document.addEventListener("click" , function (event){
+    
+    if (event.isSimulated) return;
     if (!(event.target.closest("#importEDTID")) && importElement.style.display != "none") {
         importElement.style.display = "none";
         ecran.style.display = "none";
@@ -1526,6 +1529,18 @@ dropArea.addEventListener("drop", (event)=>{
   file = event.dataTransfer.files[0];
   sendFile(); 
 });
+function changeInputType(){
+    document.getElementById("midFileError").classList.toggle('hidden',true);
+    if (document.getElementById("messageUV").checked){
+        document.getElementById("textUV").classList.toggle('hidden', false);
+        document.getElementById("drag_file_edt").classList.toggle('hidden', true);
+        document.getElementById("button_importEDT").classList.toggle('hidden', false);
+    } else {
+        document.getElementById("textUV").classList.toggle('hidden', true);
+        document.getElementById("drag_file_edt").classList.toggle('hidden', false);
+        document.getElementById("button_importEDT").classList.toggle('hidden', true);
+    }
+}
 
 function sendFile(){
     if (file) {
@@ -1533,7 +1548,13 @@ function sendFile(){
         document.getElementById("midFileError").classList.toggle("hidden", true);
         document.getElementById("input_file_edt").value = "";
         coursColors = {};
-
+        colorList = [
+            "#FF9292","#FFA792","#FFB692","#FFC592","#FFD992",
+            "#FFE692","#FFFD92","#EAFF92","#CAFF92","#B5FF92",
+            "#97FF92","#92FFB5","#92FFD6","#92FFFD","#92EAFF",
+            "#92CCFF","#92AEFF","#9792FF","#A492FF","#C092FF",
+            "#D792FF","#EA92FF","#FF92EA","#FF92D6","#FF92BF"
+        ];
         const reader = new FileReader();
 
         reader.onload = async function(e) {
@@ -1569,6 +1590,13 @@ async function importEDT(event) {
         var canClose = false;
         var allCourses = document.getElementById("textUV").value.split("\n");
         coursColors = {};
+        colorList = [
+            "#FF9292","#FFA792","#FFB692","#FFC592","#FFD992",
+            "#FFE692","#FFFD92","#EAFF92","#CAFF92","#B5FF92",
+            "#97FF92","#92FFB5","#92FFD6","#92FFFD","#92EAFF",
+            "#92CCFF","#92AEFF","#9792FF","#A492FF","#C092FF",
+            "#D792FF","#EA92FF","#FF92EA","#FF92D6","#FF92BF"
+        ];
         if (document.getElementById("messageUV").checked) {
             resetEDT(event);
             for (var currentCours of allCourses) {
