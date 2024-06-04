@@ -708,22 +708,22 @@ select{
     border-radius: 8px;
     margin-right: 20px;
 }
-.uvCheck , .typeCheck , .filCheck{
+.uvCheck , .typeCheck , .filCheck , .stateCheck{
     background: #32373B;
     color: white;
     transition: background-color 0.3s linear; /* Transition de couleur de fond */
 }
 
-.uvunCheck , .typeunCheck , .filunCheck{
+.uvunCheck , .typeunCheck , .filunCheck , .stateunCheck{
     transition: background-color 0.3s linear; /* Transition de couleur de fond */
 }
 
-.uvCheck:hover , .typeCheck:hover , .filCheck:hover{
+.uvCheck:hover , .typeCheck:hover , .filCheck:hover , .stateCheck:hover{
     background: #444a4f;
     cursor: pointer;
 }
 
-.uvunCheck:hover , .typeunCheck:hover , .filunCheck:hover{
+.uvunCheck:hover , .typeunCheck:hover , .filunCheck:hover , .stateunCheck{
     background: #e3dfdf;
     cursor: pointer;
 }

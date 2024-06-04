@@ -254,6 +254,14 @@
                     <h3 class="filCheck" id="filiere_tc" onclick="changeFil(event)">Tronc Commun</h3>
                 </span>
             </div>
+            <div class="custom_parent" id="state">
+                <h1 class="custom_entete">Statut</h1>
+                <span class="custom_span" id="spanState">
+                    <h3 class="stateCheck" id="accepted" onclick="changeState(event)">Acceptée</h3>
+                    <h3 class="stateCheck" id="waiting" onclick="changeState(event)">En attente</h3>
+                    <h3 class="stateCheck" id="declined" onclick="changeState(event)">Refusée</h3>
+                </span>
+            </div>
         </div>
     </div>
     <main>

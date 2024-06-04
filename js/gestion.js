@@ -403,17 +403,23 @@ function canDisplayRequest(event) {
     var divs_demande = document.getElementsByClassName("demande_professeur");
     var liste_uvs = document.getElementById("spanUV").getElementsByClassName('uvCheck');
     var liste_type = document.getElementById("spanType").getElementsByClassName("typeCheck");
+    var liste_state = document.getElementById("spanState").getElementsByClassName("stateCheck");
+    var stateToStr = {2:"En attente" , 3:"Refusée" , 4:"Acceptée"};
     var UvsActifs = [];
     var typeActifs = [];
+    var stateActifs = [];
     var display = true;
     for (var i = 0; i < liste_type.length; i++) {
         var type = liste_type[i].innerHTML.trim();
         typeActifs.push(type);
     }
-
     for (var i = 0; i < liste_uvs.length; i++) {
         var uv = liste_uvs[i].innerHTML.trim();
         UvsActifs.push(uv);
+    }
+    for (var i = 0; i < liste_state.length; i++) {
+        var state = liste_state[i].innerHTML.trim();
+        stateActifs.push(state);
     }
     Array.from(divs_demande).forEach(function(div) {
         var rowAttribute = div.dataset.row;
@@ -432,6 +438,9 @@ function canDisplayRequest(event) {
         if (!(typeActifs.includes(donnees.type))){
             display = false;
         }
+        if (!(stateActifs.includes(stateToStr[donnees.statut]))){
+            display = false;
+        }
         if ((donnees.fil1 === "TC" || donnees.fil2 === "TC") && document.getElementById("filiere_tc").className === "filunCheck"){
             display = false;
         }
@@ -439,6 +448,7 @@ function canDisplayRequest(event) {
             display = false;
 
         }
+
         div.style.display = display ? 'flex' : 'none';
         display = true;
     });
@@ -460,6 +470,16 @@ function changeFil(event){
         target.className = "filunCheck";
     } else {
         target.className = "filCheck";
+    }
+    canDisplayRequest(event);
+}
+
+function changeState(event){
+    var target = event.target;
+    if (target.className === "stateCheck"){
+        target.className = "stateunCheck";
+    } else {
+        target.className = "stateCheck";
     }
     canDisplayRequest(event);
 }
