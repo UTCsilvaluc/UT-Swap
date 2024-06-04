@@ -75,6 +75,26 @@
         list($heures, $minutes) = explode(':', $heureNonFormatee);
         return sprintf('%02dh%02d', $heures, $minutes);
     }
+    if (isset($_POST['idDemande'], $_POST['demandeur'], $_POST['cancel']) && !empty($_POST['idDemande']) && !empty($_POST['demandeur']) && !empty($_POST['cancel'])){
+        if($_POST['cancel'] == 1){
+            $connect = DBCredential();
+            $idDemande = validateInput($_POST['idDemande'], $connect);
+            $demandeur = validateInput($_POST['demandeur'], $connect);
+
+            $sqlDeleteSwap = "DELETE FROM swap WHERE idDemande = ? AND demandeur = ? AND statut < 2;";
+            $stmtDeleteSwap = $connect->prepare($sqlDeleteSwap);
+            $stmtDeleteSwap->bind_param("ss",  $idDemande, $demandeur);
+            consoleLog("1");
+            if ($stmtDeleteSwap->execute()) {
+                $sqlUpdateNotif = "UPDATE `notifications` SET typeNotif='4' WHERE idDemande = ? AND demandeur = ?";
+                $stmtUpdateNotif = $connect->prepare($sqlUpdateNotif);
+                $stmtUpdateNotif->bind_param("ss",  $idDemande, $demandeur);
+                consoleLog("2");
+                $stmtUpdateNotif->execute();
+            }
+        }
+
+    }
     ?>
     <main>
         <div class="arc-de-cercle"></div>

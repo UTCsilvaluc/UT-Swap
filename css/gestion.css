@@ -724,6 +724,6 @@ select{
 }
 
 .uvunCheck:hover , .typeunCheck:hover , .filunCheck:hover , .stateunCheck{
-    background: #e3dfdf;
+    background: white;
     cursor: pointer;
 }

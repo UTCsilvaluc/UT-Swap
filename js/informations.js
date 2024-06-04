@@ -24,7 +24,7 @@ function changeMenu(name, event) {
 
 const mainInfo = document.querySelector('div.main_info');
 const headerHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--taille-header'));
-const maxHeight = window.innerHeight - headerHeight - 50;
+const maxHeight = window.innerHeight - headerHeight;
 
 function adjustHeight() {
     // Réinitialise la hauteur pour obtenir la hauteur du contenu réel
@@ -34,7 +34,7 @@ function adjustHeight() {
     if (mainInfo.scrollHeight > maxHeight) {
         mainInfo.style.height = 'fit-content'; // S'adapte au contenu
     } else {
-        mainInfo.style.height = `${maxHeight}px`; // Utilise la hauteur maximale disponible
+        mainInfo.style.height = `${maxHeight + 50}px`; // Utilise la hauteur maximale disponible
     }
 }
 

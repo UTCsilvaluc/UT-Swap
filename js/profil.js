@@ -185,6 +185,12 @@ function cancelDemandeFaite(element){
             inputIdDemande.setAttribute('value', donnees.idDemande);
             form.appendChild(inputIdDemande);
 
+            var inputCancel = document.createElement('input');
+            inputCancel.setAttribute('type', 'hidden');
+            inputCancel.setAttribute('name', 'cancel');
+            inputCancel.setAttribute('value', 1);
+            form.appendChild(inputCancel);
+
             // Ajouter le formulaire à la page
             document.body.appendChild(form);
 

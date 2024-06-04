@@ -666,27 +666,25 @@ function checkSwap() {
                 console.error("Erreur lors du parsing JSON :", error);
             }
 
-            if (donnees.statut !== "" && donnees.statut == 2) {
-                if (donnees.etudiant1 && donnees.etudiant1.heureDebut && donnees.etudiant1.heureFin && donnees.etudiant1.jour && donnees.type && donnees.codeUV && donnees.etudiant1.nom && donnees.etudiant1.prenom && donnees.etudiant1.branche) {
-                    var trouverCoursEtu = trouverCours(donnees.etudiant1.heureDebut, donnees.etudiant1.heureFin, donnees.etudiant1.jour, donnees.type, donnees.etudiant1.semaine, donnees.codeUV, donnees.etudiant1.nom, donnees.etudiant1.prenom, donnees.etudiant1.branche);
-                    if (trouverCoursEtu == false && trouverCoursEtu != null) {
-                        shakeElement(demande);
-                        demande.getElementsByClassName("infos_swap")[0].style.color = "red";
-                        var prenomNom = donnees.etudiant1.prenom + ' ' + donnees.etudiant1.nom;
-                        if (!prenomsFrauduleux.includes(prenomNom)) {
-                            prenomsFrauduleux.push(prenomNom);
-                        }
+            if (donnees.etudiant1 && donnees.etudiant1.heureDebut && donnees.etudiant1.heureFin && donnees.etudiant1.jour && donnees.type && donnees.codeUV && donnees.etudiant1.nom && donnees.etudiant1.prenom && donnees.etudiant1.branche) {
+                var trouverCoursEtu = trouverCours(donnees.etudiant1.heureDebut, donnees.etudiant1.heureFin, donnees.etudiant1.jour, donnees.type, donnees.etudiant1.semaine, donnees.codeUV, donnees.etudiant1.nom, donnees.etudiant1.prenom, donnees.etudiant1.branche);
+                if (trouverCoursEtu == false && trouverCoursEtu != null) {
+                    shakeElement(demande);
+                    demande.getElementsByClassName("infos_swap")[0].style.color = "red";
+                    var prenomNom = donnees.etudiant1.prenom + ' ' + donnees.etudiant1.nom;
+                    if (!prenomsFrauduleux.includes(prenomNom)) {
+                        prenomsFrauduleux.push(prenomNom);
                     }
                 }
-                if (donnees.etudiant2 && donnees.etudiant2.heureDebut && donnees.etudiant2.heureFin && donnees.etudiant2.jour && donnees.type && donnees.codeUV && donnees.etudiant2.nom && donnees.etudiant2.prenom && donnees.etudiant2.branche) {
-                    var trouverCoursEtu =trouverCours(donnees.etudiant2.heureDebut, donnees.etudiant2.heureFin, donnees.etudiant2.jour, donnees.type, donnees.etudiant2.semaine, donnees.codeUV, donnees.etudiant2.nom, donnees.etudiant2.prenom, donnees.etudiant2.branche);
-                    if (trouverCoursEtu == false && trouverCoursEtu != null) {
-                        shakeElement(demande);
-                        demande.getElementsByClassName("infos_swap")[1].style.color = "red";
-                        var prenomNom = donnees.etudiant2.prenom + ' ' + donnees.etudiant2.nom;
-                        if (!prenomsFrauduleux.includes(prenomNom)) {
-                            prenomsFrauduleux.push(prenomNom);
-                        }
+            }
+            if (donnees.etudiant2 && donnees.etudiant2.heureDebut && donnees.etudiant2.heureFin && donnees.etudiant2.jour && donnees.type && donnees.codeUV && donnees.etudiant2.nom && donnees.etudiant2.prenom && donnees.etudiant2.branche) {
+                var trouverCoursEtu =trouverCours(donnees.etudiant2.heureDebut, donnees.etudiant2.heureFin, donnees.etudiant2.jour, donnees.type, donnees.etudiant2.semaine, donnees.codeUV, donnees.etudiant2.nom, donnees.etudiant2.prenom, donnees.etudiant2.branche);
+                if (trouverCoursEtu == false && trouverCoursEtu != null) {
+                    shakeElement(demande);
+                    demande.getElementsByClassName("infos_swap")[1].style.color = "red";
+                    var prenomNom = donnees.etudiant2.prenom + ' ' + donnees.etudiant2.nom;
+                    if (!prenomsFrauduleux.includes(prenomNom)) {
+                        prenomsFrauduleux.push(prenomNom);
                     }
                 }
             }
