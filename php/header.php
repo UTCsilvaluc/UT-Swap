@@ -6,9 +6,6 @@ include "../utils/db_functions.php";
 include "../utils/header_utils.php";
 include "../utils/utils.php";
 session_start();
-function redirect($url){
-    echo "<script>window.location.href = '".$url."';</script>";
-}
 function DBCredential(){
     $dbhost = 'localhost';
     $dbuser = 'root';
@@ -62,7 +59,6 @@ $current_uri = $_SERVER['REQUEST_URI'];
 if(isset($_SESSION["login"]) && !empty($_SESSION['login'])){
     $login = $_SESSION["login"];
 }else if(strpos($current_uri, "login.php") === false){
-    redirect("login.php");
     redirect("login.php");
     exit;
 }
@@ -750,24 +746,19 @@ if (
     if($motivationAutre != null){
         $raison = "";
     }
-    if(strlen($uv) != 4){
-        redirect("erreur.php");
-    if(strlen($uv) != 4){
+    if (strlen($uv) != 4) {
         redirect("erreur.php");
         exit();
-    }else if(!in_array($type,array("TD","TP","CM"))){
-        redirect("erreur.php");
-        redirect("erreur.php");
-        exit();
-    }else if(!in_array($creneau,array("lundi","mardi","mercredi","jeudi","vendredi","samedi"))){
-        redirect("erreur.php");
+    } else if (!in_array($type, array("TD", "TP", "CM"))) {
         redirect("erreur.php");
         exit();
-    }else if($hdebut >= $hfin){
-        redirect("erreur.php");
+    } else if (!in_array($creneau, array("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"))) {
         redirect("erreur.php");
         exit();
-    }else{
+    } else if ($hdebut >= $hfin) {
+        redirect("erreur.php");
+        exit();
+    } else {
         // Récupérez la valeur de la case à cocher
         $creneauUneSemaine = isset($_POST['semaine']) ? 1 : 0;
         $responsable = getResponsableByUv($uv);
@@ -816,48 +807,48 @@ if (
             $stmtInsertUV = $connect->prepare($sqlInsertUV);
             $stmtInsertUV->bind_param("ss", $uv, $responsableLogin);
             $stmtInsertUV->execute();
-        }else{
+        } else {
             $stmtCheckUV->bind_result($swap_uv);
             $stmtCheckUV->fetch();
-            if($swap_uv === 0){
+            if ($swap_uv === 0) {
                 $canSwap = false;
                 echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_impossible_uv.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);</script>";
             }
         }
 
-        if($swap_uv === 1){
+        if ($swap_uv === 1) {
             $canSwap = false;
             // Récupérez la valeur du choix de semaine seulement si la case à cocher est cochée
-            $semaineChoix = $creneauUneSemaine && isset($_POST['semainechoix']) ? validateInput($_POST['semainechoix'],$connect) : 'null';
+            $semaineChoix = $creneauUneSemaine && isset($_POST['semainechoix']) ? validateInput($_POST['semainechoix'], $connect) : 'null';
             // Préparez la requête SQL d'insertion
             $jour = jourEnNombre($creneau);
-            $isDemandeExisting = getIdDemandeSwap($connect , $login , $type , $uv);
+            $isDemandeExisting = getIdDemandeSwap($connect, $login, $type, $uv);
             if ($isDemandeExisting === null || (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande']))) {
                 /* Quand un étudiant fait une demande de swap, vérifier que la demande n'existe pas encore, cela permet à l'étudiant de formuler plusieurs demandes*/
                 /* Si elle existe, simplement créer le SWAP sinon créer la demande puis ensuite créer le swap */
-                $isDemandeExisting = getIdDemandeSwap($connect , $login , $type , $uv);
+                $isDemandeExisting = getIdDemandeSwap($connect, $login, $type, $uv);
                 /* --------------------------------------- */
                 if ($isDemandeExisting === null) {
-                    $primaryKeyDemande = insert_demande($connect , $login , $uv , $type , $jour , $hdebut , $hfin , $salle , $semaineChoix, $raison, $motivationAutre);
+                    $primaryKeyDemande = insert_demande($connect, $login, $uv, $type, $jour, $hdebut, $hfin, $salle, $semaineChoix, $raison, $motivationAutre);
                     if ($primaryKeyDemande != null) {
                         $canSwap = true;
-                        if (!(isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande']))){
+                        if (!(isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande']))) {
                             echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
                         }
-                    }else {
+                    } else {
                         $primaryKeyDemande = null;
                         echo "Création demande -> Erreur lors de l'insertion des données : ";
                     }
                 } else {
                     /* Quand un étudiant a déjà fait une demande pour un créneau, et qu'il change l'horaire en faisant la demande de swap par rapport à son ancien créneau, le notifier. */
                     $primaryKeyDemande = $isDemandeExisting['idDemande'];
-                    $result = checkIfDetailsChange($connect , $primaryKeyDemande , $type, $uv , $hdebut , $hfin , $salle , $semaineChoix , $jour);
-                    if ($result === null){
+                    $result = checkIfDetailsChange($connect, $primaryKeyDemande, $type, $uv, $hdebut, $hfin, $salle, $semaineChoix, $jour);
+                    if ($result === null) {
                         /* Ici, l'élève a changer son créneau , il faut lui proposer de l'update. */
                         // Penser à supprimer la vérification inutile, j'ia déjà le currentIDdemande inutile de faire une nouvelle requête...
-                        $currentIDdemande = getIdDemandeSwap($connect ,$login , $type , $uv);
+                        $currentIDdemande = getIdDemandeSwap($connect, $login, $type, $uv);
                         if ($currentIDdemande != null) {
-                            if (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande'])){
+                            if (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande'])) {
                                 $_SESSION["swap"] = $_POST['swapIdDemande'];
                                 $_SESSION["uv"] = $uv;
                                 $_SESSION["type"] = $type;
@@ -869,12 +860,12 @@ if (
                             $_SESSION["salle"] = $salle;
                             $_SESSION["jour"] = $jour;
                             $_SESSION["semaine"] = $semaineChoix;
-                            afficherChangementCreneau($connect , $currentIDdemande['idDemande'] , $jour , $salle , $hdebut , $hfin , $semaineChoix);
+                            afficherChangementCreneau($connect, $currentIDdemande['idDemande'], $jour, $salle, $hdebut, $hfin, $semaineChoix);
                         } else {
                             error_log("Erreur dans la récupération des données...");
                         }
                     } else {
-                        if ($primaryKeyDemande){
+                        if ($primaryKeyDemande) {
                             //echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
                             $canSwap = true;
                         } else {
@@ -883,16 +874,16 @@ if (
 
                     }
                 }
-            }else{
+            } else {
                 $primaryKeyDemande = $isDemandeExisting['idDemande'];
                 $isOffer = $isDemandeExisting['demande'];
-                $result = checkIfDetailsChange($connect , $primaryKeyDemande , $type, $uv , $hdebut , $hfin , $salle , $semaineChoix , $jour);
+                $result = checkIfDetailsChange($connect, $primaryKeyDemande, $type, $uv, $hdebut, $hfin, $salle, $semaineChoix, $jour);
 
                 if ($result === null) {
                     /* Ici, l'élève a changer son créneau , il faut lui proposer de l'update. */
                     echo "<script> document.getElementById('update_choix').value = '1' ; </script>";
                     /* Afficher ancien et nouvel horaire. */
-                    afficherChangementCreneau($connect , $primaryKeyDemande , $jour , $salle , $hdebut , $hfin , $semaineChoix);
+                    afficherChangementCreneau($connect, $primaryKeyDemande, $jour, $salle, $hdebut, $hfin, $semaineChoix);
                     $_SESSION["idDemande"] = $primaryKeyDemande;
                     $_SESSION["hDeb"] = $hdebut;
                     $_SESSION["hFin"] = $hfin;
@@ -901,14 +892,14 @@ if (
                     $_SESSION["semaine"] = $semaineChoix;
                     $canSwap = false;
                 } else {
-                    if ($isOffer !== 0 ) {
+                    if ($isOffer !== 0) {
                         echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_meme_creneau_existant.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
                     } else {
                         echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_insertion.classList.toggle('hidden', false);bouton_ok.classList.toggle('hidden', false);</script>";
                     }
                 }
                 // Faire en sorte que le changement se fait dans le else ou après avoir validé le changement d'horaire !
-                if ($isOffer == 0 ) {
+                if ($isOffer == 0) {
                     update_demande_statut($connect, $primaryKeyDemande, 1);
                 }
 
@@ -916,16 +907,16 @@ if (
         }
     }
     /* Vérifier si un swap n'existe pas déjà pour la demande de l'étudiant. */
-    if (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande']) && $canSwap && $swap_uv){
-        if ($primaryKeyDemande != null){
+    if (isset($_POST['swapIdDemande']) && !empty($_POST['swapIdDemande']) && $canSwap && $swap_uv) {
+        if ($primaryKeyDemande != null) {
             $offerId = $_POST['swapIdDemande'];
-            $hasSemaine = checkIfCreneauHasSemaine($connect , $primaryKeyDemande , $offerId);
-            if (hasCreneauAccepted($connect , $primaryKeyDemande) && $hasSemaine){
-                create_swap($connect , $primaryKeyDemande , $offerId , $uv , $type , $login);
-                $loginNotif = getLoginById($connect , $offerId);
-                sendNotifications($loginNotif , $offerId , $primaryKeyDemande , 1 , null, $connect);
+            $hasSemaine = checkIfCreneauHasSemaine($connect, $primaryKeyDemande, $offerId);
+            if (hasCreneauAccepted($connect, $primaryKeyDemande) && $hasSemaine) {
+                create_swap($connect, $primaryKeyDemande, $offerId, $uv, $type, $login);
+                $loginNotif = getLoginById($connect, $offerId);
+                sendNotifications($loginNotif, $offerId, $primaryKeyDemande, 1, null, $connect);
             } else {
-                if (!($hasSemaine)){
+                if (!($hasSemaine)) {
                     echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_creneau_incompatible_semaine.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);</script>";
                 } else {
                     echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_creneau_deja_accepte.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);</script>";
@@ -933,15 +924,15 @@ if (
 
             }
         } else {
-            if (!($swap_uv)){
+            if (!($swap_uv)) {
                 echo "<script>nouveau_pannel.style.display = 'flex';bouton_non_submit.classList.toggle('hidden', true);ul_nouveau.classList.toggle('hidden', true);message_impossible_uv.classList.toggle('hidden', false);bouton_impossible_uv.classList.toggle('hidden', false);</script>";
             } else {
                 echo "Swap -> Erreur dans l'insertion des données : ";
             }
         }
-
     }
     $connect->close();
+
 } else if (isset($_SESSION['reloadPage'])){
     $content = $_SESSION['reloadPage'];
     if ($content == "swapSuccess"){
