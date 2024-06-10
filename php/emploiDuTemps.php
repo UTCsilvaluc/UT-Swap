@@ -159,23 +159,23 @@
                     <div class="custom_parent" id="police">
                         <h1 class="custom_entete">Police</h1>
                         <span class="custom_span">
-                            <h3 class="checkElement" onclick="changePolice(event)" id="mainPolice">Jost</h3>
-                            <h3 class="uncheckElement" onclick="changePolice(event)" id="Poppins">Poppins</h3>
-                            <h3 class="uncheckElement" onclick="changePolice(event)" id="OpenDys">OpenDyslexic</h3>
-                            <h3 class="uncheckElement" onclick="changePolice(event)" id="Times New Roman">Times New Roman</h3>
-                            <h3 class="uncheckElement" onclick="changePolice(event)" id="Comic Sans MS">Comic Sans MS</h3>
+                            <h3 class="checkElement" onclick="changePolice('Jost')" id="Jost">Jost</h3>
+                            <h3 class="uncheckElement" onclick="changePolice('Poppins')" id="Poppins">Poppins</h3>
+                            <h3 class="uncheckElement" onclick="changePolice('OpenDyslexic')" id="OpenDyslexic">OpenDyslexic</h3>
+                            <h3 class="uncheckElement" onclick="changePolice('Times New Roman')" id="Times New Roman">Times New Roman</h3>
+                            <h3 class="uncheckElement" onclick="changePolice('Comic Sans MS')" id="Comic Sans MS">Comic Sans MS</h3>
                         </span>
                     </div>
                     <div class="custom_parent" id="jours">
                         <h1 class="custom_entete">Jour</h1>
                         <span class="custom_span" id="spanJour">
-                            <h3 class="check" onclick="changeJour(event)">Lundi</h3>
-                            <h3 class="check" onclick="changeJour(event)">Mardi</h3>
-                            <h3 class="check" onclick="changeJour(event)">Mercredi</h3>
-                            <h3 class="check" onclick="changeJour(event)">Jeudi</h3>
-                            <h3 class="check" onclick="changeJour(event)">Vendredi</h3>
-                            <h3 class="check" onclick="changeJour(event)">Samedi</h3>
-                            <h3 class="check" onclick="changeJour(event)">Dimanche</h3>
+                            <h3 class="check" onclick="changeJour('lundi')" id="custom_lundi">Lundi</h3>
+                            <h3 class="check" onclick="changeJour('mardi')" id="custom_mardi">Mardi</h3>
+                            <h3 class="check" onclick="changeJour('mercredi')" id="custom_mercredi">Mercredi</h3>
+                            <h3 class="check" onclick="changeJour('jeudi')" id="custom_jeudi">Jeudi</h3>
+                            <h3 class="check" onclick="changeJour('vendredi')" id="custom_vendredi">Vendredi</h3>
+                            <h3 class="check" onclick="changeJour('samedi')" id="custom_samedi">Samedi</h3>
+                            <h3 class="check" onclick="changeJour('dimanche')" id="custom_dimanche">Dimanche</h3>
                         </div>
                     <div class="custom_parent" id="couleurs">
                         <h1 class="custom_entete">Couleurs</h1>

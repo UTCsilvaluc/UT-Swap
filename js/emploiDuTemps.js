@@ -638,10 +638,10 @@ async function createCours(cours) {
             const spanColor = document.getElementById("couleurSpan");
             if (!(`${encodeURIComponent(cours.codeUV)}` in coursColors) && cours.couleur == null) {
                 coursColors[`${encodeURIComponent(cours.codeUV)}`] = getRandomColor(colorList);
-                spanColor.innerHTML += `<span id=colorSpan${cours.codeUV} style='display: flex ; margin: 0 ; padding: 0 ; align-items: center ; gap: 10px'><h4>${decodeURIComponent(cours.codeUV)}: </h4> <input id='color${cours.codeUV}' value=${coursColors[encodeURIComponent(cours.codeUV)]}  type='color' onchange='colorChange(event)'></span>`;
+                spanColor.innerHTML += `<span id=colorSpan${cours.codeUV} style='display: flex ; margin: 0 ; padding: 0 ; align-items: center ; gap: 10px'><h4>${decodeURIComponent(cours.codeUV)}: </h4> <input id='color${cours.codeUV}' value=${coursColors[encodeURIComponent(cours.codeUV)]}  type='color' onchange='colorChange("${cours.codeUV}")'></span>`;
             } else if (cours.couleur && !(`${encodeURIComponent(cours.codeUV)}` in coursColors)) {
                 coursColors[`${encodeURIComponent(cours.codeUV)}`] = cours.couleur;
-                spanColor.innerHTML += `<span id=colorSpan${cours.codeUV} style='display: flex ; margin: 0 ; padding: 0 ; align-items: center ; gap: 10px'><h4>${decodeURIComponent(cours.codeUV)}: </h4> <input id='color${cours.codeUV}' value=${coursColors[encodeURIComponent(cours.codeUV)]}  type='color' onchange='colorChange(event)'></span>`;
+                spanColor.innerHTML += `<span id=colorSpan${cours.codeUV} style='display: flex ; margin: 0 ; padding: 0 ; align-items: center ; gap: 10px'><h4>${decodeURIComponent(cours.codeUV)}: </h4> <input id='color${cours.codeUV}' value=${coursColors[encodeURIComponent(cours.codeUV)]}  type='color' onchange='colorChange("${cours.codeUV}")'></span>`;
             }
             cours.couleur = coursColors[`${encodeURIComponent(cours.codeUV)}`];
             document.getElementById("couleurs").className = "custom_parent";
@@ -727,22 +727,21 @@ function ajusterTailleTexte(coursElement, isRow, fontSize1, fontSize2) {
 }
 
 
-function colorChange(event){
-    var UV = event.target.id.split("color")[1];
+function colorChange(UV){
+    var colorTarget = document.getElementById("color"+UV);
     var Liste_cours = document.getElementsByClassName("cours");
     for (var cours of Liste_cours){
         var data = readRowAttribute(cours);
-        console.log(UV , decodeURIComponent(data.codeUV))
         if (data.codeUV === UV){
-            cours.style.background = event.target.value;
-            coursColors[UV] = event.target.value;
+            cours.style.background = colorTarget.value;
+            coursColors[UV] = colorTarget.value;
             const idCurrentCours = parseInt(cours.id);
             (async () => {
                 try {
                     const db = await ouvrirBaseDeDonneesCours();
                     const courses = await getCoursByID(db, idCurrentCours);
                     if (courses) {
-                        await modifierAttributCoursByID(db, idCurrentCours, 'couleur', event.target.value);
+                        await modifierAttributCoursByID(db, idCurrentCours, 'couleur', colorTarget.value);
                     } else {
                         console.log("Erreur : aucun cours avec cet ID !")
                     }
@@ -1143,13 +1142,14 @@ couleurInputBorder.addEventListener('change', function(event) {
     changeCSSVar("color-bordure", event.target.value);
 });
 
-function changeJour(event){
+function changeJour(type){
     
     if(window.innerWidth > 600){
         var listeJour = document.getElementsByClassName("jour");
         var pushJour = [];
         var nbJour = 0;
         var taillePrec = null;
+        var jourTarget = document.getElementById("custom_"+type);
         for (var jour of listeJour){
             if (jour.style.display != "none"){
                 nbJour +=1;
@@ -1157,16 +1157,16 @@ function changeJour(event){
             }
         }
 
-        if (event.target.className == "check"){
+        if (jourTarget.className == "check"){
             changeCSSVar("taille-edt",pxToVw(taillePrec * nbJour / (nbJour-1)) + "vw");
         }else{
             changeCSSVar("taille-edt",pxToVw(taillePrec * nbJour / (nbJour+1)) + "vw");
         }
-        var jour = event.target.innerHTML.toLowerCase();
+        var jour = type;
         document.getElementById(jour).style.display = "none";
         var listeJour = document.getElementsByClassName("jour");
-        if (event.target.className == "check"){
-            event.target.className = "uncheck"
+        if (jourTarget.className == "check"){
+            jourTarget.className = "uncheck"
             for (var jour of listeJour){
                 if (jour.style.display != "none"){
                     jour.style.borderLeft = "1px black solid";
@@ -1174,7 +1174,7 @@ function changeJour(event){
                 }
             }
         } else {
-            event.target.className = "check";
+            jourTarget.className = "check";
             document.getElementById(jour).style.display = "block";
             var firstDay = true;
             for (var jour of listeJour){
@@ -1207,15 +1207,16 @@ function changeJour(event){
     
 }
 
-function changePolice(event){
-    var police = event.target.innerHTML;
+function changePolice(type){
+    var police = type;
+    var element = document.getElementById(type);
     document.getElementsByClassName("checkElement")[0].className = "uncheckElement";
-    event.target.className = "checkElement";
+    element.className = "checkElement";
     document.body.style.fontFamily = `${police} , sans-serif`;
 
     recupererParametresUtilisateur()
         .then(parametres => {
-            parametres.police = event.target.innerHTML;
+            parametres.police = type;
             return sauvegarderParametresUtilisateur(parametres);
         })
         .then(message => {
@@ -1240,22 +1241,23 @@ function supprimerCustom(){
         "                    <div class=\"custom_parent\" id=\"police\">\n" +
         "                        <h1 class=\"custom_entete\">Police</h1>\n" +
         "                        <span class=\"custom_span\">\n" +
-        "                            <h3 class=\"checkElement\" onclick=\"changePolice(event)\" id=\"mainPolice\">Jost</h3>\n" +
-        "                            <h3 class=\"uncheckElement\" onclick=\"changePolice(event)\" id=\"Kantumruy\">Kantumruy</h3>\n" +
-        "                            <h3 class=\"uncheckElement\" onclick=\"changePolice(event)\" id=\"Times New Roman\">Times New Roman</h3>\n" +
-        "                            <h3 class=\"uncheckElement\" onclick=\"changePolice(event)\" id=\"Comic Sans MS\">Comic Sans MS</h3>\n" +
+        "                            <h3 class=\"checkElement\" onclick=\"changePolice('Jost')\" id=\"Jost\">Jost</h3>\n" +
+        "                            <h3 class=\"uncheckElement\" onclick=\"changePolice('Poppins')\" id=\"Poppins\">Poppins</h3>\n" +
+        "                            <h3 class=\"uncheckElement\" onclick=\"changePolice('OpenDyslexic')\" id=\"OpenDyslexic\">OpenDyslexic</h3>\n" +
+        "                            <h3 class=\"uncheckElement\" onclick=\"changePolice('Times New Roman')\" id=\"Times New Roman\">Times New Roman</h3>\n" +
+        "                            <h3 class=\"uncheckElement\" onclick=\"changePolice('Comic Sans MS')\" id=\"Comic Sans MS\">Comic Sans MS</h3>\n" +
         "                        </span>\n" +
         "                    </div>\n" +
         "                    <div class=\"custom_parent\" id=\"jours\">\n" +
         "                        <h1 class=\"custom_entete\">Jour</h1>\n" +
         "                        <span class=\"custom_span\" id=\"spanJour\">\n" +
-        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Lundi</h3>\n" +
-        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Mardi</h3>\n" +
-        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Mercredi</h3>\n" +
-        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Jeudi</h3>\n" +
-        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Vendredi</h3>\n" +
-        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Samedi</h3>\n" +
-        "                            <h3 class=\"check\" onclick=\"changeJour(event)\">Dimanche</h3>\n" +
+        "                            <h3 class=\"check\" onclick=\"changeJour('lundi')\" id=\"custom_lundi\">Lundi</h3>"+
+        "                            <h3 class=\"check\" onclick=\"changeJour('mardi')\" id=\"custom_mardi\">Mardi</h3>"+
+        "                            <h3 class=\"check\" onclick=\"changeJour('mercredi')\" id=\"custom_mercredi\">Mercredi</h3>"+
+        "                            <h3 class=\"check\" onclick=\"changeJour('jeudi')\" id=\"custom_jeudi\">Jeudi</h3>"+
+        "                            <h3 class=\"check\" onclick=\"changeJour('vendredi')\" id=\"custom_vendredi\">Vendredi</h3>"+
+        "                            <h3 class=\"check\" onclick=\"changeJour('samedi')\" id=\"custom_samedi\">Samedi</h3>"+
+        "                            <h3 class=\"check\" onclick=\"changeJour('dimanche')\" id=\"custom_dimanche\">Dimanche</h3>"+
         "                        </div>\n" +
         "                    <div class=\"custom_parent\" id=\"couleurs\">\n" +
         "                        <h1 class=\"custom_entete\">Couleurs</h1>\n" +
@@ -1650,8 +1652,8 @@ if (window.indexedDB){
     afficherTousLesCours(); // Charger les cours au début
     recupererParametresUtilisateur()
         .then(parametres => {
-            if (parametres.police != document.getElementById("mainPolice").innerHTML){
-                document.getElementById(parametres.police).click();
+            if (parametres.police != "Jost"){
+                changePolice(parametres.police);
             }
             if (parametres.horaireDebut && parametres.horaireFin){
                 document.getElementById("custom-input-hdebut").value = parametres.horaireDebut;
@@ -1671,10 +1673,10 @@ if (window.indexedDB){
             }
             Array.from(document.querySelectorAll("#spanJour h3")).forEach(jour => {
                 if ((parametres.jours.includes((jour.innerHTML))) && jour.className === "uncheck"){
-                    jour.click();
+                    changeJour(jour.innerHTML.toLowerCase())
                 }
                 else if (!(parametres.jours.includes((jour.innerHTML))) && jour.className === "check"){
-                    jour.click();
+                    changeJour(jour.innerHTML.toLowerCase())
                 }
             });
         })
@@ -1778,6 +1780,8 @@ async function afficherTousLesCours() {
         var i = 0;
         tousLesCours.forEach(cours => {
             createCours(cours);
+            
+            console.log("ouaip^1")
             i++;
         });
         if (i === 0){
