@@ -710,7 +710,7 @@ function getAllCours(db) {
 
 var isIn1200Px = true;
 
-function mettreAJourContenuProfil() {
+function mettreAJourContenu() {
     var largeurFenetre = window.innerWidth;
 
     if(largeurFenetre >= 1200){
@@ -847,10 +847,10 @@ window.addEventListener('load', () => {
 });
 
 // Attacher la fonction au changement de taille de la fenêtre
-window.addEventListener('resize', mettreAJourContenuProfil);
+window.addEventListener('resize', mettreAJourContenu);
 
 // Appeler la fonction une fois au chargement de la page
-mettreAJourContenuProfil();
+mettreAJourContenu();
 
 //Appliquer les paramètres utilisateur des filtres
 function appliquerFiltres() {

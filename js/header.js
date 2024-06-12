@@ -455,7 +455,7 @@ function isScrollbarVisible(element) {
     return element.scrollHeight > element.clientHeight;
 }
 
-function mettreAJourContenuProfil() {
+function mettreAJourContenu() {
     var largeurFenetre = window.innerWidth;
     var label_motivation = document.getElementById("label_motivation");
     var choix_li_nouveau_panel = document.getElementById("choix-li-nouveau-panel");
@@ -483,10 +483,10 @@ function mettreAJourContenuProfil() {
 }
     
 // Attacher la fonction au changement de taille de la fenêtre
-window.addEventListener('resize', mettreAJourContenuProfil);
+window.addEventListener('resize', mettreAJourContenu);
 
 // Appeler la fonction une fois au chargement de la page
-mettreAJourContenuProfil();
+mettreAJourContenu();
 
 bouton_menu.addEventListener("click", function() {
     var conteneurFiltre = document.getElementById("menuFiltre");

@@ -331,7 +331,7 @@ var contenuContainer = document.getElementById("demandes_professeur_content");
 var demandeProfesseurs = document.querySelectorAll('.demande_professeur');
 var button_compat = document.getElementById("button_compat");
 
-function mettreAJourContenuProfil() {
+function mettreAJourContenu() {
     var largeurFenetre = window.innerWidth;
     if(getGetValue("codeUV")){
         if(largeurFenetre <= 600){
@@ -396,8 +396,8 @@ function mettreAJourContenuProfil() {
     }
 }
 
-window.addEventListener('resize', mettreAJourContenuProfil);
-mettreAJourContenuProfil();
+window.addEventListener('resize', mettreAJourContenu);
+mettreAJourContenu();
 
 function canDisplayRequest(event) {
     var divs_demande = document.getElementsByClassName("demande_professeur");

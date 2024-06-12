@@ -10,7 +10,7 @@ var isAlready1000 = false;
 var isAlready700 = false;
 var isAlready450 = false;
 
-function mettreAJourContenuProfil() {
+function mettreAJourContenu() {
     var largeurFenetre = window.innerWidth;
     home_bg.style.backgroundPosition = '0px 40%';
     if(largeurFenetre <= 450){
@@ -114,13 +114,13 @@ function searchSwap(){
 }
 
 // Attacher la fonction au changement de taille de la fenêtre
-window.addEventListener('resize', mettreAJourContenuProfil);
+window.addEventListener('resize', mettreAJourContenu);
 requestAnimationFrame(function() {
-    mettreAJourContenuProfil();
+    mettreAJourContenu();
 });
 generateTreeMap(800, 360, 13);
 window.addEventListener("load", function() {
-    mettreAJourContenuProfil();
+    mettreAJourContenu();
 });
 
 function randomNudeColor() {

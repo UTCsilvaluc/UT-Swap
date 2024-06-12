@@ -52,7 +52,7 @@ if(window.location.href.includes("profil.php")){
 }
 var titre_profil = document.getElementsByClassName("profil_titre")[0].querySelector("h1");
 
-function mettreAJourContenuProfil() {
+function mettreAJourContenu() {
     var largeurFenetre = window.innerWidth;
 
     var elementToMove;
@@ -110,10 +110,10 @@ function mettreAJourContenuProfil() {
 }
 
 // Attacher la fonction au changement de taille de la fenêtre
-window.addEventListener('resize', mettreAJourContenuProfil);
+window.addEventListener('resize', mettreAJourContenu);
 
 // Appeler la fonction une fois au chargement de la page
-mettreAJourContenuProfil();
+mettreAJourContenu();
 
 var demandes_faite_titre = document.getElementsByClassName("demande_faite_titre");
 for(var demande_faite_titre of demandes_faite_titre){
